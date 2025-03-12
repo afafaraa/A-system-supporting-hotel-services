@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: MyHotelAssistant
+  profiles:
+    active: dev
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/mongo-hotel
