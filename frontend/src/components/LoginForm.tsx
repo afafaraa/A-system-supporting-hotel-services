@@ -46,7 +46,7 @@ function LoginForm() {
     }
 
     const downloadDataFromAdminEndpoint = (new_token: string) => {
-        fetch("http://localhost:8080/secure", {
+        fetch("http://localhost:8080/secured", {
             method: "GET",
             headers: {"Authorization": `Bearer ${new_token}`}
         })

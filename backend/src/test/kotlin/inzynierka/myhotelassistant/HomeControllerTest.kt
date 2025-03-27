@@ -61,7 +61,7 @@ class HomeControllerTest(@Autowired val mvc: MockMvc, @Autowired val passwordEnc
         mvc.perform(get("/").header("Authorization", "Bearer $token"))
             .andExpect(content().string("Hello, user!"))
 
-        mvc.perform(get("/secure").header("Authorization", "Bearer $token"))
+        mvc.perform(get("/secured").header("Authorization", "Bearer $token"))
             .andExpect(status().isForbidden)
     }
 

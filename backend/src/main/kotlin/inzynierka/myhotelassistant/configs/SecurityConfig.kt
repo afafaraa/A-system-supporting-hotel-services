@@ -51,7 +51,7 @@ class SecurityConfig {
             .authorizeHttpRequests { auth -> auth
                 .requestMatchers("/token").permitAll()
                 .requestMatchers("/open").permitAll()
-                .requestMatchers("/secure/**").hasAnyRole(Role.ADMIN.name)
+                .requestMatchers("/secured/**").hasAnyRole(Role.ADMIN.name)
                 .anyRequest().authenticated()
             }
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
