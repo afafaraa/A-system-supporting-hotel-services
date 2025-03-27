@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-configuration-processor/3.4.3/a858f31605a612bf649adfe49c000f530d5c27c/spring-boot-configuration-processor-3.4.3.jar" />
+        </processorPath>
+        <module name="MyHotelAssistant.main" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="inzynierka.MyHotelAssistant" target="21" />
+      <module name="inzynierka.MyHotelAssistant.main" target="21" />
+      <module name="inzynierka.MyHotelAssistant.test" target="21" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
