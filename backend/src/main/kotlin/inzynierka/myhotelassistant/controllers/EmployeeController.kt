@@ -30,7 +30,7 @@ class EmployeeController(private val employeeService: EmployeeService) {
         savedEmployee.password = "**********"
         return ResponseEntity.status(HttpStatus.CREATED).body(
             MessageResponse(
-                message = "User with username ${savedEmployee.username} has been successfully created",
+                message = "User with username \"${savedEmployee.username}\" has been successfully created",
                 data = savedEmployee
             )
         )
@@ -39,7 +39,7 @@ class EmployeeController(private val employeeService: EmployeeService) {
     @DeleteMapping
     fun removeEmployee(@RequestParam username: String): ResponseEntity<MessageResponse> {
         employeeService.deleteEmployee(username)
-        return ResponseEntity.ok().body(MessageResponse("User with username $username has been successfully removed"))
+        return ResponseEntity.ok().body(MessageResponse("User with username \"$username\" has been successfully removed"))
     }
 
     @PatchMapping("/role/grant")
@@ -47,7 +47,7 @@ class EmployeeController(private val employeeService: EmployeeService) {
         val allRoles = employeeService.grantRole(username, role)
         return ResponseEntity.ok().body(
             MessageResponse(
-                message = "User with username $username has been successfully granted with role $role",
+                message = "User with username \"$username\" has been successfully granted with role \"$role\"",
                 data = allRoles
             )
         )
@@ -58,7 +58,7 @@ class EmployeeController(private val employeeService: EmployeeService) {
         val allRoles = employeeService.revokeRole(username, role)
         return ResponseEntity.ok().body(
             MessageResponse(
-                message = "User with username $username has been revoked with role $role",
+                message = "User with username \"$username\" has been revoked with role \"$role\"",
                 data = allRoles
             )
         )
