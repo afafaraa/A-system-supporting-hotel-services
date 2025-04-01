@@ -52,6 +52,7 @@ class SecurityConfig {
                 .requestMatchers("/token").permitAll()
                 .requestMatchers("/open/**").permitAll()
                 .requestMatchers("/secured/**").hasAnyRole(Role.ADMIN.name)
+                .requestMatchers("/management/**").hasAnyRole(Role.MANAGER.name, Role.ADMIN.name)
                 .anyRequest().authenticated()
             }
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }

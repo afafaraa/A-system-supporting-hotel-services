@@ -19,7 +19,8 @@ class DatabaseSeeder(private val userService: UserService, private val passwordE
             val user = UserEntity(
                 username = "user",
                 password = passwordEncoder.encode("password"),
-                roles = listOf(Role.USER)
+                roles = mutableSetOf(Role.GUEST),
+                email = ""
             )
             userService.save(user)
             logger.info("Default \'user\' added to database")
@@ -29,7 +30,8 @@ class DatabaseSeeder(private val userService: UserService, private val passwordE
             val admin = UserEntity(
                 username = "admin",
                 password = passwordEncoder.encode("password"),
-                roles = listOf(Role.ADMIN)
+                roles = mutableSetOf(Role.ADMIN, Role.MANAGER),
+                email = ""
             )
             userService.save(admin)
             logger.info("Default \'admin\' added to database")

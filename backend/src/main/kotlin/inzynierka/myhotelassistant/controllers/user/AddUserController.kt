@@ -1,13 +1,14 @@
 package inzynierka.myhotelassistant.controllers.user
 
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
 import inzynierka.myhotelassistant.models.Role
 import inzynierka.myhotelassistant.models.UserEntity
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.services.UserService
+import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import java.security.MessageDigest
 import java.time.Instant
@@ -52,6 +53,7 @@ class AddUserController(private val userService: UserService, private val passwo
     }
 
     @PostMapping("/secured/add/guest")
+    @ResponseStatus(HttpStatus.CREATED)
     fun addGuest(@RequestBody user: AddUserRequest): AddUserResponse {
         val username: String = generateUsername(user)
         val password: String = generatePassword(user)
@@ -60,7 +62,7 @@ class AddUserController(private val userService: UserService, private val passwo
             surname=user.surname,
             email=user.email,
             room=user.room,
-            roles=arrayListOf(Role.USER),
+            roles=mutableSetOf(Role.GUEST),
             username=username,
             password=passwordEncoder.encode(password),
             checkInDate=Instant.parse(user.checkInDate),
