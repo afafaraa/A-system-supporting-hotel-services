@@ -27,17 +27,4 @@ class GlobalExceptionHandler {
                 )
             )
     }
-
-    @ExceptionHandler(Exception::class)
-    fun handleGenericException(e: Exception): ResponseEntity<ErrorResponse> {
-        return ResponseEntity
-            .internalServerError()
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(
-                ErrorResponse(
-                    error = e::class.simpleName ?: "UnexpectedException",
-                    message = e.message ?: "An unexpected error occurred"
-                )
-            )
-    }
 }
