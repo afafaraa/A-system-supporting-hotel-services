@@ -1,163 +1,27 @@
-# A-system-supporting-hotel-services
+# 🏨 MyHotelAssistant
+A System Supporting Hotel Services
 
-## Opis endpointów
+## About the project
 
----
+Currently, most hotels offer special services for their guests, such as room service, spa treatments, or additional cleaning. However, using these services is often problematic and time-consuming, which reduces customer interest.
+The system proposed in this project will enable access to the hotel's offerings in multiple languages and allow guests to place personalized orders via mobile devices, making the services more accessible. 
+Hotel administration will be able to freely modify the available offerings according to any internal changes within the facility.
+The system will allow efficient order management, giving hotel staff the ability to accept or reject orders placed by guests. 
+If an order is accepted, it will be automatically assigned to the specific guest. 
+The system will also allow guests to submit requests to cancel or modify a service, which can then be approved or rejected by the hotel staff.
+Access to the application will be granted only to individuals who receive a specially generated access key from the hotel for the duration of their stay, as well as authorized hotel staff.
 
-### AuthController
+The creation of this project is the goal of our engineering thesis at AGH University in Kraków, Poland. 😀
 
-#### **POST** `/token`
-Zwraca token JWT w odpowiedzi
+### Project Goal
 
-**Wymaganie uprawnienia:** bez autoryzacji
+The goal of the project is to create a system that facilitates the use of hotel services in terms of service availability, ordering, and the subsequent execution of services. 
+The system's users will be hotel guests and the staff responsible for customer service.
 
-**Request body:** `json`
-```json
-{
-  "username": "string (required)",
-  "password": "string (required)"
-}
-```
-**Response:** `plain/text` zawierający token JWT
+## Technologies
 
-**Zwracane błędy:**
-- `401 Unauthorized` - niepoprawne dane logowania
-- `400 Bad Request` - niepoprawne dane wejściowe
+[![tech stack](https://skillicons.dev/icons?i=react,tailwind,ts,redux,kotlin,spring,mongo,docker&theme=dark)](https://skillicons.dev)
 
----
+## Useful links
+### [📘 API documentation](docs/API.md)
 
-### HomeController (Testowy)
-
-#### **GET** `/open`
-Test otwartego endpointu bez wymaganej autoryzacji
-
-**Wymaganie uprawnienia:** bez autoryzacji
-
-**Response:** `plain/text` zawierający wiadomość
-
-&nbsp;
-
-#### **GET** `/`
-Test endpointu z wymaganą autoryzacją autoryzacji
-
-**Wymaganie uprawnienia:** dowolny poziom autoryzacji
-
-**Response:** `plain/text` zawierający wiadomość z nazwą zalogowanego użytkownika
-
-&nbsp;
-
-#### **GET** `/secured`
-Test endpointu z wymaganą rolą admina
-
-**Wymaganie uprawnienia:** `ADMIN`
-
-**Response:** `plain/text` zawierający wiadomość
-
-&nbsp;
----
-
-### EmployeeController
-
-#### **POST** `/management/employees`
-Dodawanie nowego pracownika
-
-**Wymaganie uprawnienia:** `MANAGER`
-
-**Request body:** `json`
-```json
-{
-  "username": "string (required)",
-  "password": "string (required)",
-  "email": "string (required)",
-  "name": "string (required)",
-  "surname": "string (required)",
-  "roles": "string[] (optional, default: ['EMPLOYEE'])"
-}
-```
-**Response:** `json`
-```json
-{
-  "message": "string",
-  "data": "UserEntity"
-}
-```
-
-**Zwracane błędy:**
-- `401 Unauthorized` - nieuprawniony dostęp
-- `400 Bad Request` - niepoprawne dane wejściowe
-- `409 Conflict`, użytkownik o podanej nazwie użytkownika już istnieje
-
-&nbsp;
-
-#### **DELETE** `/management/employees`
-Usuwanie pracownika po nazwie użytkownika
-
-**Wymaganie uprawnienia:** `MANAGER`
-
-**Request params:**
-- `username`: _string_ (required)
-
-**Response:** `json`
-```json
-{
-  "message": "string"
-}
-```
-
-**Zwracane błędy:**
-- `401 Unauthorized` - nieuprawniony dostęp
-- `400 Bad Request` - niepoprawne parametry
-- `404 Not Found`, użytkownik o podanej nazwie użytkownika nie istnieje
-
-&nbsp;
-
-#### **PATCH** `/management/employees/role/grant`
-Przyznanie roli dla pracownika
-
-**Wymaganie uprawnienia:** `MANAGER`
-
-**Request params:**
-- `username`: _string_ (required)
-- `role`: _string_ (required)
-
-**Response:** `json`
-```json
-{
-  "message": "string",
-  "data": "Role[]"
-}
-```
-
-**Zwracane błędy:**
-- `401 Unauthorized` - nieuprawniony dostęp
-- `400 Bad Request` - niepoprawne parametry
-- `404 Not Found`, użytkownik o podanej nazwie użytkownika nie istnieje
-
-&nbsp;
-
-#### **PATCH** `/management/employees/role/revoke`
-Odebranie roli pracownikowi
-
-**Wymaganie uprawnienia:** `MANAGER`
-
-**Request params:**
-- `username`: _string_ (required)
-- `role`: _string_ (required)
-
-**Response:** `json`
-```json
-{
-  "message": "string",
-  "data": "Role[]"
-}
-```
-
-**Zwracane błędy:**
-- `401 Unauthorized` - nieuprawniony dostęp
-- `400 Bad Request` - niepoprawne parametry
-- `404 Not Found`, użytkownik o podanej nazwie użytkownika nie istnieje
-- 
----
-
-### AddUserController
-...
