@@ -11,7 +11,7 @@ function LoginForm() {
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        fetch("http://localhost:8080/token", {
+        fetch("http://localhost:8081/login", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({username, password})
@@ -20,6 +20,7 @@ function LoginForm() {
                 return response.ok ? response.text() : Promise.reject(response);
             })
             .then(new_token => {
+                new_token = JSON.parse(new_token).accessToken;
                 setToken(new_token);
                 downloadDataFromSecuredEndpoint(new_token);
                 downloadDataFromAdminEndpoint(new_token);
@@ -36,7 +37,7 @@ function LoginForm() {
     };
 
     const downloadDataFromSecuredEndpoint = (new_token: string) => {
-        fetch("http://localhost:8080", {
+        fetch("http://localhost:8081", {
             method: "GET",
             headers: {"Authorization": `Bearer ${new_token}`}
         })
@@ -46,7 +47,7 @@ function LoginForm() {
     }
 
     const downloadDataFromAdminEndpoint = (new_token: string) => {
-        fetch("http://localhost:8080/secured", {
+        fetch("http://localhost:8081/secured", {
             method: "GET",
             headers: {"Authorization": `Bearer ${new_token}`}
         })
@@ -65,31 +66,31 @@ function LoginForm() {
     }
 
     return (
-        <div>
-        <h1>Login</h1>
-        <form onSubmit={handleSubmit}>
-            <div>
-            <label>Username</label>
-            <input type="text" value={username}
-                   onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)} />
-            </div>
-            <div>
-            <label>Password</label>
-            <input type="text" value={password}
-                   onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
-            </div>
-            <button type="submit">Login</button>
-            {error && <p>{error}</p>}
-            {token &&
+      <div>
+          <h1>Login</h1>
+          <form onSubmit={handleSubmit}>
+              <div>
+                  <label>Username</label>
+                  <input type="text" value={username}
+                         onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}/>
+              </div>
+              <div>
+                  <label>Password</label>
+                  <input type="text" value={password}
+                         onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}/>
+              </div>
+              <button type="submit">Login</button>
+              {error && <p>{error}</p>}
+              {token &&
                 <>
                     <p>Token: {token}</p>
                     <p>{message}</p>
                     <p>{admin}</p>
                 </>
-            }
+              }
 
-        </form>
-        </div>
+          </form>
+      </div>
     );
 }
 

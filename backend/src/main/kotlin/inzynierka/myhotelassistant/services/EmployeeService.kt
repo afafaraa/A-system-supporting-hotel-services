@@ -1,9 +1,9 @@
 package inzynierka.myhotelassistant.services
 
-import inzynierka.myhotelassistant.controllers.EmployeeController
+import inzynierka.myhotelassistant.controllers.user.EmployeeController
 import inzynierka.myhotelassistant.exceptions.HttpException.*
-import inzynierka.myhotelassistant.models.Role
-import inzynierka.myhotelassistant.models.UserEntity
+import inzynierka.myhotelassistant.models.user.Role
+import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -26,7 +26,7 @@ class EmployeeService(val userRepository: UserRepository, private val passwordEn
     }
 
     @Throws(UserAlreadyExistsException::class)
-    fun addEmployee(employee: UserEntity): UserEntity   {
+    fun addEmployee(employee: UserEntity): UserEntity {
         if (userRepository.existsByUsername(employee.username))
             throw UserAlreadyExistsException("User with username \"${employee.username}\" already exists")
         return userRepository.save(employee)

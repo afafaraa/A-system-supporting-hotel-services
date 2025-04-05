@@ -1,6 +1,6 @@
 package inzynierka.myhotelassistant.services
 
-import inzynierka.myhotelassistant.models.UserEntity
+import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails

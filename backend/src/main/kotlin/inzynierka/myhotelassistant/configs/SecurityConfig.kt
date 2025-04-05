@@ -5,7 +5,8 @@ import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
-import inzynierka.myhotelassistant.models.Role
+import inzynierka.myhotelassistant.models.user.Role
+import inzynierka.myhotelassistant.repositories.TokenRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AbstractAuthenticationToken
@@ -23,6 +24,7 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.core.convert.converter.Converter
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -30,7 +32,7 @@ import java.util.*
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig {
+class SecurityConfig(private val tokenRepository: TokenRepository) {
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
@@ -49,7 +51,7 @@ class SecurityConfig {
             .cors { cors -> cors.configurationSource(corsConfigurationSource()) }
             .csrf { csrf -> csrf.disable() }
             .authorizeHttpRequests { auth -> auth
-                .requestMatchers("/token").permitAll()
+                .requestMatchers("/login").permitAll()
                 .requestMatchers("/open/**").permitAll()
                 .requestMatchers("/secured/**").hasAnyRole(Role.ADMIN.name)
                 .requestMatchers("/management/**").hasAnyRole(Role.MANAGER.name, Role.ADMIN.name)
@@ -66,6 +68,11 @@ class SecurityConfig {
     fun jwtAuthenticationConverter(): Converter<Jwt, AbstractAuthenticationToken> {
         val converter = JwtAuthenticationConverter()
         converter.setJwtGrantedAuthoritiesConverter { jwt: Jwt ->
+            val token = jwt.tokenValue
+            if (!isTokenValid(token)) {
+                throw BadCredentialsException("Invalid token")
+            }
+
             val scope = jwt.getClaimAsString("scope") ?: ""
             scope.split(" ").map { role ->
                 if (role.startsWith("ROLE_")) SimpleGrantedAuthority(role)
@@ -94,8 +101,18 @@ class SecurityConfig {
         configuration.allowedOrigins = listOf("http://localhost:5173")
         configuration.allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE")
         configuration.allowedHeaders = listOf("Authorization", "Content-Type")
+        configuration.allowCredentials = true
+//        configuration.allowedOrigins = listOf("*")
+//        configuration.allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE")
+//        configuration.allowedHeaders = listOf("*")
+
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source
+    }
+
+    fun isTokenValid(tokenValue: String): Boolean {
+        val token = tokenRepository.findByToken(tokenValue)
+        return token != null && !token.expired
     }
 }

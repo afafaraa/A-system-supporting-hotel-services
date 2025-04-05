@@ -1,4 +1,4 @@
-package inzynierka.myhotelassistant.models
+package inzynierka.myhotelassistant.models.user
 
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidRoleNameException
 

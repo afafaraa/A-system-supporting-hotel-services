@@ -1,7 +1,7 @@
 package inzynierka.myhotelassistant.controllers.user
 
-import inzynierka.myhotelassistant.models.Role
-import inzynierka.myhotelassistant.models.UserEntity
+import inzynierka.myhotelassistant.models.user.Role
+import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.services.UserService
 import org.springframework.http.HttpStatus
@@ -14,7 +14,7 @@ import java.security.MessageDigest
 import java.time.Instant
 
 @RestController
-class AddUserController(private val userService: UserService, private val passwordEncoder: PasswordEncoder) {
+class GuestController(private val userService: UserService, private val passwordEncoder: PasswordEncoder) {
 
     data class AddUserRequest(
         val email: String,
@@ -70,15 +70,5 @@ class AddUserController(private val userService: UserService, private val passwo
         )
         userService.save(guest)
         return AddUserResponse(password = password, username = username)
-    }
-
-    @PostMapping("/secured/admin")
-    fun addAdmin(@RequestBody user: AddUserRequest){
-
-    }
-
-    @PostMapping("/secured/employee")
-    fun addEmployee(@RequestBody user: AddUserRequest){
-
     }
 }

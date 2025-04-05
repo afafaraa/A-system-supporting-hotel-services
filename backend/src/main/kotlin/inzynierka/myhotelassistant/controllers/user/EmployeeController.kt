@@ -1,4 +1,4 @@
-package inzynierka.myhotelassistant.controllers
+package inzynierka.myhotelassistant.controllers.user
 
 import inzynierka.myhotelassistant.services.EmployeeService
 import org.springframework.http.HttpStatus

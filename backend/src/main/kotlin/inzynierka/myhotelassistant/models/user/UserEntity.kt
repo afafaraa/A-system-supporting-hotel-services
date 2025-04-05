@@ -1,4 +1,4 @@
-package inzynierka.myhotelassistant.models
+package inzynierka.myhotelassistant.models.user
 
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.models.order.OrderEntity
@@ -18,6 +18,7 @@ data class UserEntity(
     val room: RoomEntity? = null,
     val checkInDate: Instant? = null,
     val checkOutDate: Instant? = null,
+    val active: Boolean = false,
     val roles: MutableSet<Role> = mutableSetOf(),
     val orders: MutableList<OrderEntity> = mutableListOf(),
     val notifications: MutableList<NotificationEntity> = mutableListOf(),

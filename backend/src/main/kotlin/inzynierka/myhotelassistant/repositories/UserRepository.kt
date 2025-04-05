@@ -1,6 +1,6 @@
 package inzynierka.myhotelassistant.repositories
 
-import inzynierka.myhotelassistant.models.UserEntity
+import inzynierka.myhotelassistant.models.user.UserEntity
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
