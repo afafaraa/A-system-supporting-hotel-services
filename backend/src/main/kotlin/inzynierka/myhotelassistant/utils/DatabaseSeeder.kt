@@ -5,9 +5,11 @@ import inzynierka.myhotelassistant.models.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
 import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
+import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
+@Profile("dev")
 @Component
 class DatabaseSeeder(private val userRepo: UserRepository, private val passwordEncoder: PasswordEncoder) {
 
