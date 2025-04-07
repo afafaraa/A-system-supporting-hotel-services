@@ -29,7 +29,7 @@ class EmployeeController(private val employeeService: EmployeeService) {
         @field:Size(max = 30, message = "Surname cannot be longer than 30 characters")
         val surname: String,
 
-        val roles: Set<String>? = null
+        val role: String? = null
     )
 
     data class MessageResponse(
@@ -50,30 +50,31 @@ class EmployeeController(private val employeeService: EmployeeService) {
         )
     }
 
+    @GetMapping
+    fun getEmployeeWithUsername(@RequestParam username: String): ResponseEntity<MessageResponse> {
+        val employee = employeeService.findByUsernameOrThrow(username)
+        employee.password = "**********"
+        return ResponseEntity.ok().body(
+            MessageResponse(
+                message = "User with username \"$username\" has been successfully retrieved",
+                data = employee
+            )
+        )
+    }
+
     @DeleteMapping
     fun removeEmployee(@RequestParam username: String): ResponseEntity<MessageResponse> {
         employeeService.deleteEmployee(username)
         return ResponseEntity.ok().body(MessageResponse("User with username \"$username\" has been successfully removed"))
     }
 
-    @PatchMapping("/role/grant")
-    fun grantRole(@RequestParam username: String, @RequestParam role: String): ResponseEntity<MessageResponse> {
-        val allRoles = employeeService.grantRole(username, role)
+    @PatchMapping("/role")
+    fun changeRole(@RequestParam username: String, @RequestParam role: String): ResponseEntity<MessageResponse> {
+        val (previousRole, newRole) = employeeService.changeRole(username, role)
+        val process = if (newRole.permissionLevel > previousRole.permissionLevel) "promoted" else "demoted"
         return ResponseEntity.ok().body(
             MessageResponse(
-                message = "User with username \"$username\" has been successfully granted with role \"$role\"",
-                data = allRoles
-            )
-        )
-    }
-
-    @PatchMapping("/role/revoke")
-    fun revokeRole(@RequestParam username: String, @RequestParam role: String): ResponseEntity<MessageResponse> {
-        val allRoles = employeeService.revokeRole(username, role)
-        return ResponseEntity.ok().body(
-            MessageResponse(
-                message = "User with username \"$username\" has been revoked with role \"$role\"",
-                data = allRoles
+                message = "User with username \"$username\" has been successfully $process from role \"$previousRole\" to role \"$newRole\"",
             )
         )
     }

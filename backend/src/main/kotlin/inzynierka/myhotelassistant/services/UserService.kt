@@ -17,13 +17,9 @@ class UserService(private val userRepository: UserRepository): UserDetailsServic
         return User.builder()
             .username(user.username)
             .password(user.password)
-            .roles(*user.roles.map { it.name }.toTypedArray())
+            .roles(user.role.name)
             .build()
     }
-
-    fun findByUsername(username: String): UserEntity? = userRepository.findByUsername(username)
-
-    fun existsByUsername(username: String): Boolean = userRepository.existsByUsername(username)
 
     fun save(user: UserEntity) = userRepository.save(user)
 }
