@@ -1,6 +1,8 @@
 package inzynierka.myhotelassistant.controllers
 
 import inzynierka.myhotelassistant.services.EmployeeService
+import jakarta.validation.Valid
+import jakarta.validation.constraints.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -10,11 +12,23 @@ import org.springframework.web.bind.annotation.*
 class EmployeeController(private val employeeService: EmployeeService) {
 
     data class EmployeeDTO(
+        @field:Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
         val username: String,
+
+        @field:Size(min = 8, message = "Password must be at least 8 characters long")
         val password: String,
+
+        @field:Email(message = "Email should be valid")
         val email: String,
+
+        @field:NotBlank(message = "Name is required")
+        @field:Size(max = 20, message = "Name cannot be longer than 20 characters")
         val name: String,
+
+        @field:NotBlank(message = "Surname is required")
+        @field:Size(max = 30, message = "Surname cannot be longer than 30 characters")
         val surname: String,
+
         val roles: Set<String>? = null
     )
 
@@ -24,7 +38,7 @@ class EmployeeController(private val employeeService: EmployeeService) {
     )
 
     @PostMapping
-    fun addEmployee(@RequestBody employeeDTO: EmployeeDTO): ResponseEntity<MessageResponse> {
+    fun addEmployee(@RequestBody @Valid employeeDTO: EmployeeDTO): ResponseEntity<MessageResponse> {
         val newEmployee = employeeService.createEmployee(employeeDTO)
         val savedEmployee = employeeService.addEmployee(newEmployee)
         savedEmployee.password = "**********"

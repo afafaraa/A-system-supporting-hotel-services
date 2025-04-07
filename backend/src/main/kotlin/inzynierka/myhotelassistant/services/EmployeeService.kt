@@ -32,12 +32,17 @@ class EmployeeService(val userRepository: UserRepository, private val passwordEn
         return userRepository.save(employee)
     }
 
+    @Throws(UserNotFoundException::class)
+    fun findByUsernameOrThrow(username: String): UserEntity {
+        return userRepository.findByUsername(username)
+            ?: throw UserNotFoundException("User with username \"$username\" was not found")
+    }
+
     @Transactional
     @Throws(UserNotFoundException::class)
     fun deleteEmployee(username: String) {
         // TODO: implement checking for active services for this employee
-        val foundUser = userRepository.findByUsername(username)
-            ?: throw UserNotFoundException("User with username \"$username\" was not found")
+        val foundUser = findByUsernameOrThrow(username)
         userRepository.delete(foundUser)
     }
 
@@ -45,7 +50,7 @@ class EmployeeService(val userRepository: UserRepository, private val passwordEn
     @Throws(UserNotFoundException::class, InvalidRoleNameException::class)
     fun grantRole(username: String, role: String): Set<Role> {
         val enumRole = Role.convertFromString(role)
-        val user = userRepository.findByUsername(username) ?: throw UserNotFoundException("User with username \"$username\" not found")
+        val user = findByUsernameOrThrow(username)
         if (user.roles.add(enumRole)) userRepository.save(user)
         return user.roles
     }
@@ -54,7 +59,7 @@ class EmployeeService(val userRepository: UserRepository, private val passwordEn
     @Throws(UserNotFoundException::class, InvalidRoleNameException::class)
     fun revokeRole(username: String, role: String): Set<Role> {
         val enumRole = Role.convertFromString(role)
-        val user = userRepository.findByUsername(username) ?: throw UserNotFoundException("User with username \"$username\" not found")
+        val user = findByUsernameOrThrow(username)
         if (user.roles.remove(enumRole)) userRepository.save(user)
         return user.roles
     }
