@@ -2,36 +2,40 @@ package inzynierka.myhotelassistant.utils
 
 import inzynierka.myhotelassistant.models.Role
 import inzynierka.myhotelassistant.models.UserEntity
-import inzynierka.myhotelassistant.services.UserService
+import inzynierka.myhotelassistant.repositories.UserRepository
 import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
+import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
+@Profile("dev")
 @Component
-class DatabaseSeeder(private val userService: UserService, private val passwordEncoder: PasswordEncoder) {
+class DatabaseSeeder(private val userRepo: UserRepository, private val passwordEncoder: PasswordEncoder) {
 
     private val logger = LoggerFactory.getLogger(DatabaseSeeder::class.java)
 
     @PostConstruct
     fun addDefaultUserToDatabase() {
-        if (userService.findByUsername("user") == null) {
+        if (!userRepo.existsByUsername("user")) {
             val user = UserEntity(
                 username = "user",
                 password = passwordEncoder.encode("password"),
-                roles = listOf(Role.USER)
+                roles = mutableSetOf(Role.GUEST),
+                email = "test_user@user.test"
             )
-            userService.save(user)
+            userRepo.save(user)
             logger.info("Default \'user\' added to database")
         }
 
-        if (userService.findByUsername("admin") == null) {
+        if (!userRepo.existsByUsername("admin")) {
             val admin = UserEntity(
                 username = "admin",
                 password = passwordEncoder.encode("password"),
-                roles = listOf(Role.ADMIN)
+                roles = mutableSetOf(Role.ADMIN, Role.MANAGER),
+                email = "test_admin@admin.test"
             )
-            userService.save(admin)
+            userRepo.save(admin)
             logger.info("Default \'admin\' added to database")
         }
     }
