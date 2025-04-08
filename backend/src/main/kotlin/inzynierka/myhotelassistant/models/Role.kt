@@ -12,7 +12,7 @@ enum class Role(val permissionLevel: Int) {
     companion object {
         fun convertFromString(role: String): Role {
             try { return Role.valueOf(role) }
-            catch (e: IllegalArgumentException) { throw InvalidRoleNameException(e.message!!) }
+            catch (e: IllegalArgumentException) { throw InvalidRoleNameException(e.message ?: "Invalid role name") }
         }
     }
 }
