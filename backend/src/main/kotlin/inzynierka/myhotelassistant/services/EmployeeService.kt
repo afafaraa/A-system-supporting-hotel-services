@@ -21,7 +21,7 @@ class EmployeeService(val userRepository: UserRepository, private val passwordEn
             email = employeeDTO.email,
             name = employeeDTO.name,
             surname = employeeDTO.surname,
-            role = Role.convertFromString(employeeDTO.role ?: Role.EMPLOYEE.name)
+            role = Role.convertFromString(employeeDTO.role?.uppercase() ?: Role.EMPLOYEE.name)
         )
     }
 
