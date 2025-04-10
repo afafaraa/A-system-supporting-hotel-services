@@ -33,7 +33,7 @@ jobs:
         run: npm install
         working-directory: frontend
 
-      - name: Run type checking (Svelte/TS)
+      - name: Run type checking
         run: npm run check
         working-directory: frontend
 
