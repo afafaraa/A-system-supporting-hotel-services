@@ -49,7 +49,7 @@ class EmployeeServiceIntegrationTest {
     )
 
     @Test
-    fun `should create and add new employee without roles`() {
+    fun `should create and add new employee without employee role`() {
         val user = employeeService.createEmployee(employeeDTOWithoutRoles.copy(username = "jan.kowalski1"))
         val saved = employeeService.addEmployee(user)
         val found = userRepository.findByUsername("jan.kowalski1")
@@ -60,26 +60,23 @@ class EmployeeServiceIntegrationTest {
         assertEquals(saved.email, found.email)
         assertEquals(saved.name, found.name)
         assertEquals(saved.surname, found.surname)
-        assertEquals(found.roles.size, 1) // MANAGER + EMPLOYEE
-        assertTrue(found.roles.contains(Role.EMPLOYEE)) // default role
+        assertTrue(found.role == Role.EMPLOYEE) // default role
     }
 
     @Test
-    fun `should create and add new employee with role`() {
-        val user = employeeService.createEmployee(employeeDTOWithoutRoles.copy(username = "jan.kowalski2", roles = setOf(Role.MANAGER.name)))
+    fun `should create and add new employee with manager role`() {
+        val user = employeeService.createEmployee(employeeDTOWithoutRoles.copy(username = "jan.kowalski2", role = Role.MANAGER.name))
         employeeService.addEmployee(user)
         val found = userRepository.findByUsername("jan.kowalski2")
 
         assertNotNull(found)
-        assertEquals(found!!.roles.size, 2) // MANAGER + EMPLOYEE
-        assertTrue(found.roles.contains(Role.MANAGER))
-        assertTrue(found.roles.contains(Role.EMPLOYEE)) // default role
+        assertTrue(found!!.role == Role.MANAGER)
     }
 
     @Test
     fun `should throw when receiving invalid role name`() {
         assertThrows(HttpException.InvalidRoleNameException::class.java) {
-            employeeService.createEmployee(employeeDTOWithoutRoles.copy(roles = setOf("MANAGARMR")))
+            employeeService.createEmployee(employeeDTOWithoutRoles.copy(role = "MANAGARMR"))
         }
     }
 
@@ -100,30 +97,26 @@ class EmployeeServiceIntegrationTest {
         val user = employeeService.createEmployee(employeeDTOWithoutRoles.copy(username = "jan.kowalski4"))
         userRepository.save(user)
 
-        employeeService.grantRole("jan.kowalski4", "MANAGER")
+        employeeService.changeRole("jan.kowalski4", "MANAGER")
         val withManager = userRepository.findByUsername("jan.kowalski4")
-        assertTrue(withManager!!.roles.contains(Role.MANAGER))
+        assertTrue(withManager!!.role == Role.MANAGER)
 
-        employeeService.grantRole("jan.kowalski4", "MANAGER")
-        val withManagerAgain = userRepository.findByUsername("jan.kowalski4")
-        assertTrue(withManagerAgain!!.roles.contains(Role.MANAGER))
+        assertThrows(HttpException.InvalidRoleNameException::class.java) {
+            employeeService.changeRole("jan.kowalski4", "MANAGER")
+        }
 
-        employeeService.revokeRole("jan.kowalski4", "MANAGER")
+        employeeService.changeRole("jan.kowalski4", "EMPLOYEE")
         val afterRevoke = userRepository.findByUsername("jan.kowalski4")
-        assertFalse(afterRevoke!!.roles.contains(Role.MANAGER))
-
-        employeeService.revokeRole("jan.kowalski4", "MANAGER")
-        val afterRevokeAgain = userRepository.findByUsername("jan.kowalski4")
-        assertFalse(afterRevokeAgain!!.roles.contains(Role.MANAGER))
+        assertTrue(afterRevoke!!.role == Role.EMPLOYEE)
     }
 
     @Test
     fun `should throw when managing non-existent employee`() {
         assertThrows(HttpException.UserNotFoundException::class.java) {
-            employeeService.grantRole("non.existing.user", "MANAGER")
+            employeeService.changeRole("non.existing.user", "MANAGER")
         }
         assertThrows(HttpException.UserNotFoundException::class.java) {
-            employeeService.revokeRole("non.existing.user", "MANAGER")
+            employeeService.changeRole("non.existing.user", "EMPLOYEE")
         }
     }
 
@@ -133,21 +126,31 @@ class EmployeeServiceIntegrationTest {
         userRepository.save(user)
 
         assertThrows(HttpException.InvalidRoleNameException::class.java) {
-            employeeService.grantRole("jan.kowalski5", "MANAGERMR")
+            employeeService.changeRole("jan.kowalski5", "MANAGERMR")
+        }
+    }
+
+    @Test
+    fun `should throw when receiving guest or admin role`() {
+        val user = employeeService.createEmployee(employeeDTOWithoutRoles.copy(username = "jan.kowalski6"))
+        userRepository.save(user)
+
+        assertThrows(HttpException.InvalidRoleNameException::class.java) {
+            employeeService.changeRole("jan.kowalski6", "GUEST")
         }
         assertThrows(HttpException.InvalidRoleNameException::class.java) {
-            employeeService.revokeRole("jan.kowalski5", "MANAGERMR")
+            employeeService.changeRole("jan.kowalski6", "ADMIN")
         }
     }
 
     @Test
     fun `should delete employee`() {
-        val user = employeeService.createEmployee(employeeDTOWithoutRoles.copy(username = "jan.kowalski6"))
+        val user = employeeService.createEmployee(employeeDTOWithoutRoles.copy(username = "jan.kowalski7"))
         userRepository.save(user)
 
-        employeeService.deleteEmployee("jan.kowalski6")
+        employeeService.deleteEmployee("jan.kowalski7")
 
-        assertNull(userRepository.findByUsername("jan.kowalski6"))
+        assertNull(userRepository.findByUsername("jan.kowalski7"))
     }
 
     @Test

@@ -62,7 +62,7 @@ class AddUserController(private val userService: UserService, private val passwo
             surname=user.surname,
             email=user.email,
             room=user.room,
-            roles=mutableSetOf(Role.GUEST),
+            role=Role.GUEST,
             username=username,
             password=passwordEncoder.encode(password),
             checkInDate=Instant.parse(user.checkInDate),

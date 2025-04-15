@@ -23,6 +23,8 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.core.convert.converter.Converter
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -44,6 +46,15 @@ class SecurityConfig {
     }
 
     @Bean
+    fun roleHierarchy(): RoleHierarchy {
+        return RoleHierarchyImpl.fromHierarchy(
+            "ROLE_ADMIN > ROLE_MANAGER" + "\n" +
+                    "ROLE_MANAGER > ROLE_RECEPTIONIST" + "\n" +
+                    "ROLE_RECEPTIONIST > ROLE_EMPLOYEE"
+        )
+    }
+
+    @Bean
     fun securityFilterChain(http: HttpSecurity): DefaultSecurityFilterChain {
         return http
             .cors { cors -> cors.configurationSource(corsConfigurationSource()) }
@@ -52,7 +63,7 @@ class SecurityConfig {
                 .requestMatchers("/token").permitAll()
                 .requestMatchers("/open/**").permitAll()
                 .requestMatchers("/secured/**").hasAnyRole(Role.ADMIN.name)
-                .requestMatchers("/management/**").hasAnyRole(Role.MANAGER.name, Role.ADMIN.name)
+                .requestMatchers("/management/**").hasAnyRole(Role.MANAGER.name)
                 .anyRequest().authenticated()
             }
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
