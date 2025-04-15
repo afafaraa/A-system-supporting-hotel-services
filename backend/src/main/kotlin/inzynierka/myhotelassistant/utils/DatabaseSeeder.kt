@@ -5,9 +5,11 @@ import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
 import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
+import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
+@Profile("dev")
 @Component
 class DatabaseSeeder(private val userRepo: UserRepository, private val passwordEncoder: PasswordEncoder) {
 
@@ -20,7 +22,7 @@ class DatabaseSeeder(private val userRepo: UserRepository, private val passwordE
                 username = "user",
                 password = passwordEncoder.encode("password"),
                 roles = mutableSetOf(Role.GUEST),
-                email = ""
+                email = "test_user@user.test"
             )
             userRepo.save(user)
             logger.info("Default \'user\' added to database")
@@ -31,7 +33,7 @@ class DatabaseSeeder(private val userRepo: UserRepository, private val passwordE
                 username = "admin",
                 password = passwordEncoder.encode("password"),
                 roles = mutableSetOf(Role.ADMIN, Role.MANAGER),
-                email = ""
+                email = "test_admin@admin.test"
             )
             userRepo.save(admin)
             logger.info("Default \'admin\' added to database")
