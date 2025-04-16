@@ -3,9 +3,10 @@ package inzynierka.myhotelassistant.utils
 import inzynierka.myhotelassistant.models.Role
 import inzynierka.myhotelassistant.models.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
-import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.CommandLineRunner
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -30,17 +31,17 @@ class InitialAdminSetup(
     @Value("\${initial.admin.email:admin@myhotel.com}")
     private lateinit var defaultEmail: String       //TODO
 
-    @PostConstruct
-    private fun adminSetupRunner() {
+    @Bean
+    fun adminSetupRunner() = CommandLineRunner {
         if (env.activeProfiles.contains("dev")) {
             logger.info("Skipping interactive admin setup in dev environment.")
-            return
+            //return@CommandLineRunner
         }
-        val admins = userRepo.findByRolesContaining(Role.ADMIN)
+        val admins = userRepo.findByRole(Role.ADMIN)
         if (admins.isNotEmpty()) {
             logger.info("Admin account(s) already exist. Skipping interactive setup.")
             logger.info(admins.toString())
-            return
+            //return@CommandLineRunner
         }
         logger.info("No admin account found. Starting interactive admin setup...")
         setupAdminInteractively()
@@ -97,7 +98,7 @@ class InitialAdminSetup(
             email = email,
             name = firstName.lowercase().replaceFirstChar { it.uppercase() },
             surname = lastName.lowercase().replaceFirstChar { it.uppercase() },
-            roles = mutableSetOf(Role.ADMIN, Role.MANAGER),
+            role = Role.ADMIN,
             checkInDate = Instant.now(),
         )
         userRepo.save(admin)
@@ -105,9 +106,9 @@ class InitialAdminSetup(
         logger.info("Interactive admin setup completed. Admin account '$username' created successfully.")
 
         println("\n==== ADMIN SETUP COMPLETE ====")
-        println("Admin name: $firstName $lastName")
+        println("Admin name: ${admin.name} ${admin.surname}")
         println("Admin Email: $email")
-        println("Admin Username: $username")
+        println("Admin Username: ${admin.username}")
         println("Admin Password: $password")
         println("==============================\n")
     }

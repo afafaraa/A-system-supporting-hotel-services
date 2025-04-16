@@ -12,5 +12,5 @@ interface UserRepository: MongoRepository<UserEntity, String> {
 
     fun existsByUsername(username: String): Boolean
 
-    fun findByRolesContaining(role: Role): List<UserEntity>
+    fun findByRole(role: Role): List<UserEntity>
 }

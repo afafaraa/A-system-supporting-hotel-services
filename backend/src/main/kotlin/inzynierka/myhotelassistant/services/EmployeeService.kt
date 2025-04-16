@@ -21,7 +21,7 @@ class EmployeeService(val userRepository: UserRepository, private val passwordEn
             email = employeeDTO.email,
             name = employeeDTO.name.lowercase().replaceFirstChar { it.uppercase() },
             surname = employeeDTO.surname.lowercase().replaceFirstChar { it.uppercase() },
-            roles = employeeDTO.roles.orEmpty().map { Role.convertFromString(it) }.toMutableSet().apply { add(Role.EMPLOYEE) }
+            role = employeeDTO.role?.let { Role.convertFromString(it) } ?: Role.EMPLOYEE,
         )
     }
 

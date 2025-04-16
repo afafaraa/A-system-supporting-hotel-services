@@ -44,7 +44,7 @@ class UserService(private val userRepository: UserRepository,
             email = request.email,
             name = request.name.lowercase().replaceFirstChar { it.uppercase() },
             surname = request.surname.lowercase().replaceFirstChar { it.uppercase() },
-            roles = mutableSetOf(Role.ADMIN),
+            role = Role.ADMIN,
             checkInDate = Instant.now(),
         )
     }
