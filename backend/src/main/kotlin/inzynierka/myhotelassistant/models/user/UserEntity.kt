@@ -18,6 +18,7 @@ data class UserEntity(
     val room: RoomEntity? = null,
     val checkInDate: Instant? = null,
     val checkOutDate: Instant? = null,
+    var role: Role = Role.GUEST,
     val active: Boolean = false,
     val roles: MutableSet<Role> = mutableSetOf(),
     val orders: MutableList<OrderEntity> = mutableListOf(),

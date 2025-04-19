@@ -21,7 +21,7 @@ class EmployeeService(val userRepository: UserRepository, private val passwordEn
             email = employeeDTO.email,
             name = employeeDTO.name,
             surname = employeeDTO.surname,
-            roles = employeeDTO.roles.orEmpty().map { Role.convertFromString(it) }.toMutableSet().apply { add(Role.EMPLOYEE) }
+            role = Role.convertFromString(employeeDTO.role?.uppercase() ?: Role.EMPLOYEE.name)
         )
     }
 
@@ -48,19 +48,15 @@ class EmployeeService(val userRepository: UserRepository, private val passwordEn
 
     @Transactional
     @Throws(UserNotFoundException::class, InvalidRoleNameException::class)
-    fun grantRole(username: String, role: String): Set<Role> {
-        val enumRole = Role.convertFromString(role)
+    fun changeRole(username: String, role: String): Pair<Role, Role> {
+        val newRole = Role.convertFromString(role)
+        if (newRole == Role.GUEST) throw InvalidRoleNameException("Cannot assign GUEST role to an employee")
+        if (newRole == Role.ADMIN) throw InvalidRoleNameException("Cannot assign ADMIN role to an employee")
         val user = findByUsernameOrThrow(username)
-        if (user.roles.add(enumRole)) userRepository.save(user)
-        return user.roles
-    }
-
-    @Transactional
-    @Throws(UserNotFoundException::class, InvalidRoleNameException::class)
-    fun revokeRole(username: String, role: String): Set<Role> {
-        val enumRole = Role.convertFromString(role)
-        val user = findByUsernameOrThrow(username)
-        if (user.roles.remove(enumRole)) userRepository.save(user)
-        return user.roles
+        val oldRole = user.role
+        if (oldRole == newRole) throw InvalidRoleNameException("User already has this role")
+        user.role = newRole
+        userRepository.save(user)
+        return oldRole to newRole
     }
 }

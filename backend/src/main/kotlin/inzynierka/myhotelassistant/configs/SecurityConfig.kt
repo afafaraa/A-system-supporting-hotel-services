@@ -24,7 +24,6 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.core.convert.converter.Converter
-import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -46,6 +45,15 @@ class SecurityConfig(private val tokenRepository: TokenRepository) {
     }
 
     @Bean
+    fun roleHierarchy(): RoleHierarchy {
+        return RoleHierarchyImpl.fromHierarchy(
+            "ROLE_ADMIN > ROLE_MANAGER" + "\n" +
+                    "ROLE_MANAGER > ROLE_RECEPTIONIST" + "\n" +
+                    "ROLE_RECEPTIONIST > ROLE_EMPLOYEE"
+        )
+    }
+
+    @Bean
     fun securityFilterChain(http: HttpSecurity): DefaultSecurityFilterChain {
         return http
             .cors { cors -> cors.configurationSource(corsConfigurationSource()) }
@@ -54,7 +62,7 @@ class SecurityConfig(private val tokenRepository: TokenRepository) {
                 .requestMatchers("/login").permitAll()
                 .requestMatchers("/open/**").permitAll()
                 .requestMatchers("/secured/**").hasAnyRole(Role.ADMIN.name)
-                .requestMatchers("/management/**").hasAnyRole(Role.MANAGER.name, Role.ADMIN.name)
+                .requestMatchers("/management/**").hasAnyRole(Role.MANAGER.name)
                 .anyRequest().authenticated()
             }
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
@@ -98,15 +106,9 @@ class SecurityConfig(private val tokenRepository: TokenRepository) {
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-//        configuration.allowedOrigins = listOf("http://localhost:5173")
-//        configuration.allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE")
-//        configuration.allowedHeaders = listOf("Authorization", "Content-Type")
-//        configuration.allowCredentials = true
-        configuration.allowedOrigins = listOf("*")
-        configuration.allowedMethods = listOf("*")
-        configuration.allowedHeaders = listOf("*")
-        configuration.allowCredentials = false
-
+        configuration.allowedOrigins = listOf("http://localhost:5173")
+        configuration.allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE")
+        configuration.allowedHeaders = listOf("Authorization", "Content-Type")
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source

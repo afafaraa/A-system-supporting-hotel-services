@@ -21,7 +21,7 @@ class DatabaseSeeder(private val userRepo: UserRepository, private val passwordE
             val user = UserEntity(
                 username = "user",
                 password = passwordEncoder.encode("password"),
-                roles = mutableSetOf(Role.GUEST),
+                role = Role.GUEST,
                 email = "test_user@user.test"
             )
             userRepo.save(user)
@@ -32,7 +32,7 @@ class DatabaseSeeder(private val userRepo: UserRepository, private val passwordE
             val admin = UserEntity(
                 username = "admin",
                 password = passwordEncoder.encode("password"),
-                roles = mutableSetOf(Role.ADMIN, Role.MANAGER),
+                role = Role.ADMIN,
                 email = "test_admin@admin.test"
             )
             userRepo.save(admin)
