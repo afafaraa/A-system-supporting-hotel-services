@@ -14,7 +14,7 @@ import java.security.MessageDigest
 import java.time.Instant
 
 @RestController
-class GuestController(private val userService: UserService, private val passwordEncoder: PasswordEncoder) {
+class AddUserController(private val userService: UserService, private val passwordEncoder: PasswordEncoder) {
 
     data class AddUserRequest(
         val email: String,
@@ -23,6 +23,13 @@ class GuestController(private val userService: UserService, private val password
         val room: RoomEntity,
         val checkInDate: String,
         val checkOutDate: String
+    )
+
+    data class AddAdminRequest(
+        val email: String,
+        val name: String,
+        val surname: String,
+        val password: String
     )
 
     data class AddUserResponse(
@@ -70,5 +77,31 @@ class GuestController(private val userService: UserService, private val password
         )
         userService.save(guest)
         return AddUserResponse(password = password, username = username)
+    }
+
+    @PostMapping("/secured/add/admin")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun addAdmin(@RequestBody request: AddAdminRequest): AddUserResponse{
+        val username = "admin " + request.name
+        val password = passwordEncoder.encode(request.password)
+        val admin = UserEntity(
+            // Używamy danych przekazanych w żądaniu
+            username = "admin "+ request.name,
+            password = password,
+            email = request.email,
+            name = request.name,
+            surname = request.surname,
+            room = null,
+            roles = mutableSetOf(Role.ADMIN),
+            checkInDate = null,
+            checkOutDate = null
+        )
+        userService.save(admin)
+        return AddUserResponse(password = password, username = username)
+    }
+
+    @PostMapping("/secured/employee")
+    fun addEmployee(@RequestBody user: AddUserRequest){
+
     }
 }
