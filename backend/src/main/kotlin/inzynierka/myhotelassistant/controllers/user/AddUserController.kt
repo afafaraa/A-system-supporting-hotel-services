@@ -14,7 +14,7 @@ import java.security.MessageDigest
 import java.time.Instant
 
 @RestController
-class GuestController(private val userService: UserService, private val passwordEncoder: PasswordEncoder) {
+class AddUserController(private val userService: UserService, private val passwordEncoder: PasswordEncoder) {
 
     data class AddUserRequest(
         val email: String,
@@ -37,33 +37,12 @@ class GuestController(private val userService: UserService, private val password
         val password: String
     )
 
-    fun generatePassword(user: AddUserRequest): String {
-        return encodeString(user.name + "_" + user.surname + "_" + user.room.floor.toString() + "_" + user.room.roomNumber.toString() + "_" + user.checkInDate + "_" + user.checkOutDate,12)
-    }
-
-    fun generateUsername(user: AddUserRequest): String {
-        val userEncode =
-            user.name.take(4) +
-            "_" + user.surname.take(4) +
-            "_" + user.room.floor.toString() +
-            "_" + user.room.roomNumber.toString()
-
-        return userEncode + "_" + encodeString(userEncode + "_" + user.checkInDate + "_" + user.checkOutDate, 4)
-    }
-
-    fun encodeString(str: String, length: Int): String {
-        val md5 = MessageDigest.getInstance("MD5")
-        val hashBytes = md5.digest(str.toByteArray())
-        val hexString = hashBytes.joinToString("") { "%02x".format(it) }
-
-        return hexString.take(length)
-    }
 
     @PostMapping("/secured/add/guest")
     @ResponseStatus(HttpStatus.CREATED)
     fun addGuest(@RequestBody user: AddUserRequest): AddUserResponse {
-        val username: String = generateUsername(user)
-        val password: String = generatePassword(user)
+        val username: String = userService.generateUsername(user)
+        val password: String = userService.generatePassword(user)
         val guest = UserEntity(
             name=user.name,
             surname=user.surname,

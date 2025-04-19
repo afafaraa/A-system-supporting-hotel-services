@@ -39,8 +39,8 @@ class TokenService(private val encoder: JwtEncoder, private val decoder: JwtDeco
         if (id == null) {
             return null;
         }
-        val encoded = Base64.getUrlEncoder().encodeToString(id.toByteArray())
-        val token = encoded.take(16).padEnd(16, '0')
+        val time = Instant.now().toString().toByteArray()
+        val token = Base64.getUrlEncoder().encodeToString(id.toByteArray() + time)
         tokenRepository.save(TokenEntity(token=token, tokenType=TokenType.RESET_PASSWORD_TOKEN))
         return token
     }

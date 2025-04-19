@@ -17,15 +17,16 @@ import org.springframework.web.bind.annotation.RestController
 class UserController(private val userService: UserService, private val passwordEncoder: PasswordEncoder, private val tokenService: TokenService, private val authenticationManager: AuthenticationManager) {
 
     data class ResetPasswordRequest(val newPassword: String, val token: String)
+    data class SendResetPasswordEmailRequest(val email: String)
 
     @PostMapping("/open/send-reset-password-email")
-    fun sendResetPasswordEmail(@RequestBody email: String) {
-        val token = tokenService.generateResetPasswordToken(this.userService.findByEmail(email)?.id)
+    fun sendResetPasswordEmail(@RequestBody sendResetPasswordEmailRequest: SendResetPasswordEmailRequest) {
+        val token = tokenService.generateResetPasswordToken(this.userService.findByEmail(sendResetPasswordEmailRequest.email)?.id)
         if (token == null) {
             throw UsernameNotFoundException("Token not found")
         }
         // todo generated link will be sent by email to user, after clicking on it, it will show reset pass page
-        println("http://localhost:5713/rese-password/$token")
+        println("http://localhost:5713/reset-password/$token")
     }
 
     @PostMapping("/open/reset-password")

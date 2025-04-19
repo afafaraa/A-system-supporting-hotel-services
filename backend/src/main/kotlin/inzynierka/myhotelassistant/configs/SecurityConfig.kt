@@ -109,13 +109,13 @@ class SecurityConfig(private val tokenRepository: TokenRepository) {
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("*")
-//        configuration.allowedOrigins = listOf("http://localhost:5173")
-        configuration.allowedMethods = listOf("*")
-//        configuration.allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE")
-        configuration.allowedHeaders = listOf("*")
-//        configuration.allowedHeaders = listOf("Authorization", "Content-Type")
-        configuration.allowCredentials = false
+//        configuration.allowedOrigins = listOf("*")
+        configuration.allowedOrigins = listOf("http://localhost:5173")
+//        configuration.allowedMethods = listOf("*")
+        configuration.allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE")
+//        configuration.allowedHeaders = listOf("*")
+        configuration.allowedHeaders = listOf("Authorization", "Content-Type")
+        configuration.allowCredentials = true
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source
