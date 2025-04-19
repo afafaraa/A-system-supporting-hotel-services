@@ -1,10 +1,15 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import LoginForm from "./components/LoginForm.tsx";
+import { Provider } from 'react-redux';
+import store from './redux/store.ts';
+import App from './App.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-      <LoginForm/>
+    My hotel assistant
+    <Provider store={store}>
+      <App />
+    </Provider>
   </StrictMode>,
 )
