@@ -14,7 +14,7 @@ import java.security.MessageDigest
 import java.time.Instant
 
 @RestController
-class AddUserController(private val userService: UserService, private val passwordEncoder: PasswordEncoder) {
+class GuestController(private val userService: UserService, private val passwordEncoder: PasswordEncoder) {
 
     data class AddUserRequest(
         val email: String,
