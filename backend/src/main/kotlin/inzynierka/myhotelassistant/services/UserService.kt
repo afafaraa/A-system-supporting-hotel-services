@@ -21,6 +21,10 @@ class UserService(private val userRepository: UserRepository): UserDetailsServic
             .build()
     }
 
+    fun findByEmail(email: String): UserEntity? {
+        return userRepository.findAll().filter{ it.email == email }.firstOrNull()
+    }
+
     fun findByUsername(username: String): UserEntity? = userRepository.findByUsername(username)
 
     fun existsByUsername(username: String): Boolean = userRepository.existsByUsername(username)

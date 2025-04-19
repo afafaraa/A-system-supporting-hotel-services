@@ -2,6 +2,7 @@ package inzynierka.myhotelassistant.services
 
 import inzynierka.myhotelassistant.models.token.TokenEntity
 import inzynierka.myhotelassistant.models.token.TokenType
+import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.TokenRepository
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -13,12 +14,18 @@ import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.jwt.JwtEncoder
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters
 import org.springframework.stereotype.Service
+import java.security.SecureRandom
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import java.util.*
 import java.util.stream.Collectors
 
 @Service
 class TokenService(private val encoder: JwtEncoder, private val decoder: JwtDecoder, private val tokenRepository: TokenRepository) {
+
+    fun findByTokenValue(token: String): TokenEntity? {
+        return this.tokenRepository.findByToken(token)
+    }
 
     fun generateAccessToken(authentication: Authentication): String? {
         return this.generateToken(authentication, 1, TokenType.ACCESS_TOKEN)
@@ -26,6 +33,22 @@ class TokenService(private val encoder: JwtEncoder, private val decoder: JwtDeco
 
     fun generateRefreshToken(authentication: Authentication): String? {
         return this.generateToken(authentication, 5, TokenType.REFRESH_TOKEN)
+    }
+
+    fun generateResetPasswordToken(id: String?): String? {
+        if (id == null) {
+            return null;
+        }
+        val encoded = Base64.getUrlEncoder().encodeToString(id.toByteArray())
+        val token = encoded.take(16).padEnd(16, '0')
+        tokenRepository.save(TokenEntity(token=token, tokenType=TokenType.RESET_PASSWORD_TOKEN))
+        return token
+    }
+
+    fun decodeBase64Token(token: String): String {
+        val paddedToken = token.trimEnd('0') // remove added padding
+        val decodedBytes = Base64.getUrlDecoder().decode(paddedToken)
+        return String(decodedBytes)
     }
 
     fun refreshAccessToken(refreshToken: String): String? {
