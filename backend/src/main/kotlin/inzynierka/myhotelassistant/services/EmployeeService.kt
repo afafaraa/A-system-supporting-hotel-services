@@ -19,9 +19,9 @@ class EmployeeService(val userRepository: UserRepository, private val passwordEn
             username = employeeDTO.username,
             password = passwordEncoder.encode(employeeDTO.password),
             email = employeeDTO.email,
-            name = employeeDTO.name,
-            surname = employeeDTO.surname,
-            role = Role.convertFromString(employeeDTO.role?.uppercase() ?: Role.EMPLOYEE.name)
+            name = employeeDTO.name.lowercase().replaceFirstChar { it.uppercase() },
+            surname = employeeDTO.surname.lowercase().replaceFirstChar { it.uppercase() },
+            role = employeeDTO.role?.let { Role.convertFromString(it) } ?: Role.EMPLOYEE,
         )
     }
 
