@@ -4,6 +4,11 @@ import inzynierka.myhotelassistant.models.Role
 import inzynierka.myhotelassistant.models.UserEntity
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.services.UserService
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
+import jakarta.validation.constraints.Size
 import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
@@ -16,14 +21,38 @@ import java.time.Instant
 @RestController
 class AddUserController(private val userService: UserService, private val passwordEncoder: PasswordEncoder) {
 
+
     data class AddUserRequest(
+        @field:Email(message = "Invalid email format")
+        @field:NotBlank(message = "Email is required")
         val email: String,
+
+        @field:NotBlank(message = "Name is required")
+        @field:Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
         val name: String,
+
+        @field:NotBlank(message = "Surname is required")
+        @field:Size(min = 2, max = 50, message = "Surname must be between 2 and 50 characters")
         val surname: String,
+
+        @field:NotNull(message = "Room is required")
         val room: RoomEntity,
+
+        @field:NotBlank(message = "Check-in date is required")
+        @field:Pattern(
+            regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z",
+            message = "Check-in date must be in ISO 8601 format (e.g., 2025-04-21T14:00:00Z)"
+        )
         val checkInDate: String,
+
+        @field:NotBlank(message = "Check-out date is required")
+        @field:Pattern(
+            regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z",
+            message = "Check-out date must be in ISO 8601 format (e.g., 2025-04-22T10:00:00Z)"
+        )
         val checkOutDate: String
     )
+
 
     data class AddUserResponse(
         val username: String,
