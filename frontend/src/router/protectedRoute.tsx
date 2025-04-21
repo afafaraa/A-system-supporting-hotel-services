@@ -10,6 +10,7 @@ type ProtectedRouteProps = {
 function ProtectedRoute({ children }: ProtectedRouteProps) {
     const auth = useAuthenticateOnFrontend();
     const navigate = useNavigate();
+    // todo use redux
     const [checked, setChecked] = useState(false);
 
     useEffect(() => {

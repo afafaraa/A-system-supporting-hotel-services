@@ -1,6 +1,8 @@
 import axiosApi from "../../middleware/axiosApi";
 import {useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import Button from '@mui/material/Button';
+import {Box, Container, FormControl, TextField, Typography,} from "@mui/material";
 
 function LoginPage(){
     const [username, setUsername] = useState('');
@@ -24,22 +26,30 @@ function LoginPage(){
         navigate('/home');
     }
 
-    const resetPassword = () => {
-        navigate('/reset-password-email');
-    }
-
     return (
-        <div>
-            Login Page
-            <form>
-                <label htmlFor="username">Username</label>
-                <input onChange={(e) => setUsername(e.target.value)} id='username' type='text'/>
-                <label htmlFor="password">Password</label>
-                <input onChange={(e) => setPassword(e.target.value)} id='password' type='password' />
-                <button onClick={login} type='submit'>Login</button>
-                <button onClick={resetPassword}>Reset password</button>
-            </form>
-        </div>
+        <Box sx={{display: "flex", justifyContent: "center", justifyItems: "center", alignItems: "center", height: "100%"}}>
+            <FormControl sx={{width: '23%', height: '60%', backgroundColor: 'white', padding: 4, gap: 2}}>
+                <Typography variant="h1" sx={{textAlign: 'center', fontSize: '32px'}}>Login Page</Typography>
+                <TextField
+                  label="Username"
+                  onChange={(e) => setUsername(e.target.value)}
+                  type="text"
+                  name="username"
+                  id="username"
+                  placeholder="Username"
+                />
+                <TextField
+                  label="Password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  type="text"
+                  name="password"
+                  id="password"
+                  placeholder="Password"
+                />
+                <Button onClick={login} type='submit'>Login</Button>
+                <Link style={{textAlign: 'center'}} to="/reset-password-email">Kliknij aby zrestartować hasło</Link>
+            </FormControl>
+        </Box>
     )
 }
 
