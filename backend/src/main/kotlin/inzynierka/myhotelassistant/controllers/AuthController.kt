@@ -2,6 +2,7 @@ package inzynierka.myhotelassistant.controllers
 
 import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.services.UserService
+import org.springframework.context.annotation.Profile
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -39,7 +40,6 @@ class AuthController(
         return LoginResponse(accessToken, refreshToken)
     }
 
-
     @PostMapping("/open/send-reset-password-email")
     fun sendResetPasswordEmail(@RequestBody sendResetPasswordEmailRequest: SendResetPasswordEmailRequest) {
         val user = this.userService.findByEmail(sendResetPasswordEmailRequest.email)
@@ -48,7 +48,7 @@ class AuthController(
         }
         val token = tokenService.generateResetPasswordToken(60 * 10, sendResetPasswordEmailRequest.email)
         // todo generated link will be sent by email to user, after clicking on it, it will show reset pass page
-        println("http://localhost:5713/reset-password/$token")
+        println("http://localhost:5173/reset-password/$token")
     }
 
     @PostMapping("/open/reset-password")
