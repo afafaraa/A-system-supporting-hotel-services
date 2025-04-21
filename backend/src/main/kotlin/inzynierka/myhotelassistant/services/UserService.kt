@@ -22,4 +22,9 @@ class UserService(private val userRepository: UserRepository): UserDetailsServic
     }
 
     fun save(user: UserEntity) = userRepository.save(user)
+
+    fun findByEmail(email: String): UserEntity? {
+        return userRepository.findAll().firstOrNull { it.email == email }
+    }
+
 }

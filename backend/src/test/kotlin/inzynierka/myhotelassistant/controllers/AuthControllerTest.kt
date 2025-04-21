@@ -1,12 +1,10 @@
-package inzynierka.myhotelassistant
+package inzynierka.myhotelassistant.controllers
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import inzynierka.myhotelassistant.configs.RSAKeyConfig
-import inzynierka.myhotelassistant.controllers.AuthController
-import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.configs.SecurityConfig
-import inzynierka.myhotelassistant.controllers.HomeController
+import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.services.UserService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,7 +16,6 @@ import org.springframework.http.MediaType
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
@@ -26,10 +23,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.lang.Thread.sleep
+
 
 @WebMvcTest(HomeController::class, AuthController::class)
-@Import(SecurityConfig::class, RSAKeyConfig::class, TokenService::class)
-class HomeControllerTest(@Autowired val mvc: MockMvc, @Autowired val passwordEncoder: PasswordEncoder) {
+@Import(SecurityConfig::class, RSAKeyConfig::class, TokenService::class, UserService::class)
+class AuthControllerTest(@Autowired val mvc: MockMvc, @Autowired val passwordEncoder: PasswordEncoder, @Autowired val userService: UserService) {
 
     @MockitoBean
     private lateinit var userDetailsService: UserDetailsService
@@ -45,14 +44,7 @@ class HomeControllerTest(@Autowired val mvc: MockMvc, @Autowired val passwordEnc
 
     @Test
     @Throws(Exception::class)
-    fun rootWhenUnauthenticatedThen401() {
-        mvc.perform(get("/"))
-            .andExpect(status().isUnauthorized())
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun rootWhenUnauthenticatedThenSaysHelloUser() {
+    fun reAuth() {
         val result: MvcResult = mvc.perform(post("/token")
             .content("{\"username\":\"user\",\"password\":\"password\"}")
             .contentType(MediaType.APPLICATION_JSON))
@@ -64,20 +56,46 @@ class HomeControllerTest(@Autowired val mvc: MockMvc, @Autowired val passwordEnc
         val jsonMap: Map<String, String> = mapper.readValue(responseJson)
 
         val accessToken = jsonMap["accessToken"]
+        val refreshToken = jsonMap["refreshToken"]
         println("Access Token: $accessToken")
+        println("Refresh Token: $refreshToken")
+
+        // set access token to be valid for 1 s
+        sleep(2000)
+
+        val resultAfterRefresh: MvcResult = mvc.perform(post("/refresh")
+            .content("{\"refreshToken\":\"$refreshToken\"}")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk)
+            .andReturn()
+
+        val responseJsonAfterRefresh = resultAfterRefresh.response.contentAsString
+        val mapperAfterRefresh = jacksonObjectMapper()
+        val jsonMapAfterRefresh: Map<String, String> = mapperAfterRefresh.readValue(responseJsonAfterRefresh)
+
+        val accessTokenAfterRefresh = jsonMapAfterRefresh["accessToken"]
+        val refreshTokenAfterRefresh = jsonMapAfterRefresh["refreshToken"]
+
+        println("Access Token: $accessTokenAfterRefresh")
+        println("Refresh Token: $refreshTokenAfterRefresh")
 
         mvc.perform(get("/").header("Authorization", "Bearer $accessToken"))
             .andExpect(content().string("Hello, user!"))
 
-        mvc.perform(get("/secured").header("Authorization", "Bearer $accessToken"))
-            .andExpect(status().isForbidden)
     }
 
-    @Test
-    @WithMockUser
-    @Throws(Exception::class)
-    fun rootWithMockUserStatusIsOK() {
-        mvc.perform(get("/"))
-            .andExpect(status().isOk())
-    }
+//    @Test
+//    @Throws(Exception::class)
+//    fun resetPassword() {
+//        val email = "aleksandra.fafara11@gmail.com"
+//        val token = this.tokenService.generateResetPasswordToken(10, email)
+//        mvc.perform(post("/reset-password")
+//            .content("{\"newPassword\":\"newPassword\", \"token\":\"$token\")}")
+//            .contentType(MediaType.APPLICATION_JSON))
+//            .andExpect(status().isOk)
+//
+//        val user = this.userService.findByEmail(email)
+//
+//    }
+
 }

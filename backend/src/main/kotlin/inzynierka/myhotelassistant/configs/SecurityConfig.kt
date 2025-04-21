@@ -28,7 +28,6 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import java.util.*
 
 @Configuration
 @EnableWebSecurity
@@ -61,6 +60,7 @@ class SecurityConfig {
             .csrf { csrf -> csrf.disable() }
             .authorizeHttpRequests { auth -> auth
                 .requestMatchers("/token").permitAll()
+                .requestMatchers("/refresh").permitAll()
                 .requestMatchers("/open/**").permitAll()
                 .requestMatchers("/secured/**").hasAnyRole(Role.ADMIN.name)
                 .requestMatchers("/management/**").hasAnyRole(Role.MANAGER.name)
