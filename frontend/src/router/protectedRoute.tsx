@@ -1,15 +1,30 @@
-import useAuthenticateOnFrontend from "../components/auth/auth.tsx";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ReactNode, useState } from "react";
+import useAuthenticateOnFrontend from "../components/auth/auth.tsx";
 
-function ProtectedRoute({children}){
+type ProtectedRouteProps = {
+    children: ReactNode;
+};
+
+function ProtectedRoute({ children }: ProtectedRouteProps) {
     const auth = useAuthenticateOnFrontend();
     const navigate = useNavigate();
+    const [checked, setChecked] = useState(false);
 
-    if (auth === null) {
+    useEffect(() => {
+        if (auth === false) {
+            navigate("/login");
+        } else if (auth !== null) {
+            setChecked(true);
+        }
+    }, [auth, navigate]);
+
+    if (auth === null || !checked) {
         return <div>Loading...</div>;
     }
 
-    return auth ? children : navigate('/login')
+    return <>{children}</>;
 }
 
 export default ProtectedRoute;

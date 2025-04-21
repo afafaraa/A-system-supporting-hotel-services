@@ -7,10 +7,10 @@ function LoginPage(){
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
-    const login = async (e: any) => {
+    const login = async (e: React.FormEvent) => {
         e.preventDefault();
         console.log(username, password)
-        let res = await axiosApi.post(
+        const res = await axiosApi.post(
             '/token',
             {
                 username,
@@ -24,7 +24,7 @@ function LoginPage(){
         navigate('/home');
     }
 
-    const resetPassword = (e) => {
+    const resetPassword = () => {
         navigate('/reset-password-email');
     }
 

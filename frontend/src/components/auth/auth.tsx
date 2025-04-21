@@ -50,7 +50,7 @@ export default function useAuthenticateOnFrontend() {
                 const now = Date.now() / 1000;
                 console.log("Access token data: ",decoded, tokenExpiration, now);
 
-                if (tokenExpiration < now) {
+                if (tokenExpiration && tokenExpiration < now) {
                     console.log("Access token expired. Refreshing...");
                     await refreshToken()
                 } else {
