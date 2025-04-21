@@ -1,7 +1,7 @@
 import {Outlet} from "react-router-dom";
 import {Container, useTheme} from "@mui/material";
 
-function PublicLayout({children}){
+function PublicLayout() {
   const theme = useTheme();
 
   return (
