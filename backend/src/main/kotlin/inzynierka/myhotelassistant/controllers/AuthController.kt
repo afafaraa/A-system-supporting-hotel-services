@@ -1,20 +1,19 @@
 package inzynierka.myhotelassistant.controllers
 
-import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.services.UserService
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class AuthController(private val tokenService: TokenService,
-                     private val authManager: AuthenticationManager,
-                     private val userService: UserService,
+class AuthController(
+    private val tokenService: TokenService,
+    private val authManager: AuthenticationManager,
+    private val userService: UserService,
 ) {
 
     data class LoginRequest(val username: String, val password: String)

@@ -16,7 +16,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.bean.override.mockito.MockitoBean
@@ -29,10 +28,16 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @WebMvcTest(HomeController::class, AuthController::class)
 @Import(SecurityConfig::class, RSAKeyConfig::class, TokenService::class)
-class HomeControllerTest(@Autowired val mvc: MockMvc, @Autowired val passwordEncoder: PasswordEncoder) {
+class HomeControllerTest {
+
+    @Autowired
+    private lateinit var mvc: MockMvc
+
+    @Autowired
+    private lateinit var passwordEncoder: PasswordEncoder
 
     @MockitoBean
-    private lateinit var userDetailsService: UserDetailsService
+    private lateinit var userService: UserService
 
     @BeforeEach
     fun setup() {
@@ -40,7 +45,7 @@ class HomeControllerTest(@Autowired val mvc: MockMvc, @Autowired val passwordEnc
             .password(passwordEncoder.encode("password"))
             .roles("USER")
             .build()
-        given(userDetailsService.loadUserByUsername("user")).willReturn(user)
+        given(userService.loadUserByUsername("user")).willReturn(user)
     }
 
     @Test
