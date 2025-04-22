@@ -7,6 +7,7 @@ import inzynierka.myhotelassistant.controllers.AuthController
 import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.configs.SecurityConfig
 import inzynierka.myhotelassistant.controllers.HomeController
+import inzynierka.myhotelassistant.services.RegistrationCodeService
 import inzynierka.myhotelassistant.services.UserService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -38,6 +39,9 @@ class HomeControllerTest {
 
     @MockitoBean
     private lateinit var userService: UserService
+
+    @MockitoBean
+    private lateinit var codeService: RegistrationCodeService
 
     @BeforeEach
     fun setup() {

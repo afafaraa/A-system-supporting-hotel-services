@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import inzynierka.myhotelassistant.configs.RSAKeyConfig
 import inzynierka.myhotelassistant.configs.SecurityConfig
+import inzynierka.myhotelassistant.services.RegistrationCodeService
 import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.services.UserService
 import org.junit.jupiter.api.BeforeEach
@@ -36,6 +37,9 @@ class AuthControllerTest(@Autowired val mvc: MockMvc, @Autowired val passwordEnc
 
     @MockitoBean
     private lateinit var userService: UserService
+
+    @MockitoBean
+    private lateinit var codeService: RegistrationCodeService
 
     @BeforeEach
     fun setup() {
