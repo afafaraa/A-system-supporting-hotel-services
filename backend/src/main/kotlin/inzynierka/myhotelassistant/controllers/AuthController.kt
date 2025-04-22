@@ -1,13 +1,18 @@
 package inzynierka.myhotelassistant.controllers
 
+import inzynierka.myhotelassistant.models.RegistrationCode
+import inzynierka.myhotelassistant.models.UserEntity
+import inzynierka.myhotelassistant.services.RegistrationCodeService
 import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.services.UserService
-import org.springframework.context.annotation.Profile
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.UsernameNotFoundException
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -15,6 +20,8 @@ class AuthController(
     private val tokenService: TokenService,
     private val authManager: AuthenticationManager,
     private val userService: UserService,
+    private val codeService: RegistrationCodeService,
+    private val passwordEncoder: PasswordEncoder
 ) {
 
     data class LoginRequest(val username: String, val password: String)
@@ -22,6 +29,13 @@ class AuthController(
     data class RefreshRequest(val refreshToken: String)
     data class ResetPasswordRequest(val newPassword: String, val token: String)
     data class SendResetPasswordEmailRequest(val email: String)
+    data class GenerateCodeRequest(val userId: String)
+    data class GenerateCodeResponse(val code: String)
+    data class CompleteRegistrationRequest(
+        val code: String,
+        val username: String,
+        val password: String
+    )
 
     @PostMapping("/token")
     fun token(@RequestBody userLogin: LoginRequest): LoginResponse {
@@ -56,5 +70,36 @@ class AuthController(
         val email = tokenService.validateResetPasswordToken(resetPasswordRequest.token)
         println(email)
         userService.resetPassword(email, resetPasswordRequest.newPassword)
+    }
+
+    @PostMapping("/secured/generate-code")
+    @ResponseStatus(HttpStatus.OK)
+    fun generateCode(@RequestBody req: GenerateCodeRequest): GenerateCodeResponse {
+        val user: UserEntity = userService.findById(req.userId)
+            ?: throw IllegalArgumentException("User with id=${req.userId} not found")
+
+        val code = codeService.generateCodeForUser(user.id!!)
+        return GenerateCodeResponse(code)
+    }
+    @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun completeRegistration(@RequestBody req: CompleteRegistrationRequest) : LoginResponse {
+        val rc: RegistrationCode = codeService.validateCode(req.code)
+
+        val user: UserEntity = userService.findById(rc.userId)
+            ?: throw IllegalStateException("Konto nie istnieje dla kodu: ${req.code}")
+
+        user.username = req.username
+        user.password = passwordEncoder.encode(req.password)
+
+        userService.save(user)
+        codeService.markUsed(rc)
+
+        val authToken = UsernamePasswordAuthenticationToken(user.username, req.password)
+        val authentication = authManager.authenticate(authToken)
+        val accessToken = tokenService.generateAccessToken(authentication)
+        val refreshToken = tokenService.generateRefreshToken(authentication)
+        return LoginResponse(accessToken, refreshToken)
+
     }
 }

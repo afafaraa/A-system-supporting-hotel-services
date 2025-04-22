@@ -61,6 +61,7 @@ class SecurityConfig {
             .authorizeHttpRequests { auth -> auth
                 .requestMatchers("/token").permitAll()
                 .requestMatchers("/refresh").permitAll()
+                .requestMatchers("/register").permitAll()
                 .requestMatchers("/open/**").permitAll()
                 .requestMatchers("/secured/**").hasAnyRole(Role.ADMIN.name)
                 .requestMatchers("/management/**").hasAnyRole(Role.MANAGER.name)
