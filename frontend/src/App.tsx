@@ -6,6 +6,7 @@ import SendResetPasswordEmail from './pages/user/SendResetPasswordEmail.tsx';
 import ResetPasswordPage from './pages/user/ResetPasswordPage.tsx';
 import AuthenticatedLayout from "./components/layout/AuthenticatedLayout.tsx";
 import PublicLayout from "./components/layout/PublicLayout.tsx";
+import RegisterPage from './pages/user/RegisterPage.tsx';
 
 function App(){
   return (
@@ -20,6 +21,7 @@ function App(){
           <Route path="/login" element={<LoginPage />} />
           <Route path="/reset-password-email" element={<SendResetPasswordEmail />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="*" element={<LoginPage />} />
         </Route>
 
