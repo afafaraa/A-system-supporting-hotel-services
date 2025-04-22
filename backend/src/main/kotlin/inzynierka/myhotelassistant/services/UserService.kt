@@ -4,6 +4,7 @@ import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserReq
 import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.models.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -30,6 +31,8 @@ class UserService(private val userRepository: UserRepository, private val passwo
     fun findByEmail(email: String): UserEntity? {
         return userRepository.findAll().firstOrNull { it.email == email }
     }
+
+    fun findById(id: String): UserEntity? = userRepository.findByIdOrNull(id)
 
     fun resetPassword(email: String, newPassword: String) {
         val user = this.findByEmail(email)

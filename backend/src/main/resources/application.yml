@@ -6,3 +6,7 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/mongo-hotel
+  task:
+    scheduling:
+      pool:
+        size: 5

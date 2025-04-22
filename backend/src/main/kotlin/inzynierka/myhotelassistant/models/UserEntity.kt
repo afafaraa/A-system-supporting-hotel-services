@@ -10,7 +10,7 @@ import java.time.Instant
 @Document(collection = "users")
 data class UserEntity(
     @Id val id: String? = null,
-    val username: String,
+    var username: String,
     var password: String,
     var email: String,
     val name: String? = null,
