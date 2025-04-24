@@ -12,6 +12,8 @@ sealed class HttpException(
     class UserNotFoundException(message: String): HttpException(HttpStatus.NOT_FOUND, message)
 
     class InvalidRoleNameException(message: String): HttpException(HttpStatus.BAD_REQUEST, message)
+
+    class InvalidArgumentException(message: String): HttpException(HttpStatus.BAD_REQUEST, message)
 }
 
 

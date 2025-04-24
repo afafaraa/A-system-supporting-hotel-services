@@ -1,5 +1,6 @@
 package inzynierka.myhotelassistant.controllers.user
 
+import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.Role
 import inzynierka.myhotelassistant.models.UserEntity
 import inzynierka.myhotelassistant.models.room.RoomEntity
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import java.time.Instant
+import java.time.format.DateTimeParseException
 
 @RestController
 class AddUserController(private val userService: UserService, private val passwordEncoder: PasswordEncoder) {
@@ -55,18 +57,23 @@ class AddUserController(private val userService: UserService, private val passwo
     fun addGuest(@RequestBody user: AddUserRequest): AddUserResponse {
         val username: String = userService.generateUsername(user)
         val password: String = userService.generatePassword(user)
-        val guest = UserEntity(
-            name=user.name,
-            surname=user.surname,
-            email=user.email,
-            room=user.room,
-            role=Role.GUEST,
-            username=username,
-            password=passwordEncoder.encode(password),
-            checkInDate=Instant.parse(user.checkInDate),
-            checkOutDate=Instant.parse(user.checkOutDate),
-        )
-        userService.save(guest)
+        try {
+            val guest = UserEntity(
+                name=user.name,
+                surname=user.surname,
+                email=user.email,
+                room=user.room,
+                role=Role.GUEST,
+                username=username,
+                password=passwordEncoder.encode(password),
+                checkInDate=Instant.parse(user.checkInDate),
+                checkOutDate=Instant.parse(user.checkOutDate),
+            )
+            userService.save(guest)
+        } catch (e: DateTimeParseException) {
+            throw InvalidArgumentException(e.message ?: "Invalid date format")
+        }
+
         return AddUserResponse(password = password, username = username)
     }
 
