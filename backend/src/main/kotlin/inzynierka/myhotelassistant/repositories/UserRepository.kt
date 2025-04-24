@@ -9,5 +9,7 @@ interface UserRepository: MongoRepository<UserEntity, String> {
 
     fun findByUsername(username: String): UserEntity?
 
+    fun findByEmail(email: String): UserEntity?
+
     fun existsByUsername(username: String): Boolean
 }

@@ -13,7 +13,7 @@ export default function useAuthenticateOnFrontend() {
             const refresh = localStorage.getItem('REFRESH_TOKEN');
             try {
                 const res = await axiosApi.post(
-                    '/refresh-token',
+                    '/open/refresh',
                     {
                         token: refresh
                     }

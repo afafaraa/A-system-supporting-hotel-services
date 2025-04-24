@@ -1,7 +1,6 @@
 package inzynierka.myhotelassistant.services
 
 import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserRequest
-import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.models.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
 import org.springframework.security.core.userdetails.User
@@ -11,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.security.MessageDigest
+import inzynierka.myhotelassistant.exceptions.HttpException.UserNotFoundException
 
 @Service
 class UserService(private val userRepository: UserRepository, private val passwordEncoder: PasswordEncoder): UserDetailsService {
@@ -27,16 +27,15 @@ class UserService(private val userRepository: UserRepository, private val passwo
 
     fun save(user: UserEntity) = userRepository.save(user)
 
-    fun findByEmail(email: String): UserEntity? {
-        return userRepository.findAll().firstOrNull { it.email == email }
+    fun findByEmailOrThrow(email: String): UserEntity {
+        return userRepository.findByEmail(email)
+            ?: throw UserNotFoundException("User with given email was not found")
     }
 
     fun resetPassword(email: String, newPassword: String) {
-        val user = this.findByEmail(email)
-            ?: throw HttpException.UserNotFoundException("Email not found")
-
+        val user = findByEmailOrThrow(email)
         user.password = passwordEncoder.encode(newPassword)
-        user.let { this.save(it) }
+        userRepository.save(user)
     }
 
     fun generatePassword(user: AddUserRequest): String {

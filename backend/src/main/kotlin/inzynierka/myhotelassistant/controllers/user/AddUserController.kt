@@ -8,14 +8,12 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
-import jakarta.validation.constraints.Size
 import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import java.security.MessageDigest
 import java.time.Instant
 
 @RestController
@@ -23,16 +21,13 @@ class AddUserController(private val userService: UserService, private val passwo
 
 
     data class AddUserRequest(
-        @field:Email(message = "Invalid email format")
-        @field:NotBlank(message = "Email is required")
+        @field:Email(message = "Email should be valid")
         val email: String,
 
-        @field:NotBlank(message = "Name is required")
-        @field:Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
+        @field:Pattern(regexp = "^[A-Z][a-z-]{1,19}$", message = "Name must start with a capital letter and be followed by lowercase letters with max 20 characters")
         val name: String,
 
-        @field:NotBlank(message = "Surname is required")
-        @field:Size(min = 2, max = 50, message = "Surname must be between 2 and 50 characters")
+        @field:Pattern(regexp = "^[A-Z][a-z-]{1,29}$", message = "Surname must start with a capital letter and be followed by lowercase letters with max 30 characters")
         val surname: String,
 
         @field:NotNull(message = "Room is required")
@@ -53,11 +48,7 @@ class AddUserController(private val userService: UserService, private val passwo
         val checkOutDate: String
     )
 
-
-    data class AddUserResponse(
-        val username: String,
-        val password: String
-    )
+    data class AddUserResponse(val username: String, val password: String)
 
     @PostMapping("/secured/add/guest")
     @ResponseStatus(HttpStatus.CREATED)

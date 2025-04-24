@@ -1,5 +1,6 @@
 package inzynierka.myhotelassistant.services
 
+import inzynierka.myhotelassistant.models.JWTType
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
@@ -14,40 +15,39 @@ import java.time.temporal.ChronoUnit
 import java.util.stream.Collectors
 
 @Service
-class TokenService(private val encoder: JwtEncoder, private val decoder: JwtDecoder) {
+class TokenService(
+    private val encoder: JwtEncoder,
+    private val decoder: JwtDecoder
+) {
 
-    fun generateAccessToken(authentication: Authentication): String {
-        return generateToken(authentication, 1 * 60 * 15, "access")
-    }
+    fun generateAccessToken(authentication: Authentication) =
+        generateToken(authentication, 15, ChronoUnit.MINUTES, JWTType.ACCESS)
 
-    fun generateRefreshToken(authentication: Authentication): String {
-        return generateToken(authentication, 7 * 24 * 60 * 60, "refresh")
-    }
+    fun generateRefreshToken(authentication: Authentication) =
+        generateToken(authentication, 7, ChronoUnit.DAYS, JWTType.REFRESH)
 
-    fun generateResetPasswordToken(secondsValid: Long, email: String): String {
+    fun generateResetPasswordToken(minutesValid: Long, email: String): String {
         val now: Instant = Instant.now()
         val claims = JwtClaimsSet.builder()
-            .issuer("self")
+            .claim("type", JWTType.RESET_PASSWORD)
             .issuedAt(now)
-            .expiresAt(now.plus(secondsValid, ChronoUnit.SECONDS))
-            .claim("tokenType", "resetPassword")
+            .expiresAt(now.plus(minutesValid, ChronoUnit.MINUTES))
             .claim("email", email)
             .build()
         return encoder.encode(JwtEncoderParameters.from(claims)).tokenValue
     }
 
-    private fun generateToken(authentication: Authentication, secondsValid: Long, tokenType: String): String {
+    private fun generateToken(authentication: Authentication, time: Long, unit: ChronoUnit, type: JWTType): String {
         val now: Instant = Instant.now()
-        val scope: String = authentication.authorities.stream() // Collecting roles of the user
+        val role: String = authentication.authorities.stream() // Collecting roles of the user
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.joining(" "))
         val claims = JwtClaimsSet.builder()
-            .issuer("self")
+            .claim("type", type)
             .issuedAt(now)
-            .expiresAt(now.plus(secondsValid, ChronoUnit.SECONDS))
+            .expiresAt(now.plus(time, unit))
             .subject(authentication.name)
-            .claim("scope", scope)
-            .claim("tokenType", tokenType)
+            .claim("role", role)
             .build()
         return encoder.encode(JwtEncoderParameters.from(claims)).tokenValue
     }
@@ -55,13 +55,12 @@ class TokenService(private val encoder: JwtEncoder, private val decoder: JwtDeco
     fun refreshToken(refreshToken: String): Authentication {
         val jwt = decoder.decode(refreshToken)
 
-        val tokenType = jwt.getClaimAsString("tokenType")
-        if (tokenType != "refresh") {
+        val tokenType = JWTType.valueOf(jwt.getClaimAsString("type"))
+        if (tokenType != JWTType.REFRESH)
             throw RuntimeException("Invalid token type")
-        }
 
         val username = jwt.subject
-        val authorities = jwt.getClaimAsString("scope")
+        val authorities = jwt.getClaimAsString("role")
             .split(" ")
             .map { SimpleGrantedAuthority(it) }
 
@@ -71,9 +70,8 @@ class TokenService(private val encoder: JwtEncoder, private val decoder: JwtDeco
     fun validateResetPasswordToken(token: String): String{
         val jwt = decoder.decode(token)
         println(token)
-        if (jwt.getClaimAsString("tokenType") != "resetPassword") {
+        if (JWTType.valueOf(jwt.getClaimAsString("type")) != JWTType.RESET_PASSWORD)
             throw RuntimeException("Invalid token type")
-        }
 
         val email = jwt.getClaimAsString("email")
             ?: throw RuntimeException("Invalid token: missing email")

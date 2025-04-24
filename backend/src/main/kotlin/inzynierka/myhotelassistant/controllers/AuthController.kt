@@ -2,56 +2,61 @@ package inzynierka.myhotelassistant.controllers
 
 import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.services.UserService
-import org.springframework.context.annotation.Profile
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
+@RequestMapping("/open")
 class AuthController(
     private val tokenService: TokenService,
     private val authManager: AuthenticationManager,
     private val userService: UserService,
 ) {
 
+    data class LoginResponse(val accessToken: String, val refreshToken: String)
+
     data class LoginRequest(val username: String, val password: String)
-    data class LoginResponse(val accessToken: String?, val refreshToken: String?)
-    data class RefreshRequest(val refreshToken: String)
-    data class ResetPasswordRequest(val newPassword: String, val token: String)
-    data class SendResetPasswordEmailRequest(val email: String)
 
     @PostMapping("/token")
-    fun token(@RequestBody userLogin: LoginRequest): LoginResponse {
+    fun getToken(@RequestBody userLogin: LoginRequest): LoginResponse {
+        println("Tutaj: $userLogin")
         val authToken = UsernamePasswordAuthenticationToken(userLogin.username, userLogin.password)
         val authentication = authManager.authenticate(authToken)
-        val accessToken = tokenService.generateAccessToken(authentication)
-        val refreshToken = tokenService.generateRefreshToken(authentication)
-        return LoginResponse(accessToken, refreshToken)
+        println("Po autentykacji: $authentication")
+        return LoginResponse(
+            accessToken  = tokenService.generateAccessToken(authentication),
+            refreshToken = tokenService.generateRefreshToken(authentication),
+        )
     }
+
+    data class RefreshRequest(val refreshToken: String)
 
     @PostMapping("/refresh")
-    fun refresh(@RequestBody request: RefreshRequest): LoginResponse {
-        val authentication = tokenService.refreshToken(request.refreshToken)
-        val accessToken = tokenService.generateAccessToken(authentication)
-        val refreshToken = tokenService.generateRefreshToken(authentication)
-        return LoginResponse(accessToken, refreshToken)
+    fun refresh(@RequestBody req: RefreshRequest): LoginResponse {
+        val authentication = tokenService.refreshToken(req.refreshToken)
+        return LoginResponse(
+            accessToken  = tokenService.generateAccessToken(authentication),
+            refreshToken = tokenService.generateRefreshToken(authentication),
+        )
     }
 
-    @PostMapping("/open/send-reset-password-email")
-    fun sendResetPasswordEmail(@RequestBody sendResetPasswordEmailRequest: SendResetPasswordEmailRequest) {
-        val user = this.userService.findByEmail(sendResetPasswordEmailRequest.email)
-        if (user == null) {
-            throw UsernameNotFoundException("User not found")
-        }
-        val token = tokenService.generateResetPasswordToken(60 * 10, sendResetPasswordEmailRequest.email)
+    data class EmailRequest(val email: String)
+
+    @PostMapping("/send-reset-password-email")
+    fun sendResetPasswordEmail(@RequestBody req: EmailRequest) {
+        //val user = this.userService.findByEmailOrThrow(email)
+        val token = tokenService.generateResetPasswordToken(10, req.email)
         // todo generated link will be sent by email to user, after clicking on it, it will show reset pass page
         println("http://localhost:5173/reset-password/$token")
     }
 
-    @PostMapping("/open/reset-password")
+    data class ResetPasswordRequest(val newPassword: String, val token: String)
+
+    @PostMapping("/reset-password")
     fun resetPassword(@RequestBody resetPasswordRequest: ResetPasswordRequest) {
         val email = tokenService.validateResetPasswordToken(resetPasswordRequest.token)
         println(email)
