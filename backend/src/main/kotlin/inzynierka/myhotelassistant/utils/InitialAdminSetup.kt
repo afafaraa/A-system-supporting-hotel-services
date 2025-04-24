@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.core.env.Environment
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.Instant
 import java.util.*
 
+@Profile("!test")
 @Configuration
 class InitialAdminSetup(
     private val userRepo: UserRepository,
@@ -35,13 +37,13 @@ class InitialAdminSetup(
     fun adminSetupRunner() = CommandLineRunner {
         if (env.activeProfiles.contains("dev")) {
             logger.info("Skipping interactive admin setup in dev environment.")
-            //return@CommandLineRunner
+            return@CommandLineRunner
         }
         val admins = userRepo.findByRole(Role.ADMIN)
         if (admins.isNotEmpty()) {
             logger.info("Admin account(s) already exist. Skipping interactive setup.")
             logger.info(admins.toString())
-            //return@CommandLineRunner
+            return@CommandLineRunner
         }
         logger.info("No admin account found. Starting interactive admin setup...")
         setupAdminInteractively()
