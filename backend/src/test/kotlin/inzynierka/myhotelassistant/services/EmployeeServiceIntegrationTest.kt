@@ -1,6 +1,6 @@
 package inzynierka.myhotelassistant.services
 
-import inzynierka.myhotelassistant.controllers.EmployeeController
+import inzynierka.myhotelassistant.controllers.user.EmployeeController
 import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.models.Role
 import inzynierka.myhotelassistant.repositories.UserRepository

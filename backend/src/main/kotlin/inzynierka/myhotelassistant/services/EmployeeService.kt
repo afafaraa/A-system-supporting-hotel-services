@@ -1,6 +1,6 @@
 package inzynierka.myhotelassistant.services
 
-import inzynierka.myhotelassistant.controllers.EmployeeController
+import inzynierka.myhotelassistant.controllers.user.EmployeeController
 import inzynierka.myhotelassistant.exceptions.HttpException.*
 import inzynierka.myhotelassistant.models.Role
 import inzynierka.myhotelassistant.models.UserEntity
@@ -48,7 +48,7 @@ class EmployeeService(val userRepository: UserRepository, private val passwordEn
 
     @Transactional
     @Throws(UserNotFoundException::class, InvalidRoleNameException::class)
-    fun changeRole(username: String, role: String): Pair<Role, Role> {
+    fun changeRole(username: String, role: String) {
         val newRole = Role.convertFromString(role)
         if (newRole == Role.GUEST) throw InvalidRoleNameException("Cannot assign GUEST role to an employee")
         if (newRole == Role.ADMIN) throw InvalidRoleNameException("Cannot assign ADMIN role to an employee")
@@ -57,6 +57,5 @@ class EmployeeService(val userRepository: UserRepository, private val passwordEn
         if (oldRole == newRole) throw InvalidRoleNameException("User already has this role")
         user.role = newRole
         userRepository.save(user)
-        return oldRole to newRole
     }
 }
