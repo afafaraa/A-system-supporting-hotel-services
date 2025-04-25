@@ -4,7 +4,6 @@ import inzynierka.myhotelassistant.models.Role
 import inzynierka.myhotelassistant.models.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -23,15 +22,6 @@ class InitialAdminSetup(
 ) {
 
     private val logger = LoggerFactory.getLogger(InitialAdminSetup::class.java)
-
-    @Value("\${initial.admin.username:admin}")
-    private lateinit var defaultUsername: String    //TODO
-
-    @Value("\${initial.admin.password:admin123}")
-    private lateinit var defaultPassword: String    //TODO
-
-    @Value("\${initial.admin.email:admin@myhotel.com}")
-    private lateinit var defaultEmail: String       //TODO
 
     @Bean
     fun adminSetupRunner() = CommandLineRunner {
