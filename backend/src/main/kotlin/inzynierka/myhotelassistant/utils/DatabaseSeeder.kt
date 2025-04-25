@@ -31,7 +31,7 @@ class DatabaseSeeder(
                 email = "test_user@user.test"
             )
             userRepo.save(user)
-            logger.info("Default \'user\' added to database")
+            logger.info("Default 'user' added to database")
         }
 
         if (!userRepo.existsByUsername("admin")) {
@@ -42,7 +42,7 @@ class DatabaseSeeder(
                 email = "test_admin@admin.test"
             )
             userRepo.save(admin)
-            logger.info("Default \'admin\' added to database")
+            logger.info("Default 'admin' added to database")
         }
 
         if (!roomRepo.existsById("1")) {
@@ -53,7 +53,7 @@ class DatabaseSeeder(
                 capacity = 1,
             )
             roomRepo.save(room)
-            logger.info("Default \'room\' added to database")
+            logger.info("Default 'room' added to database")
         }
     }
 }

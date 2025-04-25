@@ -21,7 +21,6 @@ class AddUserController(
     private val codeService: RegistrationCodeService
 ) {
 
-
     data class AddUserRequest(
         @field:Email(message = "Invalid email format") @field:NotBlank(message = "Email is required") val email: String,
 
@@ -51,9 +50,7 @@ class AddUserController(
     )
 
 
-    data class AddUserResponse(
-        val username: String, val password: String
-    )
+    data class AddUserResponse(val username: String, val password: String)
 
     @PostMapping("/secured/add/guest")
     @ResponseStatus(HttpStatus.CREATED)
@@ -76,15 +73,5 @@ class AddUserController(
             userId = savedGuest.id!!, email = savedGuest.email, validUntil = savedGuest.checkOutDate!!
         )
         return AddUserResponse(password = password, username = username)
-    }
-
-    @PostMapping("/secured/admin")
-    fun addAdmin(@RequestBody user: AddUserRequest) {
-
-    }
-
-    @PostMapping("/secured/employee")
-    fun addEmployee(@RequestBody user: AddUserRequest) {
-
     }
 }

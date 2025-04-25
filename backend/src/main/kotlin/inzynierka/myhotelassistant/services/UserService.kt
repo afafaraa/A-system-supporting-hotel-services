@@ -1,7 +1,9 @@
 package inzynierka.myhotelassistant.services
 
+import inzynierka.myhotelassistant.controllers.AuthController
 import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserRequest
 import inzynierka.myhotelassistant.exceptions.HttpException
+import inzynierka.myhotelassistant.models.RegistrationCode
 import inzynierka.myhotelassistant.models.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -14,7 +16,11 @@ import org.springframework.stereotype.Service
 import java.security.MessageDigest
 
 @Service
-class UserService(private val userRepository: UserRepository, private val passwordEncoder: PasswordEncoder): UserDetailsService {
+class UserService(
+    private val userRepository: UserRepository,
+    private val codeService: RegistrationCodeService,
+    private val passwordEncoder: PasswordEncoder
+): UserDetailsService {
 
     override fun loadUserByUsername(username: String): UserDetails {
         val user = userRepository.findByUsername(username)
@@ -32,7 +38,14 @@ class UserService(private val userRepository: UserRepository, private val passwo
         return userRepository.findAll().firstOrNull { it.email == email }
     }
 
-    fun findById(id: String): UserEntity? = userRepository.findByIdOrNull(id)
+    fun completeRegistration(req: AuthController.CompleteRegistrationRequest) {
+        val rc: RegistrationCode = codeService.validateCode(req.code)
+        val user = userRepository.findByIdOrNull(rc.userId) ?: throw HttpException.UserNotFoundException("User not found")
+        user.username = req.username
+        user.password = passwordEncoder.encode(req.password)
+        userRepository.save(user)
+        codeService.markUsed(rc)
+    }
 
     fun resetPassword(email: String, newPassword: String) {
         val user = this.findByEmail(email)

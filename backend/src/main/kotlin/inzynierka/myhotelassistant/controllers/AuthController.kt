@@ -1,15 +1,11 @@
 package inzynierka.myhotelassistant.controllers
 
-import inzynierka.myhotelassistant.models.RegistrationCode
-import inzynierka.myhotelassistant.models.UserEntity
-import inzynierka.myhotelassistant.services.RegistrationCodeService
 import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.services.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -20,8 +16,6 @@ class AuthController(
     private val tokenService: TokenService,
     private val authManager: AuthenticationManager,
     private val userService: UserService,
-    private val codeService: RegistrationCodeService,
-    private val passwordEncoder: PasswordEncoder
 ) {
 
     data class LoginRequest(val username: String, val password: String)
@@ -66,24 +60,12 @@ class AuthController(
         userService.resetPassword(email, resetPasswordRequest.newPassword)
     }
 
-    data class CompleteRegistrationRequest(
-        val code: String, val username: String, val password: String
-    )
+    data class CompleteRegistrationRequest(val code: String, val username: String, val password: String)
 
-    @PostMapping("/register")
+    @PostMapping("/open/register")
     @ResponseStatus(HttpStatus.CREATED)
     fun completeRegistration(@RequestBody req: CompleteRegistrationRequest): LoginResponse {
-        val rc: RegistrationCode = codeService.validateCode(req.code)
-
-        val user: UserEntity =
-            userService.findById(rc.userId) ?: throw IllegalStateException("No existing account for code: ${req.code}")
-
-        user.username = req.username
-        user.password = passwordEncoder.encode(req.password)
-
-        userService.save(user)
-        codeService.markUsed(rc)
-        return token(LoginRequest(user.username, req.password))
-
+        userService.completeRegistration(req)
+        return token(LoginRequest(req.username, req.password))
     }
 }

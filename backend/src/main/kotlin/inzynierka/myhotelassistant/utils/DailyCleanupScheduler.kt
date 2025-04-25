@@ -10,14 +10,16 @@ import java.time.Instant
 
 @Component
 class DailyCleanupScheduler(
-    private val registrationCodeRepository: RegistrationCodeRepository, private val userRepository: UserRepository
+    private val registrationCodeRepository: RegistrationCodeRepository, 
+    private val userRepository: UserRepository
 ) {
+    
     private val logger = LoggerFactory.getLogger(DailyCleanupScheduler::class.java)
 
     /**
-     * Uruchamiane codziennie o 03:00:
-     * 1) Usuwa przeterminowane kody rejestracyjne.
-     * 2) Dezaktywuje konta gości po wymeldowaniu.
+     * Runs daily at 03:00:
+     * 1) Removes expired registration codes.
+     * 2) Deactivates guest accounts after check-out.
      */
     @Scheduled(cron = "0 0 3 * * *")
     fun runDailyCleanup() {

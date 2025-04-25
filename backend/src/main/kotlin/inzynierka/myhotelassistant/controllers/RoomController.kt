@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/rooms")
 class RoomController(private val roomService: RoomService) {
+
     @GetMapping
     fun getAllRooms(): List<RoomEntity> = roomService.findAllRooms()
 }

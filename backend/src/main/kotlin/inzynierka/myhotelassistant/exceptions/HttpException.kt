@@ -3,7 +3,8 @@ package inzynierka.myhotelassistant.exceptions
 import org.springframework.http.HttpStatus
 
 sealed class HttpException(
-    val httpStatus: HttpStatus, message: String
+    val httpStatus: HttpStatus,
+    message: String
 ) : RuntimeException(message) {
 
     class UserAlreadyExistsException(message: String) : HttpException(HttpStatus.CONFLICT, message)
