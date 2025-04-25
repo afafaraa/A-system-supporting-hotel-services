@@ -29,13 +29,7 @@ class AuthController(
     data class RefreshRequest(val refreshToken: String)
     data class ResetPasswordRequest(val newPassword: String, val token: String)
     data class SendResetPasswordEmailRequest(val email: String)
-    data class GenerateCodeRequest(val userId: String)
-    data class GenerateCodeResponse(val code: String)
-    data class CompleteRegistrationRequest(
-        val code: String,
-        val username: String,
-        val password: String
-    )
+
 
     @PostMapping("/token")
     fun token(@RequestBody userLogin: LoginRequest): LoginResponse {
@@ -72,34 +66,24 @@ class AuthController(
         userService.resetPassword(email, resetPasswordRequest.newPassword)
     }
 
-    @PostMapping("/secured/generate-code")
-    @ResponseStatus(HttpStatus.OK)
-    fun generateCode(@RequestBody req: GenerateCodeRequest): GenerateCodeResponse {
-        val user: UserEntity = userService.findById(req.userId)
-            ?: throw IllegalArgumentException("User with id=${req.userId} not found")
+    data class CompleteRegistrationRequest(
+        val code: String, val username: String, val password: String
+    )
 
-        val code = codeService.generateCodeForUser(user.id!!)
-        return GenerateCodeResponse(code)
-    }
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    fun completeRegistration(@RequestBody req: CompleteRegistrationRequest) : LoginResponse {
+    fun completeRegistration(@RequestBody req: CompleteRegistrationRequest): LoginResponse {
         val rc: RegistrationCode = codeService.validateCode(req.code)
 
-        val user: UserEntity = userService.findById(rc.userId)
-            ?: throw IllegalStateException("Konto nie istnieje dla kodu: ${req.code}")
+        val user: UserEntity =
+            userService.findById(rc.userId) ?: throw IllegalStateException("No existing account for code: ${req.code}")
 
         user.username = req.username
         user.password = passwordEncoder.encode(req.password)
 
         userService.save(user)
         codeService.markUsed(rc)
-
-        val authToken = UsernamePasswordAuthenticationToken(user.username, req.password)
-        val authentication = authManager.authenticate(authToken)
-        val accessToken = tokenService.generateAccessToken(authentication)
-        val refreshToken = tokenService.generateRefreshToken(authentication)
-        return LoginResponse(accessToken, refreshToken)
+        return token(LoginRequest(user.username, req.password))
 
     }
 }

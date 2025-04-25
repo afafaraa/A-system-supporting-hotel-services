@@ -10,8 +10,7 @@ import java.time.Instant
 
 @Component
 class DailyCleanupScheduler(
-    private val registrationCodeRepository: RegistrationCodeRepository,
-    private val userRepository: UserRepository
+    private val registrationCodeRepository: RegistrationCodeRepository, private val userRepository: UserRepository
 ) {
     private val logger = LoggerFactory.getLogger(DailyCleanupScheduler::class.java)
 
@@ -23,19 +22,14 @@ class DailyCleanupScheduler(
     @Scheduled(cron = "0 0 3 * * *")
     fun runDailyCleanup() {
         val now = Instant.now()
-        logger.info("Rozpoczęcie codziennego sprzątania o $now")
+        logger.info("Daily cleaning starts at $now")
 
         val codesDeleted = registrationCodeRepository.deleteByExpiresAtBefore(now)
-        logger.info("Usunięto $codesDeleted przeterminowanych kodów rejestracyjnych")
+        logger.info("Deleted $codesDeleted expired registration codes")
 
-        val expiredGuests = userRepository.findAll().filter { user ->
-            user.role == Role.GUEST &&
-                    user.checkOutDate?.isBefore(now) == true
+        val deletedCount = userRepository.deleteByRoleAndCheckOutDateBefore(Role.GUEST, now)
+        if (deletedCount > 0) {
+            logger.info("Deleted $deletedCount expired guests accounts (till $now).")
         }
-
-        expiredGuests.forEach { user ->
-            userRepository.save(user)
-        }
-        logger.info("Dezaktywowano ${expiredGuests.size} kont gości po wymeldowaniu")
     }
 }

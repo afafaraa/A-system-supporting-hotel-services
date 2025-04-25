@@ -7,6 +7,7 @@ import ResetPasswordPage from './pages/user/ResetPasswordPage.tsx';
 import AuthenticatedLayout from "./components/layout/AuthenticatedLayout.tsx";
 import PublicLayout from "./components/layout/PublicLayout.tsx";
 import RegisterPage from './pages/user/RegisterPage.tsx';
+import AddReservationPage from './pages/AddReservationPage.tsx'
 
 function App(){
   return (
@@ -15,6 +16,7 @@ function App(){
 
         <Route element={<AuthenticatedLayout />}>
           <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+          <Route path="/add-reservation" element={<ProtectedRoute><AddReservationPage /></ProtectedRoute>} />
         </Route>
 
         <Route element={<PublicLayout />}>
