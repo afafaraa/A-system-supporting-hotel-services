@@ -13,5 +13,7 @@ interface UserRepository : MongoRepository<UserEntity, String> {
 
     fun existsByUsername(username: String): Boolean
 
+    fun findByRole(role: Role): List<UserEntity>
+    
     fun deleteByRoleAndCheckOutDateBefore(role: Role, before: Instant): Long
 }

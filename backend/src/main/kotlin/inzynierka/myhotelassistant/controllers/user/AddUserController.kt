@@ -5,7 +5,12 @@ import inzynierka.myhotelassistant.models.UserEntity
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.services.RegistrationCodeService
 import inzynierka.myhotelassistant.services.UserService
-import jakarta.validation.constraints.*
+import jakarta.validation.Valid
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Size
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
 import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
@@ -49,7 +54,6 @@ class AddUserController(
         ) val checkOutDate: String
     )
 
-
     data class AddUserResponse(val username: String, val password: String)
 
     @PostMapping("/secured/add/guest")
@@ -73,5 +77,29 @@ class AddUserController(
             userId = savedGuest.id!!, email = savedGuest.email, validUntil = savedGuest.checkOutDate!!
         )
         return AddUserResponse(password = password, username = username)
+    }
+
+    data class NewAdminRequest(
+        @field:Email(message = "Email should be valid")
+        val email: String,
+
+        @field:NotBlank(message = "Name is required")
+        @field:Size(max = 20, message = "Name cannot be longer than 20 characters")
+        val name: String,
+
+        @field:NotBlank(message = "Surname is required")
+        @field:Size(max = 30, message = "Surname cannot be longer than 30 characters")
+        val surname: String,
+
+        @field:Size(min = 8, message = "Password must be at least 8 characters long")
+        val password: String
+    )
+
+    @PostMapping("/secured/admin")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun addAdmin(@RequestBody @Valid request: NewAdminRequest): AddUserResponse {
+        val newAdmin = userService.createAdmin(request)
+        val savedAdmin = userService.save(newAdmin)
+        return AddUserResponse(password = savedAdmin.password, username = savedAdmin.username)
     }
 }

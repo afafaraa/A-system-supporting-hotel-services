@@ -4,6 +4,8 @@ import inzynierka.myhotelassistant.controllers.AuthController
 import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserRequest
 import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.models.RegistrationCode
+import inzynierka.myhotelassistant.controllers.user.AddUserController
+import inzynierka.myhotelassistant.models.Role
 import inzynierka.myhotelassistant.models.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -14,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.security.MessageDigest
+import java.time.Instant
 
 @Service
 class UserService(
@@ -32,19 +35,14 @@ class UserService(
             .build()
     }
 
-    fun save(user: UserEntity) = userRepository.save(user)
+    fun save(user: UserEntity): UserEntity {
+        if (userRepository.existsByUsername(user.username))
+            throw HttpException.UserAlreadyExistsException("User already exists: \"${user.username}\"")
+        return userRepository.save(user)
+    }
 
     fun findByEmail(email: String): UserEntity? {
         return userRepository.findAll().firstOrNull { it.email == email }
-    }
-
-    fun completeRegistration(req: AuthController.CompleteRegistrationRequest) {
-        val rc: RegistrationCode = codeService.validateCode(req.code)
-        val user = userRepository.findByIdOrNull(rc.userId) ?: throw HttpException.UserNotFoundException("User not found")
-        user.username = req.username
-        user.password = passwordEncoder.encode(req.password)
-        userRepository.save(user)
-        codeService.markUsed(rc)
     }
 
     fun resetPassword(email: String, newPassword: String) {
@@ -77,4 +75,24 @@ class UserService(
         return hexString.take(length)
     }
 
+    fun completeRegistration(req: AuthController.CompleteRegistrationRequest) {
+        val rc: RegistrationCode = codeService.validateCode(req.code)
+        val user = userRepository.findByIdOrNull(rc.userId) ?: throw HttpException.UserNotFoundException("User not found")
+        user.username = req.username
+        user.password = passwordEncoder.encode(req.password)
+        userRepository.save(user)
+        codeService.markUsed(rc)
+    }
+
+    fun createAdmin(request: AddUserController.NewAdminRequest): UserEntity {
+        return UserEntity(
+            username = "admin_${request.name}",
+            password = passwordEncoder.encode(request.password),
+            email = request.email,
+            name = request.name.lowercase().replaceFirstChar { it.uppercase() },
+            surname = request.surname.lowercase().replaceFirstChar { it.uppercase() },
+            role = Role.ADMIN,
+            checkInDate = Instant.now(),
+        )
+    }
 }
