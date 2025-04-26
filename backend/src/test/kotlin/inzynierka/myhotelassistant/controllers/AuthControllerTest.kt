@@ -4,7 +4,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import inzynierka.myhotelassistant.configs.RSAKeyConfig
 import inzynierka.myhotelassistant.configs.SecurityConfig
-import inzynierka.myhotelassistant.services.RegistrationCodeService
 import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.services.UserService
 import org.junit.jupiter.api.BeforeEach
@@ -16,9 +15,6 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.oauth2.jwt.JwtClaimsSet
-import org.springframework.security.oauth2.jwt.JwtEncoder
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
@@ -27,19 +23,18 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.lang.Thread.sleep
-import java.time.Instant
-import java.time.temporal.ChronoUnit
 
 
 @WebMvcTest(HomeController::class, AuthController::class)
 @Import(SecurityConfig::class, RSAKeyConfig::class, TokenService::class, UserService::class)
-class AuthControllerTest(@Autowired val mvc: MockMvc, @Autowired val passwordEncoder: PasswordEncoder, @Autowired val encoder: JwtEncoder) {
+class AuthControllerTest {
+
+    @Autowired lateinit var mvc: MockMvc
+    @Autowired lateinit var passwordEncoder: PasswordEncoder
+    @Autowired lateinit var tokenService: TokenService
 
     @MockitoBean
     private lateinit var userService: UserService
-
-    @MockitoBean
-    private lateinit var codeService: RegistrationCodeService
 
     @BeforeEach
     fun setup() {
@@ -53,7 +48,7 @@ class AuthControllerTest(@Autowired val mvc: MockMvc, @Autowired val passwordEnc
     @Test
     @Throws(Exception::class)
     fun reAuth() {
-        val result: MvcResult = mvc.perform(post("/token")
+        val result: MvcResult = mvc.perform(post("/open/token")
             .content("{\"username\":\"user\",\"password\":\"password\"}")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
@@ -68,10 +63,10 @@ class AuthControllerTest(@Autowired val mvc: MockMvc, @Autowired val passwordEnc
         println("Access Token: $accessToken")
         println("Refresh Token: $refreshToken")
 
-        // set access token to be valid for 1 s
+        // set an access token to be valid for 1 s
         sleep(2000)
 
-        val resultAfterRefresh: MvcResult = mvc.perform(post("/refresh")
+        val resultAfterRefresh: MvcResult = mvc.perform(post("/open/refresh")
             .content("{\"refreshToken\":\"$refreshToken\"}")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
@@ -96,21 +91,12 @@ class AuthControllerTest(@Autowired val mvc: MockMvc, @Autowired val passwordEnc
     @Throws(Exception::class)
     fun resetPassword() {
         val email = "aleksandra.fafara11@gmail.com"
+        val token = tokenService.generateResetPasswordToken(1, email)
         val newPassword = "newPassword"
-        val now: Instant = Instant.now()
-        val claims = JwtClaimsSet.builder()
-            .issuer("self")
-            .issuedAt(now)
-            .expiresAt(now.plus(10, ChronoUnit.SECONDS))
-            .claim("tokenType", "resetPassword")
-            .claim("email", email)
-            .build()
-        val token = encoder.encode(JwtEncoderParameters.from(claims)).tokenValue
 
         mvc.perform(post("/open/reset-password")
             .content("{\"newPassword\":\"$newPassword\", \"token\":\"$token\"}")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
     }
-
 }

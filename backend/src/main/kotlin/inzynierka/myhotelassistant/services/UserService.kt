@@ -5,6 +5,8 @@ import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserReq
 import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.models.RegistrationCode
 import inzynierka.myhotelassistant.controllers.user.AddUserController
+import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserResponse
+import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.Role
 import inzynierka.myhotelassistant.models.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
@@ -17,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.security.MessageDigest
 import java.time.Instant
+import inzynierka.myhotelassistant.exceptions.HttpException.UserNotFoundException
+import java.time.format.DateTimeParseException
 
 @Service
 class UserService(
@@ -41,16 +45,37 @@ class UserService(
         return userRepository.save(user)
     }
 
-    fun findByEmail(email: String): UserEntity? {
-        return userRepository.findAll().firstOrNull { it.email == email }
+    fun findByEmailOrThrow(email: String): UserEntity {
+        return userRepository.findByEmail(email)
+            ?: throw UserNotFoundException("User with given email was not found")
     }
 
     fun resetPassword(email: String, newPassword: String) {
-        val user = this.findByEmail(email)
-            ?: throw HttpException.UserNotFoundException("Email not found")
-
+        val user = this.findByEmailOrThrow(email)
         user.password = passwordEncoder.encode(newPassword)
-        user.let { this.save(it) }
+        userRepository.save(user)
+    }
+
+    fun createAndSaveGuest(user: AddUserRequest): AddUserResponse {
+        val username: String = generateUsername(user)
+        val password: String = generatePassword(user)
+        try {
+            val guest = UserEntity(
+                name=user.name,
+                surname=user.surname,
+                email=user.email,
+                room=user.room,
+                role=Role.GUEST,
+                username=username,
+                password=passwordEncoder.encode(password),
+                checkInDate=Instant.parse(user.checkInDate),
+                checkOutDate=Instant.parse(user.checkOutDate),
+            )
+            save(guest)
+        } catch (e: DateTimeParseException) {
+            throw InvalidArgumentException(e.message ?: "Invalid date format")
+        }
+        return AddUserResponse(username = username, password = password,)
     }
 
     fun generatePassword(user: AddUserRequest): String {
@@ -77,7 +102,7 @@ class UserService(
 
     fun completeRegistration(req: AuthController.CompleteRegistrationRequest) {
         val rc: RegistrationCode = codeService.validateCode(req.code)
-        val user = userRepository.findByIdOrNull(rc.userId) ?: throw HttpException.UserNotFoundException("User not found")
+        val user = userRepository.findByIdOrNull(rc.userId) ?: throw UserNotFoundException("User not found")
         user.username = req.username
         user.password = passwordEncoder.encode(req.password)
         userRepository.save(user)
