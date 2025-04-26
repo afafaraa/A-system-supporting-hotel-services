@@ -28,7 +28,6 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import java.util.*
 
 @Configuration
 @EnableWebSecurity
@@ -39,9 +38,8 @@ class SecurityConfig {
 
     @Bean
     fun authManager(userDetailsService: UserDetailsService, passwordEncoder: PasswordEncoder): AuthenticationManager {
-        val authProvider = DaoAuthenticationProvider()
+        val authProvider = DaoAuthenticationProvider(passwordEncoder)
         authProvider.setUserDetailsService(userDetailsService)
-        authProvider.setPasswordEncoder(passwordEncoder)
         return ProviderManager(authProvider)
     }
 
@@ -50,7 +48,8 @@ class SecurityConfig {
         return RoleHierarchyImpl.fromHierarchy(
             "ROLE_ADMIN > ROLE_MANAGER" + "\n" +
                     "ROLE_MANAGER > ROLE_RECEPTIONIST" + "\n" +
-                    "ROLE_RECEPTIONIST > ROLE_EMPLOYEE"
+                    "ROLE_RECEPTIONIST > ROLE_EMPLOYEE" + "\n" +
+                    "ROLE_ADMIN > ROLE_GUEST"
         )
     }
 

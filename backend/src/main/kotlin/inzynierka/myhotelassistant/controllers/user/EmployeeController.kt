@@ -39,13 +39,13 @@ class EmployeeController(
         val email: String,
 
         @field:Pattern(
-            regexp = "^[A-Z][a-z-]{1,19}$",
-            message = "Name must start with a capital letter and be followed by lowercase letters with max 20 characters")
+            regexp = "^[A-Za-z-]{2,20}$",
+            message = "Name number of letters (with -) must be between 2 and 20")
         val name: String,
 
         @field:Pattern(
-            regexp = "^[A-Z][a-z-]{1,29}$",
-            message = "Surname must start with a capital letter and be followed by lowercase letters with max 30 characters")
+            regexp = "^[A-Za-z-]{2,30}$",
+            message = "Surname number of letters (with -) must be between 2 and 30")
         val surname: String,
 
         @field:Pattern(
