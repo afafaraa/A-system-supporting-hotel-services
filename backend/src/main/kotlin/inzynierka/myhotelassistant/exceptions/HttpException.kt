@@ -13,5 +13,3 @@ sealed class HttpException(
 
     class InvalidRoleNameException(message: String): HttpException(HttpStatus.BAD_REQUEST, message)
 }
-
-

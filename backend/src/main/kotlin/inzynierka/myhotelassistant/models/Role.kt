@@ -2,12 +2,12 @@ package inzynierka.myhotelassistant.models
 
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidRoleNameException
 
-enum class Role(val permissionLevel: Int) {
-    GUEST(0),
-    EMPLOYEE(1),
-    RECEPTIONIST(2),
-    MANAGER(3),
-    ADMIN(4);
+enum class Role {
+    GUEST,
+    EMPLOYEE,
+    RECEPTIONIST,
+    MANAGER,
+    ADMIN;
 
     companion object {
         fun convertFromString(role: String): Role {
