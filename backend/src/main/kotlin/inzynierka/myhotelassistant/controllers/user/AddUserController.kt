@@ -4,6 +4,10 @@ import inzynierka.myhotelassistant.models.Role
 import inzynierka.myhotelassistant.models.UserEntity
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.services.UserService
+import jakarta.validation.Valid
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Size
 import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
@@ -23,6 +27,22 @@ class AddUserController(private val userService: UserService, private val passwo
         val room: RoomEntity,
         val checkInDate: String,
         val checkOutDate: String
+    )
+
+    data class NewAdminRequest(
+        @field:Email(message = "Email should be valid")
+        val email: String,
+
+        @field:NotBlank(message = "Name is required")
+        @field:Size(max = 20, message = "Name cannot be longer than 20 characters")
+        val name: String,
+
+        @field:NotBlank(message = "Surname is required")
+        @field:Size(max = 30, message = "Surname cannot be longer than 30 characters")
+        val surname: String,
+
+        @field:Size(min = 8, message = "Password must be at least 8 characters long")
+        val password: String
     )
 
     data class AddUserResponse(
@@ -73,12 +93,10 @@ class AddUserController(private val userService: UserService, private val passwo
     }
 
     @PostMapping("/secured/admin")
-    fun addAdmin(@RequestBody user: AddUserRequest){
-
-    }
-
-    @PostMapping("/secured/employee")
-    fun addEmployee(@RequestBody user: AddUserRequest){
-
+    @ResponseStatus(HttpStatus.CREATED)
+    fun addAdmin(@RequestBody @Valid request: NewAdminRequest): AddUserResponse {
+        val newAdmin = userService.createAdmin(request)
+        val savedAdmin = userService.save(newAdmin)
+        return AddUserResponse(password = savedAdmin.password, username = savedAdmin.username)
     }
 }

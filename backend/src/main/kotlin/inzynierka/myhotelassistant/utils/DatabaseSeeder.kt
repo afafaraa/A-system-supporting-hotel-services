@@ -28,7 +28,7 @@ class DatabaseSeeder(private val userRepo: UserRepository, private val passwordE
             logger.info("Default \'user\' added to database")
         }
 
-        if (!userRepo.existsByUsername("admin")) {
+        if (userRepo.findByRole(Role.ADMIN).isEmpty()) {
             val admin = UserEntity(
                 username = "admin",
                 password = passwordEncoder.encode("password"),
