@@ -24,12 +24,12 @@ class AddUserController(
 
         @field:Pattern(
             regexp = "^[A-Za-z-]{2,20}$",
-            message = "Name must be 2-20 characters long and may include '-'.")
+            message = "Name must be 2-20 characters long and may include '-'")
         val name: String,
 
         @field:Pattern(
             regexp = "^[A-Za-z-]{2,30}$",
-            message = "Surname must be 2-30 characters long and may include '-'.")
+            message = "Surname must be 2-30 characters long and may include '-'")
         val surname: String,
 
         @field:NotNull(message = "Room is required")

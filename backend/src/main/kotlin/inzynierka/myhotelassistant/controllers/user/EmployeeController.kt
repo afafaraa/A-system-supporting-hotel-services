@@ -40,12 +40,12 @@ class EmployeeController(
 
         @field:Pattern(
             regexp = "^[A-Za-z-]{2,20}$",
-            message = "Name number of letters (with -) must be between 2 and 20")
+            message = "Name must be 2-20 characters long and may include '-'")
         val name: String,
 
         @field:Pattern(
             regexp = "^[A-Za-z-]{2,30}$",
-            message = "Surname number of letters (with -) must be between 2 and 30")
+            message = "Surname must be 2-30 characters long and may include '-'.")
         val surname: String,
 
         @field:Pattern(
