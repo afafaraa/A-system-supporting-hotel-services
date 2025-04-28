@@ -77,6 +77,6 @@ class AddUserController(
     fun addAdmin(@RequestBody @Valid request: NewAdminRequest): AddUserResponse {
         val newAdmin = userService.createAdmin(request)
         val savedAdmin = userService.save(newAdmin)
-        return AddUserResponse(password = savedAdmin.password, username = savedAdmin.username!!)
+        return AddUserResponse(password = savedAdmin.password, username = savedAdmin.username)
     }
 }

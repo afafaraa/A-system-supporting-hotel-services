@@ -103,9 +103,8 @@ class UserService(
     fun completeRegistration(req: AuthController.CompleteRegistrationRequest) {
         val rc: RegistrationCode = codeService.validateCode(req.code)
         val user = userRepository.findByIdOrNull(rc.userId) ?: throw UserNotFoundException("User not found")
-        user.username = req.username
-        user.password = passwordEncoder.encode(req.password)
-        userRepository.save(user)
+        val updated = user.copy(username = req.username, password = passwordEncoder.encode(req.password))
+        userRepository.save(updated)
         codeService.markUsed(rc)
     }
 
