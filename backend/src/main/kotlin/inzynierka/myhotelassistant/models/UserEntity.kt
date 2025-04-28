@@ -19,7 +19,7 @@ data class UserEntity(
     var email: String,
 
     @Indexed(unique = true)
-    val username: String,
+    val username: String? = null,
 
     var password: String,
 
