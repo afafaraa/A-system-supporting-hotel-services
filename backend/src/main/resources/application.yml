@@ -6,3 +6,15 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/mongo-hotel
+  task:
+    scheduling:
+      pool:
+        size: 2
+  mail:
+    host: live.smtp.mailtrap.io
+    port: 587
+    username: smtp@mailtrap.io
+    password: 6f1b7c214ffe5af5859e35814259a091
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true

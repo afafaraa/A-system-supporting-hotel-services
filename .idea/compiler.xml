@@ -16,4 +16,11 @@
       <module name="inzynierka.MyHotelAssistant.test" target="21" />
     </bytecodeTargetLevel>
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="MyHotelAssistant" options="-parameters" />
+      <module name="MyHotelAssistant.main" options="-parameters" />
+      <module name="MyHotelAssistant.test" options="-parameters" />
+    </option>
+  </component>
 </project>

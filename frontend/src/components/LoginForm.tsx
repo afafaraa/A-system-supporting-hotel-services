@@ -11,7 +11,7 @@ function LoginForm() {
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        fetch("http://localhost:8080/token", {
+        fetch("http://localhost:8080/open/token", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({username, password})

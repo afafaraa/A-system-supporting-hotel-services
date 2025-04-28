@@ -2,6 +2,8 @@ package inzynierka.myhotelassistant.utils
 
 import inzynierka.myhotelassistant.models.Role
 import inzynierka.myhotelassistant.models.UserEntity
+import inzynierka.myhotelassistant.models.room.RoomEntity
+import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
 import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
@@ -11,7 +13,11 @@ import org.springframework.stereotype.Component
 
 @Profile("dev")
 @Component
-class DatabaseSeeder(private val userRepo: UserRepository, private val passwordEncoder: PasswordEncoder) {
+class DatabaseSeeder(
+    private val userRepo: UserRepository,
+    private val passwordEncoder: PasswordEncoder,
+    private val roomRepo: RoomRepository
+) {
 
     private val logger = LoggerFactory.getLogger(DatabaseSeeder::class.java)
 
@@ -25,7 +31,7 @@ class DatabaseSeeder(private val userRepo: UserRepository, private val passwordE
                 email = "test_user@user.test"
             )
             userRepo.save(user)
-            logger.info("Default \'user\' added to database")
+            logger.info("Default 'user' added to database")
         }
 
         if (userRepo.findByRole(Role.ADMIN).isEmpty()) {
@@ -36,7 +42,18 @@ class DatabaseSeeder(private val userRepo: UserRepository, private val passwordE
                 email = "test_admin@admin.test"
             )
             userRepo.save(admin)
-            logger.info("Default \'admin\' added to database")
+            logger.info("Default 'admin' added to database")
         }
-   }
+
+        if (!roomRepo.existsById("1")) {
+            val room = RoomEntity(
+                id = "1",
+                floor = 1,
+                roomNumber = 1,
+                capacity = 1,
+            )
+            roomRepo.save(room)
+            logger.info("Default 'room' added to database")
+        }
+    }
 }

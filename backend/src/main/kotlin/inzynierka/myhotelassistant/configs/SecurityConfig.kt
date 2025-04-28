@@ -28,7 +28,6 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import java.util.*
 
 @Configuration
 @EnableWebSecurity
@@ -39,9 +38,8 @@ class SecurityConfig {
 
     @Bean
     fun authManager(userDetailsService: UserDetailsService, passwordEncoder: PasswordEncoder): AuthenticationManager {
-        val authProvider = DaoAuthenticationProvider()
+        val authProvider = DaoAuthenticationProvider(passwordEncoder)
         authProvider.setUserDetailsService(userDetailsService)
-        authProvider.setPasswordEncoder(passwordEncoder)
         return ProviderManager(authProvider)
     }
 
@@ -60,7 +58,6 @@ class SecurityConfig {
             .cors { cors -> cors.configurationSource(corsConfigurationSource()) }
             .csrf { csrf -> csrf.disable() }
             .authorizeHttpRequests { auth -> auth
-                .requestMatchers("/token").permitAll()
                 .requestMatchers("/open/**").permitAll()
                 .requestMatchers("/secured/**").hasAnyRole(Role.ADMIN.name)
                 .requestMatchers("/management/**").hasAnyRole(Role.MANAGER.name)
@@ -77,11 +74,9 @@ class SecurityConfig {
     fun jwtAuthenticationConverter(): Converter<Jwt, AbstractAuthenticationToken> {
         val converter = JwtAuthenticationConverter()
         converter.setJwtGrantedAuthoritiesConverter { jwt: Jwt ->
-            val scope = jwt.getClaimAsString("scope") ?: ""
-            scope.split(" ").map { role ->
-                if (role.startsWith("ROLE_")) SimpleGrantedAuthority(role)
-                else SimpleGrantedAuthority("ROLE_$role")
-            }
+            (jwt.getClaimAsString("role") ?: "")
+                .split(" ")
+                .map { role -> SimpleGrantedAuthority(role) }
         }
         return converter
     }
