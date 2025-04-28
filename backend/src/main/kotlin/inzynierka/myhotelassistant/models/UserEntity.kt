@@ -15,7 +15,7 @@ data class UserEntity(
 
     var role: Role = Role.GUEST,
 
-    @Indexed(unique = true)
+    @Indexed
     var email: String,
 
     @Indexed(unique = true)
