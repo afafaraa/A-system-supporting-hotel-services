@@ -11,8 +11,8 @@ function ResetPasswordPage() {
         if(password !== repetPassword) {
             return;
         }
-        let res = await axiosApi.post(
-            '/reset-password',
+        const res = await axiosApi.post(
+            '/open/reset-password',
             {
                 newPassword: password,
                 token

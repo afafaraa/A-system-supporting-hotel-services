@@ -13,7 +13,7 @@ function RegisterPage(){
         e.preventDefault();
         console.log(code, username, password)
         const res = await axiosApi.post(
-            '/register',
+            '/open/register',
             {
                 code,
                 username,
