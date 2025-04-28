@@ -71,7 +71,8 @@ class UserService(
                 checkInDate=Instant.parse(user.checkInDate),
                 checkOutDate=Instant.parse(user.checkOutDate),
             )
-            save(guest)
+            val saved = save(guest)
+            codeService.generateAndSendForUser(saved.id!!, saved.email, saved.checkOutDate!!)
         } catch (e: DateTimeParseException) {
             throw InvalidArgumentException(e.message ?: "Invalid date format")
         }
