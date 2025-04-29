@@ -16,4 +16,6 @@ sealed class HttpException(
     class InvalidRegistrationCodeException(message: String) : HttpException(HttpStatus.BAD_REQUEST, message)
 
     class InvalidArgumentException(message: String): HttpException(HttpStatus.BAD_REQUEST, message)
+
+    class ResetTokenValidationException(message: String): HttpException(HttpStatus.BAD_REQUEST, message)
 }

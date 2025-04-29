@@ -6,6 +6,7 @@ import inzynierka.myhotelassistant.configs.RSAKeyConfig
 import inzynierka.myhotelassistant.configs.SecurityConfig
 import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.services.UserService
+import inzynierka.myhotelassistant.utils.EmailSender
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
@@ -35,6 +36,9 @@ class AuthControllerTest {
 
     @MockitoBean
     private lateinit var userService: UserService
+
+    @MockitoBean
+    private lateinit var emailSender: EmailSender
 
     @BeforeEach
     fun setup() {

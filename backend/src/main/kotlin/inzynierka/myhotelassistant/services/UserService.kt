@@ -50,8 +50,8 @@ class UserService(
             ?: throw UserNotFoundException("User with given email was not found")
     }
 
-    fun resetPassword(email: String, newPassword: String) {
-        val user = this.findByEmailOrThrow(email)
+    fun changePassword(email: String, newPassword: String) {
+        val user = findByEmailOrThrow(email)
         user.password = passwordEncoder.encode(newPassword)
         userRepository.save(user)
     }
