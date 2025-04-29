@@ -126,7 +126,7 @@ class EmployeeControllerTest {
         )
         given(employeeService.findByUsernameOrThrow("employee")).willReturn(expectedEmployee.copy())
 
-        val result = mvc.perform(get("/management/employees?username=employee"))
+        val result = mvc.perform(get("/management/employees/username/employee"))
             .andExpect(status().isOk)
             .andReturn()
 
