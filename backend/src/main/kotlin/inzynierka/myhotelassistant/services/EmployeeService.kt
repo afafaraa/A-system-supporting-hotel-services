@@ -5,13 +5,23 @@ import inzynierka.myhotelassistant.exceptions.HttpException.*
 import inzynierka.myhotelassistant.models.Role
 import inzynierka.myhotelassistant.models.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
+import org.springframework.data.domain.Pageable
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import kotlin.jvm.Throws
 
 @Service
-class EmployeeService(val userRepository: UserRepository, private val passwordEncoder: PasswordEncoder) {
+class EmployeeService(
+    private val userRepository: UserRepository,
+    private val passwordEncoder: PasswordEncoder
+) {
+
+    private val employeeRoles = listOf(Role.EMPLOYEE, Role.RECEPTIONIST, Role.MANAGER)
+
+    fun getAllEmployees(pageable: Pageable): List<UserEntity> {
+        return userRepository.findByRoleIn(employeeRoles, pageable).content
+    }
 
     @Throws(InvalidRoleNameException::class)
     fun createEmployee(employeeDTO: EmployeeController.EmployeeDTO): UserEntity {

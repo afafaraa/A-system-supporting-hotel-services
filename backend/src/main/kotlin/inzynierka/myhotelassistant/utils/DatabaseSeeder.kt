@@ -28,7 +28,9 @@ class DatabaseSeeder(
                 username = "user",
                 password = passwordEncoder.encode("password"),
                 role = Role.GUEST,
-                email = "test_user@user.test"
+                email = "test_user@user.test",
+                name = "Test",
+                surname = "User",
             )
             userRepo.save(user)
             logger.info("Default 'user' added to database")
@@ -39,7 +41,9 @@ class DatabaseSeeder(
                 username = "admin",
                 password = passwordEncoder.encode("password"),
                 role = Role.ADMIN,
-                email = "test_admin@admin.test"
+                email = "test_admin@admin.test",
+                name = "Test",
+                surname = "Admin",
             )
             userRepo.save(admin)
             logger.info("Default 'admin' added to database")

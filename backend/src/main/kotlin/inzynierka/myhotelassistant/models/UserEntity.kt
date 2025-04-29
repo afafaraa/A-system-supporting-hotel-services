@@ -19,12 +19,12 @@ data class UserEntity(
     var email: String,
 
     @Indexed(unique = true)
-    val username: String,
+    var username: String,
 
     var password: String,
 
-    val name: String? = null,
-    val surname: String? = null,
+    val name: String,
+    val surname: String,
 
     val room: RoomEntity? = null,
     val checkInDate: Instant? = null,

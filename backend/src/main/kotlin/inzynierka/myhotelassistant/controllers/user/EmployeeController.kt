@@ -7,8 +7,8 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -25,6 +26,8 @@ class EmployeeController(
 ) {
 
     private val logger = LoggerFactory.getLogger(EmployeeController::class.java)
+
+    private val passwordMask = "**********"
 
     data class EmployeeDTO(
         @field:Pattern(
@@ -55,33 +58,48 @@ class EmployeeController(
     )
 
     @PostMapping
-    fun addEmployee(@RequestBody @Valid employeeDTO: EmployeeDTO): ResponseEntity<UserEntity> {
+    @ResponseStatus(HttpStatus.CREATED)
+    fun addEmployee(@RequestBody @Valid employeeDTO: EmployeeDTO): UserEntity {
         val newEmployee = employeeService.createEmployee(employeeDTO)
         val savedEmployee = employeeService.addEmployee(newEmployee)
-        savedEmployee.password = "**********"
+        savedEmployee.password = passwordMask
         logger.debug("Added new employee: ${savedEmployee.username}")
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedEmployee)
+        return savedEmployee
     }
 
-    @GetMapping
-    fun getEmployeeWithUsername(@RequestParam username: String): ResponseEntity<UserEntity> {
+    @GetMapping(params = ["username"])
+    @ResponseStatus(HttpStatus.OK)
+    fun getEmployeeWithUsername(@RequestParam username: String): UserEntity {
         val employee = employeeService.findByUsernameOrThrow(username)
-        employee.password = "**********"
+        employee.password = passwordMask
         logger.debug("Found employee: ${employee.username}")
-        return ResponseEntity.ok().body(employee)
+        return employee
+    }
+
+    @GetMapping(params = ["page", "size"])
+    @ResponseStatus(HttpStatus.OK)
+    fun getEmployees(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): List<UserEntity> {
+        val pageable = PageRequest.of(page, size)
+        val employees = employeeService.getAllEmployees(pageable)
+        employees.map { it.password = passwordMask }
+        logger.debug("Found ${employees.size} employees at page $page")
+        return employees
     }
 
     @DeleteMapping
-    fun removeEmployee(@RequestParam username: String): ResponseEntity<Any> {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun removeEmployee(@RequestParam username: String) {
         employeeService.deleteEmployee(username)
         logger.debug("Removed employee: $username")
-        return ResponseEntity.noContent().build()
     }
 
     @PatchMapping("/role")
-    fun changeRole(@RequestParam username: String, @RequestParam role: String): ResponseEntity<Any> {
+    @ResponseStatus(HttpStatus.OK)
+    fun changeRole(@RequestParam username: String, @RequestParam role: String) {
         employeeService.changeRole(username, role)
         logger.debug("Changed role of employee: $username to $role")
-        return ResponseEntity.ok().build()
     }
 }
