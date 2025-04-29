@@ -38,14 +38,14 @@ class EmployeeService(
     @Throws(UserAlreadyExistsException::class)
     fun addEmployee(employee: UserEntity): UserEntity   {
         if (userRepository.existsByUsername(employee.username))
-            throw UserAlreadyExistsException("User with username \"${employee.username}\" already exists")
+            throw UserAlreadyExistsException("User with username '${employee.username}' already exists")
         return userRepository.save(employee)
     }
 
     @Throws(UserNotFoundException::class)
     fun findByUsernameOrThrow(username: String): UserEntity {
         return userRepository.findByUsername(username)
-            ?: throw UserNotFoundException("User with username \"$username\" was not found")
+            ?: throw UserNotFoundException("User with username '$username' was not found")
     }
 
     @Transactional

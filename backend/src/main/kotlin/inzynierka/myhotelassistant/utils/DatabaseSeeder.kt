@@ -59,5 +59,36 @@ class DatabaseSeeder(
             roomRepo.save(room)
             logger.info("Default 'room' added to database")
         }
+        addTestEmployees()
+    }
+
+    private fun addTestEmployees() {
+        if (!userRepo.existsByUsername("employee1"))
+            userRepo.save(UserEntity(
+                role = Role.MANAGER,
+                username = "employee1",
+                password = passwordEncoder.encode("password"),
+                email = "employee1@gmail.com",
+                name = "Joe",
+                surname = "Doe",
+            ))
+        if (!userRepo.existsByUsername("employee2"))
+            userRepo.save(UserEntity(
+                role = Role.RECEPTIONIST,
+                username = "employee2",
+                password = passwordEncoder.encode("password123"),
+                email = "ann.smith@mymail.com",
+                name = "Anna",
+                surname = "Smith",
+            ))
+        if (!userRepo.existsByUsername("employee3"))
+            userRepo.save(UserEntity(
+                role = Role.EMPLOYEE,
+                username = "employee3",
+                password = passwordEncoder.encode("easy"),
+                email = "c.brown@yahoo.com",
+                name = "Charlie",
+                surname = "Brown",
+            ))
     }
 }

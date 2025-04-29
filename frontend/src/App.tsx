@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
 import LoginPage from './pages/user/LoginPage.tsx';
 import HomePage from './pages/home/HomePage.tsx';
 import ProtectedRoute from './router/protectedRoute.tsx';
@@ -8,6 +8,7 @@ import AuthenticatedLayout from "./components/layout/AuthenticatedLayout.tsx";
 import PublicLayout from "./components/layout/PublicLayout.tsx";
 import RegisterPage from './pages/user/RegisterPage.tsx';
 import AddReservationPage from './pages/AddReservationPage.tsx'
+import EmployeeListPage from "./pages/manager/EmployeeListPage.tsx";
 
 function App(){
   return (
@@ -24,7 +25,8 @@ function App(){
           <Route path="/reset-password-email" element={<SendResetPasswordEmail />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="*" element={<LoginPage />} />
+          <Route path="/employees" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Route>
 
       </Routes>
