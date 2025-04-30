@@ -18,6 +18,7 @@ function App(){
         <Route element={<AuthenticatedLayout />}>
           <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
           <Route path="/add-reservation" element={<ProtectedRoute><AddReservationPage /></ProtectedRoute>} />
+          <Route path="/employees" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />
         </Route>
 
         <Route element={<PublicLayout />}>
@@ -25,7 +26,6 @@ function App(){
           <Route path="/reset-password-email" element={<SendResetPasswordEmail />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/employees" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Route>
 

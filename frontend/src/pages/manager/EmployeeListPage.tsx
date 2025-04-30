@@ -1,5 +1,8 @@
 import {useEffect, useState} from "react";
 import axiosApi from "../../middleware/axiosApi.ts";
+import {Button, Card, CardContent, Typography} from "@mui/material";
+import {selectUser} from "../../redux/slices/userSlice";
+import {useSelector} from "react-redux";
 
 interface Employee {
   id: string;
@@ -17,6 +20,7 @@ function EmployeeListPage() {
   const [page, setPage] = useState(0);
   const [showLoadMore, setShowLoadMore] = useState(true);
   const pageSize = 1;
+  const user = useSelector(selectUser);
 
   const token = localStorage.getItem('ACCESS_TOKEN');
 
@@ -25,12 +29,17 @@ function EmployeeListPage() {
       setError('Brak tokena. ');
       return
     }
+    if (!user.user.isAuthorized) {
+      setError('Użytkownik nie autoryzowany (brak w reduxie). ');
+      return
+    }
     axiosApi.get<Employee[]>('/management/employees', {
       params: { page: page, size: pageSize },
       headers: { Authorization: `Bearer ${token}` } })
       .then(res => {
         console.log(res)
-        setEmployees(employees => [...employees, ...res.data])
+        setEmployees(employees => [...employees, ...res.data
+          .filter(employee => !employees.some(e => e.id === employee.id)) ]); // for debug mode
         if (res.data.length === 0) {
           setShowLoadMore(false);
         }
@@ -50,7 +59,7 @@ function EmployeeListPage() {
             setError('Nie udało się pobrać listy pracowników')
         }
       });
-  }, [page, token]);
+  }, [page, token, user.user.isAuthorized]);
 
   function loadMore() {
     setPage(prevState => prevState + 1)
@@ -61,18 +70,27 @@ function EmployeeListPage() {
       {error && <div>{error}</div>}
       {!error &&
         <div style={{ padding: '20px', paddingInline: '80px' }}>
-            <h1>Lista pracowników</h1>
-            <div>
-              {employees.map((employee, index) => (
-                <div key={index}>
-                  <h2>{employee.name} {employee.surname}</h2>
-                  <p>Email: {employee.email}</p>
-                  <p>Rola: {employee.role}</p>
-                  <br/>
-                </div>
-              ))}
+            
+          <h1>Lista pracowników</h1>
+            
+          <div>
+            {employees.map((employee, index) => (
+              <Card key={index} style={{ margin: '20px' }}>
+                <CardContent>
+                  <Typography variant="h5" component="div">{employee.name} {employee.surname}</Typography>
+                  <Typography variant="body2" color="text.secondary">Email: {employee.email}</Typography>
+                  <Typography variant="body2" color="text.secondary">Rola: {employee.role}</Typography>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          
+          {showLoadMore &&
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Button variant="contained" onClick={loadMore}>Załaduj więcej</Button>
             </div>
-            {showLoadMore && <button onClick={loadMore}>Załaduj więcej</button>}
+          }
+          
         </div>
       }
     </>
