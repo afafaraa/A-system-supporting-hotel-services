@@ -23,43 +23,54 @@ class DatabaseSeeder(
 
     @PostConstruct
     fun addDefaultUserToDatabase() {
+        addTestAdminAndUser()
+        addTestRooms()
+        addTestEmployees()
+    }
+
+    private fun addTestAdminAndUser() {
         if (!userRepo.existsByUsername("user")) {
-            val user = UserEntity(
+            userRepo.save(UserEntity(
                 username = "user",
                 password = passwordEncoder.encode("password"),
                 role = Role.GUEST,
                 email = "test_user@user.test",
                 name = "Test",
                 surname = "User",
-            )
-            userRepo.save(user)
+            ))
             logger.info("Default 'user' added to database")
         }
 
         if (userRepo.findByRole(Role.ADMIN).isEmpty()) {
-            val admin = UserEntity(
+            userRepo.save(UserEntity(
                 username = "admin",
                 password = passwordEncoder.encode("password"),
                 role = Role.ADMIN,
                 email = "test_admin@admin.test",
                 name = "Test",
                 surname = "Admin",
-            )
-            userRepo.save(admin)
+            ))
             logger.info("Default 'admin' added to database")
         }
+    }
 
-        if (!roomRepo.existsById("1")) {
-            val room = RoomEntity(
-                id = "1",
-                floor = 1,
-                roomNumber = 1,
-                capacity = 1,
-            )
-            roomRepo.save(room)
-            logger.info("Default 'room' added to database")
-        }
-        addTestEmployees()
+    private fun addTestRooms() {
+        if (!roomRepo.existsById("001"))
+            roomRepo.save(RoomEntity(number = "001", floor = 0, capacity = 2))
+        if (!roomRepo.existsById("002"))
+            roomRepo.save(RoomEntity(number = "002", floor = 0, capacity = 3))
+        if (!roomRepo.existsById("005"))
+            roomRepo.save(RoomEntity(number = "005", floor = 0, capacity = 1))
+        if (!roomRepo.existsById("121"))
+            roomRepo.save(RoomEntity(number = "121", floor = 1, capacity = 3))
+        if (!roomRepo.existsById("117"))
+            roomRepo.save(RoomEntity(number = "117", floor = 1, capacity = 4))
+        if (!roomRepo.existsById("316"))
+            roomRepo.save(RoomEntity(number = "316", floor = 3, capacity = 5))
+        if (!roomRepo.existsById("317"))
+            roomRepo.save(RoomEntity(number = "317", floor = 3, capacity = 2))
+        if (!roomRepo.existsById("319"))
+            roomRepo.save(RoomEntity(number = "319", floor = 3, capacity = 3))
     }
 
     private fun addTestEmployees() {

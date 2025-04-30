@@ -80,7 +80,7 @@ class UserService(
     }
 
     fun generatePassword(user: AddUserRequest): String {
-        return encodeString(user.name + "_" + user.surname + "_" + user.room.floor.toString() + "_" + user.room.roomNumber.toString() + "_" + user.checkInDate + "_" + user.checkOutDate,12)
+        return encodeString(user.name + "_" + user.surname + "_" + user.room.floor.toString() + "_" + user.room.number + "_" + user.checkInDate + "_" + user.checkOutDate,12)
     }
 
     fun generateUsername(user: AddUserRequest): String {
@@ -88,7 +88,7 @@ class UserService(
             user.name.take(4) +
                     "_" + user.surname.take(4) +
                     "_" + user.room.floor.toString() +
-                    "_" + user.room.roomNumber.toString()
+                    "_" + user.room.number
 
         return userEncode + "_" + encodeString(userEncode + "_" + user.checkInDate + "_" + user.checkOutDate, 4)
     }
