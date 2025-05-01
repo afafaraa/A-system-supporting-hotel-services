@@ -2,13 +2,12 @@ package inzynierka.myhotelassistant.services
 
 import inzynierka.myhotelassistant.controllers.AuthController
 import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserRequest
-import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.models.RegistrationCode
 import inzynierka.myhotelassistant.controllers.user.AddUserController
 import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserResponse
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
-import inzynierka.myhotelassistant.models.Role
-import inzynierka.myhotelassistant.models.UserEntity
+import inzynierka.myhotelassistant.models.user.Role
+import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.User
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Service
 import java.security.MessageDigest
 import java.time.Instant
 import inzynierka.myhotelassistant.exceptions.HttpException.UserNotFoundException
+import inzynierka.myhotelassistant.models.user.GuestData
 import java.time.format.DateTimeParseException
 
 @Service
@@ -39,11 +39,7 @@ class UserService(
             .build()
     }
 
-    fun save(user: UserEntity): UserEntity {
-        if (userRepository.existsByUsername(user.username))
-            throw HttpException.UserAlreadyExistsException("User already exists: \"${user.username}\"")
-        return userRepository.save(user)
-    }
+    fun save(user: UserEntity): UserEntity = userRepository.save(user)
 
     fun findByEmailOrThrow(email: String): UserEntity {
         return userRepository.findByEmail(email)
@@ -61,34 +57,35 @@ class UserService(
         val password: String = generatePassword(user)
         try {
             val guest = UserEntity(
-                name=user.name,
-                surname=user.surname,
-                email=user.email,
-                room=user.room,
-                role=Role.GUEST,
-                username=username,
-                password=passwordEncoder.encode(password),
-                checkInDate=Instant.parse(user.checkInDate),
-                checkOutDate=Instant.parse(user.checkOutDate),
+                name = user.name,
+                surname = user.surname,
+                email = user.email,
+                role = Role.GUEST,
+                username = username,
+                password = passwordEncoder.encode(password),
+                guestData = GuestData(
+                    roomNumber = user.roomNumber,
+                    checkInDate=Instant.parse(user.checkInDate),
+                    checkOutDate=Instant.parse(user.checkOutDate),
+                ),
             )
             val saved = save(guest)
-            codeService.generateAndSendForUser(saved.id!!, saved.email, saved.checkOutDate!!)
+            codeService.generateAndSendForUser(saved.id!!, saved.email, saved.guestData!!.checkOutDate)
         } catch (e: DateTimeParseException) {
             throw InvalidArgumentException(e.message ?: "Invalid date format")
         }
-        return AddUserResponse(username = username, password = password,)
+        return AddUserResponse(username = username, password = password)
     }
 
     fun generatePassword(user: AddUserRequest): String {
-        return encodeString(user.name + "_" + user.surname + "_" + user.room.floor.toString() + "_" + user.room.number + "_" + user.checkInDate + "_" + user.checkOutDate,12)
+        return encodeString(user.name + "_" + user.surname + "_" + user.roomNumber + "_" + user.checkInDate + "_" + user.checkOutDate,12)
     }
 
     fun generateUsername(user: AddUserRequest): String {
         val userEncode =
             user.name.take(4) +
                     "_" + user.surname.take(4) +
-                    "_" + user.room.floor.toString() +
-                    "_" + user.room.number
+                    "_" + user.roomNumber
 
         return userEncode + "_" + encodeString(userEncode + "_" + user.checkInDate + "_" + user.checkOutDate, 4)
     }
@@ -118,7 +115,6 @@ class UserService(
             name = request.name.lowercase().replaceFirstChar { it.uppercase() },
             surname = request.surname.lowercase().replaceFirstChar { it.uppercase() },
             role = Role.ADMIN,
-            checkInDate = Instant.now(),
         )
     }
 }

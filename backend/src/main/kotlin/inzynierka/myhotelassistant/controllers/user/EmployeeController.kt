@@ -1,6 +1,6 @@
 package inzynierka.myhotelassistant.controllers.user
 
-import inzynierka.myhotelassistant.models.UserEntity
+import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.EmployeeService
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email

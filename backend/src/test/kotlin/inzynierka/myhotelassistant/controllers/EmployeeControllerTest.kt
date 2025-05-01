@@ -5,8 +5,8 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import inzynierka.myhotelassistant.configs.RSAKeyConfig
 import inzynierka.myhotelassistant.configs.SecurityConfig
 import inzynierka.myhotelassistant.controllers.user.EmployeeController
-import inzynierka.myhotelassistant.models.Role
-import inzynierka.myhotelassistant.models.UserEntity
+import inzynierka.myhotelassistant.models.user.Role
+import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.EmployeeService
 import jakarta.validation.Validation
 import org.junit.jupiter.api.Test

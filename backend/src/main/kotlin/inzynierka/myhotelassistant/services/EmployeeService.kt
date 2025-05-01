@@ -2,8 +2,8 @@ package inzynierka.myhotelassistant.services
 
 import inzynierka.myhotelassistant.controllers.user.EmployeeController
 import inzynierka.myhotelassistant.exceptions.HttpException.*
-import inzynierka.myhotelassistant.models.Role
-import inzynierka.myhotelassistant.models.UserEntity
+import inzynierka.myhotelassistant.models.user.Role
+import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.security.crypto.password.PasswordEncoder

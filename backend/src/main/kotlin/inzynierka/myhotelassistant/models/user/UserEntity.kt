@@ -1,12 +1,9 @@
-package inzynierka.myhotelassistant.models
+package inzynierka.myhotelassistant.models.user
 
-import inzynierka.myhotelassistant.models.room.RoomEntity
-import inzynierka.myhotelassistant.models.order.OrderEntity
 import inzynierka.myhotelassistant.models.notification.NotificationEntity
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
-import java.time.Instant
 
 @Document(collection = "users")
 data class UserEntity(
@@ -20,16 +17,13 @@ data class UserEntity(
 
     @Indexed(unique = true)
     var username: String,
-
     var password: String,
 
     val name: String,
     val surname: String,
 
-    val room: RoomEntity? = null,
-    val checkInDate: Instant? = null,
-    val checkOutDate: Instant? = null,
+    val guestData: GuestData? = null,
+    val employeeData: EmployeeData? = null,
 
-    val orders: MutableList<OrderEntity> = mutableListOf(),
     val notifications: MutableList<NotificationEntity> = mutableListOf(),
 )

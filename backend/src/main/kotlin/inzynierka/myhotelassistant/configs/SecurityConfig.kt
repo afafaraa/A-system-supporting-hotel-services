@@ -6,7 +6,7 @@ import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
 import inzynierka.myhotelassistant.models.JWTType
-import inzynierka.myhotelassistant.models.Role
+import inzynierka.myhotelassistant.models.user.Role
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AbstractAuthenticationToken

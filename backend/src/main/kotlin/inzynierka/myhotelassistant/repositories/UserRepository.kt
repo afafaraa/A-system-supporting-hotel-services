@@ -1,10 +1,11 @@
 package inzynierka.myhotelassistant.repositories
 
-import inzynierka.myhotelassistant.models.Role
-import inzynierka.myhotelassistant.models.UserEntity
+import inzynierka.myhotelassistant.models.user.Role
+import inzynierka.myhotelassistant.models.user.UserEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.data.mongodb.repository.Query
 import org.springframework.stereotype.Repository
 import java.time.Instant
 
@@ -21,5 +22,6 @@ interface UserRepository : MongoRepository<UserEntity, String> {
 
     fun findByRoleIn(roles: List<Role>, pageable: Pageable): Page<UserEntity>
 
+    @Query("{ 'role' : ?0, 'guestData.checkOutDate' : { \$lt: ?1 } }")
     fun deleteByRoleAndCheckOutDateBefore(role: Role, before: Instant): Long
 }

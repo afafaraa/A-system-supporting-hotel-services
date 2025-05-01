@@ -2,7 +2,7 @@ package inzynierka.myhotelassistant.services
 
 import inzynierka.myhotelassistant.controllers.user.EmployeeController
 import inzynierka.myhotelassistant.exceptions.HttpException
-import inzynierka.myhotelassistant.models.Role
+import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.repositories.UserRepository
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll

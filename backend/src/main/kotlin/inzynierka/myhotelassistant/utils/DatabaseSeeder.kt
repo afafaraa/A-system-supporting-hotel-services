@@ -1,8 +1,9 @@
 package inzynierka.myhotelassistant.utils
 
-import inzynierka.myhotelassistant.models.Role
-import inzynierka.myhotelassistant.models.UserEntity
+import inzynierka.myhotelassistant.models.user.Role
+import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.models.room.RoomEntity
+import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
 import jakarta.annotation.PostConstruct
@@ -10,6 +11,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 @Profile("dev")
 @Component
@@ -37,6 +40,11 @@ class DatabaseSeeder(
                 email = "test_user@user.test",
                 name = "Test",
                 surname = "User",
+                guestData = GuestData(
+                    roomNumber = "002",
+                    checkInDate = Instant.now(),
+                    checkOutDate = Instant.now().plus(7, ChronoUnit.DAYS),
+                )
             ))
             logger.info("Default 'user' added to database")
         }
