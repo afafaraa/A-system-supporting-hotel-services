@@ -36,18 +36,16 @@ export default function AddGuestPage() {
 
     const token = localStorage.getItem('ACCESS_TOKEN');
 
-    useEffect(() => {
-        axiosApi.get<Room[]>('/rooms',{ headers: { Authorization: `Bearer ${token}` } })
-          .then(res => setRooms(res.data))
-          .catch(() => setError('Nie udało się pobrać listy pokoi'));
-    }, []);
-
     if (!token) {
         setError('Brak tokena. ');
         return;
     }
 
-
+    useEffect(() => {
+        axiosApi.get<Room[]>('/rooms',{ headers: { Authorization: `Bearer ${token}` } })
+          .then(res => setRooms(res.data))
+          .catch(() => setError('Nie udało się pobrać listy pokoi'));
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
