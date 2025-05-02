@@ -1,10 +1,13 @@
 import {Outlet} from "react-router-dom";
 import {Container} from "@mui/material";
+import Navbar from "./Navbar.tsx";
 
 function AuthenticatedLayout() {
   return (
     <Container disableGutters maxWidth="xl" sx={{height: "100vh"}}>
-      <Outlet />
+      <Navbar>
+        <Outlet />
+      </Navbar>
     </Container>
   )
 }

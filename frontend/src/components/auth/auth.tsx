@@ -23,7 +23,7 @@ export default function useAuthenticateOnFrontend() {
                     const decoded = jwtDecode(res.data.accessToken);
                     console.log(decoded)
                     localStorage.setItem('ACCESS_TOKEN', res.data.accessToken)
-                    dispatch(setUser({isAuthorized: true}))
+                    dispatch(setUser({isAuthorized: true, username: decoded.sub, role: decoded.role}))
                 } else {
                     dispatch(setUser({isAuthorized: false}))
                 }
@@ -55,7 +55,7 @@ export default function useAuthenticateOnFrontend() {
                     await refreshToken()
                 } else {
                     console.log("Access token valid");
-                    dispatch(setUser({isAuthorized: true}));
+                    dispatch(setUser({isAuthorized: true, username: decoded.sub, role: decoded.role}));
                 }
             } catch (error) {
                 console.error("Failed to decode access token:", error);

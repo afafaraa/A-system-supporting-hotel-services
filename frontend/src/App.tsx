@@ -8,6 +8,7 @@ import AuthenticatedLayout from "./components/layout/AuthenticatedLayout.tsx";
 import PublicLayout from "./components/layout/PublicLayout.tsx";
 import RegisterPage from './pages/user/RegisterPage.tsx';
 import AddReservationPage from './pages/AddReservationPage.tsx'
+import LogoutPage from "./pages/LogoutPage.tsx";
 
 function App(){
   return (
@@ -20,6 +21,7 @@ function App(){
         </Route>
 
         <Route element={<PublicLayout />}>
+          <Route path="/logout" element={<LogoutPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/reset-password-email" element={<SendResetPasswordEmail />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
