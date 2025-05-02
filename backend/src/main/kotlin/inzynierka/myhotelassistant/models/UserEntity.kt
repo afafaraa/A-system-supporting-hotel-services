@@ -19,6 +19,6 @@ data class UserEntity(
     val checkInDate: Instant? = null,
     val checkOutDate: Instant? = null,
     var role: Role = Role.GUEST,
-    val orders: MutableList<OrderEntity> = mutableListOf(),
-    val notifications: MutableList<NotificationEntity> = mutableListOf(),
+    var orders: MutableList<OrderEntity> = mutableListOf(),
+    var notifications: MutableList<NotificationEntity> = mutableListOf(),
 )

@@ -9,6 +9,11 @@ import PublicLayout from "./components/layout/PublicLayout.tsx";
 import RegisterPage from './pages/user/RegisterPage.tsx';
 import AddReservationPage from './pages/AddReservationPage.tsx'
 import LogoutPage from "./pages/LogoutPage.tsx";
+import AvailableServicesPage from "./pages/guest/AvailableServicesPage.tsx";
+import NotificationsPage from "./pages/guest/NotificationsPage.tsx";
+import PastServicesPage from "./pages/guest/PastServicesPage.tsx";
+import RequestedServicesPage from "./pages/guest/RequestedServicesPage.tsx";
+import ShoppingCartPage from "./pages/guest/ShoppingCartPage.tsx";
 
 function App(){
   return (
@@ -18,6 +23,11 @@ function App(){
         <Route element={<AuthenticatedLayout />}>
           <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
           <Route path="/add-reservation" element={<ProtectedRoute><AddReservationPage /></ProtectedRoute>} />
+          <Route path="/available-services" element={<ProtectedRoute><AvailableServicesPage /></ProtectedRoute>} />
+          <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>}/>
+          <Route path="/past-services" element={<ProtectedRoute><PastServicesPage /></ProtectedRoute>}/>
+          <Route path="/requested-services" element={<ProtectedRoute><RequestedServicesPage /></ProtectedRoute>}/>
+          <Route path="/shopping-cart" element={<ProtectedRoute><ShoppingCartPage /></ProtectedRoute>}/>
         </Route>
 
         <Route element={<PublicLayout />}>
