@@ -18,3 +18,6 @@ spring:
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
+logging:
+  level:
+    inzynierka.myhotelassistant: DEBUG

@@ -1,7 +1,7 @@
 package inzynierka.myhotelassistant.utils
 
-import inzynierka.myhotelassistant.models.Role
-import inzynierka.myhotelassistant.models.UserEntity
+import inzynierka.myhotelassistant.models.user.Role
+import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
 import org.slf4j.LoggerFactory
 import org.springframework.boot.CommandLineRunner
@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.core.env.Environment
 import org.springframework.security.crypto.password.PasswordEncoder
-import java.time.Instant
 import java.util.*
 
 @Profile("!test")
@@ -91,7 +90,6 @@ class InitialAdminSetup(
             name = firstName.lowercase().replaceFirstChar { it.uppercase() },
             surname = lastName.lowercase().replaceFirstChar { it.uppercase() },
             role = Role.ADMIN,
-            checkInDate = Instant.now(),
         )
         userRepo.save(admin)
 

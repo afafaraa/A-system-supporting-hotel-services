@@ -1,16 +1,15 @@
-package inzynierka.myhotelassistant
+package inzynierka.myhotelassistant.controllers
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import inzynierka.myhotelassistant.configs.RSAKeyConfig
-import inzynierka.myhotelassistant.controllers.AuthController
-import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.configs.SecurityConfig
-import inzynierka.myhotelassistant.controllers.HomeController
+import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.services.UserService
+import inzynierka.myhotelassistant.utils.EmailSender
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.context.annotation.Import
@@ -21,10 +20,8 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @WebMvcTest(HomeController::class, AuthController::class)
 @Import(SecurityConfig::class, RSAKeyConfig::class, TokenService::class)
@@ -39,29 +36,33 @@ class HomeControllerTest {
     @MockitoBean
     private lateinit var userService: UserService
 
+    @MockitoBean
+    private lateinit var emailSender: EmailSender
+
     @BeforeEach
     fun setup() {
         val user = User.withUsername("user")
             .password(passwordEncoder.encode("password"))
             .roles("USER")
             .build()
-        given(userService.loadUserByUsername("user")).willReturn(user)
+        BDDMockito.given(userService.loadUserByUsername("user")).willReturn(user)
     }
 
     @Test
     @Throws(Exception::class)
     fun rootWhenUnauthenticatedThen401() {
-        mvc.perform(get("/"))
-            .andExpect(status().isUnauthorized())
+        mvc.perform(MockMvcRequestBuilders.get("/"))
+            .andExpect(MockMvcResultMatchers.status().isUnauthorized())
     }
 
     @Test
     @Throws(Exception::class)
     fun rootWhenUnauthenticatedThenSaysHelloUser() {
-        val result: MvcResult = mvc.perform(post("/open/token")
+        val result: MvcResult = mvc.perform(
+            MockMvcRequestBuilders.post("/open/token")
             .content("{\"username\":\"user\",\"password\":\"password\"}")
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk)
+            .andExpect(MockMvcResultMatchers.status().isOk)
             .andReturn()
 
         val responseJson = result.response.contentAsString
@@ -71,18 +72,18 @@ class HomeControllerTest {
         val accessToken = jsonMap["accessToken"]
         println("Access Token: $accessToken")
 
-        mvc.perform(get("/").header("Authorization", "Bearer $accessToken"))
-            .andExpect(content().string("Hello, user!"))
+        mvc.perform(MockMvcRequestBuilders.get("/").header("Authorization", "Bearer $accessToken"))
+            .andExpect(MockMvcResultMatchers.content().string("Hello, user!"))
 
-        mvc.perform(get("/secured").header("Authorization", "Bearer $accessToken"))
-            .andExpect(status().isForbidden)
+        mvc.perform(MockMvcRequestBuilders.get("/secured").header("Authorization", "Bearer $accessToken"))
+            .andExpect(MockMvcResultMatchers.status().isForbidden)
     }
 
     @Test
     @WithMockUser
     @Throws(Exception::class)
     fun rootWithMockUserStatusIsOK() {
-        mvc.perform(get("/"))
-            .andExpect(status().isOk())
+        mvc.perform(MockMvcRequestBuilders.get("/"))
+            .andExpect(MockMvcResultMatchers.status().isOk())
     }
 }
