@@ -11,9 +11,8 @@ import {
 } from '@mui/material';
 
 interface Room {
-    id: string;
+    number: string;
     floor: number;
-    roomNumber: number;
     capacity: number;
 }
 
@@ -133,8 +132,8 @@ export default function AddGuestPage() {
                         required
                     >
                         {rooms.map(room => (
-                            <MenuItem key={room.id} value={room.id}>
-                                Piętro {room.floor}, pokój {room.roomNumber} (miejsc: {room.capacity})
+                            <MenuItem key={room.number} value={room.number}>
+                                Piętro {room.floor}, pokój {room.number} (miejsc: {room.capacity})
                             </MenuItem>
                         ))}
                     </TextField>

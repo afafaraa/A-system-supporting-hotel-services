@@ -5,7 +5,8 @@ import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
-import inzynierka.myhotelassistant.models.Role
+import inzynierka.myhotelassistant.models.JWTType
+import inzynierka.myhotelassistant.models.user.Role
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AbstractAuthenticationToken
@@ -17,7 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.oauth2.jwt.*
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
 import org.springframework.security.web.DefaultSecurityFilterChain
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -25,9 +25,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.core.convert.converter.Converter
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 
 @Configuration
 @EnableWebSecurity
@@ -48,7 +50,8 @@ class SecurityConfig {
         return RoleHierarchyImpl.fromHierarchy(
             "ROLE_ADMIN > ROLE_MANAGER" + "\n" +
                     "ROLE_MANAGER > ROLE_RECEPTIONIST" + "\n" +
-                    "ROLE_RECEPTIONIST > ROLE_EMPLOYEE"
+                    "ROLE_RECEPTIONIST > ROLE_EMPLOYEE" + "\n" +
+                    "ROLE_ADMIN > ROLE_GUEST"
         )
     }
 
@@ -72,13 +75,18 @@ class SecurityConfig {
 
     @Bean
     fun jwtAuthenticationConverter(): Converter<Jwt, AbstractAuthenticationToken> {
-        val converter = JwtAuthenticationConverter()
-        converter.setJwtGrantedAuthoritiesConverter { jwt: Jwt ->
-            (jwt.getClaimAsString("role") ?: "")
-                .split(" ")
-                .map { role -> SimpleGrantedAuthority(role) }
+        return object : Converter<Jwt, AbstractAuthenticationToken> {
+            override fun convert(jwt: Jwt): AbstractAuthenticationToken? {
+                val type = jwt.getClaimAsString("type")
+                if (type != JWTType.ACCESS.name) {
+                    throw BadCredentialsException("Invalid token type: expected ACCESS, got $type")
+                }
+                val authorities = (jwt.getClaimAsString("role") ?: "")
+                    .split(" ")
+                    .map { role -> SimpleGrantedAuthority(role) }
+                return JwtAuthenticationToken(jwt, authorities)
+            }
         }
-        return converter
     }
 
     @Bean

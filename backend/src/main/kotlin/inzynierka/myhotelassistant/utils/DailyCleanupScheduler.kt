@@ -1,6 +1,6 @@
 package inzynierka.myhotelassistant.utils
 
-import inzynierka.myhotelassistant.models.Role
+import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.repositories.RegistrationCodeRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
 import org.slf4j.LoggerFactory

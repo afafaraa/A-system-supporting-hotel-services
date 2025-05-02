@@ -1,6 +1,7 @@
 import {Outlet} from "react-router-dom";
 import {Container} from "@mui/material";
 import Navbar from "./Navbar.tsx";
+import DebugNavigationMenu from "../debug/DebugNavigationMenu.tsx";
 
 function AuthenticatedLayout() {
   return (
@@ -8,6 +9,8 @@ function AuthenticatedLayout() {
       <Navbar>
         <Outlet />
       </Navbar>
+        <DebugNavigationMenu />
+        <Outlet />
     </Container>
   )
 }

@@ -6,10 +6,7 @@ function SendResetPasswordEmail(){
 
     const sendEmail = async () => {
         const res = await axiosApi.post(
-            '/open/send-reset-password-email',
-            {
-                email
-            }
+            '/open/send-reset-password-email', { email: email }
         )
         console.log(res);
     }

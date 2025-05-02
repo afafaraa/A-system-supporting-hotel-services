@@ -1,11 +1,9 @@
 package inzynierka.myhotelassistant.controllers.user
 
-import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.services.UserService
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.Size
-import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PostMapping
@@ -24,16 +22,18 @@ class AddUserController(
 
         @field:Pattern(
             regexp = "^[A-Za-z-]{2,20}$",
-            message = "Name must be 2-20 characters long and may include '-'.")
+            message = "Name must be 2-20 characters long and may include '-'")
         val name: String,
 
         @field:Pattern(
             regexp = "^[A-Za-z-]{2,30}$",
-            message = "Surname must be 2-30 characters long and may include '-'.")
+            message = "Surname must be 2-30 characters long and may include '-'")
         val surname: String,
 
-        @field:NotNull(message = "Room is required")
-        val room: RoomEntity,
+        @field:Pattern(
+            regexp = "^[0-9]{3,4}$",
+            message = "Room number must only contain digits and be 3-4 digits long")
+        val roomNumber: String,
 
         @field:Pattern(
             regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z",
