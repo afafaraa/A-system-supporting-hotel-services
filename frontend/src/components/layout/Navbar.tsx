@@ -1,5 +1,4 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
@@ -9,8 +8,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import {Outlet} from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { selectUser, setUser } from "../../redux/slices/userSlice";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../redux/slices/userSlice";
 import {useNavigate} from "react-router-dom";
 
 const drawerWidth = 240;
@@ -43,11 +42,11 @@ function Navbar(props: Props) {
 
   console.log(user)
   const nav = [
-    {text: 'Available services', navTo: '' , roles: ['ROLE_ADMIN', 'ROLE_GUEST']},
-    {text: 'Shopping cart', navTo: '', roles: ['ROLE_GUEST']},
-    {text: 'Requested services', navTo: '', roles: ['ROLE_GUEST']},
-    {text: 'Past services', navTo: '', roles: ['ROLE_GUEST']},
-    {text: 'Notifications', navTo: '', roles: ['ROLE_GUEST']},
+    {text: 'Available services', navTo: '/available-services' , roles: ['ROLE_GUEST']},
+    {text: 'Shopping cart', navTo: '/shopping-cart', roles: ['ROLE_GUEST']},
+    {text: 'Requested services', navTo: '/requested-services', roles: ['ROLE_GUEST']},
+    {text: 'Past services', navTo: '/past-services', roles: ['ROLE_GUEST']},
+    {text: 'Notifications', navTo: '/notifications', roles: ['ROLE_GUEST']},
     {text: 'Logout', navTo: '/logout', roles: ['ROLE_GUEST']}
   ]
 
