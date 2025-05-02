@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axiosApi from '../middleware/axiosApi';
+import { AxiosError } from 'axios';
 import {
     Box,
     FormControl,
@@ -35,17 +36,16 @@ export default function AddGuestPage() {
     const [error, setError] = useState<string | null>(null);
 
     const token = localStorage.getItem('ACCESS_TOKEN');
-
-    if (!token) {
-        setError('Brak tokena. ');
-        return;
-    }
-
+    
     useEffect(() => {
+        if (!token) {
+            setError('Brak tokena. ');
+            return;
+        }
         axiosApi.get<Room[]>('/rooms',{ headers: { Authorization: `Bearer ${token}` } })
           .then(res => setRooms(res.data))
           .catch(() => setError('Nie udało się pobrać listy pokoi'));
-    }, []);
+    }, [token]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -83,9 +83,14 @@ export default function AddGuestPage() {
                 checkInDate: '',
                 checkOutDate: ''
             });
-        } catch (err) {
+        } catch (err: unknown) {
             console.error(err);
-            setError(err.response?.data?.message || 'Błąd podczas dodawania gościa');
+            if (err instanceof AxiosError && err.response) {
+                setError(err.response.data?.message || 'Błąd podczas dodawania gościa');
+            } else {
+                setError('Nieznany błąd');
+            }
+
         }
     };
 

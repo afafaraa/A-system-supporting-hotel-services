@@ -4,6 +4,14 @@ import { selectUser, setUser } from "../../redux/slices/userSlice";
 import axiosApi from "../../middleware/axiosApi";
 import { jwtDecode } from "jwt-decode";
 
+interface CustomJwtPayload {
+    iat: number,
+    exp: number,
+    sub: string,
+    type: string,
+    role: string,
+}
+
 export default function useAuthenticateOnFrontend() {
     const dispatch = useDispatch();
     const isAuthorized = useSelector(selectUser);  // Get current authorization status
@@ -20,7 +28,7 @@ export default function useAuthenticateOnFrontend() {
                 );
                 console.log("Refresh token data: ",res)
                 if (res.data) {
-                    const decoded = jwtDecode(res.data.accessToken);
+                    const decoded = jwtDecode<CustomJwtPayload>(res.data.accessToken);
                     console.log(decoded)
                     localStorage.setItem('ACCESS_TOKEN', res.data.accessToken)
                     dispatch(setUser({isAuthorized: true, username: decoded.sub, role: decoded.role}))
@@ -45,7 +53,7 @@ export default function useAuthenticateOnFrontend() {
             }
 
             try {
-                const decoded = jwtDecode(token);
+                const decoded = jwtDecode<CustomJwtPayload>(token);
                 const tokenExpiration = decoded.exp;
                 const now = Date.now() / 1000;
                 console.log("Access token data: ",decoded, tokenExpiration, now);

@@ -16,10 +16,10 @@ const drawerWidth = 240;
 
 interface Props {
   window?: () => Window;
+  children?: React.ReactNode;
 }
 
-function Navbar(props: Props) {
-  const { window } = props;
+function Navbar({ window }: Props) {
   const user = useSelector(selectUser);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
@@ -54,7 +54,7 @@ function Navbar(props: Props) {
     <div>
       <List>
         {nav.map((item, index) =>
-          item.roles.indexOf(user.user.role) >= 0 && <ListItem key={index} disablePadding>
+          item.roles.indexOf(user.role) >= 0 && <ListItem key={index} disablePadding>
               <ListItemButton onClick={() => navigate(item.navTo)}>
                 <ListItemIcon>
                   icon
