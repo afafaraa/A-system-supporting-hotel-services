@@ -1,7 +1,5 @@
 package inzynierka.myhotelassistant.utils
 
-import inzynierka.myhotelassistant.models.Role
-import inzynierka.myhotelassistant.models.UserEntity
 import inzynierka.myhotelassistant.models.order.OrderEntity
 import inzynierka.myhotelassistant.models.order.OrderStatus
 import inzynierka.myhotelassistant.models.user.Role
@@ -25,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.time.Instant
 
 @Profile("dev")
 @Component
@@ -41,10 +38,9 @@ class DatabaseSeeder(
 
     @PostConstruct
     fun addDefaultUserToDatabase() {
-        addTestAdminAndUser()
         addTestRooms()
+        addTestAdminAndUser()
         addTestEmployees()
-        addUsers()
         addServices()
         addOrders()
         updateUsers()
@@ -181,7 +177,7 @@ class DatabaseSeeder(
         val user = userRepo.findByUsername("user")
         if (user != null) {
             val allOrders = orderRepository.findAll()
-            user.orders = allOrders.toMutableList()
+            user.guestData?.orders = allOrders.toMutableList()
             userRepo.save(user)
             logger.info("Added ${allOrders.size} orders to user '${user.username}'")
         } else {
