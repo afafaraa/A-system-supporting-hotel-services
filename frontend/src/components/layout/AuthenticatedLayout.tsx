@@ -6,11 +6,12 @@ import DebugNavigationMenu from "../debug/DebugNavigationMenu.tsx";
 function AuthenticatedLayout() {
   return (
     <Container disableGutters maxWidth="xl" sx={{height: "100vh"}}>
+      <DebugNavigationMenu />
       <Navbar>
         <Outlet />
       </Navbar>
-        <DebugNavigationMenu />
-        <Outlet />
+        {/*<DebugNavigationMenu />*/}
+        {/*<Outlet />*/}
     </Container>
   )
 }
