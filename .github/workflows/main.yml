@@ -80,3 +80,7 @@ jobs:
       - name: Run tests
         run: ./gradlew test --no-daemon
         working-directory: backend
+
+      - name: Run Spotless Check
+        run: ./gradlew spotlessCheck --no-daemon
+        working-directory: backend
