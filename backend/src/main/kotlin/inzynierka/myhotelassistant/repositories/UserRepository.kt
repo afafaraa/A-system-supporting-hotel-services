@@ -11,7 +11,6 @@ import java.time.Instant
 
 @Repository
 interface UserRepository : MongoRepository<UserEntity, String> {
-
     fun findByUsername(username: String): UserEntity?
 
     fun findByEmail(email: String): UserEntity?
@@ -20,8 +19,14 @@ interface UserRepository : MongoRepository<UserEntity, String> {
 
     fun findByRole(role: Role): List<UserEntity>
 
-    fun findByRoleIn(roles: List<Role>, pageable: Pageable): Page<UserEntity>
+    fun findByRoleIn(
+        roles: List<Role>,
+        pageable: Pageable,
+    ): Page<UserEntity>
 
     @Query("{ 'role' : ?0, 'guestData.checkOutDate' : { \$lt: ?1 } }")
-    fun deleteByRoleAndCheckOutDateBefore(role: Role, before: Instant): Long
+    fun deleteByRoleAndCheckOutDateBefore(
+        role: Role,
+        before: Instant,
+    ): Long
 }

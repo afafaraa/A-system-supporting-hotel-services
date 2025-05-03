@@ -11,5 +11,5 @@ data class RegistrationCode(
     val code: String,
     val createdAt: Instant = Instant.now(),
     val expiresAt: Instant,
-    var used: Boolean = false
+    var used: Boolean = false,
 )

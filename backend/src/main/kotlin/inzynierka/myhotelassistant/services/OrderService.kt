@@ -4,5 +4,6 @@ import inzynierka.myhotelassistant.repositories.OrderRepository
 import org.springframework.stereotype.Service
 
 @Service
-class OrderService(val orderRepository: OrderRepository) {
-}
+class OrderService(
+    val orderRepository: OrderRepository,
+)

@@ -9,11 +9,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/services")
 class ServicesController(
-    private val serviceRepository: ServiceRepository
+    private val serviceRepository: ServiceRepository,
 ) {
-
     @GetMapping("/available")
-    fun getAvailableServices() : List<ServiceEntity> {
-        return serviceRepository.findAll().filter { !it.disabled }
-    }
+    fun getAvailableServices(): List<ServiceEntity> = serviceRepository.findAll().filter { !it.disabled }
 }

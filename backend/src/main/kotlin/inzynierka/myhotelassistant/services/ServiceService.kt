@@ -6,15 +6,12 @@ import org.springframework.stereotype.Service
 
 @Service
 class ServiceService(
-    private val serviceRepository: ServiceRepository
-)  {
-
-    fun findByName(name: String) : ServiceEntity? {
-        return serviceRepository.findAll()
+    private val serviceRepository: ServiceRepository,
+) {
+    fun findByName(name: String): ServiceEntity? =
+        serviceRepository
+            .findAll()
             .find { it.name.equals(name, ignoreCase = true) }
-    }
 
-    fun save(service: ServiceEntity): ServiceEntity {
-        return serviceRepository.save(service)
-    }
+    fun save(service: ServiceEntity): ServiceEntity = serviceRepository.save(service)
 }

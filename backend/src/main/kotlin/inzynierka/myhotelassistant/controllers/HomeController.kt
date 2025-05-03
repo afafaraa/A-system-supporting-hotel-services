@@ -6,7 +6,6 @@ import java.security.Principal
 
 @RestController
 class HomeController {
-
     @GetMapping("/")
     fun home(principal: Principal) = "Hello, ${principal.name}!"
 

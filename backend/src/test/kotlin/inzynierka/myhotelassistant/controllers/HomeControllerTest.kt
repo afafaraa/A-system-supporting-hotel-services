@@ -26,7 +26,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 @WebMvcTest(HomeController::class, AuthController::class)
 @Import(SecurityConfig::class, RSAKeyConfig::class, TokenService::class)
 class HomeControllerTest {
-
     @Autowired
     private lateinit var mvc: MockMvc
 
@@ -41,29 +40,35 @@ class HomeControllerTest {
 
     @BeforeEach
     fun setup() {
-        val user = User.withUsername("user")
-            .password(passwordEncoder.encode("password"))
-            .roles("USER")
-            .build()
+        val user =
+            User
+                .withUsername("user")
+                .password(passwordEncoder.encode("password"))
+                .roles("USER")
+                .build()
         BDDMockito.given(userService.loadUserByUsername("user")).willReturn(user)
     }
 
     @Test
     @Throws(Exception::class)
     fun rootWhenUnauthenticatedThen401() {
-        mvc.perform(MockMvcRequestBuilders.get("/"))
+        mvc
+            .perform(MockMvcRequestBuilders.get("/"))
             .andExpect(MockMvcResultMatchers.status().isUnauthorized())
     }
 
     @Test
     @Throws(Exception::class)
     fun rootWhenUnauthenticatedThenSaysHelloUser() {
-        val result: MvcResult = mvc.perform(
-            MockMvcRequestBuilders.post("/open/token")
-            .content("{\"username\":\"user\",\"password\":\"password\"}")
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andReturn()
+        val result: MvcResult =
+            mvc
+                .perform(
+                    MockMvcRequestBuilders
+                        .post("/open/token")
+                        .content("{\"username\":\"user\",\"password\":\"password\"}")
+                        .contentType(MediaType.APPLICATION_JSON),
+                ).andExpect(MockMvcResultMatchers.status().isOk)
+                .andReturn()
 
         val responseJson = result.response.contentAsString
         val mapper = jacksonObjectMapper()
@@ -72,10 +77,12 @@ class HomeControllerTest {
         val accessToken = jsonMap["accessToken"]
         println("Access Token: $accessToken")
 
-        mvc.perform(MockMvcRequestBuilders.get("/").header("Authorization", "Bearer $accessToken"))
+        mvc
+            .perform(MockMvcRequestBuilders.get("/").header("Authorization", "Bearer $accessToken"))
             .andExpect(MockMvcResultMatchers.content().string("Hello, user!"))
 
-        mvc.perform(MockMvcRequestBuilders.get("/secured").header("Authorization", "Bearer $accessToken"))
+        mvc
+            .perform(MockMvcRequestBuilders.get("/secured").header("Authorization", "Bearer $accessToken"))
             .andExpect(MockMvcResultMatchers.status().isForbidden)
     }
 
@@ -83,7 +90,8 @@ class HomeControllerTest {
     @WithMockUser
     @Throws(Exception::class)
     fun rootWithMockUserStatusIsOK() {
-        mvc.perform(MockMvcRequestBuilders.get("/"))
+        mvc
+            .perform(MockMvcRequestBuilders.get("/"))
             .andExpect(MockMvcResultMatchers.status().isOk())
     }
 }

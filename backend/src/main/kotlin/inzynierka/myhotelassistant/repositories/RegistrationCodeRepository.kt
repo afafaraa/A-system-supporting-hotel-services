@@ -8,5 +8,6 @@ import java.time.Instant
 @Repository
 interface RegistrationCodeRepository : MongoRepository<RegistrationCode, String> {
     fun findByCode(code: String): RegistrationCode?
+
     fun deleteByExpiresAtBefore(time: Instant): Long
 }

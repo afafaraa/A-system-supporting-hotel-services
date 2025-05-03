@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 import java.time.Instant
 
 @Document(collection = "orders")
-data class OrderEntity (
+data class OrderEntity(
     @Id val id: String? = null,
     val serviceId: String,
     val orderDate: Instant = Instant.now(),

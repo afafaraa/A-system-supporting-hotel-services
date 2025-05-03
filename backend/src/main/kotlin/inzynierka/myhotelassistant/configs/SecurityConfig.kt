@@ -9,69 +9,76 @@ import inzynierka.myhotelassistant.models.JWTType
 import inzynierka.myhotelassistant.models.user.Role
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.convert.converter.Converter
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.ProviderManager
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.oauth2.jwt.*
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.security.oauth2.jwt.JwtDecoder
+import org.springframework.security.oauth2.jwt.JwtEncoder
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.security.web.DefaultSecurityFilterChain
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import org.springframework.core.convert.converter.Converter
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy
-import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
-import org.springframework.security.authentication.BadCredentialsException
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfig {
-
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
     @Bean
-    fun authManager(userDetailsService: UserDetailsService, passwordEncoder: PasswordEncoder): AuthenticationManager {
+    fun authManager(
+        userDetailsService: UserDetailsService,
+        passwordEncoder: PasswordEncoder,
+    ): AuthenticationManager {
         val authProvider = DaoAuthenticationProvider(passwordEncoder)
         authProvider.setUserDetailsService(userDetailsService)
         return ProviderManager(authProvider)
     }
 
     @Bean
-    fun roleHierarchy(): RoleHierarchy {
-        return RoleHierarchyImpl.fromHierarchy(
+    fun roleHierarchy(): RoleHierarchy =
+        RoleHierarchyImpl.fromHierarchy(
             "ROLE_ADMIN > ROLE_MANAGER" + "\n" +
-                    "ROLE_MANAGER > ROLE_RECEPTIONIST" + "\n" +
-                    "ROLE_RECEPTIONIST > ROLE_EMPLOYEE" + "\n" +
-                    "ROLE_ADMIN > ROLE_GUEST"
+                "ROLE_MANAGER > ROLE_RECEPTIONIST" + "\n" +
+                "ROLE_RECEPTIONIST > ROLE_EMPLOYEE" + "\n" +
+                "ROLE_ADMIN > ROLE_GUEST",
         )
-    }
 
     @Bean
-    fun securityFilterChain(http: HttpSecurity): DefaultSecurityFilterChain {
-        return http
+    fun securityFilterChain(http: HttpSecurity): DefaultSecurityFilterChain =
+        http
             .cors { cors -> cors.configurationSource(corsConfigurationSource()) }
             .csrf { csrf -> csrf.disable() }
-            .authorizeHttpRequests { auth -> auth
-                .requestMatchers("/open/**").permitAll()
-                .requestMatchers("/secured/**").hasAnyRole(Role.ADMIN.name)
-                .requestMatchers("/management/**").hasAnyRole(Role.MANAGER.name)
-                .anyRequest().authenticated()
-            }
-            .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .authorizeHttpRequests { auth ->
+                auth
+                    .requestMatchers("/open/**")
+                    .permitAll()
+                    .requestMatchers("/secured/**")
+                    .hasAnyRole(Role.ADMIN.name)
+                    .requestMatchers("/management/**")
+                    .hasAnyRole(Role.MANAGER.name)
+                    .anyRequest()
+                    .authenticated()
+            }.sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .oauth2ResourceServer { oauth2 ->
                 oauth2.jwt { it.jwtAuthenticationConverter(jwtAuthenticationConverter()) }
-            }
-            .build()
-    }
+            }.build()
 
     @Bean
     fun jwtAuthenticationConverter(): Converter<Jwt, AbstractAuthenticationToken> {
@@ -81,9 +88,10 @@ class SecurityConfig {
                 if (type != JWTType.ACCESS.name) {
                     throw BadCredentialsException("Invalid token type: expected ACCESS, got $type")
                 }
-                val authorities = (jwt.getClaimAsString("role") ?: "")
-                    .split(" ")
-                    .map { role -> SimpleGrantedAuthority(role) }
+                val authorities =
+                    (jwt.getClaimAsString("role") ?: "")
+                        .split(" ")
+                        .map { role -> SimpleGrantedAuthority(role) }
                 return JwtAuthenticationToken(jwt, authorities)
             }
         }
