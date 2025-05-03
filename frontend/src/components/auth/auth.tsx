@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { selectUser, setUser } from "../../redux/slices/userSlice";
 import axiosApi from "../../middleware/axiosApi";
 import { jwtDecode } from "jwt-decode";
+import {useNavigate} from "react-router-dom";
 
 interface CustomJwtPayload {
     iat: number,
@@ -15,6 +16,7 @@ interface CustomJwtPayload {
 export default function useAuthenticateOnFrontend() {
     const dispatch = useDispatch();
     const isAuthorized = useSelector(selectUser);  // Get current authorization status
+    const navigate = useNavigate();
 
     useEffect(() => {
         const refreshToken = async () => {
@@ -34,10 +36,12 @@ export default function useAuthenticateOnFrontend() {
                     dispatch(setUser({isAuthorized: true, username: decoded.sub, role: decoded.role}))
                 } else {
                     dispatch(setUser({isAuthorized: false}))
+                    navigate('/login')
                 }
             } catch (error) {
                 console.log(error);
                 dispatch(setUser({isAuthorized: false}));
+                navigate('/login')
             }
         };
 
@@ -68,6 +72,7 @@ export default function useAuthenticateOnFrontend() {
             } catch (error) {
                 console.error("Failed to decode access token:", error);
                 dispatch(setUser({isAuthorized: false}));
+                navigate('/login')
             }
             console.groupEnd()
         };

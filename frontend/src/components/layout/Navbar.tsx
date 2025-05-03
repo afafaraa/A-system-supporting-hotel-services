@@ -5,17 +5,19 @@ import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import {Outlet} from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectUser } from "../../redux/slices/userSlice";
+import {selectUser, UserState} from "../../redux/slices/userSlice";
 import {useNavigate} from "react-router-dom";
+import {useTheme} from "@mui/material";
+import {ReactNode} from "react";
 
 const drawerWidth = 240;
 
 interface Props {
   window?: () => Window;
+  children: ReactNode;
 }
 
 function Navbar(props: Props) {
@@ -24,6 +26,7 @@ function Navbar(props: Props) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -40,7 +43,6 @@ function Navbar(props: Props) {
     }
   };
 
-  console.log(user)
   const nav = [
     {text: 'Available services', navTo: '/available-services' , roles: ['ROLE_GUEST']},
     {text: 'Shopping cart', navTo: '/shopping-cart', roles: ['ROLE_GUEST']},
@@ -52,13 +54,12 @@ function Navbar(props: Props) {
 
   const drawer = (
     <div>
-      <List>
+      <List sx={{paddingX: '10px'}}>
+        <img src="" alt="Logo"/>
         {nav.map((item, index) =>
           item.roles.indexOf(user.user.role) >= 0 && <ListItem key={index} disablePadding>
-              <ListItemButton onClick={() => navigate(item.navTo)}>
-                <ListItemIcon>
-                  icon
-                </ListItemIcon>
+              <ListItemButton sx={{marginY: '5px', backgroundColor: theme.palette.secondary.main, borderRadius: '10px', '&:hover': {backgroundColor: theme.palette.secondary.dark,}
+                }} onClick={() => navigate(item.navTo)}>
                 <ListItemText primary={item.text}/>
               </ListItemButton>
             </ListItem>
@@ -71,13 +72,13 @@ function Navbar(props: Props) {
   const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', paddingX: '25px', paddingY: '10px' }}>
         <IconButton
           color="inherit"
           aria-label="open drawer"
           edge="start"
           onClick={handleDrawerToggle}
-          sx={{ display: { sm: 'none' }, mx: '10px' }}
+          sx={{ display: { sm: 'none' }, mx: '10px', position: 'absolute' }}
         >
           Menu
         </IconButton>

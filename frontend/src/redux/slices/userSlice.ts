@@ -1,6 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 
-type UserState = {
+export type UserState = {
     user: {
         username: string;
         isAuthorized: boolean;

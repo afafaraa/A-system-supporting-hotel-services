@@ -10,11 +10,12 @@ import RegisterPage from './pages/user/RegisterPage.tsx';
 import AddReservationPage from './pages/AddReservationPage.tsx'
 import EmployeeListPage from "./pages/manager/EmployeeListPage.tsx";
 import LogoutPage from "./pages/LogoutPage.tsx";
-import AvailableServicesPage from "./pages/guest/AvailableServicesPage.tsx";
+import AvailableServicesPage from "./pages/guest/available-services/AvailableServicesPage.tsx";
 import NotificationsPage from "./pages/guest/NotificationsPage.tsx";
 import PastServicesPage from "./pages/guest/PastServicesPage.tsx";
 import RequestedServicesPage from "./pages/guest/RequestedServicesPage.tsx";
 import ShoppingCartPage from "./pages/guest/ShoppingCartPage.tsx";
+import ServiceSchedule from "./pages/guest/service-schedule/ServiceSchedule.tsx";
 
 function App(){
   return (
@@ -30,6 +31,7 @@ function App(){
           <Route path="/past-services" element={<ProtectedRoute><PastServicesPage /></ProtectedRoute>}/>
           <Route path="/requested-services" element={<ProtectedRoute><RequestedServicesPage /></ProtectedRoute>}/>
           <Route path="/shopping-cart" element={<ProtectedRoute><ShoppingCartPage /></ProtectedRoute>}/>
+          <Route path="/service-schedule/:id" element={<ProtectedRoute><ServiceSchedule /></ProtectedRoute>}/>
         </Route>
 
         <Route element={<PublicLayout />}>

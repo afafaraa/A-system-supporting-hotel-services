@@ -50,7 +50,6 @@ const getValidToken = async () => {
 axiosAuthApi.interceptors.request.use(
   async (config) => {
       const token = await getValidToken();
-      console.log(token);
       if (token) {
           config.headers.Authorization = `Bearer ${token}`;
       }

@@ -2,13 +2,13 @@ package inzynierka.myhotelassistant.controllers.services
 
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.repositories.ServiceRepository
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RestController
 
-@Controller()
+@RestController()
 class GetServicesController(private val serviceRepository: ServiceRepository) {
 
-    @GetMapping("/services/available/get")
+    @GetMapping("/services/available/all")
     fun getAvailableServices() : List<ServiceEntity> {
         return serviceRepository.findAll().filter { !it.disabled }
     }
