@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import axiosApi, {axiosAuthApi} from "../../middleware/axiosApi.ts";
+import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {Button, Card, CardContent, Typography} from "@mui/material";
 import {selectUser} from "../../redux/slices/userSlice";
 import {useSelector} from "react-redux";
@@ -29,7 +29,7 @@ function EmployeeListPage() {
       setError('Brak tokena. ');
       return
     }
-    if (!user.user.isAuthorized) {
+    if (!user.isAuthorized) {
       setError('Użytkownik nie autoryzowany (brak w reduxie). ');
       return
     }
@@ -59,7 +59,7 @@ function EmployeeListPage() {
             setError('Nie udało się pobrać listy pracowników')
         }
       });
-  }, [page, token, user.user.isAuthorized]);
+  }, [page, token, user.isAuthorized]);
 
   function loadMore() {
     setPage(prevState => prevState + 1)

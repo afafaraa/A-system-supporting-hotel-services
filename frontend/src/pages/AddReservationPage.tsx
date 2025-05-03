@@ -34,13 +34,6 @@ export default function AddGuestPage() {
     const [credentials, setCredentials] = useState<Credentials | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    // const token = localStorage.getItem('ACCESS_TOKEN');
-    //
-    // if (!token) {
-    //     setError('Brak tokena. ');
-    //     return;
-    // }
-
     useEffect(() => {
         axiosAuthApi.get<Room[]>('/rooms')
           .then(res => setRooms(res.data))

@@ -14,14 +14,11 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
     const [checked, setChecked] = useState(false);
 
     useEffect(() => {
-        if (auth === false) {
-            navigate("/login");
-        } else if (auth !== null) {
-            setChecked(true);
-        }
+        if (!auth) navigate("/login");
+        else setChecked(true);
     }, [auth, navigate]);
 
-    if (auth === null || !checked) {
+    if (!auth || !checked) {
         return <div>Loading...</div>;
     }
 
