@@ -35,12 +35,17 @@ class DatabaseSeeder(
 
     @PostConstruct
     fun addDefaultUserToDatabase() {
-        addTestAdminAndUser()
-        addTestRooms()
-        addTestEmployees()
-        addServices()
-        addOrders()
-        updateUsers()
+        try {
+            addTestAdminAndUser()
+            addTestRooms()
+            addTestEmployees()
+            addServices()
+            addOrders()
+            updateUsers()
+        } catch (e: Exception) {
+            logger.error(e.message, e)
+            throw e
+        }
     }
 
     private fun addTestAdminAndUser() {
@@ -199,9 +204,9 @@ class DatabaseSeeder(
 
     private fun updateUsers() {
         val user = userRepo.findByUsername("user")
-        if (user != null) {
+        if (user?.guestData != null) {
             val allOrders = orderRepo.findAll()
-            user.guestData!!.orders.clear()
+            user.guestData.orders.clear()
             user.guestData.orders.addAll(allOrders)
             userRepo.save(user)
             logger.info("Added ${allOrders.size} orders to user '${user.username}'")

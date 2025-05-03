@@ -31,13 +31,13 @@ export default function useAuthenticateOnFrontend() {
                     const decoded = jwtDecode<CustomJwtPayload>(res.data.accessToken);
                     console.log(decoded)
                     localStorage.setItem('ACCESS_TOKEN', res.data.accessToken)
-                    dispatch(setUser({isAuthorized: true, username: decoded.sub, role: decoded.role}))
+                    dispatch(setUser({isAuthenticated: true, username: decoded.sub, role: decoded.role}))
                 } else {
-                    dispatch(setUser({isAuthorized: false}))
+                    dispatch(setUser({isAuthenticated: false}))
                 }
             } catch (error) {
                 console.log(error);
-                dispatch(setUser({isAuthorized: false}));
+                dispatch(setUser({isAuthenticated: false}));
             }
         };
 
@@ -47,7 +47,7 @@ export default function useAuthenticateOnFrontend() {
             console.log("Access token received:", token);
 
             if (!token) {
-                dispatch(setUser({isAuthorized: false}));
+                dispatch(setUser({isAuthenticated: false}));
                 console.groupEnd()
                 return;
             }
@@ -63,11 +63,11 @@ export default function useAuthenticateOnFrontend() {
                     await refreshToken()
                 } else {
                     console.log("Access token valid");
-                    dispatch(setUser({isAuthorized: true, username: decoded.sub, role: decoded.role}));
+                    dispatch(setUser({isAuthenticated: true, username: decoded.sub, role: decoded.role}));
                 }
             } catch (error) {
                 console.error("Failed to decode access token:", error);
-                dispatch(setUser({isAuthorized: false}));
+                dispatch(setUser({isAuthenticated: false}));
             }
             console.groupEnd()
         };

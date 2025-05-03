@@ -29,7 +29,7 @@ function EmployeeListPage() {
       setError('Brak tokena. ');
       return
     }
-    if (!user.isAuthorized) {
+    if (!user.isAuthenticated) {
       setError('Użytkownik nie autoryzowany (brak w reduxie). ');
       return
     }
@@ -59,7 +59,7 @@ function EmployeeListPage() {
             setError('Nie udało się pobrać listy pracowników')
         }
       });
-  }, [page, token, user.isAuthorized]);
+  }, [page, token, user.isAuthenticated]);
 
   function loadMore() {
     setPage(prevState => prevState + 1)

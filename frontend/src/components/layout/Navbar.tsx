@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { ReactNode, useState } from "react";
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
@@ -16,13 +16,14 @@ const drawerWidth = 240;
 
 interface Props {
   window?: () => Window;
+  children?: ReactNode
 }
 
 function Navbar(props: Props) {
   const { window } = props;
   const user = useSelector(selectUser);
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [isClosing, setIsClosing] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
 
   const handleDrawerClose = () => {
@@ -54,7 +55,7 @@ function Navbar(props: Props) {
     <div>
       <List>
         {nav.map((item, index) =>
-          item.roles.indexOf(user.user.role) >= 0 && <ListItem key={index} disablePadding>
+          item.roles.indexOf(user.role) >= 0 && <ListItem key={index} disablePadding>
               <ListItemButton onClick={() => navigate(item.navTo)}>
                 <ListItemIcon>
                   icon
