@@ -5,13 +5,16 @@ import inzynierka.myhotelassistant.repositories.ServiceRepository
 import org.springframework.stereotype.Service
 
 @Service
-class ServiceService(private val serviceRepository: ServiceRepository)  {
+class ServiceService(
+    private val serviceRepository: ServiceRepository
+)  {
+
     fun findByName(name: String) : ServiceEntity? {
         return serviceRepository.findAll()
-            .find { it.name.equals(name, true) }
+            .find { it.name.equals(name, ignoreCase = true) }
     }
 
     fun save(service: ServiceEntity): ServiceEntity {
-        return serviceRepository.save(service);
+        return serviceRepository.save(service)
     }
 }

@@ -2,6 +2,7 @@ package inzynierka.myhotelassistant.models.service
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
+import kotlin.time.Duration
 
 @Document(collection = "services")
 data class ServiceEntity(
@@ -12,7 +13,7 @@ data class ServiceEntity(
     var type: ServiceType,
     var disabled: Boolean,
     var rating: MutableList<Int>,
-    var duration: Time,
+    var duration: Duration,
     var maxAvailable: Int? = null,
     var weekday: WeekdayHour,
 )

@@ -8,7 +8,7 @@ import java.time.Instant
 data class OrderEntity (
     @Id val id: String? = null,
     val serviceId: String,
-    val orderDate: Instant,
+    val orderDate: Instant = Instant.now(),
     val orderForDate: Instant,
-    var status: OrderStatus,
+    var status: OrderStatus = OrderStatus.PENDING,
 )

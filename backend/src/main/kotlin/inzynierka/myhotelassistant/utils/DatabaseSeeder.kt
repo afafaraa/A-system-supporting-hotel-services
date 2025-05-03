@@ -1,19 +1,16 @@
 package inzynierka.myhotelassistant.utils
 
 import inzynierka.myhotelassistant.models.order.OrderEntity
-import inzynierka.myhotelassistant.models.order.OrderStatus
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.models.service.ServiceType
-import inzynierka.myhotelassistant.models.service.Time
 import inzynierka.myhotelassistant.models.service.Weekday
 import inzynierka.myhotelassistant.models.service.WeekdayHour
 import inzynierka.myhotelassistant.repositories.OrderRepository
 import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.repositories.RoomRepository
-import inzynierka.myhotelassistant.repositories.ServiceRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
 import inzynierka.myhotelassistant.services.ServiceService
 import jakarta.annotation.PostConstruct
@@ -23,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import kotlin.time.Duration.Companion.hours
 
 @Profile("dev")
 @Component
@@ -31,20 +29,19 @@ class DatabaseSeeder(
     private val passwordEncoder: PasswordEncoder,
     private val roomRepo: RoomRepository,
     private val serviceService: ServiceService,
-    private val orderRepository: OrderRepository,
+    private val orderRepo: OrderRepository,
 ) {
 
     private val logger = LoggerFactory.getLogger(DatabaseSeeder::class.java)
 
     @PostConstruct
     fun addDefaultUserToDatabase() {
-        addTestRooms()
         addTestAdminAndUser()
+        addTestRooms()
         addTestEmployees()
         addServices()
         addOrders()
         updateUsers()
-
     }
 
     private fun addTestAdminAndUser() {
@@ -126,6 +123,7 @@ class DatabaseSeeder(
                 surname = "Brown",
             ))
     }
+
     private fun addServices() {
         val services = listOf(
             "Room cleaning",
@@ -148,41 +146,42 @@ class DatabaseSeeder(
                 type = if (index % 2 == 0) ServiceType.GENERAL_SERVICE else ServiceType.PLACE_RESERVATION,
                 disabled = false,
                 rating = mutableListOf(3 + (index % 3), 4 + (index % 2)),
-                duration = Time(2,0,0),
+                duration = 2.hours,
                 maxAvailable = 5,
                 weekday = WeekdayHour(
                     day = Weekday.MONDAY,
-                    hours = 8 + (index % 4)
+                    startHour = 8 + (index % 4),
+                    endHour = 16 - (index % 4)
                 )
             )
-
             serviceService.save(service)
             logger.info("Service '$serviceName' added to database")
         }
     }
+
     private fun addOrders() {
         val existingService = serviceService.findByName("Room cleaning")
-        if (existingService != null && orderRepository.findAll().isEmpty()) {
+        if (existingService != null && orderRepo.findAll().isEmpty()) {
             val order = OrderEntity(
                 serviceId = existingService.id!!,
                 orderDate = Instant.now(),
-                orderForDate = Instant.now().plusSeconds(86400), // +1 day
-                status = OrderStatus.PENDING
+                orderForDate = Instant.now().plus(1, ChronoUnit.DAYS),
             )
-            orderRepository.save(order)
+            orderRepo.save(order)
             logger.info("Default order added to database")
         }
     }
+
     private fun updateUsers() {
         val user = userRepo.findByUsername("user")
         if (user != null) {
-            val allOrders = orderRepository.findAll()
-            user.guestData?.orders = allOrders.toMutableList()
+            val allOrders = orderRepo.findAll()
+            user.guestData!!.orders.clear()
+            user.guestData.orders.addAll(allOrders)
             userRepo.save(user)
             logger.info("Added ${allOrders.size} orders to user '${user.username}'")
         } else {
             logger.warn("User with username 'user' not found.")
         }
     }
-
 }

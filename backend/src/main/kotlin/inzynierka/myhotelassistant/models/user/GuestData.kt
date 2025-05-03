@@ -7,5 +7,5 @@ data class GuestData(
     val roomNumber: String,
     val checkInDate: Instant,
     val checkOutDate: Instant,
-    var orders: MutableList<OrderEntity> = mutableListOf(),
+    val orders: MutableList<OrderEntity> = mutableListOf(),
 )

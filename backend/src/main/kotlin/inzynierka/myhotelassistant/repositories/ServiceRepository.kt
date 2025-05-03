@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ServiceRepository: MongoRepository<ServiceEntity, String> {
-    fun save(entity: inzynierka.myhotelassistant.repositories.ServiceRepository): inzynierka.myhotelassistant.models.service.ServiceEntity
 }
