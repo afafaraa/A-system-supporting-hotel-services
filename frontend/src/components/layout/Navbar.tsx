@@ -8,7 +8,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import {Outlet} from "react-router-dom";
 import { useSelector } from "react-redux";
-import {selectUser, UserState} from "../../redux/slices/userSlice";
+import {selectUser} from "../../redux/slices/userSlice";
 import {useNavigate} from "react-router-dom";
 import {useTheme} from "@mui/material";
 import {ReactNode} from "react";
@@ -52,12 +52,13 @@ function Navbar(props: Props) {
     {text: 'Logout', navTo: '/logout', roles: ['ROLE_GUEST']}
   ]
 
+  console.log(user)
   const drawer = (
     <div>
       <List sx={{paddingX: '10px'}}>
         <img src="" alt="Logo"/>
         {nav.map((item, index) =>
-          item.roles.indexOf(user.user.role) >= 0 && <ListItem key={index} disablePadding>
+          item.roles.indexOf(user.role) >= 0 && <ListItem key={index} disablePadding>
               <ListItemButton sx={{marginY: '5px', backgroundColor: theme.palette.secondary.main, borderRadius: '10px', '&:hover': {backgroundColor: theme.palette.secondary.dark,}
                 }} onClick={() => navigate(item.navTo)}>
                 <ListItemText primary={item.text}/>

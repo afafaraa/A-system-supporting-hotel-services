@@ -2,7 +2,16 @@ import {Card, CardContent, CardMedia, Typography} from "@mui/material";
 import StarRating from "./StarRating.tsx";
 import {useNavigate} from "react-router-dom";
 
-function AvailableServiceCard({service}) {
+type ServiceCardProps = {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  price: number;
+  rating: number[];
+}
+
+function AvailableServiceCard({service}: {service: ServiceCardProps}) {
   const navigate = useNavigate();
 
   return (

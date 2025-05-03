@@ -9,6 +9,7 @@ import {
     MenuItem,
     Alert
 } from '@mui/material';
+import {isAxiosError} from "axios";
 
 interface Room {
     number: string;
@@ -73,9 +74,14 @@ export default function AddGuestPage() {
                 checkInDate: '',
                 checkOutDate: ''
             });
-        } catch (err) {
-            console.error(err);
-            setError(err.response?.data?.message || 'Błąd podczas dodawania gościa');
+        } catch (err: unknown) {
+            if (isAxiosError(err)) {
+                console.error(err);
+                setError(err.response?.data?.message || 'Błąd podczas dodawania gościa');
+            } else {
+                console.error(err);
+                setError('Wystąpił nieoczekiwany błąd');
+            }
         }
     };
 

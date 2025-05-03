@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import useAuthenticateOnFrontend from "../../../components/auth/auth.tsx";
 
 function AvailableServicesPage() {
-  const auth = useAuthenticateOnFrontend();
+  useAuthenticateOnFrontend();
   const [availableServices, setAvailableServices] = useState([]);
   const [loading, setLoading] = useState(true);
 

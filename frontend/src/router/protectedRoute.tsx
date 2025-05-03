@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import useAuthenticateOnFrontend from "../components/auth/auth.tsx";
 
 type ProtectedRouteProps = {
