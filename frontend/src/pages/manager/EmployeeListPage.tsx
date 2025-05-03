@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import axiosApi from "../../middleware/axiosApi.ts";
+import axiosApi, {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {Button, Card, CardContent, Typography} from "@mui/material";
 import {selectUser} from "../../redux/slices/userSlice";
 import {useSelector} from "react-redux";
@@ -33,9 +33,9 @@ function EmployeeListPage() {
       setError('Użytkownik nie autoryzowany (brak w reduxie). ');
       return
     }
-    axiosApi.get<Employee[]>('/management/employees', {
+    axiosAuthApi.get<Employee[]>('/management/employees', {
       params: { page: page, size: pageSize },
-      headers: { Authorization: `Bearer ${token}` } })
+    })
       .then(res => {
         console.log(res)
         setEmployees(employees => [...employees, ...res.data

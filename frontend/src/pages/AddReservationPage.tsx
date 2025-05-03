@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axiosApi from '../middleware/axiosApi';
+import {axiosAuthApi} from '../middleware/axiosApi';
 import {
     Box,
     FormControl,
@@ -34,15 +34,15 @@ export default function AddGuestPage() {
     const [credentials, setCredentials] = useState<Credentials | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    const token = localStorage.getItem('ACCESS_TOKEN');
-
-    if (!token) {
-        setError('Brak tokena. ');
-        return;
-    }
+    // const token = localStorage.getItem('ACCESS_TOKEN');
+    //
+    // if (!token) {
+    //     setError('Brak tokena. ');
+    //     return;
+    // }
 
     useEffect(() => {
-        axiosApi.get<Room[]>('/rooms',{ headers: { Authorization: `Bearer ${token}` } })
+        axiosAuthApi.get<Room[]>('/rooms')
           .then(res => setRooms(res.data))
           .catch(() => setError('Nie udało się pobrać listy pokoi'));
     }, []);
@@ -57,8 +57,6 @@ export default function AddGuestPage() {
         setError(null);
         setCredentials(null);
 
-
-
         const payload = {
             name: formData.name,
             surname: formData.surname,
@@ -69,10 +67,9 @@ export default function AddGuestPage() {
         };
 
         try {
-            const res = await axiosApi.post<Credentials>(
+            const res = await axiosAuthApi.post<Credentials>(
                 '/secured/add/guest',
-                payload,
-                { headers: { Authorization: `Bearer ${token}` } }
+                payload
             );
             setCredentials(res.data);
             setFormData({
