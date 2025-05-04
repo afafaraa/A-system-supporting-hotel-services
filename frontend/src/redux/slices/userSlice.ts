@@ -5,7 +5,9 @@ interface UserData {
     username: string;
     role: string;
     accessToken: string;
+    accessTokenExp: number;
     refreshToken: string;
+    refreshTokenExp: number;
 }
 
 type UserState = {

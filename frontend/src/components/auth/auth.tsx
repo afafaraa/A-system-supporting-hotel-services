@@ -34,7 +34,14 @@ export async function initializeUserFromLocalStorage(dispatch: AppDispatch) {
     }
     if (accessTokenData.exp > currentTime) {
         console.log("Access token valid");
-        dispatch(setUser({username: accessTokenData.sub, role: accessTokenData.role, accessToken, refreshToken}));
+        dispatch(setUser({
+            username: accessTokenData.sub,
+            role: accessTokenData.role,
+            accessToken: accessToken,
+            accessTokenExp: accessTokenData.exp,
+            refreshToken: refreshToken,
+            refreshTokenExp: refreshTokenData.exp,
+        }));
         return true;
     }
     console.log("Access token expired");
@@ -43,32 +50,51 @@ export async function initializeUserFromLocalStorage(dispatch: AppDispatch) {
         removeTokensFromLocalStorage();
         return false;
     }
-    await handleTokenRefresh(refreshToken, dispatch, accessTokenData);
-    console.log("Access token refreshed");
-    return true;
+    const newAccessToken: string | null = await handleTokenRefresh(refreshToken);
+    if (newAccessToken) {
+        localStorage.setItem('ACCESS_TOKEN', newAccessToken);
+        dispatch(setUser({
+            username: accessTokenData.sub,
+            role: accessTokenData.role,
+            accessToken: newAccessToken,
+            accessTokenExp: accessTokenData.exp,
+            refreshToken: refreshToken,
+            refreshTokenExp: refreshTokenData.exp,
+        }));
+        console.log("Access token refreshed");
+        return true;
+    }
+    return false;
 }
 
-async function handleTokenRefresh(refreshToken: string, dispatch: AppDispatch, accessTokenData: CustomJwtPayload) {
+export async function handleTokenRefresh(refreshToken: string) {
     try {
         const response = await axiosApi.post('/open/refresh', {refreshToken: refreshToken});
         console.log("Refresh token data:", response)
         if (response.data?.accessToken) {
-            const newAccessToken: string = response.data.accessToken;
-            localStorage.setItem('ACCESS_TOKEN', newAccessToken);
-            dispatch(setUser({
-                username: accessTokenData.sub,
-                role: accessTokenData.role,
-                accessToken: newAccessToken,
-                refreshToken
-            }));
-            return true;
+            return response.data.accessToken;
         } else {
             console.log("No data received from refresh token request");
-            return false;
+            return null;
         }
     } catch (error) {
         console.log("Unable to refresh token:", error);
         removeTokensFromLocalStorage();
-        return false;
+        return null;
     }
+}
+
+export function setUserData(accessToken: string, refreshToken: string, dispatch: AppDispatch) {
+    localStorage.setItem('ACCESS_TOKEN', accessToken)
+    localStorage.setItem('REFRESH_TOKEN', refreshToken)
+    const accessTokenData = jwtDecode<CustomJwtPayload>(accessToken);
+    const refreshTokenData = jwtDecode<CustomJwtPayload>(refreshToken);
+    dispatch(setUser({
+        username: accessTokenData.sub,
+        role: accessTokenData.role,
+        accessToken: accessToken,
+        accessTokenExp: accessTokenData.exp,
+        refreshToken: refreshToken,
+        refreshTokenExp: refreshTokenData.exp,
+    }))
 }

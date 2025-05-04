@@ -2,8 +2,8 @@ import axiosApi from "../../middleware/axiosApi";
 import {FormEvent, useState} from 'react';
 import {Link, useNavigate} from "react-router-dom";
 import {Button, Box, FormControl, TextField, Typography,} from "@mui/material";
-import {setUser} from "../../redux/slices/userSlice.ts";
 import {useDispatch} from "react-redux";
+import {setUserData} from "../../components/auth/auth.tsx";
 
 function RegisterPage(){
     const [code, setCode] = useState('');
@@ -17,14 +17,7 @@ function RegisterPage(){
         console.log(code, username, password)
         const res = await axiosApi.post('/open/register', { code, username, password });
         if (res.data.accessToken && res.data.refreshToken) {
-            localStorage.setItem('ACCESS_TOKEN', res.data.accessToken)
-            localStorage.setItem('REFRESH_TOKEN', res.data.refreshToken)
-            dispatch(setUser({
-                username: username,
-                role: res.data.role,
-                accessToken: res.data.accessToken,
-                refreshToken: res.data.refreshToken
-            }))
+            setUserData(res.data.accessToken, res.data.refreshToken, dispatch)
         }
         navigate('/home');
     }

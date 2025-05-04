@@ -5,7 +5,8 @@ import Button from '@mui/material/Button';
 import {Box, FormControl, IconButton, InputAdornment, TextField, Typography,} from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {useDispatch, useSelector} from "react-redux";
-import {selectUser, setUser} from "../../redux/slices/userSlice.ts";
+import {selectUser} from "../../redux/slices/userSlice.ts";
+import {setUserData} from "../../components/auth/auth.tsx";
 
 function LoginPage(){
     const user = useSelector(selectUser);
@@ -24,15 +25,7 @@ function LoginPage(){
         console.log(username, password)
         const res = await axiosApi.post('/open/token', { username, password });
         if (res.data.accessToken && res.data.refreshToken && res.data.role) {
-          console.log(res.data)
-          localStorage.setItem('ACCESS_TOKEN', res.data.accessToken)
-          localStorage.setItem('REFRESH_TOKEN', res.data.refreshToken)
-          dispatch(setUser({
-            username: username,
-            role: res.data.role,
-            accessToken: res.data.accessToken,
-            refreshToken: res.data.refreshToken
-          }))
+          setUserData(res.data.accessToken, res.data.refreshToken, dispatch)
         }
         navigate('/home');
     }
