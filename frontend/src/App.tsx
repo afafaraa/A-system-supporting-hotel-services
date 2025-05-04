@@ -15,8 +15,23 @@ import NotificationsPage from "./pages/guest/NotificationsPage.tsx";
 import PastServicesPage from "./pages/guest/PastServicesPage.tsx";
 import RequestedServicesPage from "./pages/guest/RequestedServicesPage.tsx";
 import ShoppingCartPage from "./pages/guest/ShoppingCartPage.tsx";
+import {useEffect, useState} from "react";
+import {useDispatch} from "react-redux";
+import {initializeUserFromLocalStorage} from "./components/auth/auth.tsx";
+
 
 function App(){
+  const dispatch = useDispatch();
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  useEffect(() => {
+    initializeUserFromLocalStorage(dispatch)
+      .finally(() => setIsInitialized(true));
+    }, [dispatch]
+  );
+
+  if (!isInitialized) return null;
+
   return (
     <BrowserRouter>
       <Routes>
