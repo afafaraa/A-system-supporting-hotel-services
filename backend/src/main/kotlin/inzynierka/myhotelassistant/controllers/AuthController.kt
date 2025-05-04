@@ -23,6 +23,7 @@ class AuthController(
     data class LoginResponse(
         val accessToken: String?,
         val refreshToken: String?,
+        val role: String? = null,
     )
 
     data class LoginRequest(
@@ -39,6 +40,7 @@ class AuthController(
         return LoginResponse(
             accessToken = tokenService.generateAccessToken(authentication),
             refreshToken = tokenService.generateRefreshToken(authentication),
+            role = authentication.authorities.firstOrNull()?.authority,
         )
     }
 

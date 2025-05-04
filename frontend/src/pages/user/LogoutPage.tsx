@@ -1,5 +1,5 @@
 import {useEffect} from "react";
-import { clearUser } from "../redux/slices/userSlice";
+import { clearUser } from "../../redux/slices/userSlice.ts";
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
 
@@ -10,7 +10,7 @@ function LogoutPage() {
   useEffect(() => {
     localStorage.clear();
     dispatch(clearUser());
-    navigate("/login");
+    navigate("/");
   }, [dispatch, navigate]);
 
   return (
