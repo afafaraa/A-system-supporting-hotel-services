@@ -1,4 +1,4 @@
-import {setUser} from "../../redux/slices/userSlice";
+import {setUser, UserData} from "../../redux/slices/userSlice";
 import axiosApi from "../../middleware/axiosApi";
 import { jwtDecode } from "jwt-decode";
 import {AppDispatch} from "../../redux/store.ts";
@@ -67,7 +67,7 @@ export async function initializeUserFromLocalStorage(dispatch: AppDispatch) {
     return false;
 }
 
-export async function handleTokenRefresh(refreshToken: string) {
+export async function handleTokenRefresh(refreshToken: string): Promise<string | null> {
     try {
         const response = await axiosApi.post('/open/refresh', {refreshToken: refreshToken});
         console.log("Refresh token data:", response)
@@ -82,6 +82,17 @@ export async function handleTokenRefresh(refreshToken: string) {
         removeTokensFromLocalStorage();
         return null;
     }
+}
+
+export function updateUserDataAccessToken(user: UserData, newAccessToken: string, dispatch: AppDispatch) {
+    localStorage.setItem('ACCESS_TOKEN', newAccessToken);
+    const accessTokenData = jwtDecode<CustomJwtPayload>(newAccessToken);
+    dispatch(setUser({
+        ...user,
+        accessToken: newAccessToken,
+        accessTokenExp: accessTokenData.exp,
+    }))
+    console.log("Access token refreshed");
 }
 
 export function setUserData(accessToken: string, refreshToken: string, dispatch: AppDispatch) {

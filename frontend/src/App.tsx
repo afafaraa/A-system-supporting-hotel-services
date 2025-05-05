@@ -69,8 +69,8 @@ function AppInitializer({ children }: PropsWithChildren) {
 
   useEffect(() => {
       initializeUserFromLocalStorage(dispatch)
-        .then(value => {
-          if (!value && !isPublicPath) navigate("/login");
+        .then(isSuccessful => {
+          if (!isSuccessful && !isPublicPath) navigate("/login");
         })
         .finally(() => setIsInitialized(true));
     }, [dispatch, navigate]
