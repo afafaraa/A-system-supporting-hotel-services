@@ -11,14 +11,19 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.minutes
 
 @Service
 class TokenService(
     private val encoder: JwtEncoder,
     private val decoder: JwtDecoder,
 ) {
-    private val accessValidity = 15L to ChronoUnit.MINUTES
-    private val refreshValidity = 7L to ChronoUnit.DAYS
+    private val accessValidity = 15.minutes
+    private val refreshValidity = 7.days
+
+    private operator fun Instant.plus(duration: Duration): Instant = this.plus(duration.inWholeSeconds, ChronoUnit.SECONDS)
 
     private data class UserDetails(
         val username: String,
@@ -31,23 +36,21 @@ class TokenService(
             roleString = authentication.authorities.joinToString(" ") { it.authority },
         )
 
-    private fun generateAccessToken(userDetails: UserDetails): String =
-        generateToken(userDetails, accessValidity.first, accessValidity.second, JWTType.ACCESS)
+    private fun generateAccessToken(userDetails: UserDetails): String = generateToken(userDetails, accessValidity, JWTType.ACCESS)
 
     fun generateAccessToken(authentication: Authentication): String {
         val userDetails = convertToUserDetails(authentication)
-        return generateToken(userDetails, accessValidity.first, accessValidity.second, JWTType.ACCESS)
+        return generateToken(userDetails, accessValidity, JWTType.ACCESS)
     }
 
     fun generateRefreshToken(authentication: Authentication): String {
         val userDetails = convertToUserDetails(authentication)
-        return generateToken(userDetails, refreshValidity.first, refreshValidity.second, JWTType.REFRESH)
+        return generateToken(userDetails, refreshValidity, JWTType.REFRESH)
     }
 
     private fun generateToken(
         userDetails: UserDetails,
-        time: Long,
-        unit: ChronoUnit,
+        duration: Duration,
         type: JWTType,
     ): String {
         val now: Instant = Instant.now()
@@ -56,7 +59,7 @@ class TokenService(
                 .builder()
                 .claim("type", type)
                 .issuedAt(now)
-                .expiresAt(now.plus(time, unit))
+                .expiresAt(now + duration)
                 .subject(userDetails.username)
                 .claim("role", userDetails.roleString)
                 .build()
@@ -86,7 +89,7 @@ class TokenService(
             JwtClaimsSet
                 .builder()
                 .claim("type", JWTType.RESET_PASSWORD)
-                .expiresAt(now.plus(minutesValid, ChronoUnit.MINUTES))
+                .expiresAt(now + minutesValid.minutes)
                 .claim("email", email)
                 .build()
         return encoder.encode(JwtEncoderParameters.from(claims)).tokenValue
