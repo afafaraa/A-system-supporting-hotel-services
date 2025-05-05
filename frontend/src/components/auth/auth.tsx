@@ -52,12 +52,13 @@ export async function initializeUserFromLocalStorage(dispatch: AppDispatch) {
     }
     const newAccessToken: string | null = await handleTokenRefresh(refreshToken);
     if (newAccessToken) {
+        const newAccessTokenData = jwtDecode<CustomJwtPayload>(newAccessToken);
         localStorage.setItem('ACCESS_TOKEN', newAccessToken);
         dispatch(setUser({
             username: accessTokenData.sub,
             role: accessTokenData.role,
             accessToken: newAccessToken,
-            accessTokenExp: accessTokenData.exp,
+            accessTokenExp: newAccessTokenData.exp,
             refreshToken: refreshToken,
             refreshTokenExp: refreshTokenData.exp,
         }));

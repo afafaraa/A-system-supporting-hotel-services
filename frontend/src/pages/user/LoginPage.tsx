@@ -18,7 +18,7 @@ function LoginPage(){
 
     useEffect(() => {
       if (user !== null) navigate('/home')
-    });
+    }, [user, navigate]);
 
     const login = async (e: FormEvent) => {
         e.preventDefault();
