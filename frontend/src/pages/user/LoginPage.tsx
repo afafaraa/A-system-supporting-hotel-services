@@ -24,7 +24,7 @@ function LoginPage(){
         e.preventDefault();
         console.log(username, password)
         const res = await axiosApi.post('/open/token', { username, password });
-        if (res.data.accessToken && res.data.refreshToken && res.data.role) {
+        if (res.data.accessToken && res.data.refreshToken) {
           setUserData(res.data.accessToken, res.data.refreshToken, dispatch)
         }
         navigate('/home');
