@@ -1,15 +1,14 @@
 import {useEffect} from "react";
-import { clearUser } from "../../redux/slices/userSlice.ts";
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
+import {logoutUser} from "../../components/auth/auth.tsx";
 
 function LogoutPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    localStorage.clear();
-    dispatch(clearUser());
+    logoutUser(dispatch);
     navigate("/");
   }, [dispatch, navigate]);
 
