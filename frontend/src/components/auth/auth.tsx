@@ -32,7 +32,7 @@ export async function initializeUserFromLocalStorage(dispatch: AppDispatch) {
         removeTokensFromLocalStorage();
         return false;
     }
-    if (accessTokenData.exp > currentTime) {
+    if (accessTokenData.exp > currentTime + 30) {
         console.log("Access token valid");
         dispatch(setUser({
             username: accessTokenData.sub,
@@ -45,7 +45,7 @@ export async function initializeUserFromLocalStorage(dispatch: AppDispatch) {
         return true;
     }
     console.log("Access token expired");
-    if (refreshTokenData.exp < currentTime) {
+    if (refreshTokenData.exp + 10 < currentTime) {
         console.log("Refresh token expired, unable to refresh");
         removeTokensFromLocalStorage();
         return false;

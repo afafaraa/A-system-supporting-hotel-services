@@ -24,12 +24,12 @@ axiosAuthApi.interceptors.request.use(
       throw new AuthenticationError("User is null");
     }
     const currentTime = Date.now() / 1000;
-    if (user.accessTokenExp > currentTime) {
+    if (user.accessTokenExp > currentTime + 10) {
       config.headers.Authorization = `Bearer ${user.accessToken}`;
       return config;
     }
     console.log("Access token expired");
-    if (user.refreshTokenExp < currentTime) {
+    if (user.refreshTokenExp + 10 < currentTime) {
       console.log("Refresh token expired");
       throw new AuthenticationError("Refresh token expired");
     }
