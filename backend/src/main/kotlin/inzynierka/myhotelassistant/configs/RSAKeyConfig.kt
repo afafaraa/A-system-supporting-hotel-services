@@ -7,17 +7,17 @@ import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
-import java.util.*
+import java.util.UUID
 
 @Configuration
 class RSAKeyConfig {
-
     @Bean
     fun generateRsa(): RSAKey {
         val keyPair: KeyPair = generateRsaKey()
         val publicKey = keyPair.public as RSAPublicKey
         val privateKey = keyPair.private as RSAPrivateKey
-        return RSAKey.Builder(publicKey)
+        return RSAKey
+            .Builder(publicKey)
             .privateKey(privateKey)
             .keyID(UUID.randomUUID().toString())
             .build()

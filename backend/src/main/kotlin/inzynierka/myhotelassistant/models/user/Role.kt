@@ -7,12 +7,18 @@ enum class Role {
     EMPLOYEE,
     RECEPTIONIST,
     MANAGER,
-    ADMIN;
+    ADMIN,
+    ;
 
     companion object {
         fun convertFromString(role: String): Role {
-            try { return valueOf(role) }
-            catch (e: IllegalArgumentException) { throw HttpException.InvalidRoleNameException(e.message ?: "Invalid role name") }
+            try {
+                return valueOf(role)
+            } catch (
+                e: IllegalArgumentException,
+            ) {
+                throw HttpException.InvalidRoleNameException(e.message ?: "Invalid role name")
+            }
         }
     }
 }

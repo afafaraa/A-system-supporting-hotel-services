@@ -1,23 +1,17 @@
-import { useEffect } from "react";
+import {useEffect, PropsWithChildren} from "react";
 import { useNavigate } from "react-router-dom";
-import { ReactNode } from "react";
-import useAuthenticateOnFrontend from "../components/auth/auth.tsx";
+import {useSelector} from "react-redux";
+import {selectUser} from "../redux/slices/userSlice.ts";
 
-type ProtectedRouteProps = {
-    children: ReactNode;
-};
-
-function ProtectedRoute({ children }: ProtectedRouteProps) {
-    const auth = useAuthenticateOnFrontend();
+function ProtectedRoute({ children }: PropsWithChildren) {
     const navigate = useNavigate();
+    const user = useSelector(selectUser);
 
     useEffect(() => {
-        if (!auth) navigate("/login");
-    }, [auth, navigate]);
+        if (user === null) navigate("/login");
+    }, [navigate, user]);
 
-    if (!auth) {
-        return <div>Loading...</div>;
-    }
+    if (!user) return null;
 
     return <>{children}</>;
 }

@@ -2,10 +2,8 @@ import {Box, Grid} from "@mui/material";
 import AvailableServiceCard from "./AvailableServiceCard.tsx";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import {useEffect, useState} from "react";
-import useAuthenticateOnFrontend from "../../../components/auth/auth.tsx";
 
 function AvailableServicesPage() {
-  useAuthenticateOnFrontend();
   const [availableServices, setAvailableServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,7 +14,7 @@ function AvailableServicesPage() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await axiosAuthApi.get('/services/available/all')
+      const res = await axiosAuthApi.get('/services/available')
       console.log(res.data)
       setAvailableServices(res.data);
     } catch (error) {
@@ -29,6 +27,7 @@ function AvailableServicesPage() {
   if (loading) {
     return <p>Loading...</p>
   }
+
   return (
     <div style={{width: '100%'}}>
       <header style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%'}}>

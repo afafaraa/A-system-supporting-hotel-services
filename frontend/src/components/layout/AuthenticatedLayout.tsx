@@ -13,7 +13,6 @@ function AuthenticatedLayout() {
       <Navbar>
         <Outlet />
       </Navbar>
-        {/*<DebugNavigationMenu />*/}
     </Container>
   )
 }

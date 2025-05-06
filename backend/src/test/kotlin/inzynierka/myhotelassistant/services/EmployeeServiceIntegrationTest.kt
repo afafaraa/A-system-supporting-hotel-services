@@ -4,7 +4,11 @@ import inzynierka.myhotelassistant.controllers.user.EmployeeController
 import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.repositories.UserRepository
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,7 +21,6 @@ import org.testcontainers.junit.jupiter.Container
 @SpringBootTest
 @ActiveProfiles("test")
 class EmployeeServiceIntegrationTest {
-
     companion object {
         @Container
         @JvmStatic
@@ -40,13 +43,14 @@ class EmployeeServiceIntegrationTest {
     @Autowired
     private lateinit var passwordEncoder: PasswordEncoder
 
-    private val employeeDTOWithoutRoles = EmployeeController.EmployeeDTO(
-        username = "jan.kowalski",
-        password = "secret123",
-        email = "jan@example.com",
-        name = "Jan",
-        surname = "Kowalski",
-    )
+    private val employeeDTOWithoutRoles =
+        EmployeeController.EmployeeDTO(
+            username = "jan.kowalski",
+            password = "secret123",
+            email = "jan@example.com",
+            name = "Jan",
+            surname = "Kowalski",
+        )
 
     @Test
     fun `should create and add new employee without employee role`() {

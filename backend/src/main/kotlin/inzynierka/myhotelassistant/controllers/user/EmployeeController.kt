@@ -23,9 +23,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/management/employees")
 class EmployeeController(
-    private val employeeService: EmployeeService
+    private val employeeService: EmployeeService,
 ) {
-
     private val logger = LoggerFactory.getLogger(EmployeeController::class.java)
 
     private val passwordMask = "**********"
@@ -33,34 +32,36 @@ class EmployeeController(
     data class EmployeeDTO(
         @field:Pattern(
             regexp = "^[\\w-_]{3,20}$",
-            message = "Username must be between 3 and 20 alphanumerical characters with '_' or '-'")
+            message = "Username must be between 3 and 20 alphanumerical characters with '_' or '-'",
+        )
         val username: String,
-
         @field:Size(min = 8, message = "Password must be at least 8 characters long")
         val password: String,
-
         @field:Email(message = "Email should be valid")
         val email: String,
-
         @field:Pattern(
             regexp = "^[A-Za-z-]{2,20}$",
-            message = "Name must be 2-20 characters long and may include '-'")
+            message = "Name must be 2-20 characters long and may include '-'",
+        )
         val name: String,
-
         @field:Pattern(
             regexp = "^[A-Za-z-]{2,30}$",
-            message = "Surname must be 2-30 characters long and may include '-'.")
+            message = "Surname must be 2-30 characters long and may include '-'.",
+        )
         val surname: String,
-
         @field:Pattern(
-            regexp = "^(EMPLOYEE|RECEPTIONIST|MANAGER)$", flags = [Pattern.Flag.CASE_INSENSITIVE],
-            message = "Role must be either EMPLOYEE, RECEPTIONIST or MANAGER")
-        val role: String? = null
+            regexp = "^(EMPLOYEE|RECEPTIONIST|MANAGER)$",
+            flags = [Pattern.Flag.CASE_INSENSITIVE],
+            message = "Role must be either EMPLOYEE, RECEPTIONIST or MANAGER",
+        )
+        val role: String? = null,
     )
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun addEmployee(@RequestBody @Valid employeeDTO: EmployeeDTO): UserEntity {
+    fun addEmployee(
+        @RequestBody @Valid employeeDTO: EmployeeDTO,
+    ): UserEntity {
         val newEmployee = employeeService.createEmployee(employeeDTO)
         val savedEmployee = employeeService.addEmployee(newEmployee)
         savedEmployee.password = passwordMask
@@ -70,7 +71,9 @@ class EmployeeController(
 
     @GetMapping("/username/{username}")
     @ResponseStatus(HttpStatus.OK)
-    fun getEmployeeWithUsername(@PathVariable username: String): UserEntity {
+    fun getEmployeeWithUsername(
+        @PathVariable username: String,
+    ): UserEntity {
         val employee = employeeService.findByUsernameOrThrow(username)
         employee.password = passwordMask
         logger.debug("Found employee: ${employee.username}")
@@ -81,7 +84,7 @@ class EmployeeController(
     @ResponseStatus(HttpStatus.OK)
     fun getEmployees(
         @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "10") size: Int
+        @RequestParam(defaultValue = "10") size: Int,
     ): List<UserEntity> {
         val pageable = PageRequest.of(page, size)
         val employees = employeeService.getAllEmployees(pageable)
@@ -92,14 +95,19 @@ class EmployeeController(
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun removeEmployee(@RequestParam username: String) {
+    fun removeEmployee(
+        @RequestParam username: String,
+    ) {
         employeeService.deleteEmployee(username)
         logger.debug("Removed employee: $username")
     }
 
     @PatchMapping("/role")
     @ResponseStatus(HttpStatus.OK)
-    fun changeRole(@RequestParam username: String, @RequestParam role: String) {
+    fun changeRole(
+        @RequestParam username: String,
+        @RequestParam role: String,
+    ) {
         employeeService.changeRole(username, role)
         logger.debug("Changed role of employee: $username to $role")
     }

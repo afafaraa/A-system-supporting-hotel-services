@@ -1,59 +1,46 @@
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import { store } from "../redux/store";
+import {handleTokenRefresh, updateUserDataAccessToken} from "../components/auth/auth.tsx";
+
+export class AuthenticationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "AuthenticationError";
+  }
+}
 
 const axiosApi = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_SERVER_URL,
+  baseURL: import.meta.env.VITE_BACKEND_SERVER_URL,
 });
 
 const axiosAuthApi = axios.create({
-    baseURL: import.meta.env.VITE_BACKEND_SERVER_URL,
+  baseURL: import.meta.env.VITE_BACKEND_SERVER_URL,
 })
-
-const refreshToken = async () => {
-    const refresh = localStorage.getItem('REFRESH_TOKEN');
-    try {
-        const res = await axios.post(
-          `${import.meta.env.VITE_BACKEND_SERVER_URL}/open/refresh`,
-          { token: refresh }
-        );
-        if (res.data) {
-            const { accessToken } = res.data.accessToken;
-            localStorage.setItem('ACCESS_TOKEN', accessToken);
-            return accessToken;
-        }
-    } catch (error) {
-        console.error("Error refreshing token:", error);
-        throw error;
-    }
-};
-
-const getValidToken = async () => {
-    let token = localStorage.getItem('ACCESS_TOKEN');
-    if (!token) return null;
-
-    try {
-        const decoded = jwtDecode(token);
-        const now = Date.now() / 1000;
-
-        if (decoded.exp && decoded.exp < now) {
-            console.log("Token expired, refreshing...");
-            token = await refreshToken();
-        }
-
-        return token;
-    } catch (err) {
-        console.error("Invalid token:", err);
-        return null;
-    }
-};
 
 axiosAuthApi.interceptors.request.use(
   async (config) => {
-      const token = await getValidToken();
-      if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
-      }
+    const user = store.getState().user.user;
+    if (user === null) {
+      throw new AuthenticationError("User is null");
+    }
+    const currentTime = Date.now() / 1000;
+    if (user.accessTokenExp > currentTime + 10) {
+      config.headers.Authorization = `Bearer ${user.accessToken}`;
       return config;
+    }
+    console.log("Access token expired");
+    if (user.refreshTokenExp + 10 < currentTime) {
+      console.log("Refresh token expired");
+      throw new AuthenticationError("Refresh token expired");
+    }
+    const token: string | null = await handleTokenRefresh(user.refreshToken);
+    if (token === null) {
+      console.log("Unable to refresh token");
+      throw new AuthenticationError("Unable to refresh token");
+    }
+    updateUserDataAccessToken(user, token, store.dispatch)
+    config.headers.Authorization = `Bearer ${token}`;
+    return config;
   },
   (error) => console.log(error)
 );

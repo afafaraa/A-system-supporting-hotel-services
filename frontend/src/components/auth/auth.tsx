@@ -1,9 +1,7 @@
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { selectUser, setUser } from "../../redux/slices/userSlice";
+import {clearUser, setUser, UserData} from "../../redux/slices/userSlice";
 import axiosApi from "../../middleware/axiosApi";
 import { jwtDecode } from "jwt-decode";
-import {useNavigate} from "react-router-dom";
+import {AppDispatch} from "../../redux/store.ts";
 
 interface CustomJwtPayload {
     iat: number,
@@ -13,72 +11,107 @@ interface CustomJwtPayload {
     role: string,
 }
 
-export default function useAuthenticateOnFrontend() {
-    const dispatch = useDispatch();
-    const isAuthorized = useSelector(selectUser);  // Get current authorization status
-    const navigate = useNavigate();
+function removeTokensFromLocalStorage() {
+    localStorage.removeItem('ACCESS_TOKEN');
+    localStorage.removeItem('REFRESH_TOKEN');
+}
 
-    useEffect(() => {
-        const refreshToken = async () => {
-            const refresh = localStorage.getItem('REFRESH_TOKEN');
-            try {
-                const res = await axiosApi.post(
-                    '/open/refresh',
-                    {
-                        token: refresh
-                    }
-                );
-                console.log("Refresh token data: ",res)
-                if (res.data) {
-                    const decoded = jwtDecode<CustomJwtPayload>(res.data.accessToken);
-                    console.log(decoded)
-                    localStorage.setItem('ACCESS_TOKEN', res.data.accessToken)
-                    dispatch(setUser({isAuthorized: true, username: decoded.sub, role: decoded.role}))
-                } else {
-                    dispatch(setUser({isAuthorized: false}))
-                    navigate('/login')
-                }
-            } catch (error) {
-                console.log(error);
-                dispatch(setUser({isAuthorized: false}));
-                navigate('/login')
-            }
-        };
+export async function initializeUserFromLocalStorage(dispatch: AppDispatch) {
+    const accessToken = localStorage.getItem('ACCESS_TOKEN');
+    const refreshToken = localStorage.getItem('REFRESH_TOKEN');
+    if (!accessToken || !refreshToken) {
+        console.log("No tokens found");
+        removeTokensFromLocalStorage();
+        return false;
+    }
+    const currentTime = Date.now() / 1000;
+    const accessTokenData = jwtDecode<CustomJwtPayload>(accessToken);
+    const refreshTokenData = jwtDecode<CustomJwtPayload>(refreshToken);
+    if (!accessTokenData || !refreshTokenData) {
+        console.log("Invalid token data");
+        removeTokensFromLocalStorage();
+        return false;
+    }
+    if (accessTokenData.exp > currentTime + 30) {
+        console.log("Access token valid");
+        dispatch(setUser({
+            username: accessTokenData.sub,
+            role: accessTokenData.role,
+            accessToken: accessToken,
+            accessTokenExp: accessTokenData.exp,
+            refreshToken: refreshToken,
+            refreshTokenExp: refreshTokenData.exp,
+        }));
+        return true;
+    }
+    console.log("Access token expired");
+    if (refreshTokenData.exp + 10 < currentTime) {
+        console.log("Refresh token expired, unable to refresh");
+        removeTokensFromLocalStorage();
+        return false;
+    }
+    const newAccessToken: string | null = await handleTokenRefresh(refreshToken);
+    if (newAccessToken) {
+        const newAccessTokenData = jwtDecode<CustomJwtPayload>(newAccessToken);
+        localStorage.setItem('ACCESS_TOKEN', newAccessToken);
+        dispatch(setUser({
+            username: accessTokenData.sub,
+            role: accessTokenData.role,
+            accessToken: newAccessToken,
+            accessTokenExp: newAccessTokenData.exp,
+            refreshToken: refreshToken,
+            refreshTokenExp: refreshTokenData.exp,
+        }));
+        console.log("Access token refreshed");
+        return true;
+    }
+    return false;
+}
 
-        const auth = async () => {
-            const token = localStorage.getItem('ACCESS_TOKEN');
-            console.group("Authenticate")
-            console.log("Access token received:", token);
+export async function handleTokenRefresh(refreshToken: string): Promise<string | null> {
+    try {
+        const response = await axiosApi.post('/open/refresh', {refreshToken: refreshToken});
+        console.log("Refresh token data:", response)
+        if (response.data?.accessToken) {
+            return response.data.accessToken;
+        } else {
+            console.log("No data received from refresh token request");
+            return null;
+        }
+    } catch (error) {
+        console.log("Unable to refresh token:", error);
+        removeTokensFromLocalStorage();
+        return null;
+    }
+}
 
-            if (!token) {
-                dispatch(setUser({isAuthorized: false}));
-                console.groupEnd()
-                return;
-            }
+export function updateUserDataAccessToken(user: UserData, newAccessToken: string, dispatch: AppDispatch) {
+    localStorage.setItem('ACCESS_TOKEN', newAccessToken);
+    const accessTokenData = jwtDecode<CustomJwtPayload>(newAccessToken);
+    dispatch(setUser({
+        ...user,
+        accessToken: newAccessToken,
+        accessTokenExp: accessTokenData.exp,
+    }))
+    console.log("Access token refreshed");
+}
 
-            try {
-                const decoded = jwtDecode<CustomJwtPayload>(token);
-                const tokenExpiration = decoded.exp;
-                const now = Date.now() / 1000;
-                console.log("Access token data: ",decoded, tokenExpiration, now);
+export function setUserData(accessToken: string, refreshToken: string, dispatch: AppDispatch) {
+    localStorage.setItem('ACCESS_TOKEN', accessToken)
+    localStorage.setItem('REFRESH_TOKEN', refreshToken)
+    const accessTokenData = jwtDecode<CustomJwtPayload>(accessToken);
+    const refreshTokenData = jwtDecode<CustomJwtPayload>(refreshToken);
+    dispatch(setUser({
+        username: accessTokenData.sub,
+        role: accessTokenData.role,
+        accessToken: accessToken,
+        accessTokenExp: accessTokenData.exp,
+        refreshToken: refreshToken,
+        refreshTokenExp: refreshTokenData.exp,
+    }))
+}
 
-                if (tokenExpiration && tokenExpiration < now) {
-                    console.log("Access token expired. Refreshing...");
-                    await refreshToken()
-                } else {
-                    console.log("Access token valid");
-                    dispatch(setUser({isAuthorized: true, username: decoded.sub, role: decoded.role}));
-                }
-            } catch (error) {
-                console.error("Failed to decode access token:", error);
-                dispatch(setUser({isAuthorized: false}));
-                navigate('/login')
-            }
-            console.groupEnd()
-        };
-
-        auth();
-    }, [dispatch]);
-
-    return isAuthorized;
+export function logoutUser(dispatch: AppDispatch) {
+    removeTokensFromLocalStorage();
+    dispatch(clearUser());
 }

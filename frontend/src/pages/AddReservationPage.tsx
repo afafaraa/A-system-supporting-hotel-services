@@ -1,15 +1,7 @@
-import { useEffect, useState } from 'react';
+import {ChangeEvent, FormEvent, useEffect, useState} from 'react';
 import {axiosAuthApi} from '../middleware/axiosApi';
-import {
-    Box,
-    FormControl,
-    TextField,
-    Typography,
-    Button,
-    MenuItem,
-    Alert
-} from '@mui/material';
-import {isAxiosError} from "axios";
+import {Box, FormControl, TextField, Typography, Button, MenuItem, Alert} from '@mui/material';
+import {AxiosError} from "axios";
 
 interface Room {
     number: string;
@@ -22,16 +14,27 @@ interface Credentials {
     password: string;
 }
 
+interface FormData {
+    name: string,
+    surname: string,
+    email: string,
+    roomNumber: string,
+    checkInDate: string,
+    checkOutDate: string,
+}
+
+const defaultFormData: FormData = {
+    name: '',
+    surname: '',
+    email: '',
+    roomNumber: '',
+    checkInDate: '',
+    checkOutDate: '',
+}
+
 export default function AddGuestPage() {
     const [rooms, setRooms] = useState<Room[]>([]);
-    const [formData, setFormData] = useState({
-        name: '',
-        surname: '',
-        email: '',
-        roomId: '',
-        checkInDate: '',
-        checkOutDate: ''
-    });
+    const [formData, setFormData] = useState<FormData>(defaultFormData);
     const [credentials, setCredentials] = useState<Credentials | null>(null);
     const [error, setError] = useState<string | null>(null);
 
@@ -41,12 +44,12 @@ export default function AddGuestPage() {
           .catch(() => setError('Nie udało się pobrać listy pokoi'));
     }, []);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(f => ({ ...f, [name]: value }));
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError(null);
         setCredentials(null);
@@ -55,32 +58,20 @@ export default function AddGuestPage() {
             name: formData.name,
             surname: formData.surname,
             email: formData.email,
-            room: { id: formData.roomId },
+            roomNumber: formData.roomNumber,
             checkInDate: new Date(formData.checkInDate).toISOString(),
             checkOutDate: new Date(formData.checkOutDate).toISOString()
         };
 
         try {
-            const res = await axiosAuthApi.post<Credentials>(
-                '/secured/add/guest',
-                payload
-            );
+            const res = await axiosAuthApi.post<Credentials>('/secured/add/guest', payload);
             setCredentials(res.data);
-            setFormData({
-                name: '',
-                surname: '',
-                email: '',
-                roomId: '',
-                checkInDate: '',
-                checkOutDate: ''
-            });
+            setFormData(defaultFormData);
         } catch (err: unknown) {
-            if (isAxiosError(err)) {
-                console.error(err);
-                setError(err.response?.data?.message || 'Błąd podczas dodawania gościa');
+            if (err instanceof AxiosError && err.response) {
+                setError(err.response.data?.message || 'Błąd podczas dodawania gościa');
             } else {
-                console.error(err);
-                setError('Wystąpił nieoczekiwany błąd');
+                setError('Nieznany błąd podczas dodawania gościa');
             }
         }
     };
@@ -120,8 +111,8 @@ export default function AddGuestPage() {
                     <TextField
                         select
                         label="Pokój"
-                        name="roomId"
-                        value={formData.roomId}
+                        name="roomNumber"
+                        value={formData.roomNumber}
                         onChange={handleChange}
                         required
                     >
@@ -137,7 +128,7 @@ export default function AddGuestPage() {
                         name="checkInDate"
                         value={formData.checkInDate}
                         onChange={handleChange}
-                        InputLabelProps={{ shrink: true }}
+                        slotProps={{ inputLabel: { shrink: true } }}
                         required
                     />
                     <TextField
@@ -146,12 +137,12 @@ export default function AddGuestPage() {
                         name="checkOutDate"
                         value={formData.checkOutDate}
                         onChange={handleChange}
-                        InputLabelProps={{ shrink: true }}
+                        slotProps={{ inputLabel: { shrink: true } }}
                         required
                     />
                     <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
                         <Button variant="outlined" color="secondary" onClick={() => {
-                            setFormData({ name: '', surname: '', email: '', roomId: '', checkInDate: '', checkOutDate: '' });
+                            setFormData(defaultFormData);
                             setError(null);
                         }}>
                             Wyczyść

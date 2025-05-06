@@ -5,4 +5,4 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ScheduleRepository: MongoRepository<ScheduleEntity, String> {}
+interface ScheduleRepository : MongoRepository<ScheduleEntity, String>

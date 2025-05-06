@@ -22,17 +22,9 @@ function EmployeeListPage() {
   const pageSize = 1;
   const user = useSelector(selectUser);
 
-  const token = localStorage.getItem('ACCESS_TOKEN');
-
   useEffect(() => {
-    if (!token) {
-      setError('Brak tokena. ');
-      return
-    }
-    if (!user.isAuthorized) {
-      setError('Użytkownik nie autoryzowany (brak w reduxie). ');
-      return
-    }
+    if (user === null) return
+
     axiosAuthApi.get<Employee[]>('/management/employees', {
       params: { page: page, size: pageSize },
     })
@@ -40,7 +32,7 @@ function EmployeeListPage() {
         console.log(res)
         setEmployees(employees => [...employees, ...res.data
           .filter(employee => !employees.some(e => e.id === employee.id)) ]); // for debug mode
-        if (res.data.length === 0) {
+        if (res.data.length < pageSize) {
           setShowLoadMore(false);
         }
       })
@@ -59,7 +51,7 @@ function EmployeeListPage() {
             setError('Nie udało się pobrać listy pracowników')
         }
       });
-  }, [page, token, user.isAuthorized]);
+  }, [page, user]);
 
   function loadMore() {
     setPage(prevState => prevState + 1)
