@@ -7,12 +7,15 @@ import java.time.Instant
 
 @Service
 class EmailSender(
-    private val mailSender: JavaMailSender
+    private val mailSender: JavaMailSender,
 ) {
-
     private val sendEmailAddress = "hello@demomailtrap.co"
 
-    fun sendRegistrationCodeEmail(email: String, code: String, validUntil: Instant) {
+    fun sendRegistrationCodeEmail(
+        email: String,
+        code: String,
+        validUntil: Instant,
+    ) {
         // TODO: Add email template
         val text = """
             Welcome,
@@ -26,16 +29,20 @@ class EmailSender(
             MyHotelAssistant Team
                     """
 
-        val msg = SimpleMailMessage().apply {
-            from = sendEmailAddress
-            setTo(email)
-            subject = "Your registration code"
-            this.text = text.trimIndent()
-        }
+        val msg =
+            SimpleMailMessage().apply {
+                from = sendEmailAddress
+                setTo(email)
+                subject = "Your registration code"
+                this.text = text.trimIndent()
+            }
         mailSender.send(msg)
     }
 
-    fun sendResetPasswordLink(email: String, link: String) {
+    fun sendResetPasswordLink(
+        email: String,
+        link: String,
+    ) {
         val text = """
             Hello,
     
@@ -49,12 +56,13 @@ class EmailSender(
             MyHotelAssistant Team
                     """
 
-        val msg = SimpleMailMessage().apply {
-            from = sendEmailAddress
-            setTo(email)
-            subject = "Password Reset Request"
-            this.text = text.trimIndent()
-        }
+        val msg =
+            SimpleMailMessage().apply {
+                from = sendEmailAddress
+                setTo(email)
+                subject = "Password Reset Request"
+                this.text = text.trimIndent()
+            }
         mailSender.send(msg)
     }
 }

@@ -10,10 +10,9 @@ import java.time.Instant
 
 @Component
 class DailyCleanupScheduler(
-    private val registrationCodeRepository: RegistrationCodeRepository, 
-    private val userRepository: UserRepository
+    private val registrationCodeRepository: RegistrationCodeRepository,
+    private val userRepository: UserRepository,
 ) {
-    
     private val logger = LoggerFactory.getLogger(DailyCleanupScheduler::class.java)
 
     /**

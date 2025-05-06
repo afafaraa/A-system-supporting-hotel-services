@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import axiosApi from "../../middleware/axiosApi.ts";
+import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {Button, Card, CardContent, Typography} from "@mui/material";
 import {selectUser} from "../../redux/slices/userSlice";
 import {useSelector} from "react-redux";
@@ -22,25 +22,17 @@ function EmployeeListPage() {
   const pageSize = 1;
   const user = useSelector(selectUser);
 
-  const token = localStorage.getItem('ACCESS_TOKEN');
-
   useEffect(() => {
-    if (!token) {
-      setError('Brak tokena. ');
-      return
-    }
-    if (!user.user.isAuthorized) {
-      setError('Użytkownik nie autoryzowany (brak w reduxie). ');
-      return
-    }
-    axiosApi.get<Employee[]>('/management/employees', {
+    if (user === null) return
+
+    axiosAuthApi.get<Employee[]>('/management/employees', {
       params: { page: page, size: pageSize },
-      headers: { Authorization: `Bearer ${token}` } })
+    })
       .then(res => {
         console.log(res)
         setEmployees(employees => [...employees, ...res.data
           .filter(employee => !employees.some(e => e.id === employee.id)) ]); // for debug mode
-        if (res.data.length === 0) {
+        if (res.data.length < pageSize) {
           setShowLoadMore(false);
         }
       })
@@ -59,7 +51,7 @@ function EmployeeListPage() {
             setError('Nie udało się pobrać listy pracowników')
         }
       });
-  }, [page, token, user.user.isAuthorized]);
+  }, [page, user]);
 
   function loadMore() {
     setPage(prevState => prevState + 1)

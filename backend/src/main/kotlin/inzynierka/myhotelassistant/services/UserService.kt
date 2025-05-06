@@ -1,11 +1,13 @@
 package inzynierka.myhotelassistant.services
 
 import inzynierka.myhotelassistant.controllers.AuthController
-import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserRequest
-import inzynierka.myhotelassistant.models.RegistrationCode
 import inzynierka.myhotelassistant.controllers.user.AddUserController
+import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserRequest
 import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserResponse
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
+import inzynierka.myhotelassistant.exceptions.HttpException.UserNotFoundException
+import inzynierka.myhotelassistant.models.RegistrationCode
+import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
@@ -18,21 +20,20 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.security.MessageDigest
 import java.time.Instant
-import inzynierka.myhotelassistant.exceptions.HttpException.UserNotFoundException
-import inzynierka.myhotelassistant.models.user.GuestData
 import java.time.format.DateTimeParseException
 
 @Service
 class UserService(
     private val userRepository: UserRepository,
     private val codeService: RegistrationCodeService,
-    private val passwordEncoder: PasswordEncoder
-): UserDetailsService {
-
+    private val passwordEncoder: PasswordEncoder,
+) : UserDetailsService {
     override fun loadUserByUsername(username: String): UserDetails {
-        val user = userRepository.findByUsername(username)
-            ?: throw UsernameNotFoundException("User not found: \"$username\"")
-        return User.builder()
+        val user =
+            userRepository.findByUsername(username)
+                ?: throw UsernameNotFoundException("User not found: \"$username\"")
+        return User
+            .builder()
             .username(user.username)
             .password(user.password)
             .roles(user.role.name)
@@ -41,12 +42,14 @@ class UserService(
 
     fun save(user: UserEntity): UserEntity = userRepository.save(user)
 
-    fun findByEmailOrThrow(email: String): UserEntity {
-        return userRepository.findByEmail(email)
+    fun findByEmailOrThrow(email: String): UserEntity =
+        userRepository.findByEmail(email)
             ?: throw UserNotFoundException("User with given email was not found")
-    }
 
-    fun changePassword(email: String, newPassword: String) {
+    fun changePassword(
+        email: String,
+        newPassword: String,
+    ) {
         val user = findByEmailOrThrow(email)
         user.password = passwordEncoder.encode(newPassword)
         userRepository.save(user)
@@ -56,19 +59,21 @@ class UserService(
         val username: String = generateUsername(user)
         val password: String = generatePassword(user)
         try {
-            val guest = UserEntity(
-                name = user.name,
-                surname = user.surname,
-                email = user.email,
-                role = Role.GUEST,
-                username = username,
-                password = passwordEncoder.encode(password),
-                guestData = GuestData(
-                    roomNumber = user.roomNumber,
-                    checkInDate=Instant.parse(user.checkInDate),
-                    checkOutDate=Instant.parse(user.checkOutDate),
-                ),
-            )
+            val guest =
+                UserEntity(
+                    name = user.name,
+                    surname = user.surname,
+                    email = user.email,
+                    role = Role.GUEST,
+                    username = username,
+                    password = passwordEncoder.encode(password),
+                    guestData =
+                        GuestData(
+                            roomNumber = user.roomNumber,
+                            checkInDate = Instant.parse(user.checkInDate),
+                            checkOutDate = Instant.parse(user.checkOutDate),
+                        ),
+                )
             val saved = save(guest)
             codeService.generateAndSendForUser(saved.id!!, saved.email, saved.guestData!!.checkOutDate)
         } catch (e: DateTimeParseException) {
@@ -77,20 +82,22 @@ class UserService(
         return AddUserResponse(username = username, password = password)
     }
 
-    fun generatePassword(user: AddUserRequest): String {
-        return encodeString(user.name + "_" + user.surname + "_" + user.roomNumber + "_" + user.checkInDate + "_" + user.checkOutDate,12)
-    }
+    fun generatePassword(user: AddUserRequest): String =
+        encodeString(user.name + "_" + user.surname + "_" + user.roomNumber + "_" + user.checkInDate + "_" + user.checkOutDate, 12)
 
     fun generateUsername(user: AddUserRequest): String {
         val userEncode =
             user.name.take(4) +
-                    "_" + user.surname.take(4) +
-                    "_" + user.roomNumber
+                "_" + user.surname.take(4) +
+                "_" + user.roomNumber
 
         return userEncode + "_" + encodeString(userEncode + "_" + user.checkInDate + "_" + user.checkOutDate, 4)
     }
 
-    fun encodeString(str: String, length: Int): String {
+    fun encodeString(
+        str: String,
+        length: Int,
+    ): String {
         val md5 = MessageDigest.getInstance("MD5")
         val hashBytes = md5.digest(str.toByteArray())
         val hexString = hashBytes.joinToString("") { "%02x".format(it) }
@@ -107,8 +114,8 @@ class UserService(
         codeService.markUsed(rc)
     }
 
-    fun createAdmin(request: AddUserController.NewAdminRequest): UserEntity {
-        return UserEntity(
+    fun createAdmin(request: AddUserController.NewAdminRequest): UserEntity =
+        UserEntity(
             username = "admin_${request.name}",
             password = passwordEncoder.encode(request.password),
             email = request.email,
@@ -116,5 +123,4 @@ class UserService(
             surname = request.surname.lowercase().replaceFirstChar { it.uppercase() },
             role = Role.ADMIN,
         )
-    }
 }

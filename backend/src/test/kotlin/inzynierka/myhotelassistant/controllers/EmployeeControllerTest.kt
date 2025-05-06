@@ -27,7 +27,6 @@ import kotlin.test.assertEquals
 @WebMvcTest(EmployeeController::class)
 @Import(SecurityConfig::class, RSAKeyConfig::class)
 class EmployeeControllerTest {
-
     @Autowired
     lateinit var mvc: MockMvc
 
@@ -40,7 +39,8 @@ class EmployeeControllerTest {
     @Test
     @WithMockUser(roles = ["GUEST", "EMPLOYEE", "RECEPTIONIST"])
     fun `should return 403 forbidden when trying with user without permissions`() {
-        mvc.perform(get("/management/employees?username=irrelevant"))
+        mvc
+            .perform(get("/management/employees?username=irrelevant"))
             .andExpect(status().isForbidden)
     }
 
@@ -48,66 +48,74 @@ class EmployeeControllerTest {
     fun `should validate EmployeeDTO fields`() {
         val validator = Validation.buildDefaultValidatorFactory().validator
 
-        var invalidRequest = EmployeeController.EmployeeDTO(
-            username = "no", // to short
-            password = "123", // to short
-            email = "invalid-email", // invalid email
-            name = "john", // okay
-            surname = "doe", // okay
-            role = "invalid-role"
-        )
+        var invalidRequest =
+            EmployeeController.EmployeeDTO(
+                username = "no", // to short
+                password = "123", // to short
+                email = "invalid-email", // invalid email
+                name = "john", // okay
+                surname = "doe", // okay
+                role = "invalid-role",
+            )
         var violations = validator.validate(invalidRequest)
         assertEquals(4, violations.size)
 
-        invalidRequest = EmployeeController.EmployeeDTO(
-            username = "invalid characters!@#", // invalid characters
-            password = "thats a good password",
-            email = "test.email@test.c",
-            name = "john-9998", // invalid characters
-            surname = "dOe-San",
-            role = "manAger"
-        )
+        invalidRequest =
+            EmployeeController.EmployeeDTO(
+                username = "invalid characters!@#", // invalid characters
+                password = "thats a good password",
+                email = "test.email@test.c",
+                name = "john-9998", // invalid characters
+                surname = "dOe-San",
+                role = "manAger",
+            )
         violations = validator.validate(invalidRequest)
         assertEquals(2, violations.size)
     }
-    
+
     @Test
     @WithMockUser(roles = ["MANAGER"])
     fun addEmployeeTest() {
-        val employeeDTO = EmployeeController.EmployeeDTO(
-            username = "employee",
-            password = "password123",
-            email = "employee@example.com",
-            name = "john",
-            surname = "Doe",
-        )
-        val expectedEmployee = UserEntity(
-            username = "employee",
-            password = "password123",
-            email = "employee@example.com",
-            name = "John",
-            surname = "Doe",
-            role = Role.EMPLOYEE,
-        )
+        val employeeDTO =
+            EmployeeController.EmployeeDTO(
+                username = "employee",
+                password = "password123",
+                email = "employee@example.com",
+                name = "john",
+                surname = "Doe",
+            )
+        val expectedEmployee =
+            UserEntity(
+                username = "employee",
+                password = "password123",
+                email = "employee@example.com",
+                name = "John",
+                surname = "Doe",
+                role = Role.EMPLOYEE,
+            )
 
         given(employeeService.createEmployee(employeeDTO)).willReturn(expectedEmployee)
         given(employeeService.addEmployee(expectedEmployee)).willReturn(expectedEmployee.copy())
 
-        val result = mvc.perform(post("/management/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jacksonObjectMapper().writeValueAsString(employeeDTO)))
-            .andExpect(status().isCreated)
-            .andReturn()
+        val result =
+            mvc
+                .perform(
+                    post("/management/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jacksonObjectMapper().writeValueAsString(employeeDTO)),
+                ).andExpect(status().isCreated)
+                .andReturn()
 
         val map: Map<String, Any> = jacksonObjectMapper().readValue(result.response.contentAsString)
-        val actualEmployee = UserEntity(
-            username = map["username"] as String,
-            password = map["password"] as String,
-            email = map["email"] as String,
-            name = map["name"] as String,
-            surname = map["surname"] as String,
-            role = Role.valueOf(map["role"] as String),
-        )
+        val actualEmployee =
+            UserEntity(
+                username = map["username"] as String,
+                password = map["password"] as String,
+                email = map["email"] as String,
+                name = map["name"] as String,
+                surname = map["surname"] as String,
+                role = Role.valueOf(map["role"] as String),
+            )
 
         expectedEmployee.password = "**********"
         assertEquals(expectedEmployee, actualEmployee)
@@ -116,29 +124,33 @@ class EmployeeControllerTest {
     @Test
     @WithMockUser(roles = ["MANAGER"])
     fun getEmployeeWithUsernameTest() {
-        val expectedEmployee = UserEntity(
-            username = "employee",
-            password = "password123",
-            email = "employee@example.com",
-            name = "John",
-            surname = "Doe",
-            role = Role.EMPLOYEE,
-        )
+        val expectedEmployee =
+            UserEntity(
+                username = "employee",
+                password = "password123",
+                email = "employee@example.com",
+                name = "John",
+                surname = "Doe",
+                role = Role.EMPLOYEE,
+            )
         given(employeeService.findByUsernameOrThrow("employee")).willReturn(expectedEmployee.copy())
 
-        val result = mvc.perform(get("/management/employees/username/employee"))
-            .andExpect(status().isOk)
-            .andReturn()
+        val result =
+            mvc
+                .perform(get("/management/employees/username/employee"))
+                .andExpect(status().isOk)
+                .andReturn()
 
         val map: Map<String, Any> = jacksonObjectMapper().readValue(result.response.contentAsString)
-        val actualEmployee = UserEntity(
-            username = map["username"] as String,
-            password = map["password"] as String,
-            email = map["email"] as String,
-            name = map["name"] as String,
-            surname = map["surname"] as String,
-            role = Role.valueOf(map["role"] as String),
-        )
+        val actualEmployee =
+            UserEntity(
+                username = map["username"] as String,
+                password = map["password"] as String,
+                email = map["email"] as String,
+                name = map["name"] as String,
+                surname = map["surname"] as String,
+                role = Role.valueOf(map["role"] as String),
+            )
 
         expectedEmployee.password = "**********"
         assertEquals(expectedEmployee, actualEmployee)

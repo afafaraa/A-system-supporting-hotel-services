@@ -18,57 +18,82 @@ class AuthController(
     private val tokenService: TokenService,
     private val authManager: AuthenticationManager,
     private val userService: UserService,
-    private val emailSender: EmailSender
+    private val emailSender: EmailSender,
 ) {
+    data class LoginResponse(
+        val accessToken: String?,
+        val refreshToken: String?,
+    )
 
-    data class LoginResponse(val accessToken: String?, val refreshToken: String?)
-
-    data class LoginRequest(val username: String, val password: String)
+    data class LoginRequest(
+        val username: String,
+        val password: String,
+    )
 
     @PostMapping("/token")
-    fun getToken(@RequestBody userLogin: LoginRequest): LoginResponse {
+    fun getToken(
+        @RequestBody userLogin: LoginRequest,
+    ): LoginResponse {
         val authToken = UsernamePasswordAuthenticationToken(userLogin.username, userLogin.password)
         val authentication = authManager.authenticate(authToken)
         return LoginResponse(
-            accessToken  = tokenService.generateAccessToken(authentication),
-            refreshToken = tokenService.generateRefreshToken(authentication)
+            accessToken = tokenService.generateAccessToken(authentication),
+            refreshToken = tokenService.generateRefreshToken(authentication),
         )
     }
 
-    data class RefreshRequest(val refreshToken: String)
+    data class RefreshRequest(
+        val refreshToken: String,
+    )
 
     @PostMapping("/refresh")
-    fun refreshAccessToken(@RequestBody req: RefreshRequest): LoginResponse {
-        return LoginResponse(
-            accessToken  = tokenService.refreshToken(req.refreshToken),
-            refreshToken = req.refreshToken
+    fun refreshAccessToken(
+        @RequestBody req: RefreshRequest,
+    ): LoginResponse =
+        LoginResponse(
+            accessToken = tokenService.refreshToken(req.refreshToken),
+            refreshToken = req.refreshToken,
         )
-    }
 
-    data class EmailRequest(val email: String)
+    data class EmailRequest(
+        val email: String,
+    )
 
     @PostMapping("/send-reset-password-email")
-    fun sendResetPasswordEmail(@RequestBody req: EmailRequest) {
+    fun sendResetPasswordEmail(
+        @RequestBody req: EmailRequest,
+    ) {
         val token = tokenService.generateResetPasswordToken(10, req.email)
         emailSender.sendResetPasswordLink(
             email = req.email,
-            link = "http://localhost:5173/reset-password/$token"
+            link = "http://localhost:5173/reset-password/$token",
         )
     }
 
-    data class ResetPasswordRequest(val newPassword: String, val token: String)
+    data class ResetPasswordRequest(
+        val newPassword: String,
+        val token: String,
+    )
 
     @PostMapping("/reset-password")
-    fun resetPassword(@RequestBody resetPasswordRequest: ResetPasswordRequest) {
+    fun resetPassword(
+        @RequestBody resetPasswordRequest: ResetPasswordRequest,
+    ) {
         val email = tokenService.validateResetPasswordToken(resetPasswordRequest.token)
         userService.changePassword(email, resetPasswordRequest.newPassword)
     }
 
-    data class CompleteRegistrationRequest(val code: String, val username: String, val password: String)
+    data class CompleteRegistrationRequest(
+        val code: String,
+        val username: String,
+        val password: String,
+    )
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    fun completeRegistration(@RequestBody req: CompleteRegistrationRequest): LoginResponse {
+    fun completeRegistration(
+        @RequestBody req: CompleteRegistrationRequest,
+    ): LoginResponse {
         userService.completeRegistration(req)
         return getToken(LoginRequest(req.username, req.password))
     }

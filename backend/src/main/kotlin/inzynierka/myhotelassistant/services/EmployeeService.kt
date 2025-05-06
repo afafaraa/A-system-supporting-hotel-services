@@ -1,7 +1,9 @@
 package inzynierka.myhotelassistant.services
 
 import inzynierka.myhotelassistant.controllers.user.EmployeeController
-import inzynierka.myhotelassistant.exceptions.HttpException.*
+import inzynierka.myhotelassistant.exceptions.HttpException.InvalidRoleNameException
+import inzynierka.myhotelassistant.exceptions.HttpException.UserAlreadyExistsException
+import inzynierka.myhotelassistant.exceptions.HttpException.UserNotFoundException
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
@@ -14,18 +16,15 @@ import kotlin.jvm.Throws
 @Service
 class EmployeeService(
     private val userRepository: UserRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
 ) {
-
     private val employeeRoles = listOf(Role.EMPLOYEE, Role.RECEPTIONIST, Role.MANAGER)
 
-    fun getAllEmployees(pageable: Pageable): List<UserEntity> {
-        return userRepository.findByRoleIn(employeeRoles, pageable).content
-    }
+    fun getAllEmployees(pageable: Pageable): List<UserEntity> = userRepository.findByRoleIn(employeeRoles, pageable).content
 
     @Throws(InvalidRoleNameException::class)
-    fun createEmployee(employeeDTO: EmployeeController.EmployeeDTO): UserEntity {
-        return UserEntity(
+    fun createEmployee(employeeDTO: EmployeeController.EmployeeDTO): UserEntity =
+        UserEntity(
             username = employeeDTO.username,
             password = passwordEncoder.encode(employeeDTO.password),
             email = employeeDTO.email,
@@ -33,20 +32,19 @@ class EmployeeService(
             surname = employeeDTO.surname.lowercase().replaceFirstChar { it.uppercase() },
             role = employeeDTO.role?.let { Role.convertFromString(it.uppercase()) } ?: Role.EMPLOYEE,
         )
-    }
 
     @Throws(UserAlreadyExistsException::class)
-    fun addEmployee(employee: UserEntity): UserEntity   {
-        if (userRepository.existsByUsername(employee.username))
+    fun addEmployee(employee: UserEntity): UserEntity {
+        if (userRepository.existsByUsername(employee.username)) {
             throw UserAlreadyExistsException("User with username '${employee.username}' already exists")
+        }
         return userRepository.save(employee)
     }
 
     @Throws(UserNotFoundException::class)
-    fun findByUsernameOrThrow(username: String): UserEntity {
-        return userRepository.findByUsername(username)
+    fun findByUsernameOrThrow(username: String): UserEntity =
+        userRepository.findByUsername(username)
             ?: throw UserNotFoundException("User with username '$username' was not found")
-    }
 
     @Transactional
     @Throws(UserNotFoundException::class)
@@ -58,7 +56,10 @@ class EmployeeService(
 
     @Transactional
     @Throws(UserNotFoundException::class, InvalidRoleNameException::class)
-    fun changeRole(username: String, role: String) {
+    fun changeRole(
+        username: String,
+        role: String,
+    ) {
         val newRole = Role.convertFromString(role)
         if (newRole == Role.GUEST) throw InvalidRoleNameException("Cannot assign GUEST role to an employee")
         if (newRole == Role.ADMIN) throw InvalidRoleNameException("Cannot assign ADMIN role to an employee")
