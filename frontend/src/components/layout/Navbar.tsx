@@ -42,12 +42,12 @@ function Navbar(props: Props) {
   };
 
   const nav = [
-    {text: 'Available services', navTo: '/available-services' , roles: ['ROLE_GUEST']},
-    {text: 'Shopping cart', navTo: '/shopping-cart', roles: ['ROLE_GUEST']},
-    {text: 'Requested services', navTo: '/requested-services', roles: ['ROLE_GUEST']},
-    {text: 'Past services', navTo: '/past-services', roles: ['ROLE_GUEST']},
+    {text: 'Available services', navTo: '/services/available' , roles: ['ROLE_GUEST']},
+    {text: 'Shopping cart', navTo: '/services/shopping-cart', roles: ['ROLE_GUEST']},
+    {text: 'Requested services', navTo: '/services/requested', roles: ['ROLE_GUEST']},
+    {text: 'Past services', navTo: '/services/history', roles: ['ROLE_GUEST']},
     {text: 'Notifications', navTo: '/notifications', roles: ['ROLE_GUEST']},
-    {text: 'Logout', navTo: '/logout', roles: ['ROLE_GUEST']}
+    {text: 'Logout', navTo: '/logout', roles: null}
   ]
 
   if (user === null) return null;
@@ -56,7 +56,8 @@ function Navbar(props: Props) {
     <div>
       <List>
         {nav.map((item, index) =>
-          item.roles.indexOf(user.role) >= 0 && <ListItem key={index} disablePadding>
+          (item.roles === null || item.roles.includes(user.role)) &&
+            <ListItem key={index} disablePadding>
               <ListItemButton onClick={() => navigate(item.navTo)}>
                 <ListItemIcon>
                   icon

@@ -10,9 +10,9 @@ const DebugNavigationMenu = () => {
 
   const menuItems = [
     '/', '/login', '/logout', '/register', '/reset-password-email',
-    '/home', '/add-reservation', '/employees',
-    '/available-services', '/notifications', '/past-services',
-    '/requested-services', '/shopping-cart',
+    '/home', '/add-reservation', '/employees', '/notifications',
+    '/services/available', '/services/shopping-cart',
+    '/services/history', '/services/requested',
   ];
 
   const toggleDrawer = (open: boolean) => () => {

@@ -31,11 +31,12 @@ function App(){
             <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
             <Route path="/add-reservation" element={<ProtectedRoute><AddReservationPage /></ProtectedRoute>} />
             <Route path="/employees" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />
-            <Route path="/available-services" element={<ProtectedRoute><AvailableServicesPage /></ProtectedRoute>} />
             <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>}/>
-            <Route path="/past-services" element={<ProtectedRoute><PastServicesPage /></ProtectedRoute>}/>
-            <Route path="/requested-services" element={<ProtectedRoute><RequestedServicesPage /></ProtectedRoute>}/>
-            <Route path="/shopping-cart" element={<ProtectedRoute><ShoppingCartPage /></ProtectedRoute>}/>
+            <Route path="/services" element={<Navigate to={"/services/available"} replace />} />
+            <Route path="/services/available" element={<ProtectedRoute><AvailableServicesPage /></ProtectedRoute>} />
+            <Route path="/services/requested" element={<ProtectedRoute><RequestedServicesPage /></ProtectedRoute>}/>
+            <Route path="/services/history" element={<ProtectedRoute><PastServicesPage /></ProtectedRoute>}/>
+            <Route path="/services/shopping-cart" element={<ProtectedRoute><ShoppingCartPage /></ProtectedRoute>}/>
           </Route>
 
           <Route element={<PublicLayout />}>

@@ -9,5 +9,5 @@ data class NotificationEntity(
     @Id val id: String? = null,
     val userId: String,
     val text: String,
-    val datetime: Instant,
+    val datetime: Instant = Instant.now(),
 )
