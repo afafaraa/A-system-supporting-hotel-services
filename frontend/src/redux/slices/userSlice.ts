@@ -1,32 +1,37 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {RootState} from "../store.ts";
+
+export interface UserData {
+    username: string;
+    role: string;
+    accessToken: string;
+    accessTokenExp: number;
+    refreshToken: string;
+    refreshTokenExp: number;
+}
 
 type UserState = {
-    username: string;
-    isAuthenticated: boolean;
-    role: string;
+    user: UserData | null;
 }
 
 const initialState: UserState = {
-    username: '',
-    isAuthenticated: false,
-    role: '',
+    user: null
 };
 
 const userSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
-        setUser: (state, action: { payload: { username?: string, isAuthenticated?: boolean, role?: string } }) => {
-            return {
-                ...state,
-                ...action.payload
-            }
+        setUser: (state, action: PayloadAction<UserData>) => {
+            state.user = action.payload;
         },
-        clearUser: () => initialState
+        clearUser: (state) => {
+            state.user = null;
+        },
     }
 });
 
-export const selectUser = (state: { user: UserState }) => state.user;
+export const selectUser = (state: RootState) => state.user.user;
 
 export const { setUser, clearUser } = userSlice.actions;
 

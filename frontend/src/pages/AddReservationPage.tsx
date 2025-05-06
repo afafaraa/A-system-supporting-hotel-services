@@ -18,7 +18,7 @@ interface FormData {
     name: string,
     surname: string,
     email: string,
-    roomId: string,
+    roomNumber: string,
     checkInDate: string,
     checkOutDate: string,
 }
@@ -27,7 +27,7 @@ const defaultFormData: FormData = {
     name: '',
     surname: '',
     email: '',
-    roomId: '',
+    roomNumber: '',
     checkInDate: '',
     checkOutDate: '',
 }
@@ -58,25 +58,15 @@ export default function AddGuestPage() {
             name: formData.name,
             surname: formData.surname,
             email: formData.email,
-            room: { id: formData.roomId },
+            roomNumber: formData.roomNumber,
             checkInDate: new Date(formData.checkInDate).toISOString(),
             checkOutDate: new Date(formData.checkOutDate).toISOString()
         };
 
         try {
-            const res = await axiosAuthApi.post<Credentials>(
-                '/secured/add/guest',
-                payload
-            );
+            const res = await axiosAuthApi.post<Credentials>('/secured/add/guest', payload);
             setCredentials(res.data);
-            setFormData({
-                name: '',
-                surname: '',
-                email: '',
-                roomId: '',
-                checkInDate: '',
-                checkOutDate: ''
-            });
+            setFormData(defaultFormData);
         } catch (err: unknown) {
             if (err instanceof AxiosError && err.response) {
                 setError(err.response.data?.message || 'Błąd podczas dodawania gościa');
@@ -121,8 +111,8 @@ export default function AddGuestPage() {
                     <TextField
                         select
                         label="Pokój"
-                        name="roomId"
-                        value={formData.roomId}
+                        name="roomNumber"
+                        value={formData.roomNumber}
                         onChange={handleChange}
                         required
                     >
@@ -152,7 +142,7 @@ export default function AddGuestPage() {
                     />
                     <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
                         <Button variant="outlined" color="secondary" onClick={() => {
-                            setFormData({ name: '', surname: '', email: '', roomId: '', checkInDate: '', checkOutDate: '' });
+                            setFormData(defaultFormData);
                             setError(null);
                         }}>
                             Wyczyść

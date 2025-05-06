@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import {ReactNode, useState} from "react";
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
@@ -41,7 +41,6 @@ function Navbar(props: Props) {
     }
   };
 
-  console.log(user)
   const nav = [
     {text: 'Available services', navTo: '/available-services' , roles: ['ROLE_GUEST']},
     {text: 'Shopping cart', navTo: '/shopping-cart', roles: ['ROLE_GUEST']},
@@ -50,6 +49,8 @@ function Navbar(props: Props) {
     {text: 'Notifications', navTo: '/notifications', roles: ['ROLE_GUEST']},
     {text: 'Logout', navTo: '/logout', roles: ['ROLE_GUEST']}
   ]
+
+  if (user === null) return null;
 
   const drawer = (
     <div>

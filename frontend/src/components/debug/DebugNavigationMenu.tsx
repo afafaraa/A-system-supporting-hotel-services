@@ -9,13 +9,10 @@ const DebugNavigationMenu = () => {
   const navigate = useNavigate();
 
   const menuItems = [
-    { text: '/', path: '/' },
-    { text: '/login', path: '/login' },
-    { text: '/register', path: '/register' },
-    { text: '/reset-password-email', path: '/reset-password-email' },
-    { text: '/home', path: '/home' },
-    { text: '/add-reservation', path: '/add-reservation' },
-    { text: '/employees', path: '/employees' },
+    '/', '/login', '/logout', '/register', '/reset-password-email',
+    '/home', '/add-reservation', '/employees',
+    '/available-services', '/notifications', '/past-services',
+    '/requested-services', '/shopping-cart',
   ];
 
   const toggleDrawer = (open: boolean) => () => {
@@ -34,16 +31,16 @@ const DebugNavigationMenu = () => {
 
       <Drawer anchor="left" open={isOpen} onClose={toggleDrawer(false)} >
         <List>
-          {menuItems.map((item) => (
+          {menuItems.map(item => (
             <ListItem
               component="button"
-              key={item.text}
+              key={item}
               onClick={() => {
-                navigate(item.path);
+                navigate(item);
                 setIsOpen(false);
               }}
             >
-              <ListItemText primary={item.text}/>
+              <ListItemText primary={item}/>
             </ListItem>
           ))}
         </List>
