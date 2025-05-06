@@ -26,6 +26,7 @@ import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 import kotlin.collections.forEach
+import kotlin.math.roundToInt
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
@@ -181,7 +182,7 @@ class DatabaseSeeder(
                     ServiceEntity(
                         name = serviceData.name,
                         description = serviceData.description,
-                        price = String.format("%.2f", 5 + random.nextDouble(5.0, 50.0)).toDouble(),
+                        price = (5 + random.nextDouble(5.0, 50.0)).let { (it * 100).roundToInt() / 100.0 },
                         type = if (random.nextBoolean()) ServiceType.GENERAL_SERVICE else ServiceType.PLACE_RESERVATION,
                         disabled = false,
                         rating = List(random.nextInt(3, 7)) { 3 + random.nextInt(3) }.toMutableList(),

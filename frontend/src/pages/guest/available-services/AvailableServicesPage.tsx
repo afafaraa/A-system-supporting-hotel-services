@@ -6,15 +6,18 @@ import {useEffect, useState} from "react";
 function AvailableServicesPage() {
   const [availableServices, setAvailableServices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page] = useState(0);
+
+  const pageSize = 100; // temporary until pagination
 
   useEffect(() => {
     fetchData();
-  },[]);
+  }, []);
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await axiosAuthApi.get('/services/available')
+      const res = await axiosAuthApi.get(`/services/available?page=${page}&size=${pageSize}`)
       console.log(res.data)
       setAvailableServices(res.data);
     } catch (error) {

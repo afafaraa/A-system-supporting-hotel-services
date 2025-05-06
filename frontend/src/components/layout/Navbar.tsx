@@ -49,7 +49,7 @@ function Navbar(props: Props) {
     {text: 'Requested services', navTo: '/services/requested', roles: ['ROLE_GUEST']},
     {text: 'Past services', navTo: '/services/history', roles: ['ROLE_GUEST']},
     {text: 'Notifications', navTo: '/notifications', roles: ['ROLE_GUEST']},
-    {text: 'Logout', navTo: '/logout', roles: null}
+    {text: 'Logout', navTo: '/logout', roles: null},
   ]
 
   if (user === null) return null;
@@ -57,7 +57,7 @@ function Navbar(props: Props) {
   const drawer = (
     <div>
       <List sx={{paddingX: '10px'}}>
-        <img src="" alt="Logo"/>
+        <img alt="Logo"/>
         {nav.map((item, index) =>
           (item.roles === null || item.roles.includes(user.role)) &&
             <ListItem key={index} disablePadding>
