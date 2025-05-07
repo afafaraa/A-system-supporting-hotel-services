@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import {store} from './redux/store.ts';
 import App from './App.tsx';
 import {createTheme, ThemeProvider} from "@mui/material";
+import './locales/i18n';
 
 const theme = createTheme({
   palette: {

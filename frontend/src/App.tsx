@@ -73,7 +73,10 @@ function AppInitializer({ children }: PropsWithChildren) {
   useEffect(() => {
       initializeUserFromLocalStorage(dispatch)
         .then(isSuccessful => {
-          if (!isSuccessful && !isPublicPath) navigate("/login");
+          if (!isSuccessful && !isPublicPath) {
+            console.log("User not authenticated, redirecting to /login");
+            navigate("/login");
+          }
         })
         .finally(() => setIsInitialized(true));
     }, [dispatch, navigate]

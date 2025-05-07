@@ -7,6 +7,7 @@ import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
 import {setUserData} from "../../components/auth/auth.tsx";
+import { useTranslation } from 'react-i18next';
 
 function LoginPage(){
     const user = useSelector(selectUser);
@@ -15,6 +16,7 @@ function LoginPage(){
     const [showPassword, setShowPassword] = useState(true);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { t } = useTranslation();
 
     useEffect(() => {
       if (user !== null) navigate('/home')
@@ -33,24 +35,24 @@ function LoginPage(){
     return (
         <Box sx={{display: "flex", justifyContent: "center", justifyItems: "center", alignItems: "center", height: "100%"}}>
             <FormControl sx={{width: '23%', height: '60%', backgroundColor: 'white', padding: 4, gap: 2}}>
-                <Typography variant="h1" sx={{textAlign: 'center', fontSize: '32px'}}>Login Page</Typography>
+                <Typography variant="h1" sx={{textAlign: 'center', fontSize: '32px'}}>{t("LoginPage.title")}</Typography>
                 <TextField
-                  label="Username"
+                  label={t("LoginPage.username")}
                   autoComplete="username"
                   onChange={(e) => setUsername(e.target.value)}
                   type="text"
                   name="username"
                   id="username"
-                  placeholder="Username"
+                  placeholder={t("LoginPage.username")}
                 />
                 <TextField
-                  label="Password"
+                  label={t("LoginPage.password")}
                   autoComplete="current-password"
                   onChange={(e) => setPassword(e.target.value)}
                   type={showPassword ? "text" : "password"}
                   name="password"
                   id="password"
-                  placeholder="Password"
+                  placeholder={t("LoginPage.password")}
                   slotProps={{
                     input: {
                       endAdornment: (
@@ -66,9 +68,9 @@ function LoginPage(){
                     },
                   }}
                 />
-                <Button onClick={login} type='submit'>Login</Button>
-                <Link style={{textAlign: 'center'}} to="/reset-password-email">Kliknij aby zrestartować hasło</Link>
-                <Link style={{textAlign: 'center'}} to="/register">Kliknij aby zarejestrować się z kodem</Link>
+                <Button onClick={login} type='submit'>{t("LoginPage.loginButton")}</Button>
+                <Link style={{textAlign: 'center'}} to="/reset-password-email">{t("LoginPage.resetPassword")}</Link>
+                <Link style={{textAlign: 'center'}} to="/register">{t("LoginPage.registerWithCode")}</Link>
             </FormControl>
         </Box>
     )

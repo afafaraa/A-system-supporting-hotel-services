@@ -1,0 +1,10 @@
+{
+  "LoginPage": {
+    "title": "Logowanie",
+    "username": "Nazwa użytkownika",
+    "password": "Hasło",
+    "loginButton": "Zaloguj się",
+    "resetPassword": "Kliknij, aby zresetować hasło",
+    "registerWithCode": "Kliknij, aby zarejestrować się z kodem"
+  }
+}

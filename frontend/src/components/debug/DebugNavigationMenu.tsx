@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { IconButton, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate } from 'react-router-dom';
+import LanguageSwitcher from "../layout/LanguageSwitcher.tsx";
 
 const DebugNavigationMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,6 +45,7 @@ const DebugNavigationMenu = () => {
             </ListItem>
           ))}
         </List>
+        <LanguageSwitcher />
       </Drawer>
     </>
   );
