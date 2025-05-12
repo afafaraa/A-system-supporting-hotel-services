@@ -18,7 +18,9 @@ import ShoppingCartPage from "./pages/guest/ShoppingCartPage.tsx";
 import {PropsWithChildren, useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {initializeUserFromLocalStorage} from "./components/auth/auth.tsx";
-
+import EmployeeDetailsPage from "./pages/manager/EmployeeDetailsPage.tsx";
+import ServicesListPage from "./pages/manager/ServicesListPage.tsx";
+import StatsPage from "./pages/manager/StatsPage.tsx";
 
 function App(){
 
@@ -31,12 +33,15 @@ function App(){
             <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
             <Route path="/add-reservation" element={<ProtectedRoute><AddReservationPage /></ProtectedRoute>} />
             <Route path="/employees" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />
+            <Route path="/employees/:employeeID" element={<ProtectedRoute><EmployeeDetailsPage /></ProtectedRoute>}/>
             <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>}/>
             <Route path="/services" element={<Navigate to={"/services/available"} replace />} />
             <Route path="/services/available" element={<ProtectedRoute><AvailableServicesPage /></ProtectedRoute>} />
             <Route path="/services/requested" element={<ProtectedRoute><RequestedServicesPage /></ProtectedRoute>}/>
             <Route path="/services/history" element={<ProtectedRoute><PastServicesPage /></ProtectedRoute>}/>
             <Route path="/services/shopping-cart" element={<ProtectedRoute><ShoppingCartPage /></ProtectedRoute>}/>
+            <Route path="/management/services" element={<ProtectedRoute><ServicesListPage /></ProtectedRoute>} />
+            <Route path="/management/statistics" element={<ProtectedRoute><StatsPage /></ProtectedRoute>} />
           </Route>
 
           <Route element={<PublicLayout />}>
