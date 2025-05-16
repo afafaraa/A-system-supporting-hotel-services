@@ -28,7 +28,7 @@ class NotificationService(
     }
 
     private fun getNotificationsFromUsername(username: String): List<NotificationDTO> {
-        val userId: String = userService.findIdByUsernameOrThrow(username)
+        val userId: String = userService.findByUsernameOrThrow(username).id!!
         val notifications: List<NotificationEntity> = notificationRepository.findAllByUserIdOrderByCreatedAtDesc(userId)
         return notifications.map { convertToDTO(it) }
     }
@@ -76,7 +76,7 @@ class NotificationService(
             timestamp = notification.createdAt,
         )
 
-    fun addNotificationToUser(userId: String, title: String, message: String, ) {
+    fun addNotificationToUser(userId: String, title: String, message: String) {
         val notification = NotificationEntity(
             userId = userId,
             title = title,
