@@ -74,6 +74,7 @@ class NotificationService(
             title = notification.title,
             message = notification.message,
             timestamp = notification.createdAt,
+            isRead = notification.isRead,
         )
 
     fun addNotificationToUser(userId: String, title: String, message: String) {

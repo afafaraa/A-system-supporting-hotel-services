@@ -7,4 +7,5 @@ data class NotificationDTO(
     val title: String,
     val message: String,
     val timestamp: LocalDateTime,
+    val isRead: Boolean,
 )
