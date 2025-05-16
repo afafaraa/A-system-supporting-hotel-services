@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { axiosAuthApi } from "../../middleware/axiosApi.ts";
 import {
   Box,
@@ -19,8 +19,8 @@ import { useNavigate } from "react-router-dom";
 
 interface Employee {
   id: string;
-  username: string;
   role: string;
+  username: string;
   email: string;
   name: string;
   surname: string;
@@ -42,13 +42,9 @@ function EmployeeListPage() {
   const [page, setPage] = useState(0);
   const navigate = useNavigate();
 
-  const pageSize = 5;
+  const pageSize = 10;
   
-  useEffect(() => {
-    fetchEmployees();
-  }, [page]);
-
-  const fetchEmployees = async () => {
+  const fetchEmployees = useCallback(async () => {
     setLoading(true);
 
     try {
@@ -59,11 +55,15 @@ function EmployeeListPage() {
       setEmployees(res.data);
     } catch (err) {
       console.error(err);
-      setError("Nie udało się pobrać listy pracowników");
+      setError("Failed to fetch employees");
     } finally {
       setLoading(false);
     }
-  }
+  }, [page, pageSize]);
+
+  useEffect(() => {
+    fetchEmployees();
+  }, [fetchEmployees]);
 
   const employeesForTab = useMemo(() => {
     if (!sectors[tab]) return [];
@@ -127,7 +127,7 @@ function EmployeeListPage() {
                   <Button
                     variant="contained"
                     size="small"
-                    onClick={() => navigate(`/employees/${emp.id}`)}
+                    onClick={() => navigate(`/employees/${emp.username}`)}
                   >
                     Preview
                   </Button>

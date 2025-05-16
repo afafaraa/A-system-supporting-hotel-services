@@ -21,6 +21,7 @@ import {initializeUserFromLocalStorage} from "./components/auth/auth.tsx";
 import EmployeeDetailsPage from "./pages/manager/EmployeeDetailsPage.tsx";
 import ServicesListPage from "./pages/manager/ServicesListPage.tsx";
 import StatsPage from "./pages/manager/StatsPage.tsx";
+import AddNewEmployeePage from './pages/manager/AddNewEmployeePage.tsx';
 
 function App(){
 
@@ -33,7 +34,8 @@ function App(){
             <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
             <Route path="/add-reservation" element={<ProtectedRoute><AddReservationPage /></ProtectedRoute>} />
             <Route path="/employees" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />
-            <Route path="/employees/:employeeID" element={<ProtectedRoute><EmployeeDetailsPage /></ProtectedRoute>}/>
+            <Route path="/employees/:username" element={<ProtectedRoute><EmployeeDetailsPage /></ProtectedRoute>}/>
+            <Route path="/employees/new" element={<ProtectedRoute><AddNewEmployeePage /></ProtectedRoute>}/>
             <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>}/>
             <Route path="/services" element={<Navigate to={"/services/available"} replace />} />
             <Route path="/services/available" element={<ProtectedRoute><AvailableServicesPage /></ProtectedRoute>} />
