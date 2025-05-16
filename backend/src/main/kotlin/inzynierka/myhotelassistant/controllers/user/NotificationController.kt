@@ -12,11 +12,16 @@ class NotificationController(
 ) {
 
     @GetMapping
-    fun getNotifications(
+    fun getNotifications(@RequestHeader("Authorization") authHeader: String): List<NotificationDTO> {
+        return notificationService.getNotifications(authHeader)
+    }
+
+    @GetMapping(params = ["username"])
+    fun getNotificationsGivenUsername(
         @RequestParam username: String,
         @RequestHeader("Authorization") authHeader: String
     ): List<NotificationDTO> {
-        return notificationService.getNotifications(username, authHeader)
+        return notificationService.getNotificationsOfGivenUser(username, authHeader)
     }
 
     @PostMapping("/mark-read")

@@ -17,11 +17,19 @@ class NotificationService(
     private val notificationRepository: NotificationRepository,
 ) {
 
-    fun getNotifications(username: String, authHeader: String): List<NotificationDTO> {
+    fun getNotifications(authHeader: String): List<NotificationDTO> {
+        val jwtData = decodeJwtData(authHeader)
+        return getNotificationsFromUsername(jwtData.username)
+    }
+
+    fun getNotificationsOfGivenUser(username: String, authHeader: String): List<NotificationDTO> {
         validatePermission(username, authHeader)
+        return getNotificationsFromUsername(username)
+    }
+
+    private fun getNotificationsFromUsername(username: String): List<NotificationDTO> {
         val userId: String = userService.findIdByUsernameOrThrow(username)
         val notifications: List<NotificationEntity> = notificationRepository.findAllByUserIdOrderByCreatedAtDesc(userId)
-        println(notifications)
         return notifications.map { convertToDTO(it) }
     }
 
@@ -41,11 +49,8 @@ class NotificationService(
     }
 
     private fun validatePermission(username: String, authHeader: String) {
-        val token = authHeader.split(" ")[1]
-        val jwtData = decodeJwtData(token)
-        val tokenUsername = jwtData.username
-        val role = jwtData.role
-        if (username != tokenUsername && !isRoleEntitled(role))
+        val jwtData = decodeJwtData(authHeader)
+        if (username != jwtData.username && !isRoleEntitled(jwtData.role))
             throw NoPermissionException("You do not have permission to notifications of user: $username.")
     }
 
@@ -55,7 +60,8 @@ class NotificationService(
 
     private data class JwtData(val username: String, val role: String)
 
-    private fun decodeJwtData(token: String): JwtData {
+    private fun decodeJwtData(authHeader: String): JwtData {
+        val token = authHeader.split(" ")[1]
         val jwt = jwtDecoder.decode(token)
         val username = jwt.subject
         val role = jwt.getClaimAsString("role")?.split("_")?.get(1) ?: Role.GUEST.name

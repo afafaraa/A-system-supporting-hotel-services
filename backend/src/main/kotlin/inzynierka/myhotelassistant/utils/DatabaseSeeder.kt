@@ -224,6 +224,7 @@ class DatabaseSeeder(
         val user = userRepo.findByUsername("user")
         if (user != null) {
             val userId = user.id!!
+            if (notificationRepository.findAllByUserIdOrderByCreatedAtDesc(userId).isNotEmpty()) return
             val notifications = listOf(
                 NotificationEntity(userId = userId, title = "Test Notification", message = "This is a test notification.",
                     createdAt = LocalDateTime.of(2025, 4, 21, 14, 23, 21)),
