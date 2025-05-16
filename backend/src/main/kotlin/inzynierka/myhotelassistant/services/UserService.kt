@@ -46,6 +46,12 @@ class UserService(
         userRepository.findByEmail(email)
             ?: throw UserNotFoundException("User with given email was not found")
 
+    fun findIdByUsernameOrThrow(username: String): String {
+        val userId: String? = userRepository.findIdByUsername(username)
+        if (userId == null) throw UserNotFoundException("User with given username was not found")
+        return userId
+    }
+
     fun changePassword(
         email: String,
         newPassword: String,

@@ -18,6 +18,8 @@ import ShoppingCartPage from "./pages/guest/ShoppingCartPage.tsx";
 import {PropsWithChildren, useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {initializeUserFromLocalStorage} from "./components/auth/auth.tsx";
+import EmployeeSchedulePage from "./pages/employee/EmployeeSchedulePage.tsx";
+import EmployeeServicePage from "./pages/employee/EmployeeServicePage.tsx";
 
 
 function App(){
@@ -31,6 +33,8 @@ function App(){
             <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
             <Route path="/add-reservation" element={<ProtectedRoute><AddReservationPage /></ProtectedRoute>} />
             <Route path="/employees" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />
+            <Route path="/employee/schedule" element={<ProtectedRoute><EmployeeSchedulePage /></ProtectedRoute>} />
+            <Route path="/employee/service/:serviceId" element={<ProtectedRoute><EmployeeServicePage /></ProtectedRoute>} />
             <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>}/>
             <Route path="/services" element={<Navigate to={"/services/available"} replace />} />
             <Route path="/services/available" element={<ProtectedRoute><AvailableServicesPage /></ProtectedRoute>} />

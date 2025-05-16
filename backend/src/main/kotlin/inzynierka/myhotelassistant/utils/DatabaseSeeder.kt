@@ -1,5 +1,6 @@
 package inzynierka.myhotelassistant.utils
 
+import inzynierka.myhotelassistant.models.notification.NotificationEntity
 import inzynierka.myhotelassistant.models.order.OrderEntity
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.models.service.ServiceEntity
@@ -9,6 +10,7 @@ import inzynierka.myhotelassistant.models.service.WeekdayHour
 import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.UserEntity
+import inzynierka.myhotelassistant.repositories.NotificationRepository
 import inzynierka.myhotelassistant.repositories.OrderRepository
 import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
@@ -19,6 +21,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.time.Instant
+import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.time.Duration.Companion.hours
 
@@ -30,6 +33,7 @@ class DatabaseSeeder(
     private val roomRepo: RoomRepository,
     private val serviceService: ServiceService,
     private val orderRepo: OrderRepository,
+    private val notificationRepository: NotificationRepository,
 ) {
     private val logger = LoggerFactory.getLogger(DatabaseSeeder::class.java)
 
@@ -42,6 +46,7 @@ class DatabaseSeeder(
             addServices()
             addOrders()
             updateUsers()
+            addTestNotifications()
         } catch (e: Exception) {
             logger.error(e.message, e)
             throw e
@@ -212,6 +217,29 @@ class DatabaseSeeder(
             logger.info("Added ${allOrders.size} orders to user '${user.username}'")
         } else {
             logger.warn("User with username 'user' not found.")
+        }
+    }
+
+    private fun addTestNotifications() {
+        val user = userRepo.findByUsername("user")
+        if (user != null) {
+            val userId = user.id!!
+            val notifications = listOf(
+                NotificationEntity(userId = userId, title = "Test Notification", message = "This is a test notification.",
+                    createdAt = LocalDateTime.of(2025, 4, 21, 14, 23, 21)),
+                NotificationEntity(userId = userId, title = "Another Test Notification", message = "This is another test notification.",
+                    createdAt = LocalDateTime.of(2025, 5, 4, 10, 9, 11)),
+                NotificationEntity(userId = userId, title = "Reminder", message = "Don't forget to check out tomorrow!",
+                    createdAt = LocalDateTime.of(2024, 8, 30, 7, 30, 49)),
+                NotificationEntity(userId = userId, title = "Service Update", message = "Your room cleaning service has been scheduled.",
+                    createdAt = LocalDateTime.of(2025, 1, 7, 21, 37, 6)),
+                NotificationEntity(userId = userId, title = "Special Offer", message = "Enjoy a 20% discount on your next spa session!",
+                    createdAt = LocalDateTime.of(2025, 12, 17, 17, 13, 57)),
+            )
+            notificationRepository.saveAll(notifications)
+            logger.info("Added test notification to user '${user.username}'")
+        } else {
+            logger.warn("Cannot add test notifications because 'user' was not found.")
         }
     }
 }

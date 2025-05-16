@@ -1,6 +1,13 @@
+import {useEffect} from "react";
+
 function NotificationsPage(){
+
+  useEffect(() => {
+
+  }, []);
+
   return (
-    <div>Notifications</div>
+    <div>Notifications Page in progress...</div>
   )
 }
 

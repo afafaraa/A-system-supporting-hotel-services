@@ -29,4 +29,7 @@ interface UserRepository : MongoRepository<UserEntity, String> {
         role: Role,
         before: Instant,
     ): Long
+
+    @Query(value = "{ 'username' : ?0 }", fields = "{ '_id' : 1 }")
+    fun findIdByUsername(username: String): String?
 }

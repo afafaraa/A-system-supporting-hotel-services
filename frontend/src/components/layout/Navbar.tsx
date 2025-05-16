@@ -46,7 +46,8 @@ function Navbar(props: Props) {
     {text: 'Shopping cart', navTo: '/services/shopping-cart', roles: ['ROLE_GUEST']},
     {text: 'Requested services', navTo: '/services/requested', roles: ['ROLE_GUEST']},
     {text: 'Past services', navTo: '/services/history', roles: ['ROLE_GUEST']},
-    {text: 'Notifications', navTo: '/notifications', roles: ['ROLE_GUEST']},
+    {text: 'My schedule', navTo: '/employee/schedule', roles: ['ROLE_EMPLOYEE', 'ROLE_ADMIN']},
+    {text: 'Notifications', navTo: '/notifications', roles: null},
     {text: 'Logout', navTo: '/logout', roles: null}
   ]
 
@@ -121,6 +122,5 @@ function Navbar(props: Props) {
     </Box>
   );
 }
-
 
 export default Navbar;

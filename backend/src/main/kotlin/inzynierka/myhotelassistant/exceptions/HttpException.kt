@@ -29,4 +29,8 @@ sealed class HttpException(
     class ResetTokenValidationException(
         message: String,
     ) : HttpException(HttpStatus.BAD_REQUEST, message)
+
+    class NoPermissionException(
+        message: String,
+    ) : HttpException(HttpStatus.FORBIDDEN, message)
 }
