@@ -1,5 +1,4 @@
 import { useEffect, useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { axiosAuthApi } from '../../middleware/axiosApi';
 import {
     Box,
@@ -18,35 +17,19 @@ import {
     Select,
     MenuItem
 } from '@mui/material';
-
-interface Weekday {
-    day: string;
-    startHour: number;
-    endHour: number;
-}
-
-interface Service {
-    id: string;
-    name: string;
-    description: string;
-    price: number;
-    disabled: boolean;
-    duration: string;
-    maxAvailable: number;
-    type: string;
-    weekday: Weekday;
-}
+import ServiceForm from './ServiceForm';
+import { Service } from '../../types/service';
 
 function ServicesListPage() {
     const [allServices, setAllServices] = useState<Service[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [editing, setEditing] = useState<Service | undefined>(undefined);
 
     const [filterName, setFilterName] = useState('');
     const [filterAvailability, setFilterAvailability] = useState<'all' | 'true' | 'false'>('all');
     const [filterType, setFilterType] = useState<'ALL' | 'GENERAL_SERVICE' | 'PLACE_RESERVATION'>('ALL');
-
-    const navigate = useNavigate();
 
     useEffect(() => {
         setLoading(true);
@@ -123,12 +106,15 @@ function ServicesListPage() {
                             onChange={e => setFilterType(e.target.value as "ALL" | "GENERAL_SERVICE" | "PLACE_RESERVATION")}
                         >
                             <MenuItem value="ALL">All</MenuItem>
-                            <MenuItem value="GENERAL_SERVICE">GENERAL_SERVICE</MenuItem>
-                            <MenuItem value="PLACE_RESERVATION">PLACE_RESERVATION</MenuItem>
+                            <MenuItem value="GENERAL_SERVICE">General Service</MenuItem>
+                            <MenuItem value="PLACE_RESERVATION">Place Reservation</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>
-                <Button variant="contained" onClick={() => navigate('/management/services/new')}>
+                <Button variant="contained" onClick={() => {
+                    setEditing(undefined)
+                    setModalOpen(true);
+                }}>
                     Add Service
                 </Button>
             </Box>
@@ -156,7 +142,10 @@ function ServicesListPage() {
                                 <TableCell>
                                     <Button
                                         variant="outlined"
-                                        onClick={() => navigate(`/management/services/${s.id}`)}
+                                        onClick={() => {
+                                            setEditing(s)
+                                            setModalOpen(true);
+                                        }}
                                     >
                                         Edit
                                     </Button>
@@ -173,6 +162,24 @@ function ServicesListPage() {
                     </TableBody>
                 </Table>
             </Paper>
+            <ServiceForm
+                open={modalOpen}
+                initial={editing}
+                onClose={() => setModalOpen(false)}
+                onSaved={svc => {
+                setAllServices(prev => {
+                    if (svc.id) {
+                    const idx = prev.findIndex(x => x.id === svc.id);
+                    if (idx >= 0) {
+                        const copy = [...prev];
+                        copy[idx] = svc;
+                        return copy;
+                    }
+                    }
+                    return [svc, ...prev];
+                });
+                }}
+            />
         </Box>
     );
 }
