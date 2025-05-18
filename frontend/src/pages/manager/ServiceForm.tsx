@@ -40,8 +40,18 @@ function ServiceForm({ open, initial, onClose, onSaved }: Props) {
     };
 
     const addWeekday = () => {
-        setForm((prev) => ({...prev, weekday: [...prev.weekday, {day: "MONDAY", startHour: 0, endHour: 0}]}));
+        setForm((prev) => ({
+            ...prev,
+            weekday: [...(prev.weekday ?? []), { day: "MONDAY", startHour: 0, endHour: 0 }]
+        }));
     };
+
+    const removeWeekday = (index: number) => {
+        setForm((prev) => ({
+            ...prev,
+            weekday: prev.weekday.filter((_, i) => i !== index)
+        }));
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -60,7 +70,7 @@ function ServiceForm({ open, initial, onClose, onSaved }: Props) {
     };
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
             <DialogTitle>{isEdit ? "Edit Service" : "Add Service"}</DialogTitle>
             <DialogContent>
                 <Box
@@ -115,7 +125,7 @@ function ServiceForm({ open, initial, onClose, onSaved }: Props) {
                                 onChange={(e) => handleChange("disabled", e.target.checked)}
                             />
                         }
-                        label="Disabled"
+                        label= {form.disabled ? "Disabled" : "Available"}
                     />
                     <TextField
                         label="Image URL"
@@ -125,7 +135,7 @@ function ServiceForm({ open, initial, onClose, onSaved }: Props) {
                     <Box>
                         <Button onClick={addWeekday} variant="outlined">Add weekday</Button>
                         {Array.isArray(form.weekday) && form.weekday.map((wd, index) => (
-                            <Box key={index} display="flex" gap={1} alignItems="center" mt={1}>
+                            <Box key={index} display="flex" gap={2} alignItems="center" mt={3}>
                                 <FormControl>
                                     <InputLabel id={`weekday-day-label-${index}`}>Day</InputLabel>
                                     <Select
@@ -151,16 +161,25 @@ function ServiceForm({ open, initial, onClose, onSaved }: Props) {
                                 </FormControl>
                                 <TextField
                                     label="Start Hour"
-                                    type="number"
-                                    value={wd.startHour}
-                                    onChange={(e) => changeWeekday(index, "startHour", Number(e.target.value))}
+                                    type="time"
+                                    value={wd.startHour.toString().padStart(2, "0") + ":00"}
+                                    onChange={(e) => {
+                                        const hour = parseInt(e.target.value.split(":")[0], 10);
+                                        changeWeekday(index, "startHour", hour);
+                                    }}
                                 />
                                 <TextField
                                     label="End Hour"
-                                    type="number"
-                                    value={wd.endHour}
-                                    onChange={(e) => changeWeekday(index, "endHour", Number(e.target.value))}
+                                    type="time"
+                                    value={wd.endHour.toString().padStart(2, "0") + ":00"}
+                                    onChange={(e) => {
+                                        const hour = parseInt(e.target.value.split(":")[0], 10);
+                                        changeWeekday(index, "endHour", hour);
+                                    }}
                                 />
+                                <Button variant="outlined" color="error" onClick={() => removeWeekday(index)}>
+                                    Remove
+                                </Button>
                             </Box>
                         ))}
                     </Box>

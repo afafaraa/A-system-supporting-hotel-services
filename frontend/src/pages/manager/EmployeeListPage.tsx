@@ -87,7 +87,7 @@ function EmployeeListPage() {
   }
 
   return (
-    <Box p={2} sx={{ width: "100%", mr:10 }}>
+    <Box p={2} width={"100%"} mr={10}>
       <Typography variant="h4" gutterBottom>
         Personnel
       </Typography>
