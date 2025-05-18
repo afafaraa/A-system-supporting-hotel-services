@@ -24,8 +24,19 @@ class NotificationController(
         return notificationService.getNotificationsOfGivenUser(username, authHeader)
     }
 
-    @PostMapping("/mark-read")
-    fun markAsRead(@RequestBody notificationIds: List<String>) {
-        notificationService.markAsRead(notificationIds)
+    @PatchMapping("/mark-read")
+    fun markAsRead(
+        @RequestBody notificationIds: List<String>,
+        @RequestHeader("Authorization") authHeader: String
+    ) {
+        notificationService.markAsRead(notificationIds, authHeader)
+    }
+
+    @DeleteMapping
+    fun removeSelectedNotifications(
+        @RequestBody notificationIds: List<String>,
+        @RequestHeader("Authorization") authHeader: String
+    ) {
+        return notificationService.removeSelectedNotifications(notificationIds, authHeader)
     }
 }

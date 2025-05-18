@@ -11,6 +11,13 @@ import {Outlet} from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/slices/userSlice";
 import {useNavigate} from "react-router-dom";
+import DesignServicesIcon from '@mui/icons-material/DesignServices';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import HistoryIcon from '@mui/icons-material/History';
+import EventNoteIcon from '@mui/icons-material/EventNote';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const drawerWidth = 240;
 
@@ -42,33 +49,33 @@ function Navbar(props: Props) {
   };
 
   const nav = [
-    {text: 'Available services', navTo: '/services/available' , roles: ['ROLE_GUEST']},
-    {text: 'Shopping cart', navTo: '/services/shopping-cart', roles: ['ROLE_GUEST']},
-    {text: 'Requested services', navTo: '/services/requested', roles: ['ROLE_GUEST']},
-    {text: 'Past services', navTo: '/services/history', roles: ['ROLE_GUEST']},
-    {text: 'My schedule', navTo: '/employee/schedule', roles: ['ROLE_EMPLOYEE', 'ROLE_ADMIN']},
-    {text: 'Notifications', navTo: '/notifications', roles: null},
-    {text: 'Logout', navTo: '/logout', roles: null}
+    {text: 'Available services', icon: DesignServicesIcon, navTo: '/services/available' , roles: ['ROLE_GUEST']},
+    {text: 'Shopping cart', icon: ShoppingCartIcon, navTo: '/services/shopping-cart', roles: ['ROLE_GUEST']},
+    {text: 'Requested services', icon: AssignmentTurnedInIcon, navTo: '/services/requested', roles: ['ROLE_GUEST']},
+    {text: 'Past services', icon: HistoryIcon, navTo: '/services/history', roles: ['ROLE_GUEST']},
+    {text: 'My schedule', icon: EventNoteIcon, navTo: '/employee/schedule', roles: ['ROLE_EMPLOYEE', 'ROLE_ADMIN']},
+    {text: 'Notifications', icon: NotificationsIcon, navTo: '/notifications', roles: null},
+    {text: 'Logout', icon: LogoutIcon, navTo: '/logout', roles: null}
   ]
 
   if (user === null) return null;
 
   const drawer = (
-    <div>
-      <List>
-        {nav.map((item, index) =>
-          (item.roles === null || item.roles.includes(user.role)) &&
-            <ListItem key={index} disablePadding>
-              <ListItemButton onClick={() => navigate(item.navTo)}>
-                <ListItemIcon>
-                  icon
-                </ListItemIcon>
-                <ListItemText primary={item.text}/>
+    <List>
+      {nav.map((item, index) =>
+        (item.roles === null || item.roles.includes(user.role)) &&
+          <ListItem key={index} disablePadding>
+              <ListItemButton onClick={() => navigate(item.navTo)} sx={{ gap: 2 }}>
+                {item.icon &&
+                    <ListItemIcon color='#ff00ff' sx={{ minWidth: 'unset' }}>
+                        <item.icon color='primary' />
+                    </ListItemIcon>
+                }
+                  <ListItemText primary={item.text}/>
               </ListItemButton>
-            </ListItem>
-        )}
-      </List>
-    </div>
+          </ListItem>
+      )}
+    </List>
   );
 
   // Remove this const when copying and pasting into your project.

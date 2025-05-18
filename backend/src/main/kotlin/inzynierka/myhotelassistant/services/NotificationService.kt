@@ -23,8 +23,14 @@ class NotificationService(
     }
 
     fun getNotificationsOfGivenUser(username: String, authHeader: String): List<NotificationDTO> {
-        validatePermission(username, authHeader)
+        val jwtData = decodeJwtData(authHeader)
+        if (username != jwtData.username && !isRoleEntitled(jwtData.role))
+            throw NoPermissionException("You do not have permission to notifications of user: $username.")
         return getNotificationsFromUsername(username)
+    }
+
+    private fun isRoleEntitled(role: String): Boolean {
+        return role == Role.MANAGER.name || role == Role.ADMIN.name
     }
 
     private fun getNotificationsFromUsername(username: String): List<NotificationDTO> {
@@ -33,29 +39,29 @@ class NotificationService(
         return notifications.map { convertToDTO(it) }
     }
 
-    fun markAsRead(notificationIds: List<String>) {
+    fun markAsRead(notificationIds: List<String>, authHeader: String) {
+        val jwtData = decodeJwtData(authHeader)
+        val userId: String = userService.findByUsernameOrThrow(jwtData.username).id!!
         val now = Instant.now()
         val notifications: List<NotificationEntity> = notificationRepository.findAllById(notificationIds)
-        notifications.forEach { n ->
-            n.isRead = true
-            n.readAt = now
-        }
+        notifications
+            .filter { it.userId == userId }
+            .forEach { n ->
+                n.isRead = true
+                n.readAt = now
+            }
         notificationRepository.saveAll(notifications)
+    }
+
+    fun removeSelectedNotifications(notificationIds: List<String>, authHeader: String) {
+        val jwtData = decodeJwtData(authHeader)
+        val userId: String = userService.findByUsernameOrThrow(jwtData.username).id!!
+        notificationRepository.deleteAllByUserIdAndIdIn(userId, notificationIds)
     }
 
     fun removeReadNotifications(daysBack: Integer): Long {
         val readBefore = Instant.now().minus(Duration.ofDays(daysBack.toLong()))
         return notificationRepository.deleteAllByIsReadTrueAndReadAtBefore(readBefore)
-    }
-
-    private fun validatePermission(username: String, authHeader: String) {
-        val jwtData = decodeJwtData(authHeader)
-        if (username != jwtData.username && !isRoleEntitled(jwtData.role))
-            throw NoPermissionException("You do not have permission to notifications of user: $username.")
-    }
-
-    private fun isRoleEntitled(role: String): Boolean {
-        return role == Role.MANAGER.name || role == Role.ADMIN.name
     }
 
     private data class JwtData(val username: String, val role: String)
