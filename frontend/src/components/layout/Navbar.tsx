@@ -49,7 +49,7 @@ function Navbar(props: Props) {
     {text: 'Notifications', navTo: '/notifications', roles: ['ROLE_GUEST']},
     {text: 'Personnel', navTo: '/employees', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
     { text: 'Services', navTo: '/management/services', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
-    {text: 'Requested services', navTo: '/management/services', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
+    {text: 'Manage requested services', navTo: '/management/services', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
     { text: 'Statistics', navTo: '/management/statistics', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
     {text: 'Logout', navTo: '/logout', roles: null}
   ]

@@ -29,11 +29,11 @@ function ServiceForm({ open, initial, onClose, onSaved }: Props) {
         if (initial) setForm(initial);
     }, [initial]);
 
-    const handleChange = (k: keyof Service, v: any) => {
+    const handleChange = (k: keyof Service, v: unknown) => {
         setForm((prev) => ({...prev, [k]: v}));
     }
 
-    const changeWeekday = (index: number, k: keyof WeekdayHour, v: any) => {
+    const changeWeekday = (index: number, k: keyof WeekdayHour, v: unknown) => {
         const newWeekday = [...form.weekday];
         newWeekday[index] = {...newWeekday[index], [k]: v};
         setForm((prev) => ({...prev, weekday: newWeekday}));

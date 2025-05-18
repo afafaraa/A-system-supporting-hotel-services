@@ -28,7 +28,7 @@ interface Employee {
 }
 
 const sectors = [
-  { label: "Room servie", role: "EMPLOYEE" },
+  { label: "Room service", role: "EMPLOYEE" },
   { label: "Reception", role: "RECEPTIONIST" },
   { label: "Gastronomy", role: "EMPLOYEE" },
   { label: "Management", role: "MANAGER" },
@@ -142,8 +142,8 @@ function EmployeeListPage() {
               Previous
             </Button>
             <Button
-              onClick={() => setPage(prev => Math.min(prev + 1, employees.length / pageSize - 1))}
-              disabled={page === employees.length / pageSize - 1}
+              onClick={() => setPage(prev => Math.min(prev + 1, Math.floor(employees.length / pageSize) - 1))}
+              disabled={page === Math.floor(employees.length / pageSize) - 1}
             >
               Next
             </Button>

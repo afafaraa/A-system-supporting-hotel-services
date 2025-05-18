@@ -228,7 +228,7 @@ class DatabaseSeeder(
                     surname = "Brown",
                 ),
             )
+            logger.info("Default 'manager' added to database")
         }
-        logger.info("Default 'manager' added to database")
     }
 }
