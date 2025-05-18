@@ -32,8 +32,8 @@ function LoginPage(){
 
     return (
         <Box sx={{display: "flex", justifyContent: "center", justifyItems: "center", alignItems: "center", height: "100%"}}>
-            <FormControl sx={{width: '23%', height: '60%', backgroundColor: 'white', padding: 4, gap: 2}}>
-                <Typography variant="h1" sx={{textAlign: 'center', fontSize: '32px'}}>Login Page</Typography>
+            <FormControl sx={{minWidth: '25%', minHeight: '65%', backgroundColor: 'white', padding: 6, gap: 2, borderRadius: 6, boxShadow: 10, justifyContent: 'center' }}>
+                <Typography variant="h1" sx={{textAlign: 'center', fontSize: '32px', mb: 2 }}>Login Page</Typography>
                 <TextField
                   label="Username"
                   autoComplete="username"
@@ -58,6 +58,7 @@ function LoginPage(){
                           <IconButton
                             onClick={() => setShowPassword((prev) => !prev)}
                             edge="end"
+                            size='small'
                           >
                             {showPassword ? <VisibilityOff /> : <Visibility />}
                           </IconButton>
@@ -66,7 +67,7 @@ function LoginPage(){
                     },
                   }}
                 />
-                <Button onClick={login} type='submit'>Login</Button>
+                <Button variant='contained' onClick={login} type='submit' sx={{ mt: 1, mb: 2 }}>Login</Button>
                 <Link style={{textAlign: 'center'}} to="/reset-password-email">Kliknij aby zrestartować hasło</Link>
                 <Link style={{textAlign: 'center'}} to="/register">Kliknij aby zarejestrować się z kodem</Link>
             </FormControl>
