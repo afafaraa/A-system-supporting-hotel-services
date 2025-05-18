@@ -7,10 +7,12 @@ import java.time.Instant
 
 @Repository
 interface NotificationRepository : MongoRepository<NotificationEntity, String> {
-
     fun findAllByUserIdOrderByCreatedAtDesc(userId: String): List<NotificationEntity>
 
     fun deleteAllByIsReadTrueAndReadAtBefore(before: Instant): Long
 
-    fun deleteAllByUserIdAndIdIn(userId: String, ids: List<String>): Int
+    fun deleteAllByUserIdAndIdIn(
+        userId: String,
+        ids: List<String>,
+    ): Int
 }

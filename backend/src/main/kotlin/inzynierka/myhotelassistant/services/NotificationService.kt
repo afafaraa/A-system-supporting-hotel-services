@@ -16,22 +16,23 @@ class NotificationService(
     private val userService: UserService,
     private val notificationRepository: NotificationRepository,
 ) {
-
     fun getNotifications(authHeader: String): List<NotificationDTO> {
         val jwtData = decodeJwtData(authHeader)
         return getNotificationsFromUsername(jwtData.username)
     }
 
-    fun getNotificationsOfGivenUser(username: String, authHeader: String): List<NotificationDTO> {
+    fun getNotificationsOfGivenUser(
+        username: String,
+        authHeader: String,
+    ): List<NotificationDTO> {
         val jwtData = decodeJwtData(authHeader)
-        if (username != jwtData.username && !isRoleEntitled(jwtData.role))
+        if (username != jwtData.username && !isRoleEntitled(jwtData.role)) {
             throw NoPermissionException("You do not have permission to notifications of user: $username.")
+        }
         return getNotificationsFromUsername(username)
     }
 
-    private fun isRoleEntitled(role: String): Boolean {
-        return role == Role.MANAGER.name || role == Role.ADMIN.name
-    }
+    private fun isRoleEntitled(role: String): Boolean = role == Role.MANAGER.name || role == Role.ADMIN.name
 
     private fun getNotificationsFromUsername(username: String): List<NotificationDTO> {
         val userId: String = userService.findByUsernameOrThrow(username).id!!
@@ -39,7 +40,10 @@ class NotificationService(
         return notifications.map { convertToDTO(it) }
     }
 
-    fun markAsRead(notificationIds: List<String>, authHeader: String) {
+    fun markAsRead(
+        notificationIds: List<String>,
+        authHeader: String,
+    ) {
         val jwtData = decodeJwtData(authHeader)
         val userId: String = userService.findByUsernameOrThrow(jwtData.username).id!!
         val now = Instant.now()
@@ -53,7 +57,10 @@ class NotificationService(
         notificationRepository.saveAll(notifications)
     }
 
-    fun removeSelectedNotifications(notificationIds: List<String>, authHeader: String) {
+    fun removeSelectedNotifications(
+        notificationIds: List<String>,
+        authHeader: String,
+    ) {
         val jwtData = decodeJwtData(authHeader)
         val userId: String = userService.findByUsernameOrThrow(jwtData.username).id!!
         notificationRepository.deleteAllByUserIdAndIdIn(userId, notificationIds)
@@ -64,7 +71,10 @@ class NotificationService(
         return notificationRepository.deleteAllByIsReadTrueAndReadAtBefore(readBefore)
     }
 
-    private data class JwtData(val username: String, val role: String)
+    private data class JwtData(
+        val username: String,
+        val role: String,
+    )
 
     private fun decodeJwtData(authHeader: String): JwtData {
         val token = authHeader.split(" ")[1]
@@ -83,12 +93,17 @@ class NotificationService(
             isRead = notification.isRead,
         )
 
-    fun addNotificationToUser(userId: String, title: String, message: String) {
-        val notification = NotificationEntity(
-            userId = userId,
-            title = title,
-            message = message,
-        )
+    fun addNotificationToUser(
+        userId: String,
+        title: String,
+        message: String,
+    ) {
+        val notification =
+            NotificationEntity(
+                userId = userId,
+                title = title,
+                message = message,
+            )
         notificationRepository.save(notification)
     }
 }

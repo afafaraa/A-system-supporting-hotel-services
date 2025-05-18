@@ -35,11 +35,13 @@ class DailyCleanupScheduler(
         logger.info("Deleted $deletedCount expired registration codes")
 
         deletedCount = userRepository.deleteByRoleAndCheckOutDateBefore(Role.GUEST, now)
-        if (deletedCount > 0)
+        if (deletedCount > 0) {
             logger.info("Deleted $deletedCount expired guests accounts (till $now).")
+        }
 
         deletedCount = notificationService.removeReadNotifications(notificationExpirationDays)
-        if (deletedCount > 0)
+        if (deletedCount > 0) {
             logger.info("Deleted $deletedCount expired notifications (till $now).")
+        }
     }
 }
