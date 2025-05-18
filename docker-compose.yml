@@ -11,7 +11,9 @@ services:
 
 #  backend:
 #    container_name: spring-boot-backend
-#    build: .
+#    build:
+#      context: ./backend
+#      dockerfile: Dockerfile
 #    restart: always
 #    ports:
 #      - "8080:8080"
