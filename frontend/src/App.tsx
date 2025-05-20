@@ -20,6 +20,7 @@ import {useDispatch} from "react-redux";
 import {initializeUserFromLocalStorage} from "./components/auth/auth.tsx";
 import EmployeeSchedulePage from "./pages/employee/EmployeeSchedulePage.tsx";
 import EmployeeServicePage from "./pages/employee/EmployeeServicePage.tsx";
+import LoadingPage from "./pages/user/LoadingPage.tsx";
 
 
 function App(){
@@ -81,7 +82,7 @@ function AppInitializer({ children }: PropsWithChildren) {
     }, [dispatch, navigate]
   );
 
-  if (!isInitialized) return null;
+  if (!isInitialized) return <LoadingPage/>;
 
   return <>{children}</>;
 }

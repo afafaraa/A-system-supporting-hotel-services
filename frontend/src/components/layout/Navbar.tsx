@@ -7,7 +7,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import {Outlet} from "react-router-dom";
+import {Outlet, useLocation} from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/slices/userSlice";
 import {useNavigate} from "react-router-dom";
@@ -32,6 +32,7 @@ function Navbar(props: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -58,6 +59,10 @@ function Navbar(props: Props) {
     {text: 'Logout', icon: LogoutIcon, navTo: '/logout', roles: null}
   ]
 
+  const isSelected = (navTo: string): boolean => {
+    return location.pathname.startsWith(navTo)
+  }
+
   if (user === null) return null;
 
   const drawer = (
@@ -65,13 +70,20 @@ function Navbar(props: Props) {
       {nav.map((item, index) =>
         (item.roles === null || item.roles.includes(user.role)) &&
           <ListItem key={index} disablePadding>
-              <ListItemButton onClick={() => navigate(item.navTo)} sx={{ gap: 2 }}>
+              <ListItemButton disableRipple
+                  onClick={() => navigate(item.navTo)}
+                  sx={{
+                    gap: 2, backgroundColor: isSelected(item.navTo) ? 'primary.main' : 'inherit',
+                    '&:hover': {
+                      backgroundColor: isSelected(item.navTo) ? 'primary.dark' : 'action.hover'
+                    } }}
+              >
                 {item.icon &&
-                    <ListItemIcon color='#ff00ff' sx={{ minWidth: 'unset' }}>
-                        <item.icon color='primary' />
+                    <ListItemIcon sx={{ minWidth: 'unset' }}>
+                        <item.icon sx={{ color: isSelected(item.navTo) ? 'white' : 'primary.main' }} />
                     </ListItemIcon>
                 }
-                  <ListItemText primary={item.text}/>
+                  <ListItemText primary={item.text} sx={{color: isSelected(item.navTo) ? 'white' : 'text.primary'}}/>
               </ListItemButton>
           </ListItem>
       )}
