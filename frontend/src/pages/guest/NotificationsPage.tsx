@@ -26,10 +26,7 @@ function NotificationsPage() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    if (!user) {
-      setError("User not logged in");
-      return;
-    }
+    if (!user) return;
     axiosAuthApi.get<Notification[]>('/user/notifications')
       .then(res => {
         setNotifications(res.data)
@@ -40,6 +37,14 @@ function NotificationsPage() {
         console.log("Error:", err);
       });
   }, [user]);
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(null), 20_000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
 
   function markAsRead() {
     const selectedUnread = notifications.filter(n => selected.has(n.id) && !n.isRead)
@@ -108,10 +113,13 @@ function NotificationsPage() {
   }
 
   return (
-    <Box component="section" sx={{p: 4, width: '70%', margin: '0 auto'}}>
-      <Typography variant="h4" align="center" sx={{mb: 3}}>Notifications</Typography>
+    <>
+      <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4}}>
+        <Typography variant="h4">Notifications</Typography>
+        <Typography variant="h5">MyHotelAssistant</Typography>
+      </Box>
       {error &&
-          <Alert severity="error" sx={{mb: 3}}>{error}.</Alert>
+          <Alert severity="error" sx={{mb: 3, border: '1px dashed red'}}>{error}.</Alert>
       }
 
       <List sx={{boxShadow: 10, borderRadius: 5, overflow: 'hidden'}} disablePadding>
@@ -154,7 +162,7 @@ function NotificationsPage() {
                                   <Typography variant="body2"
                                               fontWeight={n.isRead ? 'normal' : 'bold'}>{n.message}</Typography>
                                 </Stack>
-                                <Stack direction="column" alignItems="flex-end">
+                                <Stack direction="column" alignItems='flex-end' sx={{textAlign: 'right', minWidth: 'fit-content'}}>
                                   <Typography variant="body2" color="text.secondary">{getDay(n.timestamp)}</Typography>
                                   <Typography variant="body1" color="text.primary">{getTime(n.timestamp)}</Typography>
                                 </Stack>
@@ -169,7 +177,7 @@ function NotificationsPage() {
               <Typography variant="body1" align="center">You don't have any notifications.</Typography>
           </Box>
       }
-    </Box>
+    </>
   )
 }
 

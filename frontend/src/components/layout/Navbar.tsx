@@ -11,6 +11,7 @@ import {Outlet, useLocation} from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/slices/userSlice";
 import {useNavigate} from "react-router-dom";
+import HomeIcon from '@mui/icons-material/Home';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
@@ -18,6 +19,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const drawerWidth = 240;
 
@@ -50,6 +52,7 @@ function Navbar(props: Props) {
   };
 
   const nav = [
+    {text: 'Home', icon: HomeIcon, navTo: '/home', roles: null},
     {text: 'Available services', icon: DesignServicesIcon, navTo: '/services/available' , roles: ['ROLE_GUEST']},
     {text: 'Shopping cart', icon: ShoppingCartIcon, navTo: '/services/shopping-cart', roles: ['ROLE_GUEST']},
     {text: 'Requested services', icon: AssignmentTurnedInIcon, navTo: '/services/requested', roles: ['ROLE_GUEST']},
@@ -96,13 +99,12 @@ function Navbar(props: Props) {
   return (
     <Box sx={{ display: 'flex' }}>
         <IconButton
-          color="inherit"
           aria-label="open drawer"
           edge="start"
           onClick={handleDrawerToggle}
-          sx={{ display: { sm: 'none' }, mx: '10px' }}
+          sx={{ color: 'white', backgroundColor: 'primary.main', display: { sm: 'none' }, position: 'fixed', top: 0, left: 0, zIndex: 1000, m: 1 }}
         >
-          Menu
+          <MenuIcon/>
         </IconButton>
       <Box
         component="nav"
