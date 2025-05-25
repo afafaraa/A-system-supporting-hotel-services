@@ -20,6 +20,7 @@ import EventNoteIcon from '@mui/icons-material/EventNote';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
+import LanguageSwitcher from "./LanguageSwitcher.tsx";
 
 const drawerWidth = 240;
 
@@ -127,6 +128,7 @@ function Navbar(props: Props) {
           }}
         >
           {drawer}
+          <Box sx={{marginTop: 'auto'}}><LanguageSwitcher /></Box>
         </Drawer>
         <Drawer
           variant="permanent"
@@ -137,6 +139,7 @@ function Navbar(props: Props) {
           open
         >
           {drawer}
+          <Box sx={{marginTop: 'auto'}}><LanguageSwitcher /></Box>
         </Drawer>
       </Box>
       <Outlet />

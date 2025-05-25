@@ -67,7 +67,7 @@ function LoginPage(){
                     },
                   }}
                 />
-                <Button variant='contained' onClick={login} type='submit' sx={{ mt: 1, mb: 2 }}>Login</Button>
+                <Button variant='outlined' onClick={login} type='submit' sx={{ mt: 1, mb: 2 }}>Login</Button>
                 <Link style={{textAlign: 'center'}} to="/reset-password-email">Kliknij aby zrestartować hasło</Link>
                 <Link style={{textAlign: 'center'}} to="/register">Kliknij aby zarejestrować się z kodem</Link>
             </FormControl>

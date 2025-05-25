@@ -12,4 +12,4 @@ function AuthenticatedLayout() {
   )
 }
 
-export default AuthenticatedLayout
+export default AuthenticatedLayout;

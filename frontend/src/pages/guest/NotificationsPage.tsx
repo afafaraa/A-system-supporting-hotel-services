@@ -10,7 +10,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import PageMargin from "../../components/layout/PageMargin.tsx";
+import PageContainer from "../../components/layout/PageContainer.tsx";
+import { useTranslation } from 'react-i18next';
 
 interface Notification {
   id: string,
@@ -25,6 +26,7 @@ function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!user) return;
@@ -83,15 +85,17 @@ function NotificationsPage() {
 
   const getDay = (timestamp: string): string => {
     const date = new Date(timestamp);
-    const shortWeekdays = ['Nd.', 'Pn.', 'Wt.', 'Śr.', 'Czw.', 'Pt.', 'So.'];
+    const shortWeekdays = t("date.shortWeekdays", { returnObjects: true }) as string[];
     const dayOfWeek = shortWeekdays[date.getDay()];
-    const dateStr = date.toLocaleDateString('pl-PL', {day: 'numeric', month: 'long'});
-    return `${dayOfWeek} ${dateStr}`
+    const dateStr = date.toLocaleDateString(t('date.locale'), {day: 'numeric', month: 'long'});
+    const sep = t('date.separator');
+    return `${dayOfWeek}${sep} ${dateStr}`
   }
 
   const getTime = (timestamp: string): string => {
     const date = new Date(timestamp);
-    return date.toLocaleTimeString('pl-PL', {hour: '2-digit', minute: '2-digit'});
+    const time = date.toLocaleTimeString(t('date.locale'), {hour: '2-digit', minute: '2-digit'});
+    return time.replace(/\s?AM/i, ' am').replace(/\s?PM/i, ' pm');
   }
 
   const getCardColor = (id: string, isRead: boolean): string => {
@@ -114,11 +118,7 @@ function NotificationsPage() {
   }
 
   return (
-    <PageMargin>
-      <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4}}>
-        <Typography variant="h4">Notifications</Typography>
-        <Typography variant="h5">MyHotelAssistant</Typography>
-      </Box>
+    <PageContainer title={t('notifications.title')}>
       {error &&
           <Alert severity="error" sx={{mb: 3, border: '1px dashed red'}}>{error}.</Alert>
       }
@@ -126,19 +126,19 @@ function NotificationsPage() {
       <List sx={{boxShadow: 10, borderRadius: 5, overflow: 'hidden'}} disablePadding>
         <ListSubheader sx={{display: 'flex', p: 0.5,
           backgroundColor: 'background.default', alignItems: 'center', '& svg': {m: 1,}}}>
-          <Tooltip title="Select all" arrow>
+          <Tooltip title={t('notifications.tooltip.selectAll')} arrow>
             <Checkbox checked={selected.size === notifications.length}
                       indeterminate={selected.size > 0 && selected.size < notifications.length}
                       onChange={handleAllToggle}
             />
           </Tooltip>
           <Divider orientation="vertical" flexItem sx={{mx: 1}}/>
-          <Tooltip title="Mark as Read" arrow>
+          <Tooltip title={t('notifications.tooltip.markAsRead')} arrow>
             <span><IconButton aria-label="mark as read" disabled={selected.size === 0} onClick={markAsRead}>
               <MarkEmailReadIcon/>
             </IconButton></span>
           </Tooltip>
-          <Tooltip title="Delete" arrow>
+          <Tooltip title={t('notifications.tooltip.delete')} arrow>
             <span><IconButton aria-label="delete" color='error' disabled={selected.size === 0} onClick={deleteSelected}>
               <DeleteForeverIcon/>
             </IconButton></span>
@@ -175,10 +175,10 @@ function NotificationsPage() {
       </List>
       {notifications.length === 0 &&
           <Box sx={{p: 4}}>
-              <Typography variant="body1" align="center">You don't have any notifications.</Typography>
+              <Typography variant="body1" align="center">{t('notifications.empty')}</Typography>
           </Box>
       }
-    </PageMargin>
+    </PageContainer>
   )
 }
 
