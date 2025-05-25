@@ -20,6 +20,9 @@ import EventNoteIcon from '@mui/icons-material/EventNote';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
+import GroupIcon from '@mui/icons-material/Group';
+import BuildIcon from '@mui/icons-material/Build';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import LanguageSwitcher from "./LanguageSwitcher.tsx";
 
 const drawerWidth = 240;
@@ -60,10 +63,9 @@ function Navbar(props: Props) {
     {text: 'Past services', icon: HistoryIcon, navTo: '/services/history', roles: ['ROLE_GUEST']},
     {text: 'My schedule', icon: EventNoteIcon, navTo: '/employee/schedule', roles: ['ROLE_EMPLOYEE', 'ROLE_ADMIN']},
     {text: 'Notifications', icon: NotificationsIcon, navTo: '/notifications', roles: null},
-    {text: 'Personnel', icon: null, navTo: '/employees', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
-    {text: 'Services', icon: null, navTo: '/management/services', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
-    {text: 'Manage requested services', icon: null, navTo: '/management/services', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
-    {text: 'Statistics', icon: null, navTo: '/management/statistics', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
+    {text: 'Personnel', icon: GroupIcon, navTo: '/employees', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
+    {text: 'Services', icon: BuildIcon, navTo: '/management/services', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
+    {text: 'Statistics', icon: BarChartIcon, navTo: '/management/statistics', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
     {text: 'Logout', icon: LogoutIcon, navTo: '/logout', roles: null}
   ]
 

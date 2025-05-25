@@ -120,7 +120,7 @@ function NotificationsPage() {
   return (
     <PageContainer title={t('notifications.title')}>
       {error &&
-          <Alert severity="error" sx={{mb: 3, border: '1px dashed red'}}>{error}.</Alert>
+          <Alert severity="error" sx={{mb: 3, border: '1px solid red'}}>{error}.</Alert>
       }
 
       <List sx={{boxShadow: 10, borderRadius: 5, overflow: 'hidden'}} disablePadding>
