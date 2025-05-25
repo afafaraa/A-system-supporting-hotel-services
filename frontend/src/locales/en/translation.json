@@ -19,7 +19,7 @@
       "markAsRead": "Mark as read",
       "delete": "Delete"
     },
-    "empty": "No notifications available."
+    "empty": "No notifications available.",
     "LoginPage": {
       "title": "Login Page",
       "username": "Username",
