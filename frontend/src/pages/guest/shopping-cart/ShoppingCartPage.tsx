@@ -52,8 +52,8 @@ function ShoppingCartPage() {
   }
 
   const orderServices = async () => {
-    // clearCart();
-    // fetchCartData();
+    clearCart();
+    fetchCartData();
     try {
       for (const item of cart) {
         const response = await axiosAuthApi.post(`/guest/order/add/${item.id}/${user?.username}`);
@@ -76,9 +76,9 @@ function ShoppingCartPage() {
         <Grid sx={{gap: 2,}} container spacing={{xs: 2, md: 3}} columns={{sm: 1, md: 2}}>
           <Grid sx={{backgroundColor: 'white', padding: '30px 25px'}} size={1}>
             <Button sx={{backgroundColor: theme.palette.secondary.main, marginBottom: '5px'}} onClick={clearCart}>Unun wszystko</Button>
-            {cart.length > 0 && cart.map((item, index) => (
+            {cart.length > 0 ? cart.map((item, index) => (
               <ShoppingCartItem index={index} item={item} fetchCartData={fetchCartData}/>
-            ))}
+            )) : <p>No items in cart</p>}
           </Grid>
           <Grid sx={{display: 'flex', flexDirection: 'column', gap: '15px', }} size={1}>
             <div style={{display: 'flex', flexDirection: 'column', backgroundColor: 'white', padding: '25px', gap: '10px'}}>

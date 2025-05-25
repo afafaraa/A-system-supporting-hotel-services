@@ -1,6 +1,7 @@
 package inzynierka.myhotelassistant.controllers.user;
 
 import inzynierka.myhotelassistant.models.order.OrderEntity
+import inzynierka.myhotelassistant.models.order.OrderStatus
 import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.services.ScheduleService
@@ -45,5 +46,16 @@ class GuestController(private val userService: UserService, private val schedule
                 user.guestData?.orders?.add(OrderEntity(scheduleId=scheduleId, orderDate = Instant.now(), orderForDate = schedule.serviceDate))
             }
         }
+    }
+
+    @GetMapping("/order/get/all/pending/{username}")
+    @ResponseStatus(HttpStatus.OK)
+    fun getAllPendingOrdersForUser(@PathVariable username: String): List<OrderEntity>? {
+        val user = userService.findByUsername(username)
+        if (user != null) {
+            val orders = user.guestData?.orders?.filter{ it.status == OrderStatus.PENDING || it.status == OrderStatus.IN_PROGRESS }
+            return orders
+        }
+        return null
     }
 }
