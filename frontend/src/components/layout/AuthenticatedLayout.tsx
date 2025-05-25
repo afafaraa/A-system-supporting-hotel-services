@@ -4,7 +4,7 @@ import Navbar from "./Navbar.tsx";
 
 function AuthenticatedLayout() {
   return (
-    <Container disableGutters maxWidth="xl" sx={{height: "100vh"}}>
+    <Container disableGutters maxWidth={false} sx={{height: "100vh"}}>
       <Navbar>
         <Outlet />
       </Navbar>
