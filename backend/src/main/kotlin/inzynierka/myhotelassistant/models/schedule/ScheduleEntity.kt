@@ -12,4 +12,5 @@ data class ScheduleEntity(
     var serviceDate: Instant,
     var weekday: DayOfWeek,
     var active: Boolean,
+    var employeeId: String,
 )

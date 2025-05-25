@@ -1,10 +1,10 @@
 import {Box, Grid} from "@mui/material";
-import AvailableServiceCard from "./AvailableServiceCard.tsx";
+import AvailableServiceCard, {ServiceProps} from "./AvailableServiceCard.tsx";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import {useEffect, useState} from "react";
 
 function AvailableServicesPage() {
-  const [availableServices, setAvailableServices] = useState([]);
+  const [availableServices, setAvailableServices] = useState<ServiceProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [page] = useState(0);
 
@@ -30,7 +30,6 @@ function AvailableServicesPage() {
   if (loading) {
     return <p>Loading...</p>
   }
-
   return (
     <div style={{width: '100%'}}>
       <header style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%'}}>

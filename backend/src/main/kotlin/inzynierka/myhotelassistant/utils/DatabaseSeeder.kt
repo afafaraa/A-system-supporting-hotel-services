@@ -13,6 +13,7 @@ import inzynierka.myhotelassistant.repositories.OrderRepository
 import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
+import inzynierka.myhotelassistant.services.EmployeeService
 import inzynierka.myhotelassistant.services.ServiceService
 import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
@@ -41,6 +42,7 @@ class DatabaseSeeder(
     private val serviceService: ServiceService,
     private val orderRepo: OrderRepository,
     private val scheduleRepository: ScheduleRepository,
+    private val employeeService: EmployeeService,
 ) {
     private val logger = LoggerFactory.getLogger(DatabaseSeeder::class.java)
 
@@ -51,9 +53,9 @@ class DatabaseSeeder(
             addTestRooms()
             addTestEmployees()
             addServices()
-            addOrders()
             updateUsers()
             addSchedule()
+            addOrders()
         } catch (e: Exception) {
             logger.error(e.message, e)
             throw e
@@ -198,11 +200,11 @@ class DatabaseSeeder(
     }
 
     private fun addOrders() {
-        val existingService = serviceService.findByName("Room cleaning")
+        val existingService = scheduleRepository.findAll().random()
         if (existingService != null && orderRepo.findAll().isEmpty()) {
             val order =
                 OrderEntity(
-                    serviceId = existingService.id!!,
+                    scheduleId = existingService.id!!,
                     orderDate = Instant.now(),
                     orderForDate = Instant.now().plus(1, ChronoUnit.DAYS),
                 )
@@ -229,6 +231,7 @@ class DatabaseSeeder(
                             serviceDate = instant,
                             weekday = weekdayHour.day,
                             active = true,
+                            employeeId = userRepo.findAll().filter { it.role == Role.EMPLOYEE }.random().id as String,
                         )
                     logger.info("Schedule added: ${service.name} on ${weekdayHour.day} at $dateTime")
 

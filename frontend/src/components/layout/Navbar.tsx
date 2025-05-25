@@ -78,7 +78,7 @@ function Navbar(props: Props) {
   const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: 'flex', paddingX: '25px', paddingY: '10px' }}>
+    <Box sx={{ display: 'flex', paddingX: '60px', paddingY: '30px' }}>
         <IconButton
           color="inherit"
           aria-label="open drawer"

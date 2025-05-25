@@ -97,4 +97,5 @@ class AuthController(
         userService.completeRegistration(req)
         return getToken(LoginRequest(req.username, req.password))
     }
+
 }

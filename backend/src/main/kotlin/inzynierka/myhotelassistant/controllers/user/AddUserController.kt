@@ -1,11 +1,14 @@
 package inzynierka.myhotelassistant.controllers.user
 
+import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.UserService
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus

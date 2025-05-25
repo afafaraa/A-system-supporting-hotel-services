@@ -14,11 +14,11 @@ import AvailableServicesPage from "./pages/guest/available-services/AvailableSer
 import NotificationsPage from "./pages/guest/NotificationsPage.tsx";
 import PastServicesPage from "./pages/guest/PastServicesPage.tsx";
 import RequestedServicesPage from "./pages/guest/RequestedServicesPage.tsx";
-import ShoppingCartPage from "./pages/guest/ShoppingCartPage.tsx";
+import ShoppingCartPage from "./pages/guest/shopping-cart/ShoppingCartPage.tsx";
 import {PropsWithChildren, useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {initializeUserFromLocalStorage} from "./components/auth/auth.tsx";
-import ServiceSchedule from "./pages/guest/service-schedule/ServiceSchedule.tsx";
+import ServiceSchedulePage from "./pages/guest/service-schedule/ServiceSchedulePage.tsx";
 
 
 function App(){
@@ -38,7 +38,7 @@ function App(){
             <Route path="/services/requested" element={<ProtectedRoute><RequestedServicesPage /></ProtectedRoute>}/>
             <Route path="/services/history" element={<ProtectedRoute><PastServicesPage /></ProtectedRoute>}/>
             <Route path="/services/shopping-cart" element={<ProtectedRoute><ShoppingCartPage /></ProtectedRoute>}/>
-            <Route path="/service-schedule/:id" element={<ProtectedRoute><ServiceSchedule /></ProtectedRoute>}/>
+            <Route path="/service-schedule/:id" element={<ProtectedRoute><ServiceSchedulePage /></ProtectedRoute>}/>
           </Route>
 
           <Route element={<PublicLayout />}>

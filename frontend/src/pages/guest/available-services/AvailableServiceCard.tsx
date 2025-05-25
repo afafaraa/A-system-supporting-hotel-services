@@ -2,7 +2,7 @@ import {Card, CardContent, CardMedia, Typography} from "@mui/material";
 import StarRating from "./StarRating.tsx";
 import {useNavigate} from "react-router-dom";
 
-type ServiceCardProps = {
+export type ServiceProps = {
   id: string;
   name: string;
   description: string;
@@ -11,7 +11,7 @@ type ServiceCardProps = {
   rating: number[];
 }
 
-function AvailableServiceCard({service}: {service: ServiceCardProps}) {
+function AvailableServiceCard({service}: {service: ServiceProps}) {
   const navigate = useNavigate();
 
   return (
@@ -35,7 +35,7 @@ function AvailableServiceCard({service}: {service: ServiceCardProps}) {
         </div>
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
           <StarRating rating={service.rating} />
-          <div style={{fontWeight: 'bold'}}>{service.price}$ </div>
+          <div style={{fontWeight: 'bold'}}>{service.price.toFixed(2)}$ </div>
         </div>
       </CardContent>
     </Card>

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service
 import java.security.MessageDigest
 import java.time.Instant
 import java.time.format.DateTimeParseException
+import java.util.Optional
 
 @Service
 class UserService(
@@ -28,6 +29,17 @@ class UserService(
     private val codeService: RegistrationCodeService,
     private val passwordEncoder: PasswordEncoder,
 ) : UserDetailsService {
+    fun findByUsername(username: String): UserEntity? {
+        return userRepository.findByUsername(username)
+    }
+
+    fun findById(id: String): UserEntity? {
+        val user = userRepository.findById(id)
+        if (user.isPresent) {
+            return user.get()
+        }
+        return null
+    }
     override fun loadUserByUsername(username: String): UserDetails {
         val user =
             userRepository.findByUsername(username)

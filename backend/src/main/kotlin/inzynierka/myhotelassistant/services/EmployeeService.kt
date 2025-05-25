@@ -20,6 +20,15 @@ class EmployeeService(
 ) {
     private val employeeRoles = listOf(Role.EMPLOYEE, Role.RECEPTIONIST, Role.MANAGER)
 
+    fun findById(id: String): UserEntity? {
+        val opt = userRepository.findById(id)
+        val user = opt.get()
+        if(user.role == Role.EMPLOYEE) {
+            return user
+        }
+        return null
+    }
+
     fun getAllEmployees(pageable: Pageable): List<UserEntity> = userRepository.findByRoleIn(employeeRoles, pageable).content
 
     @Throws(InvalidRoleNameException::class)
