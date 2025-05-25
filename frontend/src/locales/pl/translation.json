@@ -1,24 +1,32 @@
 {
   "date": {
     "locale": "pl-PL",
-    "shortWeekdays": ["Nd.", "Pn.", "Wt.", "Śr.", "Czw.", "Pt.", "So."],
+    "shortWeekdays": [
+      "Nd.",
+      "Pn.",
+      "Wt.",
+      "Śr.",
+      "Czw.",
+      "Pt.",
+      "So."
+    ],
     "separator": ""
   },
   "notifications": {
     "title": "Powiadomienia",
-    "tooltip" : {
+    "tooltip": {
       "selectAll": "Wybierz wszystkie",
       "markAsRead": "Oznacz jako przeczytane",
       "delete": "Usuń"
     },
     "empty": "Brak dostępnych powiadomień.",
-  "LoginPage": {
-    "title": "Logowanie",
-    "username": "Nazwa użytkownika",
-    "password": "Hasło",
-    "loginButton": "Zaloguj się",
-    "resetPassword": "Kliknij, aby zresetować hasło",
-    "registerWithCode": "Kliknij, aby zarejestrować się z kodem"
+    "LoginPage": {
+      "title": "Logowanie",
+      "username": "Nazwa użytkownika",
+      "password": "Hasło",
+      "loginButton": "Zaloguj się",
+      "resetPassword": "Kliknij, aby zresetować hasło",
+      "registerWithCode": "Kliknij, aby zarejestrować się z kodem"
+    }
   }
 }
-  }
