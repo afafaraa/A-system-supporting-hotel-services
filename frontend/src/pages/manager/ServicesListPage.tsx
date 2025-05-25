@@ -18,7 +18,7 @@ import {
     MenuItem
 } from '@mui/material';
 import ServiceForm from './ServiceForm';
-import { Service } from '../../types/service';
+import { Service } from '../../types/index';
 
 function ServicesListPage() {
     const [allServices, setAllServices] = useState<Service[]>([]);

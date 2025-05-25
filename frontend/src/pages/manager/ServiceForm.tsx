@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Service, WeekdayHour } from "../../types/service";
+import { Service, WeekdayHour } from "../../types/index";
 import { axiosAuthApi } from "../../middleware/axiosApi";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Switch, TextField } from "@mui/material";
 import { Box } from "@mui/system";

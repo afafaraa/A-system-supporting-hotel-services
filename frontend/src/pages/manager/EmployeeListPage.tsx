@@ -16,16 +16,7 @@ import {
   Stack
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
-interface Employee {
-  id: string;
-  role: string;
-  username: string;
-  email: string;
-  name: string;
-  surname: string;
-  status: string;
-}
+import { Employee } from "../../types/index.ts";
 
 const sectors = [
   { label: "Room service", role: "EMPLOYEE" },
@@ -107,11 +98,11 @@ function EmployeeListPage() {
         <Table>
           <TableHead sx={{ backgroundColor: "#f0f0f0" }}>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Position</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell sx={{ width: '25%'}}>Name</TableCell>
+              <TableCell sx={{ width: '25%'}}>Position</TableCell>
+              <TableCell sx={{ width: '25%'}}>Email</TableCell>
+              <TableCell sx={{ width: '15%'}}>Status</TableCell>
+              <TableCell sx={{ width: '15%'}} align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

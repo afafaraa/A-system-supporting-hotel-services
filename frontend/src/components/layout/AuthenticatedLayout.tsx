@@ -5,7 +5,7 @@ import DebugNavigationMenu from "../debug/DebugNavigationMenu.tsx";
 
 function AuthenticatedLayout() {
   return (
-    <Container disableGutters maxWidth="xl" sx={{height: "100vh"}}>
+    <Container disableGutters maxWidth={false} sx={{height: "100vh"}}>
       <DebugNavigationMenu />
       <Navbar>
         <Outlet />

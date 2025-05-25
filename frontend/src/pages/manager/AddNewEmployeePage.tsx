@@ -51,12 +51,12 @@ function AddNewEmployeePage() {
     };
 
     return (
-        <Box p={2} sx={{ width: "100%", mr: 10 }}>
+        <Box p={2} sx={{ width: "60%" }}>
             <Typography variant="h4" gutterBottom>
                 Add New Employee
             </Typography>
 
-            <Paper>
+            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 2, m: 3, ml: 20,}}>
                 {error && (
                     <Alert severity="error" sx={{ m: 2 }}>
                         {error}
@@ -85,11 +85,12 @@ function AddNewEmployeePage() {
                         onChange={e => setFormData({ ...formData, email: e.target.value })}
                         required
                         fullWidth />
-                    <FormControl required >
+                    <FormControl required fullWidth size="small">
                         <InputLabel id="role-label">Role</InputLabel>
                         <Select 
                             labelId="role-label"
                             value={formData.role}
+                            label="Role"
                             onChange={e => setFormData({ ...formData, role: e.target.value })}>
                             {roles.map((role) => (
                                 <MenuItem key={role.value} value={role.value}>

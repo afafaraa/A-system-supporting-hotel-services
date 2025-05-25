@@ -33,8 +33,8 @@ function App(){
           <Route element={<AuthenticatedLayout />}>
             <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
             <Route path="/add-reservation" element={<ProtectedRoute><AddReservationPage /></ProtectedRoute>} />
-            <Route path="/employees" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />
-            <Route path="/employees/:username" element={<ProtectedRoute><EmployeeDetailsPage /></ProtectedRoute>}/>
+            <Route path="/employees" element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]}><EmployeeListPage /></ProtectedRoute>} />
+            <Route path="/employees/:username" element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]}><EmployeeDetailsPage /></ProtectedRoute>}/>
             <Route path="/employees/new" element={<ProtectedRoute><AddNewEmployeePage /></ProtectedRoute>}/>
             <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>}/>
             <Route path="/services" element={<Navigate to={"/services/available"} replace />} />
@@ -42,8 +42,8 @@ function App(){
             <Route path="/services/requested" element={<ProtectedRoute><RequestedServicesPage /></ProtectedRoute>}/>
             <Route path="/services/history" element={<ProtectedRoute><PastServicesPage /></ProtectedRoute>}/>
             <Route path="/services/shopping-cart" element={<ProtectedRoute><ShoppingCartPage /></ProtectedRoute>}/>
-            <Route path="/management/services" element={<ProtectedRoute><ServicesListPage /></ProtectedRoute>} />
-            <Route path="/management/statistics" element={<ProtectedRoute><StatsPage /></ProtectedRoute>} />
+            <Route path="/management/services" element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]}><ServicesListPage /></ProtectedRoute>} />
+            <Route path="/management/statistics" element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]}><StatsPage /></ProtectedRoute>} />
           </Route>
 
           <Route element={<PublicLayout />}>

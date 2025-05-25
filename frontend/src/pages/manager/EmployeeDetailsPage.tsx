@@ -2,18 +2,13 @@ import { useParams } from "react-router-dom";
 import React, { useEffect, useState, useCallback } from "react";
 import { axiosAuthApi } from "../../middleware/axiosApi";
 import { Box, Button, CircularProgress, Paper, Tab, Tabs, Typography } from "@mui/material";
+import { Employee } from "../../types/index";
+import { startOfWeek, addWeeks, subWeeks, format } from "date-fns";
 
-type EmployeeDetail = {
-  id: string;
-  role: string;
-  email: string;
-  username: string;
-  name: string;
-  surname: string;
-  occupation: string;
-  //to do: add shifts from EmployeeData instead of exampleShifts
-  // shifts: Shift[];
-}
+
+//to do: add shifts from EmployeeData instead of exampleShifts
+// shifts: Shift[];
+
 
 const dayIndex: Record<string, number> = {
   Monday: 0,
@@ -26,11 +21,11 @@ const dayIndex: Record<string, number> = {
 };
 
 const exampleShifts = [
-  { id: '1', weekday: 'Monday', startHour: 8, endHour: 12, title: 'Cleaning', room: 'Room 301' },
-  { id: '2', weekday: 'Tuesday', startHour: 10, endHour: 15, title: 'Cleaning', room: 'Room 302' },
-  { id: '3', weekday: 'Wednesday', startHour: 7, endHour: 11, title: 'Cleaning', room: 'Room 305' },
-  { id: '4', weekday: 'Friday', startHour: 14, endHour: 20, title: 'Cleaning', room: 'Room 310' },
-  { id: '5', weekday: 'Saturday', startHour: 7, endHour: 15, title: 'Cleaning', room: 'Floor 1' },
+  { id: '1', weekday: 'Monday', startHour: 8, endHour: 12, title: 'Cleaning', room: 'Room 301', status: 'IN_PROGRESS'},
+  { id: '2', weekday: 'Tuesday', startHour: 10, endHour: 15, title: 'Cleaning', room: 'Room 302', status: 'REQUESTED' },
+  { id: '3', weekday: 'Wednesday', startHour: 7, endHour: 11, title: 'Cleaning', room: 'Room 305', status: 'REQUESTED' },
+  { id: '4', weekday: 'Friday', startHour: 14, endHour: 20, title: 'Cleaning', room: 'Room 310', status: 'REQUESTED' },
+  { id: '5', weekday: 'Saturday', startHour: 7, endHour: 15, title: 'Cleaning', room: 'Floor 1', status: 'REQUESTED' },
 ];
 
 const MIN_HOUR = 6;
@@ -40,18 +35,20 @@ const TOTAL_HOURS = MAX_HOUR - MIN_HOUR;
 function EmployeeDetailsPage() {
   const { username } = useParams<{ username: string }>();
   const [tab, setTab] = useState(0);
-  const [detail, setDetail] = useState<EmployeeDetail | null>(null);
+  const [detail, setDetail] = useState<Employee | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentWeekStart, setCurrentWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
 
-  const headers = ['M', 'T', 'W', 'Th', 'F', 'S', 'Su'];
+
+  const headers = ['Mon.', 'Tue.', 'Wed.', 'Thu.', 'Fri.', 'Sat.', 'Sun.'];
   const hours = Array.from({ length: TOTAL_HOURS + 1 }, (_, i) => i + MIN_HOUR);
 
   const fetchDetail = useCallback(async () => {
     setLoading(true);
 
     try {
-      const res = await axiosAuthApi.get<EmployeeDetail>(`/management/employees/username/${username}`);
+      const res = await axiosAuthApi.get<Employee>(`/management/employees/username/${username}`);
       console.log(res.data);
       setDetail(res.data);
     } catch (err) {
@@ -65,6 +62,14 @@ function EmployeeDetailsPage() {
   useEffect(() => {
     fetchDetail();
   }, [fetchDetail]);
+
+  const handlePrevWeek = () => {
+    setCurrentWeekStart(prev => subWeeks(prev, 1));
+  };
+
+  const handleNextWeek = () => {
+    setCurrentWeekStart(prev => addWeeks(prev, 1));
+  };
 
   if (loading) {
     return (
@@ -95,9 +100,17 @@ function EmployeeDetailsPage() {
       </Box>
       {tab === 0 && (
         <Box p={2}>
-          <Typography variant="h6" gutterBottom>
-            20.02 - 27.02
-          </Typography>
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+            <Button variant="outlined" onClick={handlePrevWeek}>
+              ← Previous Week
+            </Button>
+            <Typography variant="h5">
+              {format(currentWeekStart, "dd.MM")} - {format(addWeeks(currentWeekStart, 1), "dd.MM")}
+            </Typography>
+            <Button variant="outlined" onClick={handleNextWeek}>
+              Next Week →
+            </Button>
+          </Box>
           <Box
             display="grid"
             gridTemplateColumns="50px repeat(7, 1fr)"
@@ -164,12 +177,13 @@ function EmployeeDetailsPage() {
                     mx: 0.5,
                   }}
                 >
-                  <Box>
+                  <Box gap={5}>
                     <Typography fontWeight="bold">{shift.title}</Typography>
                     <Typography>{shift.room}</Typography>
                     <Typography color="text.secondary">
                       {shift.startHour}:00-{shift.endHour}:00
                     </Typography>
+                    <Typography>{shift.status}</Typography>
                   </Box>
                   <Box mt={1} textAlign="center">
                     <Button size="small" variant="outlined">
@@ -185,11 +199,11 @@ function EmployeeDetailsPage() {
 
       {tab === 1 && detail && (
         <Box display="flex" flexDirection="column" component={Paper} p={4} mt={2} gap={2}>
-          <Typography variant="h6">Name: <strong>{detail.name} {detail.surname}</strong></Typography>
-          <Typography variant="h6">Username: <strong>{detail.username}</strong></Typography>
-          <Typography variant="h6">Email: <strong>{detail.email}</strong></Typography>
-          <Typography variant="h6">Role: <strong>{detail.role}</strong></Typography>
-          <Typography variant="h6">Occupation: <strong>{detail.occupation}</strong></Typography>
+          <Typography variant="body1">Name: <strong>{detail.name} {detail.surname}</strong></Typography>
+          <Typography variant="body1">Username: <strong>{detail.username}</strong></Typography>
+          <Typography variant="body1">Email: <strong>{detail.email}</strong></Typography>
+          <Typography variant="body1">Role: <strong>{detail.role}</strong></Typography>
+          <Typography variant="body1">Status: <strong>{detail.occupation}</strong></Typography>
         </Box>
       )}
 
