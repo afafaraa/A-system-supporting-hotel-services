@@ -10,6 +10,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import PageMargin from "../../components/layout/PageMargin.tsx";
 
 interface Notification {
   id: string,
@@ -113,7 +114,7 @@ function NotificationsPage() {
   }
 
   return (
-    <>
+    <PageMargin>
       <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4}}>
         <Typography variant="h4">Notifications</Typography>
         <Typography variant="h5">MyHotelAssistant</Typography>
@@ -177,7 +178,7 @@ function NotificationsPage() {
               <Typography variant="body1" align="center">You don't have any notifications.</Typography>
           </Box>
       }
-    </>
+    </PageMargin>
   )
 }
 
