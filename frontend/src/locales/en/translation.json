@@ -1,4 +1,17 @@
 {
+  "date": {
+    "locale": "en-US",
+    "shortWeekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    "separator": ","
+  },
+  "notifications": {
+    "title": "Notifications",
+    "tooltip" : {
+      "selectAll": "Select all",
+      "markAsRead": "Mark as read",
+      "delete": "Delete"
+    },
+    "empty": "No notifications available."
   "LoginPage": {
     "title": "Login Page",
     "username": "Username",
@@ -8,3 +21,4 @@
     "registerWithCode": "Click to register with code"
   }
 }
+  }

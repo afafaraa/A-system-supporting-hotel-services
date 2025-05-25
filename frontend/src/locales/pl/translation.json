@@ -1,4 +1,17 @@
 {
+  "date": {
+    "locale": "pl-PL",
+    "shortWeekdays": ["Nd.", "Pn.", "Wt.", "Śr.", "Czw.", "Pt.", "So."],
+    "separator": ""
+  },
+  "notifications": {
+    "title": "Powiadomienia",
+    "tooltip" : {
+      "selectAll": "Wybierz wszystkie",
+      "markAsRead": "Oznacz jako przeczytane",
+      "delete": "Usuń"
+    },
+    "empty": "Brak dostępnych powiadomień.",
   "LoginPage": {
     "title": "Logowanie",
     "username": "Nazwa użytkownika",
@@ -8,3 +21,4 @@
     "registerWithCode": "Kliknij, aby zarejestrować się z kodem"
   }
 }
+  }

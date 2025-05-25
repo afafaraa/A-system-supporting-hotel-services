@@ -21,3 +21,7 @@ spring:
 logging:
   level:
     inzynierka.myhotelassistant: DEBUG
+app:
+  notification:
+    expiration:
+      days: 30

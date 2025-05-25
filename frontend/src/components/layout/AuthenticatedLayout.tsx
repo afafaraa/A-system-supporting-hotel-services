@@ -8,8 +8,7 @@ function AuthenticatedLayout() {
   const theme = useTheme();
 
   return (
-    <Container disableGutters maxWidth="xl" sx={{height: "fit-content", minHeight: '100vh', backgroundColor: theme.palette.secondary.main}}>
-      <DebugNavigationMenu />
+    <Container disableGutters maxWidth={false} sx={{height: "100vh"}}>
       <Navbar>
         <Outlet />
       </Navbar>
@@ -17,4 +16,4 @@ function AuthenticatedLayout() {
   )
 }
 
-export default AuthenticatedLayout
+export default AuthenticatedLayout;

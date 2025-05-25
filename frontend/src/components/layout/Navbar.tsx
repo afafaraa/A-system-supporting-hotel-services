@@ -7,10 +7,23 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import {Outlet} from "react-router-dom";
+import {Outlet, useLocation} from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/slices/userSlice";
 import {useNavigate} from "react-router-dom";
+import HomeIcon from '@mui/icons-material/Home';
+import DesignServicesIcon from '@mui/icons-material/DesignServices';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import HistoryIcon from '@mui/icons-material/History';
+import EventNoteIcon from '@mui/icons-material/EventNote';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import LogoutIcon from '@mui/icons-material/Logout';
+import MenuIcon from '@mui/icons-material/Menu';
+import GroupIcon from '@mui/icons-material/Group';
+import BuildIcon from '@mui/icons-material/Build';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import LanguageSwitcher from "./LanguageSwitcher.tsx";
 import {useTheme} from "@mui/material";
 
 const drawerWidth = 240;
@@ -26,6 +39,7 @@ function Navbar(props: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
 
   const handleDrawerClose = () => {
@@ -44,49 +58,62 @@ function Navbar(props: Props) {
   };
 
   const nav = [
-    {text: 'Available services', navTo: '/services/available' , roles: ['ROLE_GUEST']},
-    {text: 'Shopping cart', navTo: '/services/shopping-cart', roles: ['ROLE_GUEST']},
-    {text: 'Requested services', navTo: '/services/requested', roles: ['ROLE_GUEST']},
-    {text: 'Past services', navTo: '/services/history', roles: ['ROLE_GUEST']},
-    {text: 'Notifications', navTo: '/notifications', roles: ['ROLE_GUEST']},
-    {text: 'Logout', navTo: '/logout', roles: null},
+    {text: 'Home', icon: HomeIcon, navTo: '/home', roles: null},
+    {text: 'Available services', icon: DesignServicesIcon, navTo: '/services/available' , roles: ['ROLE_GUEST']},
+    {text: 'Shopping cart', icon: ShoppingCartIcon, navTo: '/services/shopping-cart', roles: ['ROLE_GUEST']},
+    {text: 'Requested services', icon: AssignmentTurnedInIcon, navTo: '/services/requested', roles: ['ROLE_GUEST']},
+    {text: 'Past services', icon: HistoryIcon, navTo: '/services/history', roles: ['ROLE_GUEST']},
+    {text: 'My schedule', icon: EventNoteIcon, navTo: '/employee/schedule', roles: ['ROLE_EMPLOYEE', 'ROLE_ADMIN']},
+    {text: 'Notifications', icon: NotificationsIcon, navTo: '/notifications', roles: null},
+    {text: 'Personnel', icon: GroupIcon, navTo: '/employees', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
+    {text: 'Services', icon: BuildIcon, navTo: '/management/services', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
+    {text: 'Statistics', icon: BarChartIcon, navTo: '/management/statistics', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
+    {text: 'Logout', icon: LogoutIcon, navTo: '/logout', roles: null}
   ]
+
+  const isSelected = (navTo: string): boolean => {
+    return location.pathname.startsWith(navTo)
+  }
 
   if (user === null) return null;
 
   const drawer = (
-    <div>
-      <List sx={{paddingX: '10px'}}>
-        <img alt="Logo"/>
-        {nav.map((item, index) =>
-          (item.roles === null || item.roles.includes(user.role)) &&
-            <ListItem key={index} disablePadding>
-              <ListItemButton sx={{marginY: '5px', backgroundColor: theme.palette.secondary.main, borderRadius: '10px', '&:hover': {backgroundColor: theme.palette.secondary.dark,} }}
-                onClick={() => navigate(item.navTo)}>
-                <ListItemIcon>
-                  icon
-                </ListItemIcon>
-                <ListItemText primary={item.text}/>
+    <List>
+      {nav.map((item, index) =>
+        (item.roles === null || item.roles.includes(user.role)) &&
+          <ListItem key={index} disablePadding>
+              <ListItemButton disableRipple
+                  onClick={() => navigate(item.navTo)}
+                  sx={{
+                    gap: 2, backgroundColor: isSelected(item.navTo) ? 'primary.main' : 'inherit',
+                    '&:hover': {
+                      backgroundColor: isSelected(item.navTo) ? 'primary.dark' : 'action.hover'
+                    } }}
+              >
+                {item.icon &&
+                    <ListItemIcon sx={{ minWidth: 'unset' }}>
+                        <item.icon sx={{ color: isSelected(item.navTo) ? 'white' : 'primary.main' }} />
+                    </ListItemIcon>
+                }
+                  <ListItemText primary={item.text} sx={{color: isSelected(item.navTo) ? 'white' : 'text.primary'}}/>
               </ListItemButton>
-            </ListItem>
-        )}
-      </List>
-    </div>
+          </ListItem>
+      )}
+    </List>
   );
 
   // Remove this const when copying and pasting into your project.
   const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: 'flex', paddingX: '60px', paddingY: '30px' }}>
+    <Box sx={{ display: 'flex' }}>
         <IconButton
-          color="inherit"
           aria-label="open drawer"
           edge="start"
           onClick={handleDrawerToggle}
-          sx={{ display: { sm: 'none' }, mx: '10px', position: 'absolute' }}
+          sx={{ color: 'white', backgroundColor: 'primary.main', display: { sm: 'none' }, position: 'fixed', top: 0, left: 0, zIndex: 1000, m: 1 }}
         >
-          Menu
+          <MenuIcon/>
         </IconButton>
       <Box
         component="nav"
@@ -109,6 +136,7 @@ function Navbar(props: Props) {
           }}
         >
           {drawer}
+          <Box sx={{marginTop: 'auto'}}><LanguageSwitcher /></Box>
         </Drawer>
         <Drawer
           variant="permanent"
@@ -119,12 +147,12 @@ function Navbar(props: Props) {
           open
         >
           {drawer}
+          <Box sx={{marginTop: 'auto'}}><LanguageSwitcher /></Box>
         </Drawer>
       </Box>
       <Outlet />
     </Box>
   );
 }
-
 
 export default Navbar;

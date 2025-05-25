@@ -1,91 +1,147 @@
-import {useEffect, useState} from "react";
-import {axiosAuthApi} from "../../middleware/axiosApi.ts";
-import {Button, Card, CardContent, Typography} from "@mui/material";
-import {selectUser} from "../../redux/slices/userSlice";
-import {useSelector} from "react-redux";
+import { useEffect, useState, useMemo, useCallback } from "react";
+import { axiosAuthApi } from "../../middleware/axiosApi.ts";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Tabs,
+  Tab,
+  Typography,
+  Paper,
+  Stack
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Employee } from "../../types";
 
-interface Employee {
-  id: string;
-  username: string;
-  role: string;
-  email: string;
-  name: string;
-  surname: string;
-}
+const sectors = [
+  { label: "Room service", role: "EMPLOYEE" },
+  { label: "Reception", role: "RECEPTIONIST" },
+  { label: "Gastronomy", role: "EMPLOYEE" },
+  { label: "Management", role: "MANAGER" },
+];
 
 function EmployeeListPage() {
-  
-  const [error, setError] = useState<string | null>(null);
+  const [tab, setTab] = useState(0);
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(0);
-  const [showLoadMore, setShowLoadMore] = useState(true);
-  const pageSize = 1;
-  const user = useSelector(selectUser);
+  const navigate = useNavigate();
+
+  const pageSize = 10;
+  
+  const fetchEmployees = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const res = await axiosAuthApi.get<Employee[]>("/management/employees", {
+        params: { page: page, size: pageSize },
+      });
+      console.log(res.data);
+      setEmployees(res.data);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to fetch employees");
+    } finally {
+      setLoading(false);
+    }
+  }, [page, pageSize]);
 
   useEffect(() => {
-    if (user === null) return
+    fetchEmployees();
+  }, [fetchEmployees]);
 
-    axiosAuthApi.get<Employee[]>('/management/employees', {
-      params: { page: page, size: pageSize },
-    })
-      .then(res => {
-        console.log(res)
-        setEmployees(employees => [...employees, ...res.data
-          .filter(employee => !employees.some(e => e.id === employee.id)) ]); // for debug mode
-        if (res.data.length < pageSize) {
-          setShowLoadMore(false);
-        }
-      })
-      .catch((reason) => {
-        switch (reason.response.status) {
-          case 401:
-            setError('Niepoprawny token')
-            break;
-          case 400:
-            setError('Niepoprawne dane')
-            break;
-          case 403:
-            setError('Brak uprawnień')
-            break;
-          default:
-            setError('Nie udało się pobrać listy pracowników')
-        }
-      });
-  }, [page, user]);
+  const employeesForTab = useMemo(() => {
+    if (!sectors[tab]) return [];
+    return employees.filter(emp => emp.role === sectors[tab].role);
+  }, [tab, employees]);
 
-  function loadMore() {
-    setPage(prevState => prevState + 1)
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" p={4}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box display="flex" justifyContent="center" p={4}>
+        <Typography color="error">{error}</Typography>
+      </Box>
+    );
   }
 
   return (
-    <>
-      {error && <div>{error}</div>}
-      {!error &&
-        <div style={{ padding: '20px', paddingInline: '80px' }}>
-            
-          <h1>Lista pracowników</h1>
-            
-          <div>
-            {employees.map((employee, index) => (
-              <Card key={index} style={{ margin: '20px' }}>
-                <CardContent>
-                  <Typography variant="h5" component="div">{employee.name} {employee.surname}</Typography>
-                  <Typography variant="body2" color="text.secondary">Email: {employee.email}</Typography>
-                  <Typography variant="body2" color="text.secondary">Rola: {employee.role}</Typography>
-                </CardContent>
-              </Card>
+    <Box p={2} width={"100%"} mr={10}>
+      <Typography variant="h4" gutterBottom>
+        Personnel
+      </Typography>
+
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Tabs value={tab} onChange={(_, v) => setTab(v)}>
+          {sectors.map((s, i) => (
+            <Tab key={i} label={s.label} />
+          ))}
+        </Tabs>
+        <Button variant="contained" onClick={() => navigate("/employees/new")}>
+          Add Employee
+        </Button>
+      </Box>
+
+      <Paper elevation={2} sx={{ padding: 2 }}>
+        <Table>
+          <TableHead sx={{ backgroundColor: "#f0f0f0" }}>
+            <TableRow>
+              <TableCell sx={{ width: '25%'}}>Name</TableCell>
+              <TableCell sx={{ width: '25%'}}>Position</TableCell>
+              <TableCell sx={{ width: '25%'}}>Email</TableCell>
+              <TableCell sx={{ width: '15%'}}>Status</TableCell>
+              <TableCell sx={{ width: '15%'}} align="right">Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {employeesForTab.map((emp) => (
+              <TableRow key={emp.id} hover>
+                <TableCell>
+                  {emp.name} {emp.surname}
+                </TableCell>
+                <TableCell>{emp.role.replace("ROLE_", "")}</TableCell>
+                <TableCell>{emp.email}</TableCell>
+                <TableCell>{emp.status}</TableCell>
+                <TableCell align="right">
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => navigate(`/employees/${emp.username}`)}
+                  >
+                    Preview
+                  </Button>
+                </TableCell>
+              </TableRow>
             ))}
-          </div>
-          
-          {showLoadMore &&
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <Button variant="contained" onClick={loadMore}>Załaduj więcej</Button>
-            </div>
-          }
-          
-        </div>
-      }
-    </>
+          </TableBody>
+        </Table>
+        {employees.length > pageSize && (
+          <Stack direction="row" spacing={1} justifyContent="space-between">
+            <Button onClick={() => setPage(prev => Math.max(prev - 1, 0))} disabled={page === 0}>
+              Previous
+            </Button>
+            <Button
+              onClick={() => setPage(prev => Math.min(prev + 1, Math.floor(employees.length / pageSize) - 1))}
+              disabled={page === Math.floor(employees.length / pageSize) - 1}
+            >
+              Next
+            </Button>
+          </Stack>
+        )}
+      </Paper>
+    </Box>
   );
 }
 

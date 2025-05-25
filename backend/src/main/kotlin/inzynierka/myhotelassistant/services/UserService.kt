@@ -15,7 +15,6 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.security.MessageDigest
@@ -41,9 +40,7 @@ class UserService(
         return null
     }
     override fun loadUserByUsername(username: String): UserDetails {
-        val user =
-            userRepository.findByUsername(username)
-                ?: throw UsernameNotFoundException("User not found: \"$username\"")
+        val user = findByUsernameOrThrow(username)
         return User
             .builder()
             .username(user.username)
@@ -57,6 +54,10 @@ class UserService(
     fun findByEmailOrThrow(email: String): UserEntity =
         userRepository.findByEmail(email)
             ?: throw UserNotFoundException("User with given email was not found")
+
+    fun findByUsernameOrThrow(username: String): UserEntity =
+        userRepository.findByUsername(username)
+            ?: throw UserNotFoundException("User with given username was not found")
 
     fun changePassword(
         email: String,
