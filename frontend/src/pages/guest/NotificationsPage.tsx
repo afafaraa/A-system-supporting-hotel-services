@@ -87,7 +87,7 @@ function NotificationsPage() {
   const getDay = (timestamp: string): string => {
     const date = new Date(timestamp);
     const shortWeekdays = t("date.shortWeekdays", { returnObjects: true }) as string[];
-    const dayOfWeek = shortWeekdays[date.getDay()];
+    const dayOfWeek = shortWeekdays[(date.getDay() + 6) % 7]; // Adjust for Monday as first day of week
     const dateStr = date.toLocaleDateString(t('date.locale'), {day: 'numeric', month: 'long'});
     const sep = t('date.separator');
     return `${dayOfWeek}${sep} ${dateStr}`

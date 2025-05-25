@@ -1,7 +1,7 @@
 {
   "date": {
     "locale": "pl-PL",
-    "shortWeekdays": ["Nd.", "Pn.", "Wt.", "Śr.", "Czw.", "Pt.", "So."],
+    "shortWeekdays": ["Pn.", "Wt.", "Śr.", "Czw.", "Pt.", "So.", "Nd."],
     "separator": ""
   },
   "pages": {

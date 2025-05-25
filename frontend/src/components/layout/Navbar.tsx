@@ -61,7 +61,7 @@ function Navbar(props: Props) {
     {text: 'Shopping cart', icon: ShoppingCartIcon, navTo: '/services/shopping-cart', roles: ['ROLE_GUEST']},
     {text: 'Requested services', icon: AssignmentTurnedInIcon, navTo: '/services/requested', roles: ['ROLE_GUEST']},
     {text: 'Past services', icon: HistoryIcon, navTo: '/services/history', roles: ['ROLE_GUEST']},
-    {text: 'My schedule', icon: EventNoteIcon, navTo: '/employee/schedule', roles: ['ROLE_EMPLOYEE', 'ROLE_ADMIN']},
+    {text: 'My schedule', icon: EventNoteIcon, navTo: '/employee/schedule', roles: ['ROLE_EMPLOYEE', 'ROLE_RECEPTIONIST', 'ROLE_MANAGER', 'ROLE_ADMIN']},
     {text: 'Notifications', icon: NotificationsIcon, navTo: '/notifications', roles: null},
     {text: 'Personnel', icon: GroupIcon, navTo: '/employees', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
     {text: 'Services', icon: BuildIcon, navTo: '/management/services', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
