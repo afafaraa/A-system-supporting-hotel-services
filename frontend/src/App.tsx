@@ -18,7 +18,10 @@ import ShoppingCartPage from "./pages/guest/ShoppingCartPage.tsx";
 import {PropsWithChildren, useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {initializeUserFromLocalStorage} from "./components/auth/auth.tsx";
-
+import EmployeeDetailsPage from "./pages/manager/EmployeeDetailsPage.tsx";
+import ServicesListPage from "./pages/manager/ServicesListPage.tsx";
+import StatsPage from "./pages/manager/StatsPage.tsx";
+import AddNewEmployeePage from './pages/manager/AddNewEmployeePage.tsx';
 
 function App(){
 
@@ -30,13 +33,17 @@ function App(){
           <Route element={<AuthenticatedLayout />}>
             <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
             <Route path="/add-reservation" element={<ProtectedRoute><AddReservationPage /></ProtectedRoute>} />
-            <Route path="/employees" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />
+            <Route path="/employees" element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]}><EmployeeListPage /></ProtectedRoute>} />
+            <Route path="/employees/:username" element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]}><EmployeeDetailsPage /></ProtectedRoute>}/>
+            <Route path="/employees/new" element={<ProtectedRoute><AddNewEmployeePage /></ProtectedRoute>}/>
             <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>}/>
             <Route path="/services" element={<Navigate to={"/services/available"} replace />} />
             <Route path="/services/available" element={<ProtectedRoute><AvailableServicesPage /></ProtectedRoute>} />
             <Route path="/services/requested" element={<ProtectedRoute><RequestedServicesPage /></ProtectedRoute>}/>
             <Route path="/services/history" element={<ProtectedRoute><PastServicesPage /></ProtectedRoute>}/>
             <Route path="/services/shopping-cart" element={<ProtectedRoute><ShoppingCartPage /></ProtectedRoute>}/>
+            <Route path="/management/services" element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]}><ServicesListPage /></ProtectedRoute>} />
+            <Route path="/management/statistics" element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]}><StatsPage /></ProtectedRoute>} />
           </Route>
 
           <Route element={<PublicLayout />}>

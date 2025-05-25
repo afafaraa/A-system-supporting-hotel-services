@@ -42,6 +42,7 @@ class DatabaseSeeder(
             addServices()
             addOrders()
             updateUsers()
+            addManager()
         } catch (e: Exception) {
             logger.error(e.message, e)
             throw e
@@ -212,6 +213,22 @@ class DatabaseSeeder(
             logger.info("Added ${allOrders.size} orders to user '${user.username}'")
         } else {
             logger.warn("User with username 'user' not found.")
+        }
+    }
+
+    private fun addManager() {
+        if (!userRepo.existsByUsername("manager")) {
+            userRepo.save(
+                UserEntity(
+                    role = Role.MANAGER,
+                    username = "manager",
+                    password = passwordEncoder.encode("password"),
+                    email = "manager@gmail.com",
+                    name = "Jim",
+                    surname = "Brown",
+                ),
+            )
+            logger.info("Default 'manager' added to database")
         }
     }
 }
