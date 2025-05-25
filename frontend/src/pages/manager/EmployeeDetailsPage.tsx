@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import React, { useEffect, useState, useCallback } from "react";
 import { axiosAuthApi } from "../../middleware/axiosApi";
 import { Box, Button, CircularProgress, Paper, Tab, Tabs, Typography } from "@mui/material";
-import { Employee } from "../../types/index";
+import { Employee } from "../../types";
 import { startOfWeek, addWeeks, subWeeks, format } from "date-fns";
 
 

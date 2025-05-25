@@ -18,6 +18,9 @@ import ShoppingCartPage from "./pages/guest/ShoppingCartPage.tsx";
 import {PropsWithChildren, useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {initializeUserFromLocalStorage} from "./components/auth/auth.tsx";
+import EmployeeSchedulePage from "./pages/employee/EmployeeSchedulePage.tsx";
+import EmployeeServicePage from "./pages/employee/EmployeeServicePage.tsx";
+import LoadingPage from "./pages/user/LoadingPage.tsx";
 import EmployeeDetailsPage from "./pages/manager/EmployeeDetailsPage.tsx";
 import ServicesListPage from "./pages/manager/ServicesListPage.tsx";
 import StatsPage from "./pages/manager/StatsPage.tsx";
@@ -33,6 +36,9 @@ function App(){
           <Route element={<AuthenticatedLayout />}>
             <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
             <Route path="/add-reservation" element={<ProtectedRoute><AddReservationPage /></ProtectedRoute>} />
+            <Route path="/employees" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />
+            <Route path="/employee/schedule" element={<ProtectedRoute><EmployeeSchedulePage /></ProtectedRoute>} />
+            <Route path="/employee/service/:serviceId" element={<ProtectedRoute><EmployeeServicePage /></ProtectedRoute>} />
             <Route path="/employees" element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]}><EmployeeListPage /></ProtectedRoute>} />
             <Route path="/employees/:username" element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]}><EmployeeDetailsPage /></ProtectedRoute>}/>
             <Route path="/employees/new" element={<ProtectedRoute><AddNewEmployeePage /></ProtectedRoute>}/>
@@ -84,7 +90,7 @@ function AppInitializer({ children }: PropsWithChildren) {
     }, [dispatch, navigate]
   );
 
-  if (!isInitialized) return null;
+  if (!isInitialized) return <LoadingPage/>;
 
   return <>{children}</>;
 }

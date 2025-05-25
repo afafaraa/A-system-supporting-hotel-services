@@ -16,7 +16,7 @@ import {
   Stack
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { Employee } from "../../types/index.ts";
+import { Employee } from "../../types";
 
 const sectors = [
   { label: "Room service", role: "EMPLOYEE" },

@@ -22,7 +22,7 @@ function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
     if (!user) return null;
     if (allowedRoles && !allowedRoles.includes(user.role)) return null;
 
-    return <>{children}</>;
+    return children;
 }
 
 export default ProtectedRoute;

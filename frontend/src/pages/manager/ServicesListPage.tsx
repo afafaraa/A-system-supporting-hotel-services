@@ -18,7 +18,7 @@ import {
     MenuItem
 } from '@mui/material';
 import ServiceForm from './ServiceForm';
-import { Service } from '../../types/index';
+import { Service } from '../../types';
 
 function ServicesListPage() {
     const [allServices, setAllServices] = useState<Service[]>([]);
@@ -50,10 +50,8 @@ function ServicesListPage() {
                 if (filterAvailability === 'true' && !isUnavailable) return false;
                 if (filterAvailability === 'false' && isUnavailable) return false;
             }
-            if (filterType !== 'ALL' && s.type !== filterType) {
-                return false;
-            }
-            return true;
+            return !(filterType !== 'ALL' && s.type !== filterType);
+
         });
     }, [allServices, filterName, filterAvailability, filterType]);
 

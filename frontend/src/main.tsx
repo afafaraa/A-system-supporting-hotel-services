@@ -5,23 +5,34 @@ import { Provider } from 'react-redux';
 import {store} from './redux/store.ts';
 import App from './App.tsx';
 import {createTheme, ThemeProvider} from "@mui/material";
+import './locales/i18n';
+import { cyan, indigo } from "@mui/material/colors";
 
 const theme = createTheme({
   palette: {
-    primary: {
-      main: '#000000',
-    },
-    secondary: {
-      main: '#D9D9D9',
-    },
+    mode: 'light',
+    primary: cyan,
+    secondary: indigo,
     background: {
-      default: '#ffffff',
+      default: '#f0f0f0',
+      paper: '#fff',
+      primaryLight: cyan[100],
     },
     text: {
-      primary: '#000000',
+      primary: '#333',
+      secondary: '#666',
+      disabled: '#999',
     },
   },
-
+  components: {
+    MuiTooltip: {
+      defaultProps: {
+        slotProps: {
+          popper: { modifiers: [{name: 'offset', options: {offset: [0, -10]}}], },
+        },
+      },
+    },
+  },
 });
 
 
