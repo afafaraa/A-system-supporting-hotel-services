@@ -23,7 +23,7 @@ class EmployeeService(
     fun findById(id: String): UserEntity? {
         val opt = userRepository.findById(id)
         val user = opt.get()
-        if(user.role == Role.EMPLOYEE) {
+        if (user.role == Role.EMPLOYEE) {
             return user
         }
         return null

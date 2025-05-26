@@ -25,8 +25,8 @@ import org.springframework.stereotype.Component
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 import kotlin.collections.forEach
@@ -237,7 +237,12 @@ class DatabaseSeeder(
                             serviceDate = instant,
                             weekday = weekdayHour.day,
                             active = true,
-                            employeeId = userRepo.findAll().filter { it.role == Role.EMPLOYEE }.random().id as String,
+                            employeeId =
+                                userRepo
+                                    .findAll()
+                                    .filter { it.role == Role.EMPLOYEE }
+                                    .random()
+                                    .id as String,
                         )
                     logger.info("Schedule added: ${service.name} on ${weekdayHour.day} at $dateTime")
 

@@ -29,7 +29,7 @@ class ServiceController(
 
     @GetMapping("/one/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun getServiceById(@PathVariable id: String): Optional<ServiceEntity> {
-        return serviceService.findById(id);
-    }
+    fun getServiceById(
+        @PathVariable id: String,
+    ): Optional<ServiceEntity> = serviceService.findById(id)
 }
