@@ -6,7 +6,6 @@ import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.models.service.ServiceType
-import inzynierka.myhotelassistant.models.service.Weekday
 import inzynierka.myhotelassistant.models.service.WeekdayHour
 import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
