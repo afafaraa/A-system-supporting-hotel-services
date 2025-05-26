@@ -24,7 +24,6 @@ import GroupIcon from '@mui/icons-material/Group';
 import BuildIcon from '@mui/icons-material/Build';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LanguageSwitcher from "./LanguageSwitcher.tsx";
-import {useTheme} from "@mui/material";
 
 const drawerWidth = 240;
 
@@ -40,7 +39,6 @@ function Navbar(props: Props) {
   const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const theme = useTheme();
 
   const handleDrawerClose = () => {
     setIsClosing(true);

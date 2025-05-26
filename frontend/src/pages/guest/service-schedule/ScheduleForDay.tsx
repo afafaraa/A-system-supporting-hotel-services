@@ -98,7 +98,7 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
       if( stringifiedItems ) {
         parsedItemIds = JSON.parse(stringifiedItems);
       }
-      const scheduleItems = response.data.map(s => {
+      const scheduleItems = response.data.map((s: ScheduleProps) => {
         return {...s, inCart: parsedItemIds.includes(s.id) };
       });
       setSchedule(scheduleItems);

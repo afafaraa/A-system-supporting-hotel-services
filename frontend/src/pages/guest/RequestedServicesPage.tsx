@@ -4,6 +4,14 @@ import {selectUser} from "../../redux/slices/userSlice.ts";
 import {useEffect, useState} from "react";
 import AuthenticatedHeader from "../../components/layout/AuthenticatedHeader.tsx";
 
+type RequestedServiceProps = {
+  id: string;
+  scheduleId: string;
+  orderDate: string;
+  orderForDate: string;
+  status: string;
+};
+
 function RequestedServicesPage() {
   const user = useSelector(selectUser);
   const [services, setServices] = useState([]);
@@ -14,9 +22,10 @@ function RequestedServicesPage() {
 
   const fetchRequestedServices = async () => {
     try {
-      const response = await axiosAuthApi.get(`/guest/order/get/all/pending/${user.username}`);
-      console.log(response.data);
-      setServices(response.data);
+      if (user) {
+        const response = await axiosAuthApi.get(`/guest/order/get/all/pending/${user.username}`);
+        setServices(response.data);
+      }
     } catch (e) {
       console.error(e)
     }
@@ -25,7 +34,7 @@ function RequestedServicesPage() {
   return (
     <div style={{width: '100%'}}>
       <AuthenticatedHeader title={"Oczekujące usługi"}/>
-      {services.length > 0 && services.map((service, index) => (
+      {services.length > 0 && services.map((service: RequestedServiceProps, index) => (
         <div key={index}>{service.id}</div>
       ))}
     </div>

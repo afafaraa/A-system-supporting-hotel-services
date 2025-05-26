@@ -7,7 +7,6 @@ import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
 import {setUserData} from "../../components/auth/auth.tsx";
-import { useTranslation } from 'react-i18next';
 
 function LoginPage(){
   const user = useSelector(selectUser);
