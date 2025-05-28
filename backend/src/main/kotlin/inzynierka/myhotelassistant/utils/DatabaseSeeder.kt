@@ -1,7 +1,6 @@
 package inzynierka.myhotelassistant.utils
 
 import inzynierka.myhotelassistant.models.notification.NotificationEntity
-import inzynierka.myhotelassistant.models.order.OrderEntity
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.models.service.ServiceEntity
@@ -11,7 +10,6 @@ import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.NotificationRepository
-import inzynierka.myhotelassistant.repositories.OrderRepository
 import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
@@ -43,7 +41,6 @@ class DatabaseSeeder(
     private val passwordEncoder: PasswordEncoder,
     private val roomRepo: RoomRepository,
     private val serviceService: ServiceService,
-    private val orderRepo: OrderRepository,
     private val notificationRepository: NotificationRepository,
     private val scheduleRepository: ScheduleRepository,
     private val employeeService: EmployeeService,
@@ -57,9 +54,7 @@ class DatabaseSeeder(
             addTestRooms()
             addTestEmployees()
             addServices()
-            updateUsers()
             addSchedule()
-            addOrders()
             addManager()
             addTestNotifications()
         } catch (e: Exception) {
@@ -205,20 +200,6 @@ class DatabaseSeeder(
         }
     }
 
-    private fun addOrders() {
-        val existingService = scheduleRepository.findAll().random()
-        if (existingService != null && orderRepo.findAll().isEmpty()) {
-            val order =
-                OrderEntity(
-                    scheduleId = existingService.id!!,
-                    orderDate = Instant.now(),
-                    orderForDate = Instant.now().plus(1, ChronoUnit.DAYS),
-                )
-            orderRepo.save(order)
-            logger.info("Default order added to database")
-        }
-    }
-
     fun addSchedule() {
         val services = serviceService.findAll()
         val today = LocalDate.now()
@@ -243,25 +224,14 @@ class DatabaseSeeder(
                                     .filter { it.role == Role.EMPLOYEE }
                                     .random()
                                     .id as String,
+                            isOrdered=false,
+                            userId = null,
                         )
                     logger.info("Schedule added: ${service.name} on ${weekdayHour.day} at $dateTime")
 
                     scheduleRepository.save(schedule)
                 }
             }
-        }
-    }
-
-    private fun updateUsers() {
-        val user = userRepo.findByUsername("user")
-        if (user?.guestData != null) {
-            val allOrders = orderRepo.findAll()
-            user.guestData.orders.clear()
-            user.guestData.orders.addAll(allOrders)
-            userRepo.save(user)
-            logger.info("Added ${allOrders.size} orders to user '${user.username}'")
-        } else {
-            logger.warn("User with username 'user' not found.")
         }
     }
 

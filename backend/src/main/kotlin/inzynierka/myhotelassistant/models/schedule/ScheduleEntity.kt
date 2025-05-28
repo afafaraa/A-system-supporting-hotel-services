@@ -13,4 +13,6 @@ data class ScheduleEntity(
     var weekday: DayOfWeek,
     var active: Boolean,
     var employeeId: String,
+    var isOrdered: Boolean,
+    var userId: String?,
 )

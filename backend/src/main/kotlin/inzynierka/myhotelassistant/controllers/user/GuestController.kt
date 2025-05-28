@@ -1,7 +1,6 @@
 package inzynierka.myhotelassistant.controllers.user
 
-import inzynierka.myhotelassistant.models.order.OrderEntity
-import inzynierka.myhotelassistant.models.order.OrderStatus
+import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.UserService
 import org.springframework.http.HttpStatus
@@ -49,23 +48,23 @@ class GuestController(
         if (user != null) {
             val schedule = scheduleService.findById(scheduleId)
             if (schedule != null) {
-                user.guestData?.orders?.add(
-                    OrderEntity(scheduleId = scheduleId, orderDate = Instant.now(), orderForDate = schedule.serviceDate),
-                )
+//                user.guestData?.orders?.add(
+//                    OrderEntity(scheduleId = scheduleId, orderDate = Instant.now(), orderForDate = schedule.serviceDate),
+//                )
             }
         }
     }
 
-    @GetMapping("/order/get/all/pending/{username}")
-    @ResponseStatus(HttpStatus.OK)
-    fun getAllPendingOrdersForUser(
-        @PathVariable username: String,
-    ): List<OrderEntity>? {
-        val user = userService.findByUsername(username)
-        if (user != null) {
-            val orders = user.guestData?.orders?.filter { it.status == OrderStatus.PENDING || it.status == OrderStatus.IN_PROGRESS }
-            return orders
-        }
-        return null
-    }
+//    @GetMapping("/order/get/all/pending/{username}")
+//    @ResponseStatus(HttpStatus.OK)
+//    fun getAllPendingOrdersForUser(
+//        @PathVariable username: String,
+//    ): List<OrderEntity>? {
+//        val user = userService.findByUsername(username)
+//        if (user != null) {
+//            val orders = user.guestData?.orders?.filter { it.status == OrderStatus.PENDING || it.status == OrderStatus.IN_PROGRESS }
+//            return orders
+//        }
+//        return null
+//    }
 }
