@@ -224,7 +224,7 @@ class DatabaseSeeder(
                                     .filter { it.role == Role.EMPLOYEE }
                                     .random()
                                     .id as String,
-                            isOrdered=false,
+                            isOrdered = false,
                             userId = null,
                         )
                     logger.info("Schedule added: ${service.name} on ${weekdayHour.day} at $dateTime")
