@@ -225,7 +225,7 @@ class DatabaseSeeder(
                                     .random()
                                     .id as String,
                             isOrdered = false,
-                            userId = null,
+                            guestId = null,
                         )
                     logger.info("Schedule added: ${service.name} on ${weekdayHour.day} at $dateTime")
 

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import java.util.Optional
 
 @RestController
 @RequestMapping("/services")
@@ -31,5 +30,11 @@ class ServiceController(
     @ResponseStatus(HttpStatus.OK)
     fun getServiceById(
         @PathVariable id: String,
-    ): Optional<ServiceEntity> = serviceService.findById(id)
+    ): ServiceEntity? {
+        val service = serviceService.findById(id)
+        if (service.isPresent) {
+            return service.get()
+        }
+        return null
+    }
 }

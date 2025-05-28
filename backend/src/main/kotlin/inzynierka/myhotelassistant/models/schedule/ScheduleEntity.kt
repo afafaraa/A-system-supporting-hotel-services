@@ -14,5 +14,5 @@ data class ScheduleEntity(
     var active: Boolean,
     var employeeId: String,
     var isOrdered: Boolean,
-    var userId: String?,
+    var guestId: String?,
 )

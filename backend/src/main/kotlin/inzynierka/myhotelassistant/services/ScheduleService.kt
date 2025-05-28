@@ -27,7 +27,7 @@ class ScheduleService(
     fun findScheduleForCurrentWeekById(
         id: String,
         date: Instant,
-    ): List<ScheduleEntity?> {
+    ): List<ScheduleEntity> {
         val endOfWeek =
             date
                 .atZone(ZoneId.systemDefault())

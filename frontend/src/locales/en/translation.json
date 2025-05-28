@@ -20,13 +20,5 @@
       "delete": "Delete"
     },
     "empty": "No notifications available.",
-    "LoginPage": {
-      "title": "Login Page",
-      "username": "Username",
-      "password": "Password",
-      "loginButton": "Login",
-      "resetPassword": "Click to reset password",
-      "registerWithCode": "Click to register with code"
-    }
   }
 }

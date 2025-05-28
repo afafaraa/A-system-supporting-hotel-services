@@ -34,7 +34,7 @@ class ScheduleController(
     fun getScheduleByServiceIdForWeek(
         @PathVariable id: String,
         @RequestParam date: String,
-    ): List<ScheduleEntity?> = scheduleService.findScheduleForCurrentWeekById(id, Instant.parse(date))
+    ): List<ScheduleEntity> = scheduleService.findScheduleForCurrentWeekById(id, Instant.parse(date))
 
     @GetMapping("/get/cart/id/{id}")
     @ResponseStatus(HttpStatus.OK)
