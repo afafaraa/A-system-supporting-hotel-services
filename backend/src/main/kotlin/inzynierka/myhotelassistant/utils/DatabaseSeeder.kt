@@ -126,7 +126,7 @@ class DatabaseSeeder(
         }
     }
 
-        private fun addTestEmployees() {
+    private fun addTestEmployees() {
         if (!userRepo.existsByUsername("employee1")) {
             userRepo.save(
                 UserEntity(

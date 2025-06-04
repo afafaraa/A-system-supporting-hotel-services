@@ -28,5 +28,7 @@ class ServiceController(
 
     @GetMapping("/one/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun getServiceById(@PathVariable id: String) = serviceService.findByIdOrThrow(id)
+    fun getServiceById(
+        @PathVariable id: String,
+    ) = serviceService.findByIdOrThrow(id)
 }

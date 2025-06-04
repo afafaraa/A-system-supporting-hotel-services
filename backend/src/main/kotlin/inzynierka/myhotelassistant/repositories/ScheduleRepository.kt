@@ -7,10 +7,9 @@ import java.time.LocalDateTime
 
 @Repository
 interface ScheduleRepository : MongoRepository<ScheduleEntity, String> {
-
     fun findByServiceIdAndServiceDateBetween(
         serviceId: String,
         startDate: LocalDateTime,
-        endDate: LocalDateTime
+        endDate: LocalDateTime,
     ): List<ScheduleEntity>
 }

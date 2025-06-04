@@ -4,8 +4,8 @@ import inzynierka.myhotelassistant.controllers.AuthController
 import inzynierka.myhotelassistant.controllers.user.AddUserController
 import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserRequest
 import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserResponse
-import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
+import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.RegistrationCode
 import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
@@ -35,8 +35,9 @@ class UserService(
     }
 
     override fun loadUserByUsername(username: String): UserDetails {
-        val user = userRepository.findByUsername(username)
-            ?: throw UsernameNotFoundException("User with username $username not found")
+        val user =
+            userRepository.findByUsername(username)
+                ?: throw UsernameNotFoundException("User with username $username not found")
         return User
             .builder()
             .username(user.username)

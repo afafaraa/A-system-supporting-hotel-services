@@ -16,7 +16,8 @@ class ScheduleService(
     private val scheduleRepository: ScheduleRepository,
 ) {
     fun findByIdOrThrow(id: String): ScheduleEntity =
-        scheduleRepository.findById(id)
+        scheduleRepository
+            .findById(id)
             .orElseThrow { EntityNotFoundException("Schedule not found") }
 
     fun findScheduleForCurrentWeekById(
@@ -35,7 +36,7 @@ class ScheduleService(
         return scheduleRepository.findByServiceIdAndServiceDateBetween(
             serviceId = id,
             startDate = monday.atStartOfDay(),
-            endDate = sunday.atTime(23, 59, 59)
+            endDate = sunday.atTime(23, 59, 59),
         )
     }
 

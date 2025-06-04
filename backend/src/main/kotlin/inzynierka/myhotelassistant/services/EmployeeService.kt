@@ -1,9 +1,9 @@
 package inzynierka.myhotelassistant.services
 
 import inzynierka.myhotelassistant.controllers.user.EmployeeController
+import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidRoleNameException
 import inzynierka.myhotelassistant.exceptions.HttpException.UserAlreadyExistsException
-import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.Role.Companion.employeeRoles
 import inzynierka.myhotelassistant.models.user.UserEntity
@@ -20,10 +20,13 @@ class EmployeeService(
     private val passwordEncoder: PasswordEncoder,
 ) {
     fun findByIdOrThrow(id: String): UserEntity {
-        val user = userRepository.findById(id)
-            .orElseThrow { EntityNotFoundException("Employee with id '$id' was not found") }
-        if (user.role !in Role.employeeRoles)
+        val user =
+            userRepository
+                .findById(id)
+                .orElseThrow { EntityNotFoundException("Employee with id '$id' was not found") }
+        if (user.role !in Role.employeeRoles) {
             throw EntityNotFoundException("User with id '$id' is not an employee")
+        }
         return user
     }
 

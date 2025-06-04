@@ -21,7 +21,8 @@ class ServiceService(
     fun findById(id: String): Optional<ServiceEntity> = serviceRepository.findById(id)
 
     fun findByIdOrThrow(id: String): ServiceEntity =
-        serviceRepository.findById(id)
+        serviceRepository
+            .findById(id)
             .orElseThrow { EntityNotFoundException("Service not found") }
 
     fun findByName(name: String): ServiceEntity? =
