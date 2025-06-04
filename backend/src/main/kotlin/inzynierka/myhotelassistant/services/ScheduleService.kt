@@ -1,55 +1,47 @@
 package inzynierka.myhotelassistant.services
 
+import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
+import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
-import java.time.Instant
-import java.time.ZoneId
-import java.time.temporal.ChronoUnit
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.time.temporal.TemporalAdjusters
 
 @Service
 class ScheduleService(
     private val scheduleRepository: ScheduleRepository,
 ) {
-    fun findAll(): List<ScheduleEntity> = scheduleRepository.findAll()
-
-    fun findById(id: String): ScheduleEntity? {
-        val schedule = scheduleRepository.findById(id)
-        return if (schedule.isPresent) {
-            schedule.get()
-        } else {
-            null
-        }
-    }
+    fun findByIdOrThrow(id: String): ScheduleEntity =
+        scheduleRepository.findById(id)
+            .orElseThrow { EntityNotFoundException("Schedule not found") }
 
     fun findScheduleForCurrentWeekById(
         id: String,
-        date: Instant,
+        date: String,
     ): List<ScheduleEntity> {
-        val endOfWeek =
-            date
-                .atZone(ZoneId.systemDefault())
-                .with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
-                .truncatedTo(ChronoUnit.DAYS)
-                .toInstant()
-                .plus(1, ChronoUnit.DAYS)
+        var parsedDate: LocalDate
+        try {
+            parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        } catch (_: DateTimeParseException) {
+            throw InvalidArgumentException("Invalid date format. Expected format is 'yyyy-MM-dd'.")
+        }
 
-        val startOfWeek =
-            endOfWeek
-                .minus(6, ChronoUnit.DAYS)
+        val (monday, sunday) = weekBounds(parsedDate)
 
-        return this.scheduleRepository
-            .findAll()
-            .filter {
-                it.serviceId == id
-            }.filter {
-                val serviceDate = it.serviceDate.truncatedTo(ChronoUnit.DAYS)
-                val isInRange =
-                    serviceDate >= startOfWeek.truncatedTo(ChronoUnit.DAYS) && serviceDate < endOfWeek.truncatedTo(ChronoUnit.DAYS)
+        return scheduleRepository.findByServiceIdAndServiceDateBetween(
+            serviceId = id,
+            startDate = monday.atStartOfDay(),
+            endDate = sunday.atTime(23, 59, 59)
+        )
+    }
 
-                isInRange
-            }
+    private fun weekBounds(day: LocalDate): Pair<LocalDate, LocalDate> {
+        val monday = day.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+        val sunday = day.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
+        return monday to sunday
     }
 }

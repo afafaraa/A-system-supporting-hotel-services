@@ -11,6 +11,8 @@ enum class Role {
     ;
 
     companion object {
+        val employeeRoles = listOf(EMPLOYEE, RECEPTIONIST, MANAGER)
+
         fun convertFromString(role: String): Role {
             try {
                 return valueOf(role)

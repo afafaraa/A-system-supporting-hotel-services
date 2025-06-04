@@ -1,5 +1,6 @@
 package inzynierka.myhotelassistant.services
 
+import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.repositories.ServiceRepository
 import org.springframework.data.domain.Pageable
@@ -18,6 +19,10 @@ class ServiceService(
     fun findAll(): List<ServiceEntity> = serviceRepository.findAll()
 
     fun findById(id: String): Optional<ServiceEntity> = serviceRepository.findById(id)
+
+    fun findByIdOrThrow(id: String): ServiceEntity =
+        serviceRepository.findById(id)
+            .orElseThrow { EntityNotFoundException("Service not found") }
 
     fun findByName(name: String): ServiceEntity? =
         serviceRepository

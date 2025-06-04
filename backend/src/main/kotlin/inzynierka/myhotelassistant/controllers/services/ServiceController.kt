@@ -28,13 +28,5 @@ class ServiceController(
 
     @GetMapping("/one/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun getServiceById(
-        @PathVariable id: String,
-    ): ServiceEntity? {
-        val service = serviceService.findById(id)
-        if (service.isPresent) {
-            return service.get()
-        }
-        return null
-    }
+    fun getServiceById(@PathVariable id: String) = serviceService.findByIdOrThrow(id)
 }

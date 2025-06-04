@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import java.time.Instant
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/schedule")
@@ -26,7 +26,7 @@ class ScheduleController(
         val employeeFullName: String,
         val imageUrl: String,
         val price: Double,
-        val datetime: Instant,
+        val datetime: LocalDateTime,
     )
 
     @GetMapping("/get/week/id/{id}")
@@ -34,21 +34,16 @@ class ScheduleController(
     fun getScheduleByServiceIdForWeek(
         @PathVariable id: String,
         @RequestParam date: String,
-    ): List<ScheduleEntity> = scheduleService.findScheduleForCurrentWeekById(id, Instant.parse(date))
+    ): List<ScheduleEntity> = scheduleService.findScheduleForCurrentWeekById(id, date)
 
     @GetMapping("/get/cart/id/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun getScheduleForCartById(
         @PathVariable id: String,
     ): ScheduleForCartResponse? {
-        val scheduleItem = scheduleService.findById(id)
-        if (scheduleItem == null) {
-            return null
-        }
-        val assignedEmployee = employeeService.findById(scheduleItem.employeeId)
-        if (assignedEmployee == null) {
-            return null
-        }
+        val scheduleItem = scheduleService.findByIdOrThrow(id)
+        if (scheduleItem.employeeId == null) return null
+        val assignedEmployee = employeeService.findByIdOrThrow(scheduleItem.employeeId!!)
         val serviceOpt = serviceService.findById(scheduleItem.serviceId)
         if (!serviceOpt.isPresent) {
             return null
@@ -57,7 +52,7 @@ class ScheduleController(
         return ScheduleForCartResponse(
             id,
             service.name,
-            scheduleItem.employeeId,
+            scheduleItem.employeeId!!,
             assignedEmployee.name + " " + assignedEmployee.surname,
             service.image ?: "",
             service.price,
