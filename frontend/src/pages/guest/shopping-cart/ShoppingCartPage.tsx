@@ -4,7 +4,6 @@ import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import ShoppingCartItem from "./ShoppingCartItem.tsx";
-import {useTheme} from '@mui/material'
 import {useSelector} from "react-redux";
 import {selectUser} from "../../../redux/slices/userSlice.ts";
 
@@ -21,7 +20,6 @@ export type CartProps = {
 function ShoppingCartPage() {
   const navigate = useNavigate();
   const [cart, setCart] = useState<CartProps[]>([]);
-  const theme = useTheme();
   const user = useSelector(selectUser);
 
   useEffect(() => {
@@ -75,7 +73,7 @@ function ShoppingCartPage() {
       }}>
         <Grid sx={{gap: 2,}} container spacing={{xs: 2, md: 3}} columns={{sm: 1, md: 2}}>
           <Grid sx={{backgroundColor: 'white', padding: '30px 25px'}} size={1}>
-            <Button sx={{backgroundColor: theme.palette.secondary.main, marginBottom: '5px'}} onClick={clearCart}>Unun wszystko</Button>
+            <Button variant="contained" sx={{mb: '5px'}} onClick={clearCart}>Usuń wszystko</Button>
             {cart.length > 0 ? cart.map((item, index) => (
               <ShoppingCartItem index={index} item={item} fetchCartData={fetchCartData}/>
             )) : <p>No items in cart</p>}
@@ -83,13 +81,13 @@ function ShoppingCartPage() {
           <Grid sx={{display: 'flex', flexDirection: 'column', gap: '15px', }} size={1}>
             <div style={{display: 'flex', flexDirection: 'column', backgroundColor: 'white', padding: '25px', gap: '10px'}}>
               <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                <Typography variant='h6'>Wartosc koszyka:</Typography>
+                <Typography variant='body1'>Wartość koszyka:</Typography>
                 <div style={{fontWeight: '700'}}>{cart.length > 0 ? (
                   cart.reduce((acc, curr) => acc + curr.price, 0).toFixed(2)
                 ) : (0)} $</div>
               </div>
-              <Button onClick={orderServices} sx={{background: theme.palette.secondary.main}}>Zaplac</Button>
-              <Button onClick={orderServices} sx={{background: theme.palette.secondary.main}}>Dodaj do rachunku</Button>
+              <Button onClick={orderServices} variant="contained">Zaplać</Button>
+              <Button onClick={orderServices} variant="contained">Dodaj do rachunku</Button>
             </div>
             <Button onClick={() => navigate("/services/available")} sx={{backgroundColor: 'white'}}>Kontynuuj zakupy</Button>
           </Grid>

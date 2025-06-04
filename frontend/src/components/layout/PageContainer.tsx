@@ -9,7 +9,7 @@ interface PageContainerProps {
 function PageContainer({ children, title }: PropsWithChildren<PageContainerProps>) {
 
   return (
-    <Box width='100%' height='100%' mx={{xs: '2%', sm: '4%', md: '6%', lg: '8%', xl: '10%'}} my='2rem'
+    <Box width='100%' height='100%' mx={{xs: 0, sm: '1%', md: '2%', lg: '3%', xl: '4%'}} my='2rem'
          sx={{border: '0px dashed grey', transition: 'margin 0.3s ease-in-out'}}>
       <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4}}>
         <Typography variant="h4">{title}</Typography>
