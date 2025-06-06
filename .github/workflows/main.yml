@@ -63,8 +63,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4.0.0
         with:
-          gradle-wrapper-path: backend/gradlew
-          gradle-home-cache-invalidation: true
+          cache-cleanup: true
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
