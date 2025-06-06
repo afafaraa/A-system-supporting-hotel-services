@@ -52,14 +52,13 @@ function ShoppingCartPage() {
   const orderServices = async () => {
     clearCart();
     fetchCartData();
-    try {
-      for (const item of cart) {
-        const response = await axiosAuthApi.post(`/guest/order/add/${item.id}/${user?.username}`);
-        console.log(response);
-      }
-
-    } catch(e) {
-      console.error(e);
+    if (cart.length === 0) {
+      console.log("Koszyk jest pusty");
+    } else {
+      const payload = {username: user?.username, scheduleIds: cart.map(item => item.id)};
+      axiosAuthApi.post(`/guest/order`, payload)
+        .then(res => console.log(res))
+        .catch(err => console.error(err));
     }
   }
 

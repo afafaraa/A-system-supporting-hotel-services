@@ -1,7 +1,8 @@
-import {Box, Grid} from "@mui/material";
+import {Grid} from "@mui/material";
 import AvailableServiceCard, {ServiceProps} from "./AvailableServiceCard.tsx";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import {useEffect, useState} from "react";
+import AuthenticatedHeader from "../../../components/layout/AuthenticatedHeader.tsx";
 
 function AvailableServicesPage() {
   const [availableServices, setAvailableServices] = useState<ServiceProps[]>([]);
@@ -32,13 +33,7 @@ function AvailableServicesPage() {
   }
   return (
     <div style={{width: '100%'}}>
-      <header style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%'}}>
-        <h1>Available services</h1>
-        <Box sx={{display: {xs: 'none',md: 'flex'}, alignItems: 'center', gap: '10px'}}>
-          <h3>MyHotelAssistant</h3>
-          <div>Icon</div>
-        </Box>
-      </header>
+      <AuthenticatedHeader title={"Available services"}/>
       <main style={{marginTop: '20px', }}>
         <Grid sx={{gap: 2}} container spacing={{xs: 2, md: 3}} columns={{ xs: 1, sm: 2, md: 4}}>
           {availableServices.map((service, index) => (

@@ -6,7 +6,7 @@ function AuthenticatedHeader({title}: {title: string}) {
       <h1>{title}</h1>
       <Box sx={{display: {xs: 'none', md: 'flex'}, alignItems: 'center', gap: '10px'}}>
         <h3>MyHotelAssistant</h3>
-        <div>Icon</div>
+        <img alt="icon" src="/logo.png" width={32}/>
       </Box>
     </header>
 

@@ -24,6 +24,7 @@ function RequestedServicesPage() {
     try {
       if (user) {
         const response = await axiosAuthApi.get(`/guest/order/get/all/pending/${user.username}`);
+        console.log(response.data);
         setServices(response.data);
       }
     } catch (e) {
