@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component
 class AuthHeaderDataExtractor(
     private val jwtDecoder: JwtDecoder,
 ) {
-
     data class JwtData(
         val username: String,
         val role: String,

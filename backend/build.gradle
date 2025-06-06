@@ -1,3 +1,5 @@
+import com.diffplug.spotless.LineEnding
+
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.9.25'
     id 'org.jetbrains.kotlin.plugin.spring' version '1.9.25'
@@ -30,6 +32,7 @@ spotless {
         target 'src/**/*.kt'
         ktlint()
         endWithNewline()
+        lineEndings = LineEnding.WINDOWS
     }
 }
 

@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.RestController
 class GetUserController(
     private val userService: UserService,
 ) {
-
     @GetMapping
-    fun getCurrentUser(@RequestHeader("Authorization") authHeader: String): UserEntity {
-        return userService.getCurrentUser(authHeader)
-    }
+    fun getCurrentUser(
+        @RequestHeader("Authorization") authHeader: String,
+    ): UserEntity = userService.getCurrentUser(authHeader)
 }
