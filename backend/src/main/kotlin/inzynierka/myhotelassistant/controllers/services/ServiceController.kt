@@ -5,6 +5,7 @@ import inzynierka.myhotelassistant.services.ServiceService
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -23,5 +24,17 @@ class ServiceController(
     ): List<ServiceEntity> {
         val pageable = PageRequest.of(page, size)
         return serviceService.getAllAvailable(pageable)
+    }
+
+    @GetMapping("/one/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun getServiceById(
+        @PathVariable id: String,
+    ): ServiceEntity? {
+        val service = serviceService.findById(id)
+        if (service.isPresent) {
+            return service.get()
+        }
+        return null
     }
 }

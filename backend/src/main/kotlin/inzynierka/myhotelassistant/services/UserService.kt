@@ -27,6 +27,16 @@ class UserService(
     private val codeService: RegistrationCodeService,
     private val passwordEncoder: PasswordEncoder,
 ) : UserDetailsService {
+    fun findByUsername(username: String): UserEntity? = userRepository.findByUsername(username)
+
+    fun findById(id: String): UserEntity? {
+        val user = userRepository.findById(id)
+        if (user.isPresent) {
+            return user.get()
+        }
+        return null
+    }
+
     override fun loadUserByUsername(username: String): UserDetails {
         val user = findByUsernameOrThrow(username)
         return User

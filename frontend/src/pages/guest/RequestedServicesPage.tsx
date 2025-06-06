@@ -1,6 +1,43 @@
+import {axiosAuthApi} from "../../middleware/axiosApi.ts";
+import {useSelector} from "react-redux";
+import {selectUser} from "../../redux/slices/userSlice.ts";
+import {useEffect, useState} from "react";
+import AuthenticatedHeader from "../../components/layout/AuthenticatedHeader.tsx";
+
+type RequestedServiceProps = {
+  id: string;
+  scheduleId: string;
+  orderDate: string;
+  orderForDate: string;
+  status: string;
+};
+
 function RequestedServicesPage() {
+  const user = useSelector(selectUser);
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    fetchRequestedServices();
+  }, [])
+
+  const fetchRequestedServices = async () => {
+    try {
+      if (user) {
+        const response = await axiosAuthApi.get(`/guest/order/get/all/pending/${user.username}`);
+        setServices(response.data);
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   return (
-    <div>Requested Services</div>
+    <div style={{width: '100%'}}>
+      <AuthenticatedHeader title={"Oczekujące usługi"}/>
+      {services.length > 0 && services.map((service: RequestedServiceProps, index) => (
+        <div key={index}>{service.id}</div>
+      ))}
+    </div>
   )
 }
 

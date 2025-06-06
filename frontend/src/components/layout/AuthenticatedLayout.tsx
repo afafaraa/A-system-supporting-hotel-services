@@ -3,8 +3,9 @@ import {Container} from "@mui/material";
 import Navbar from "./Navbar.tsx";
 
 function AuthenticatedLayout() {
+
   return (
-    <Container disableGutters maxWidth={false} sx={{height: "100vh"}}>
+    <Container disableGutters maxWidth={false} sx={{height: "100vh", paddingX: '30px'}}>
       <Navbar>
         <Outlet />
       </Navbar>

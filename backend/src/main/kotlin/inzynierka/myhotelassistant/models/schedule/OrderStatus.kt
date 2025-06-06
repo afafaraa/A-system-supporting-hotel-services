@@ -1,4 +1,4 @@
-package inzynierka.myhotelassistant.models.order
+package inzynierka.myhotelassistant.models.schedule
 
 enum class OrderStatus {
     PENDING,

@@ -15,5 +15,6 @@ data class ServiceEntity(
     var rating: MutableList<Int>,
     var duration: Duration,
     var maxAvailable: Int? = null,
-    var weekday: WeekdayHour,
+    var weekday: MutableList<WeekdayHour> = mutableListOf(),
+    var image: String? = null,
 )

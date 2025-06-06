@@ -1,12 +1,20 @@
 {
   "date": {
     "locale": "en-US",
-    "shortWeekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    "shortWeekdays": [
+      "Sun",
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat"
+    ],
     "separator": ","
   },
   "notifications": {
     "title": "Notifications",
-    "tooltip" : {
+    "tooltip": {
       "selectAll": "Select all",
       "markAsRead": "Mark as read",
       "delete": "Delete"

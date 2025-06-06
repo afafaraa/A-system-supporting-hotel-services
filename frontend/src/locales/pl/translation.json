@@ -1,12 +1,20 @@
 {
   "date": {
     "locale": "pl-PL",
-    "shortWeekdays": ["Nd.", "Pn.", "Wt.", "Śr.", "Czw.", "Pt.", "So."],
+    "shortWeekdays": [
+      "Nd.",
+      "Pn.",
+      "Wt.",
+      "Śr.",
+      "Czw.",
+      "Pt.",
+      "So."
+    ],
     "separator": ""
   },
   "notifications": {
     "title": "Powiadomienia",
-    "tooltip" : {
+    "tooltip": {
       "selectAll": "Wybierz wszystkie",
       "markAsRead": "Oznacz jako przeczytane",
       "delete": "Usuń"
