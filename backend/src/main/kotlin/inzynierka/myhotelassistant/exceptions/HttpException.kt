@@ -10,7 +10,7 @@ sealed class HttpException(
         message: String,
     ) : HttpException(HttpStatus.CONFLICT, message)
 
-    class UserNotFoundException(
+    class EntityNotFoundException(
         message: String,
     ) : HttpException(HttpStatus.NOT_FOUND, message)
 

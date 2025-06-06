@@ -30,11 +30,5 @@ class ServiceController(
     @ResponseStatus(HttpStatus.OK)
     fun getServiceById(
         @PathVariable id: String,
-    ): ServiceEntity? {
-        val service = serviceService.findById(id)
-        if (service.isPresent) {
-            return service.get()
-        }
-        return null
-    }
+    ) = serviceService.findByIdOrThrow(id)
 }

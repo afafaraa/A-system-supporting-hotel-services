@@ -14,14 +14,14 @@ const StarRating: React.FC<StarRatingProps> = ({ rating, outOf = 5 }) => {
     return total / rating.length;
   }
 
+  const ratingAvg = calcRating();
   for (let i = 1; i <= outOf; i++) {
-    const ratingAvg = calcRating();
     if (i <= ratingAvg) {
-      stars.push(<span key={i}>★</span>); // filled star
+      stars.push(<span key={i}>★</span>);
     } else if (i - ratingAvg < 1) {
-      stars.push(<span key={i}>☆</span>); // could replace with half star if needed
+      stars.push(<span key={i}>⯪</span>);
     } else {
-      stars.push(<span key={i}>☆</span>); // empty star
+      stars.push(<span key={i}>☆</span>);
     }
   }
 

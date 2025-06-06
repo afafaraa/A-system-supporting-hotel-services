@@ -18,13 +18,13 @@ import inzynierka.myhotelassistant.services.ServiceService
 import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
+import org.springframework.data.domain.Pageable
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 import kotlin.collections.forEach
@@ -203,27 +203,20 @@ class DatabaseSeeder(
     fun addSchedule() {
         val services = serviceService.findAll()
         val today = LocalDate.now()
-        val zoneId = ZoneId.systemDefault()
+        val allEmployees = employeeService.getAllEmployees(Pageable.unpaged())
 
         services.forEach { service ->
             service.weekday.forEach { weekdayHour ->
                 val targetDate = today.with(TemporalAdjusters.nextOrSame(weekdayHour.day))
                 val dateTime = targetDate.atTime(weekdayHour.startHour, 0)
-                val instant = dateTime.atZone(zoneId).toInstant()
 
                 if (service.id != null) {
                     val schedule =
                         ScheduleEntity(
                             serviceId = service.id,
-                            serviceDate = instant,
+                            serviceDate = dateTime,
                             weekday = weekdayHour.day,
-                            active = true,
-                            employeeId =
-                                userRepo
-                                    .findAll()
-                                    .filter { it.role == Role.EMPLOYEE }
-                                    .random()
-                                    .id as String,
+                            employeeId = allEmployees.random().id,
                             isOrdered = false,
                             guestId = null,
                         )

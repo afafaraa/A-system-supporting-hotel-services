@@ -27,6 +27,7 @@ function NotificationsPage() {
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const { t } = useTranslation();
+  const tc = (key: string) => t(`pages.notifications.${key}`);
 
   useEffect(() => {
     if (!user) return;
@@ -118,7 +119,7 @@ function NotificationsPage() {
   }
 
   return (
-    <PageContainer title={t('notifications.title')}>
+    <PageContainer title={tc("title")}>
       {error &&
           <Alert severity="error" sx={{mb: 3, border: '1px solid red'}}>{error}.</Alert>
       }
@@ -126,19 +127,19 @@ function NotificationsPage() {
       <List sx={{boxShadow: 10, borderRadius: 5, overflow: 'hidden'}} disablePadding>
         <ListSubheader sx={{display: 'flex', p: 0.5,
           backgroundColor: 'background.default', alignItems: 'center', '& svg': {m: 1,}}}>
-          <Tooltip title={t('notifications.tooltip.selectAll')} arrow>
+          <Tooltip title={tc("tooltip.selectAll")} arrow>
             <Checkbox checked={selected.size === notifications.length}
                       indeterminate={selected.size > 0 && selected.size < notifications.length}
                       onChange={handleAllToggle}
             />
           </Tooltip>
           <Divider orientation="vertical" flexItem sx={{mx: 1}}/>
-          <Tooltip title={t('notifications.tooltip.markAsRead')} arrow>
+          <Tooltip title={tc("tooltip.markAsRead")} arrow>
             <span><IconButton aria-label="mark as read" disabled={selected.size === 0} onClick={markAsRead}>
               <MarkEmailReadIcon/>
             </IconButton></span>
           </Tooltip>
-          <Tooltip title={t('notifications.tooltip.delete')} arrow>
+          <Tooltip title={tc("tooltip.delete")} arrow>
             <span><IconButton aria-label="delete" color='error' disabled={selected.size === 0} onClick={deleteSelected}>
               <DeleteForeverIcon/>
             </IconButton></span>
@@ -175,7 +176,7 @@ function NotificationsPage() {
       </List>
       {notifications.length === 0 &&
           <Box sx={{p: 4}}>
-              <Typography variant="body1" align="center">{t('notifications.empty')}</Typography>
+              <Typography variant="body1" align="center">{tc("empty")}</Typography>
           </Box>
       }
     </PageContainer>

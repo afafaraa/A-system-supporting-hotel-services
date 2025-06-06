@@ -116,10 +116,10 @@ class EmployeeServiceIntegrationTest {
 
     @Test
     fun `should throw when managing non-existent employee`() {
-        assertThrows(HttpException.UserNotFoundException::class.java) {
+        assertThrows(HttpException.EntityNotFoundException::class.java) {
             employeeService.changeRole("non.existing.user", "MANAGER")
         }
-        assertThrows(HttpException.UserNotFoundException::class.java) {
+        assertThrows(HttpException.EntityNotFoundException::class.java) {
             employeeService.changeRole("non.existing.user", "EMPLOYEE")
         }
     }
@@ -159,7 +159,7 @@ class EmployeeServiceIntegrationTest {
 
     @Test
     fun `should throw when deleting non-existing employee`() {
-        assertThrows(HttpException.UserNotFoundException::class.java) {
+        assertThrows(HttpException.EntityNotFoundException::class.java) {
             employeeService.deleteEmployee("non.existing.user")
         }
     }

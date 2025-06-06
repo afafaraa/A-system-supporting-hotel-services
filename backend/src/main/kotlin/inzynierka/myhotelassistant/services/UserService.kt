@@ -4,8 +4,8 @@ import inzynierka.myhotelassistant.controllers.AuthController
 import inzynierka.myhotelassistant.controllers.user.AddUserController
 import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserRequest
 import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserResponse
+import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
-import inzynierka.myhotelassistant.exceptions.HttpException.UserNotFoundException
 import inzynierka.myhotelassistant.models.RegistrationCode
 import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
@@ -15,11 +15,13 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.security.MessageDigest
 import java.time.Instant
 import java.time.format.DateTimeParseException
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class UserService(
@@ -27,18 +29,15 @@ class UserService(
     private val codeService: RegistrationCodeService,
     private val passwordEncoder: PasswordEncoder,
 ) : UserDetailsService {
-    fun findByUsername(username: String): UserEntity? = userRepository.findByUsername(username)
-
     fun findById(id: String): UserEntity? {
         val user = userRepository.findById(id)
-        if (user.isPresent) {
-            return user.get()
-        }
-        return null
+        return user.getOrNull()
     }
 
     override fun loadUserByUsername(username: String): UserDetails {
-        val user = findByUsernameOrThrow(username)
+        val user =
+            userRepository.findByUsername(username)
+                ?: throw UsernameNotFoundException("User with username $username not found")
         return User
             .builder()
             .username(user.username)
@@ -51,11 +50,11 @@ class UserService(
 
     fun findByEmailOrThrow(email: String): UserEntity =
         userRepository.findByEmail(email)
-            ?: throw UserNotFoundException("User with given email was not found")
+            ?: throw EntityNotFoundException("User with given email was not found")
 
     fun findByUsernameOrThrow(username: String): UserEntity =
         userRepository.findByUsername(username)
-            ?: throw UserNotFoundException("User with given username was not found")
+            ?: throw EntityNotFoundException("User with given username was not found")
 
     fun changePassword(
         email: String,
@@ -118,7 +117,7 @@ class UserService(
 
     fun completeRegistration(req: AuthController.CompleteRegistrationRequest) {
         val rc: RegistrationCode = codeService.validateCode(req.code)
-        val user = userRepository.findByIdOrNull(rc.userId) ?: throw UserNotFoundException("User not found")
+        val user = userRepository.findByIdOrNull(rc.userId) ?: throw EntityNotFoundException("User not found")
         user.username = req.username
         user.password = passwordEncoder.encode(req.password)
         userRepository.save(user)

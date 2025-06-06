@@ -1,24 +1,26 @@
 {
   "date": {
     "locale": "en-US",
-    "shortWeekdays": [
-      "Sun",
-      "Mon",
-      "Tue",
-      "Wed",
-      "Thu",
-      "Fri",
-      "Sat"
-    ],
+    "shortWeekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
     "separator": ","
   },
-  "notifications": {
-    "title": "Notifications",
-    "tooltip": {
-      "selectAll": "Select all",
-      "markAsRead": "Mark as read",
-      "delete": "Delete"
+  "pages": {
+    "login": {
+      "title": "Login Page",
+      "username": "Username",
+      "password": "Password",
+      "loginButton": "Login",
+      "resetPassword": "Click to reset password",
+      "registerWithCode": "Click to register with code"
     },
-    "empty": "No notifications available."
+    "notifications": {
+      "title": "Notifications",
+      "tooltip": {
+        "selectAll": "Select all",
+        "markAsRead": "Mark as read",
+        "delete": "Delete"
+      },
+      "empty": "No notifications available."
+    }
   }
 }

@@ -1,10 +1,11 @@
 package inzynierka.myhotelassistant.services
 
 import inzynierka.myhotelassistant.controllers.user.EmployeeController
+import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidRoleNameException
 import inzynierka.myhotelassistant.exceptions.HttpException.UserAlreadyExistsException
-import inzynierka.myhotelassistant.exceptions.HttpException.UserNotFoundException
 import inzynierka.myhotelassistant.models.user.Role
+import inzynierka.myhotelassistant.models.user.Role.Companion.employeeRoles
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
 import org.springframework.data.domain.Pageable
@@ -18,15 +19,15 @@ class EmployeeService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
 ) {
-    private val employeeRoles = listOf(Role.EMPLOYEE, Role.RECEPTIONIST, Role.MANAGER)
-
-    fun findById(id: String): UserEntity? {
-        val opt = userRepository.findById(id)
-        val user = opt.get()
-        if (user.role == Role.EMPLOYEE) {
-            return user
+    fun findByIdOrThrow(id: String): UserEntity {
+        val user =
+            userRepository
+                .findById(id)
+                .orElseThrow { EntityNotFoundException("Employee with id '$id' was not found") }
+        if (user.role !in Role.employeeRoles) {
+            throw EntityNotFoundException("User with id '$id' is not an employee")
         }
-        return null
+        return user
     }
 
     fun getAllEmployees(pageable: Pageable): List<UserEntity> = userRepository.findByRoleIn(employeeRoles, pageable).content
@@ -50,13 +51,13 @@ class EmployeeService(
         return userRepository.save(employee)
     }
 
-    @Throws(UserNotFoundException::class)
+    @Throws(EntityNotFoundException::class)
     fun findByUsernameOrThrow(username: String): UserEntity =
         userRepository.findByUsername(username)
-            ?: throw UserNotFoundException("User with username '$username' was not found")
+            ?: throw EntityNotFoundException("User with username '$username' was not found")
 
     @Transactional
-    @Throws(UserNotFoundException::class)
+    @Throws(EntityNotFoundException::class)
     fun deleteEmployee(username: String) {
         // TODO: implement checking for active services for this employee
         val foundUser = findByUsernameOrThrow(username)
@@ -64,7 +65,7 @@ class EmployeeService(
     }
 
     @Transactional
-    @Throws(UserNotFoundException::class, InvalidRoleNameException::class)
+    @Throws(EntityNotFoundException::class, InvalidRoleNameException::class)
     fun changeRole(
         username: String,
         role: String,

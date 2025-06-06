@@ -76,7 +76,8 @@ const publicPaths = [
   '/reset-password',
 ];
 
-const isPublicPath = publicPaths.some(path => location.pathname.startsWith(path));
+const isPublicPath = (path: string) =>
+  publicPaths.some(publicPath => path.startsWith(publicPath));
 
 function AppInitializer({ children }: PropsWithChildren) {
   const dispatch = useDispatch();
@@ -86,7 +87,7 @@ function AppInitializer({ children }: PropsWithChildren) {
   useEffect(() => {
       initializeUserFromLocalStorage(dispatch)
         .then(isSuccessful => {
-          if (!isSuccessful && !isPublicPath) navigate("/login");
+          if (!isSuccessful && !isPublicPath(location.pathname)) navigate("/login");
         })
         .finally(() => setIsInitialized(true));
     }, [dispatch, navigate]
