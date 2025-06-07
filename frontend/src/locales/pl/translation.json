@@ -9,13 +9,17 @@
     "availableServices": "Dostępne usługi",
     "shoppingCart": "Koszyk",
     "requestedServices": "Zamówione usługi",
-    "PastServices": "Przeszłe usługi",
+    "pastServices": "Przeszłe usługi",
     "mySchedule": "Mój harmonogram",
     "notifications": "Powiadomienia",
     "personnel": "Personel",
     "services": "Usługi",
     "stats": "Statystyki",
     "logout": "Wyloguj się"
+  },
+  "schedule_table": {
+    "previousWeek": "Poprzedni tydzień",
+    "nextWeek": "Następny tydzień"
   },
   "pages": {
     "login": {
@@ -35,7 +39,7 @@
       },
       "empty": "Brak dostępnych powiadomień."
     },
-    "home":{
+    "home": {
       "title": "Moja strona główna",
       "loggedUser": "Zalogowany użytkownik",
       "username": "Nazwa użytkownika",
@@ -47,6 +51,12 @@
       "roomNumber": "Numer pokoju",
       "checkInDate": "Data zameldowania",
       "checkOutDate": "Data wymeldowania"
+    },
+    "my_schedule": {
+      "title": "Mój harmonogram",
+      "current": "Moje",
+      "unassigned": "Nieprzypisane",
+      "details": "Szczegóły"
     }
   }
 }

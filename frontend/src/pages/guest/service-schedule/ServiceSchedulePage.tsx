@@ -50,9 +50,7 @@ function ServiceSchedulePage (){
             </div>
           </Grid>
         </Grid>
-
       </main>
-
     </div>
   )
 }

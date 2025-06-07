@@ -6,12 +6,15 @@ import {Box, Button, Tab, Tabs, Typography} from "@mui/material";
 import {addWeeks, startOfWeek, subWeeks} from "date-fns";
 import {useNavigate} from "react-router-dom";
 import {Schedule, ScheduleCard, ScheduleTable} from "../../components/layout/ScheduleTable.tsx";
+import {useTranslation} from "react-i18next";
 
 function EmployeeSchedulePage() {
   const navigate = useNavigate();
   const user = useSelector(selectUser);
   const [tab, setTab] = useState(0);
   const [currentWeekStart, setCurrentWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
+  const { t } = useTranslation();
+  const tc = (key: string) => t(`pages.my_schedule.${key}`)
 
   const startHour = 6;
   const endHour = 22;
@@ -45,19 +48,6 @@ function EmployeeSchedulePage() {
     setCurrentWeekStart(prev => addWeeks(prev, 1));
   };
 
-  const Calendar = ({tab}: {tab: number}) => {
-    return (
-      <ScheduleTable currentWeekStart={currentWeekStart}
-                     handlePrevWeek={handlePrevWeek} handleNextWeek={handleNextWeek}
-                     startHour={startHour} endHour={endHour}>
-        <>
-          {tab === 0 && exampleShifts.map(renderShiftCard)}
-          {tab === 1 && exampleShifts2.map(renderShiftCard)}
-        </>
-      </ScheduleTable>
-    )
-  }
-
   const renderShiftCard = (shift: Schedule) => {
     return (
       <ScheduleCard key={shift.id} shift={shift} startHour={startHour}>
@@ -71,7 +61,7 @@ function EmployeeSchedulePage() {
         </Box>
         <Box mt={1} textAlign="center">
           <Button size="small" variant="outlined" onClick={() => navigate('/employee/service/' + shift.id)}>
-            Show
+            {tc("details")}
           </Button>
         </Box>
       </ScheduleCard>
@@ -79,12 +69,18 @@ function EmployeeSchedulePage() {
   }
 
   return (
-    <PageContainer title="My Schedule">
+    <PageContainer title={tc("title")}>
       <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 2 }}>
-        <Tab label="Current" />
-        <Tab label="Unassigned" />
+        <Tab label={tc("current")} />
+        <Tab label={tc("unassigned")} />
       </Tabs>
-      <Calendar tab={tab}/>
+
+      <ScheduleTable currentWeekStart={currentWeekStart}
+                     handlePrevWeek={handlePrevWeek} handleNextWeek={handleNextWeek}
+                     startHour={startHour} endHour={endHour}>
+        {tab === 0 && exampleShifts.map(renderShiftCard)}
+        {tab === 1 && exampleShifts2.map(renderShiftCard)}
+      </ScheduleTable>
     </PageContainer>
   );
 }

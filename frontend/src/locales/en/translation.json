@@ -17,6 +17,10 @@
     "stats": "Statistics",
     "logout": "Logout"
   },
+  "schedule_table": {
+    "previousWeek": "Previous week",
+    "nextWeek": "Next week"
+  },
   "pages": {
     "login": {
       "title": "Login Page",
@@ -35,7 +39,7 @@
       },
       "empty": "No notifications available."
     },
-    "home":{
+    "home": {
       "title": "My Home Page",
       "loggedUser": "Logged user",
       "username": "Username",
@@ -47,6 +51,12 @@
       "roomNumber": "Room number",
       "checkInDate": "Check-in date",
       "checkOutDate": "Check-out date"
+    },
+    "my_schedule": {
+      "title": "My schedule",
+      "current": "Current",
+      "unassigned": "Unassigned",
+      "details": "Details"
     }
   }
 }

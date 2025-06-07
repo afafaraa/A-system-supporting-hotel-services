@@ -26,7 +26,6 @@ interface WeekSwitchContainerProps {
 }
 
 export const ScheduleTable = ({children, startHour, endHour, currentWeekStart, handlePrevWeek, handleNextWeek}: ScheduleTableHeaderProps) => {
-  const { t } = useTranslation();
   const hours = Array.from({ length: (endHour - startHour) + 1 }, (_, i) => i + startHour);
 
   return (
@@ -34,7 +33,7 @@ export const ScheduleTable = ({children, startHour, endHour, currentWeekStart, h
       <WeekSwitchContainer currentWeekStart={currentWeekStart}
                            handlePrevWeek={handlePrevWeek}
                            handleNextWeek={handleNextWeek}/>
-      <WeekDayLabelsContainer shortWeekdays={t("date.shortWeekdays", { returnObjects: true }) as string[]}/>
+      <WeekDayLabelsContainer/>
       <Box
         display="grid"
         gridTemplateColumns="50px repeat(7, 1fr)"
@@ -49,22 +48,26 @@ export const ScheduleTable = ({children, startHour, endHour, currentWeekStart, h
 }
 
 const WeekSwitchContainer = ({currentWeekStart, handlePrevWeek, handleNextWeek}: WeekSwitchContainerProps) => {
+  const { t } = useTranslation();
+
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
       <Button variant="outlined" onClick={handlePrevWeek}>
-        ← Previous Week
+        ← {t("schedule_table.previousWeek")}
       </Button>
       <Typography variant="h5">
         {format(currentWeekStart, "dd.MM")} - {format(addWeeks(currentWeekStart, 1), "dd.MM")}
       </Typography>
       <Button variant="outlined" onClick={handleNextWeek}>
-        Next Week →
+        {t("schedule_table.nextWeek")} →
       </Button>
     </Box>
   );
 };
 
-const WeekDayLabelsContainer = ({shortWeekdays}: {shortWeekdays: string[]}) => {
+const WeekDayLabelsContainer = () => {
+  const { t } = useTranslation();
+  const shortWeekdays = t("date.shortWeekdays", { returnObjects: true }) as string[];
   return (
     <Box
       display="grid"
