@@ -1,5 +1,6 @@
 package inzynierka.myhotelassistant.services
 
+import inzynierka.myhotelassistant.controllers.schedule.ScheduleController
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
@@ -19,6 +20,16 @@ class ScheduleService(
         scheduleRepository
             .findById(id)
             .orElseThrow { EntityNotFoundException("Schedule not found") }
+
+    fun findById(id: String): ScheduleEntity? {
+        val it = scheduleRepository.findById(id)
+        if (it.isPresent) return it.get()
+        return null
+    }
+
+    fun save(schedule: ScheduleEntity): ScheduleEntity {
+        return scheduleRepository.save(schedule)
+    }
 
     fun findScheduleForCurrentWeekById(
         id: String,

@@ -5,10 +5,9 @@ import { ServiceProps } from "../available-services/AvailableServiceCard.tsx";
 
 type ScheduleProps = {
   id: string;
-  serviceId: string;
-  employeeId: string;
-  active: boolean;
-  serviceDate: Date;
+  employeeFullName: string;
+  isOrdered: boolean;
+  serviceDate: string;
   weekday: Weekday;
   inCart: boolean;
 };
@@ -91,7 +90,7 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
     setLoading(true);
     try {
       const response = await axiosAuthApi(`/schedule/get/week/id/${service.id}`, {
-        params: { date: weekMonday },
+        params: { date: weekMonday.toISOString().split("T")[0] },
       });
       const stringifiedItems = localStorage.getItem("CART");
       let parsedItemIds: string[] = [];
@@ -159,13 +158,17 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
         <Typography>No services available for this day.</Typography>
       ) : (
         filteredSchedule.map((item) => (
-          <div key={item.id} style={{ display: 'flex' }}>
-            <Typography sx={{ padding: '10px 15px', borderRadius: '10px', width: '70%' }}>
-              {JSON.stringify(item.id)}
-            </Typography>
-            {item.inCart ? (<Button onClick={() => removeFromCart(item)} sx={{ minWidth: 'auto', width: '50px' }}>
+          <div key={item.id} style={{ display: 'flex', gap: '5px' }}>
+            <div style={{ padding: '10px 15px', borderRadius: '5px', width: '70%', display: 'flex', justifyContent: 'space-between', background: "#ddd" }}>
+              <div>{item.employeeFullName}</div>
+              <div>
+                {String(new Date(item.serviceDate).getHours()).padStart(2, '0')}:
+                {String(new Date(item.serviceDate).getMinutes()).padStart(2, '0')}
+              </div>
+            </div>
+            {item.inCart ? (<Button onClick={() => removeFromCart(item)} sx={{ minWidth: 'auto', width: '50px', background: "#ddd"}}>
               -
-            </Button>) : (<Button onClick={() => addToCart(item)} sx={{ minWidth: 'auto', width: '50px' }}>
+            </Button>) : (<Button onClick={() => addToCart(item)} sx={{ minWidth: 'auto', width: '50px',background: "#ddd" }}>
               +
             </Button>)}
 

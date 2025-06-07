@@ -31,13 +31,16 @@ function ShoppingCartPage() {
       const cartList : CartProps[] = [];
       const items = localStorage.getItem("CART");
       if (items) {
+        console.log(items)
         const parsedItems = JSON.parse(items);
         for (const id of parsedItems) {
           const response = await axiosAuthApi.get(`/schedule/get/cart/id/${id}`)
           const cartItem: CartProps = response.data;
+          console.log(cartItem);
           cartList.push(cartItem);
         }
       }
+      console.log(cartList);
       setCart(cartList);
     } catch (e) {
       console.error(e);
@@ -75,7 +78,7 @@ function ShoppingCartPage() {
           <Grid sx={{backgroundColor: 'white', padding: '30px 25px'}} size={1}>
             <Button variant="contained" sx={{mb: '5px'}} onClick={clearCart}>Usuń wszystko</Button>
             {cart.length > 0 ? cart.map((item, index) => (
-              <ShoppingCartItem index={index} item={item} fetchCartData={fetchCartData}/>
+              <ShoppingCartItem key={index} index={index} item={item} fetchCartData={fetchCartData}/>
             )) : <p>No items in cart</p>}
           </Grid>
           <Grid sx={{display: 'flex', flexDirection: 'column', gap: '15px', }} size={1}>

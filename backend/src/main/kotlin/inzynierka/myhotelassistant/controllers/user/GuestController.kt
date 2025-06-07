@@ -5,6 +5,8 @@ import inzynierka.myhotelassistant.services.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
@@ -20,6 +22,11 @@ class GuestController(
         val surname: String,
     )
 
+    data class OrderServicesRequestBody(
+        val scheduleIdList: List<String>,
+        val userId: String,
+    )
+
     @GetMapping("/employee/get/id/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun getScheduledEmployeeNameById(
@@ -30,5 +37,18 @@ class GuestController(
             return EmployeeNameResponse(name = user.name, surname = user.surname)
         }
         return null
+    }
+
+    @PostMapping("/order/services")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun orderServicesFromSchedule(
+        @RequestBody req: OrderServicesRequestBody,
+    ) {
+        req.scheduleIdList.forEach { id ->
+            val schedule = scheduleService.findById(id)
+            schedule?.isOrdered = true
+            schedule?.guestId = req.userId
+            scheduleService.save(schedule!!)
+        }
     }
 }

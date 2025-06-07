@@ -204,6 +204,8 @@ class DatabaseSeeder(
         val services = serviceService.findAll()
         val today = LocalDate.now()
         val allEmployees = employeeService.getAllEmployees(Pageable.unpaged())
+        val schedule = scheduleRepository.findAll()
+        if (!schedule.isEmpty()) {return}
 
         services.forEach { service ->
             service.weekday.forEach { weekdayHour ->
