@@ -4,6 +4,19 @@
     "shortWeekdays": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     "separator": ","
   },
+  "navbar": {
+    "home": "Home",
+    "availableServices": "Available Services",
+    "shoppingCart": "Shopping Cart",
+    "requestedServices": "Requested Services",
+    "pastServices": "Past Services",
+    "mySchedule": "My Schedule",
+    "notifications": "Notifications",
+    "personnel": "Personnel",
+    "services": "Services",
+    "stats": "Statistics",
+    "logout": "Logout"
+  },
   "pages": {
     "login": {
       "title": "Login Page",
@@ -21,6 +34,19 @@
         "delete": "Delete"
       },
       "empty": "No notifications available."
+    },
+    "home":{
+      "title": "My Home Page",
+      "loggedUser": "Logged user",
+      "username": "Username",
+      "role": "Role",
+      "accountData": "Your account data",
+      "name": "Name",
+      "email": "Email",
+      "employeeData": "Employee data",
+      "roomNumber": "Room number",
+      "checkInDate": "Check-in date",
+      "checkOutDate": "Check-out date"
     }
   }
 }

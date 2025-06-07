@@ -4,6 +4,19 @@
     "shortWeekdays": ["Pn.", "Wt.", "Śr.", "Czw.", "Pt.", "So.", "Nd."],
     "separator": ""
   },
+  "navbar": {
+    "home": "Strona główna",
+    "availableServices": "Dostępne usługi",
+    "shoppingCart": "Koszyk",
+    "requestedServices": "Zamówione usługi",
+    "PastServices": "Przeszłe usługi",
+    "mySchedule": "Mój harmonogram",
+    "notifications": "Powiadomienia",
+    "personnel": "Personel",
+    "services": "Usługi",
+    "stats": "Statystyki",
+    "logout": "Wyloguj się"
+  },
   "pages": {
     "login": {
       "title": "Logowanie",
@@ -21,6 +34,19 @@
         "delete": "Usuń"
       },
       "empty": "Brak dostępnych powiadomień."
+    },
+    "home":{
+      "title": "Moja strona główna",
+      "loggedUser": "Zalogowany użytkownik",
+      "username": "Nazwa użytkownika",
+      "role": "Rola",
+      "accountData": "Dane konta",
+      "name": "Imię i nazwisko",
+      "email": "Email",
+      "employeeData": "Dane pracownika",
+      "roomNumber": "Numer pokoju",
+      "checkInDate": "Data zameldowania",
+      "checkOutDate": "Data wymeldowania"
     }
   }
 }

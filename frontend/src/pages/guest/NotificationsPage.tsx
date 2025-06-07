@@ -2,8 +2,10 @@ import {ChangeEvent, useEffect, useState} from "react";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
-import {Box, Checkbox, IconButton, Stack, Typography,
-  List, Tooltip, Alert, Divider, ListSubheader} from "@mui/material";
+import {
+  Box, Checkbox, IconButton, Stack, Typography,
+  List, Tooltip, Alert, Divider, ListSubheader, CircularProgress
+} from "@mui/material";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import ListItem from "@mui/material/ListItem";
@@ -22,6 +24,7 @@ interface Notification {
 }
 
 function NotificationsPage() {
+  const [isLoading, setLoading] = useState<boolean>(true)
   const user = useSelector(selectUser);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +36,7 @@ function NotificationsPage() {
     if (!user) return;
     axiosAuthApi.get<Notification[]>('/user/notifications')
       .then(res => {
+        setLoading(false)
         setNotifications(res.data)
         console.log("Response:", res);
       })
@@ -145,40 +149,55 @@ function NotificationsPage() {
             </IconButton></span>
           </Tooltip>
         </ListSubheader>
-        {notifications.map((n) => ([
-          <Divider key={`divider_${n.id}`} component="li"/>,
-          <ListItem key={n.id} sx={{
-            backgroundColor: getCardColor(n.id, n.isRead),
-            color: n.isRead ? 'text.disabled' : 'text.primary'
-          }} disablePadding>
-            <ListItemButton onClick={handleToggle(n.id)} sx={{px: 3, py: 1.5}} disableRipple>
-              <ListItemIcon>
-                <Checkbox edge="start" checked={selected.has(n.id)} tabIndex={-1} disableRipple/>
-              </ListItemIcon>
-              <ListItemText disableTypography
-                            primary={
-                              <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
-                                <Stack direction="column">
-                                  <Typography variant="h6"
-                                              fontWeight={n.isRead ? 'normal' : 'bold'}>{n.title}</Typography>
-                                  <Typography variant="body2"
-                                              fontWeight={n.isRead ? 'normal' : 'bold'}>{n.message}</Typography>
-                                </Stack>
-                                <Stack direction="column" alignItems='flex-end' sx={{textAlign: 'right', minWidth: 'fit-content'}}>
-                                  <Typography variant="body2" color="text.secondary">{getDay(n.timestamp)}</Typography>
-                                  <Typography variant="body1" color="text.primary">{getTime(n.timestamp)}</Typography>
-                                </Stack>
-                              </Stack>
-                            }/>
-            </ListItemButton>
-          </ListItem>
-        ]))}
+        { isLoading ?
+          <>
+            <Divider key={`divider_loading`} component="li"/>
+            <Box sx={{p: 4}} textAlign="center"><CircularProgress /></Box>
+          </>
+          :
+          <>
+          {notifications.length === 0 ?
+            <>
+              <Divider key={`divider_empty`} component="li"/>
+              <Box sx={{p: 4}}>
+                <Typography variant="body1" align="center">{tc("empty")}</Typography>
+              </Box>
+            </>
+            :
+            <>
+              {notifications.map((n) => ([
+                <Divider key={`divider_${n.id}`} component="li"/>,
+                <ListItem key={n.id} sx={{
+                  backgroundColor: getCardColor(n.id, n.isRead),
+                  color: n.isRead ? 'text.disabled' : 'text.primary'
+                }} disablePadding>
+                  <ListItemButton onClick={handleToggle(n.id)} sx={{px: 3, py: 1.5}} disableRipple>
+                    <ListItemIcon>
+                      <Checkbox edge="start" checked={selected.has(n.id)} tabIndex={-1} disableRipple/>
+                    </ListItemIcon>
+                    <ListItemText disableTypography
+                                  primary={
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
+                                      <Stack direction="column">
+                                        <Typography variant="h6"
+                                                    fontWeight={n.isRead ? 'normal' : 'bold'}>{n.title}</Typography>
+                                        <Typography variant="body2"
+                                                    fontWeight={n.isRead ? 'normal' : 'bold'}>{n.message}</Typography>
+                                      </Stack>
+                                      <Stack direction="column" alignItems='flex-end' sx={{textAlign: 'right', minWidth: 'fit-content'}}>
+                                        <Typography variant="body2" color="text.secondary">{getDay(n.timestamp)}</Typography>
+                                        <Typography variant="body1" color="text.primary">{getTime(n.timestamp)}</Typography>
+                                      </Stack>
+                                    </Stack>
+                                  }/>
+                  </ListItemButton>
+                </ListItem>
+              ]))}
+            </>
+          }
+          </>
+        }
       </List>
-      {notifications.length === 0 &&
-          <Box sx={{p: 4}}>
-              <Typography variant="body1" align="center">{tc("empty")}</Typography>
-          </Box>
-      }
     </PageContainer>
   )
 }
