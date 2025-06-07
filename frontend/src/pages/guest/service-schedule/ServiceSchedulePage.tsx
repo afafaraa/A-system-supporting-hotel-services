@@ -35,7 +35,7 @@ function ServiceSchedulePage (){
   return (
     <div style={{width:'100%'}}>
       <AuthenticatedHeader title={service.name} />
-      <main style={{width: '100%', backgroundColor: 'white', borderRadius: '10px', marginTop: '20px', padding: '60px 60px'}}>
+      <main style={{width: '100%', backgroundColor: 'white', borderRadius: '10px', padding: '60px 60px'}}>
         <Grid  sx={{gap: 2, }} container spacing={{xs: 2, md: 3}} columns={{ xs: 1, sm: 2}}>
           <Grid size={1}>
             <h4 style={{fontSize: '1.5em', marginBottom: '5px'}}>Najbliższe terminy</h4>

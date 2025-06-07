@@ -1,6 +1,10 @@
+import PageContainer from "../../components/layout/PageContainer.tsx";
+
 function PastServicesPage(){
   return (
-    <div>Past services</div>
+    <PageContainer title={"Past services"}>
+      Not implemented yet
+    </PageContainer>
   )
 }
 

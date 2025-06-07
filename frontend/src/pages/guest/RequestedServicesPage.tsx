@@ -2,7 +2,7 @@ import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
 import {useEffect, useState} from "react";
-import AuthenticatedHeader from "../../components/layout/AuthenticatedHeader.tsx";
+import PageContainer from "../../components/layout/PageContainer.tsx";
 
 type RequestedServiceProps = {
   id: string;
@@ -33,12 +33,17 @@ function RequestedServicesPage() {
   }
 
   return (
-    <div style={{width: '100%'}}>
-      <AuthenticatedHeader title={"Oczekujące usługi"}/>
-      {services.length > 0 && services.map((service: RequestedServiceProps, index) => (
-        <div key={index}>{service.id}</div>
-      ))}
-    </div>
+    <PageContainer title={"Oczekujące usługi"}>
+      {services.length === 0 ?
+        <p>Nie masz żadnych oczekujących usług</p>
+        :
+        <>
+          {services.length > 0 && services.map((service: RequestedServiceProps, index) => (
+            <div key={index}>{service.id}</div>
+          ))}
+        </>
+      }
+    </PageContainer>
   )
 }
 

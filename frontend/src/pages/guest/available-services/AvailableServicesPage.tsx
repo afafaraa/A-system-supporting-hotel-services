@@ -28,21 +28,22 @@ function AvailableServicesPage() {
     }
   }
 
-  if (loading) {
-    return <p>Loading...</p>
-  }
   return (
     <div style={{width: '100%'}}>
       <AuthenticatedHeader title={"Available services"}/>
-      <main style={{marginTop: '20px', }}>
-        <Grid sx={{gap: 2}} container spacing={{xs: 2, md: 3}} columns={{ xs: 1, sm: 2, md: 4}}>
-          {availableServices.map((service, index) => (
-            <Grid key={index} size={1}>
-              <AvailableServiceCard service={service}/>
-            </Grid>
-          ))}
-        </Grid>
-      </main>
+      {loading ?
+        <p>Loading...</p>
+        :
+        <main>
+          <Grid sx={{gap: 2}} container spacing={{xs: 2, md: 3}} columns={{ xs: 1, sm: 2, md: 4}}>
+            {availableServices.map((service, index) => (
+              <Grid key={index} size={1}>
+                <AvailableServiceCard service={service}/>
+              </Grid>
+            ))}
+          </Grid>
+        </main>
+      }
     </div>
   )
 }
