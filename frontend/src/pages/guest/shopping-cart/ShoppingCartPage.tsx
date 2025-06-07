@@ -52,13 +52,14 @@ function ShoppingCartPage() {
   const orderServices = async () => {
     clearCart();
     fetchCartData();
-    if (cart.length === 0) {
-      console.log("Koszyk jest pusty");
-    } else {
-      const payload = {username: user?.username, scheduleIds: cart.map(item => item.id)};
-      axiosAuthApi.post(`/guest/order`, payload)
-        .then(res => console.log(res))
-        .catch(err => console.error(err));
+    try {
+      for (const item of cart) {
+        const response = await axiosAuthApi.post(`/guest/order/add/${item.id}/${user?.username}`);
+        console.log(response);
+      }
+
+    } catch(e) {
+      console.error(e);
     }
   }
 
@@ -68,6 +69,7 @@ function ShoppingCartPage() {
       <main style={{
         width: '100%',
         borderRadius: '10px',
+        marginTop: '20px',
       }}>
         <Grid sx={{gap: 2,}} container spacing={{xs: 2, md: 3}} columns={{sm: 1, md: 2}}>
           <Grid sx={{backgroundColor: 'white', padding: '30px 25px'}} size={1}>

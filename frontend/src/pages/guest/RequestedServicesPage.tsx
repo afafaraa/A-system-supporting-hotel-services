@@ -2,7 +2,7 @@ import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
 import {useEffect, useState} from "react";
-import PageContainer from "../../components/layout/PageContainer.tsx";
+import AuthenticatedHeader from "../../components/layout/AuthenticatedHeader.tsx";
 
 type RequestedServiceProps = {
   id: string;
@@ -24,7 +24,6 @@ function RequestedServicesPage() {
     try {
       if (user) {
         const response = await axiosAuthApi.get(`/guest/order/get/all/pending/${user.username}`);
-        console.log(response.data);
         setServices(response.data);
       }
     } catch (e) {
@@ -33,17 +32,12 @@ function RequestedServicesPage() {
   }
 
   return (
-    <PageContainer title={"Oczekujące usługi"}>
-      {services.length === 0 ?
-        <p>Nie masz żadnych oczekujących usług</p>
-        :
-        <>
-          {services.length > 0 && services.map((service: RequestedServiceProps, index) => (
-            <div key={index}>{service.id}</div>
-          ))}
-        </>
-      }
-    </PageContainer>
+    <div style={{width: '100%'}}>
+      <AuthenticatedHeader title={"Oczekujące usługi"}/>
+      {services.length > 0 && services.map((service: RequestedServiceProps, index) => (
+        <div key={index}>{service.id}</div>
+      ))}
+    </div>
   )
 }
 
