@@ -56,7 +56,12 @@
       "title": "Mój harmonogram",
       "current": "Moje",
       "unassigned": "Nieprzypisane",
-      "details": "Szczegóły"
+      "details": {
+        "unknownService": "Nieznana usługa",
+        "status": "Status",
+        "orderTime": "Data zamówienia",
+        "durationUnknown": "Czas nieokreślony"
+      }
     }
   }
 }

@@ -78,7 +78,7 @@ function EmployeeDetailsPage() {
       <Typography variant="h4" gutterBottom>
         {detail?.name} {detail?.surname}
       </Typography>
-      <Box mt={2}>
+      <Box my={2}>
         <Tabs value={tab} onChange={(_, v) => setTab(v)}>
           <Tab label="Work Schedule" />
           <Tab label="Employee data" />

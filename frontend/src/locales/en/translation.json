@@ -56,7 +56,12 @@
       "title": "My schedule",
       "current": "Current",
       "unassigned": "Unassigned",
-      "details": "Details"
+      "details": {
+        "unknownService": "Unknown service",
+        "status": "Status",
+        "orderTime": "Order time",
+        "durationUnknown": "Duration unknown"
+      }
     }
   }
 }
