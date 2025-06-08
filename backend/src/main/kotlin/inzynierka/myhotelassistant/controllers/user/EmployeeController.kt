@@ -18,7 +18,6 @@ import java.time.format.DateTimeParseException
 class EmployeeController(
     private val employeeService: EmployeeService,
 ) {
-
     @GetMapping("/week-schedule")
     @ResponseStatus(HttpStatus.OK)
     fun getAssignedSchedules(

@@ -30,16 +30,16 @@ data class ScheduleData(
             service: ServiceEntity?,
             guest: UserEntity?,
         ) = ScheduleDTO(
-                id = schedule.id!!,
-                serviceId = schedule.serviceId,
-                title = service?.name,
-                duration = service?.duration?.toInt(DurationUnit.MINUTES),
-                date = schedule.serviceDate.toString(),
-                weekday = schedule.serviceDate.dayOfWeek.name,
-                guestName = guest?.let { "${it.name} ${it.surname}" },
-                room = guest?.guestData?.roomNumber,
-                orderTime = schedule.orderTime?.toString(),
-                status = schedule.status.name,
-            )
+            id = schedule.id!!,
+            serviceId = schedule.serviceId,
+            title = service?.name,
+            duration = service?.duration?.toInt(DurationUnit.MINUTES),
+            date = schedule.serviceDate.toString(),
+            weekday = schedule.serviceDate.dayOfWeek.name,
+            guestName = guest?.let { "${it.name} ${it.surname}" },
+            room = guest?.guestData?.roomNumber,
+            orderTime = schedule.orderTime?.toString(),
+            status = schedule.status.name,
+        )
     }
 }

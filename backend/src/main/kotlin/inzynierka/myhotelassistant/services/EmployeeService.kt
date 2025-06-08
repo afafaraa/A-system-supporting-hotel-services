@@ -93,24 +93,34 @@ class EmployeeService(
 
     private operator fun LocalTime.plus(minutes: Long): LocalTime = this.plus(minutes, ChronoUnit.MINUTES)
 
-    fun findAllAssignedSchedules(date: LocalDate, authHeader: String): ScheduleData {
+    fun findAllAssignedSchedules(
+        date: LocalDate,
+        authHeader: String,
+    ): ScheduleData {
         val username = authExtractor.decodeJwtData(authHeader).username
         val employeeId = findByUsernameOrThrow(username).id!!
         return findAllAssignedSchedulesByEmployeeId(date, employeeId)
     }
 
-    fun findAllAssignedSchedulesByUsername(date: LocalDate, username: String): ScheduleData {
+    fun findAllAssignedSchedulesByUsername(
+        date: LocalDate,
+        username: String,
+    ): ScheduleData {
         val employeeId = findByUsernameOrThrow(username).id!!
         return findAllAssignedSchedulesByEmployeeId(date, employeeId)
     }
 
-    private fun findAllAssignedSchedulesByEmployeeId(date: LocalDate, employeeId: String): ScheduleData {
+    private fun findAllAssignedSchedulesByEmployeeId(
+        date: LocalDate,
+        employeeId: String,
+    ): ScheduleData {
         val (monday, sunday) = getWeekBounds(date)
-        val foundSchedules = scheduleRepository.findByEmployeeIdAndServiceDateBetween(
-            employeeId = employeeId,
-            startDate = monday.atStartOfDay(),
-            endDate = sunday.atTime(23, 59, 59),
-        )
+        val foundSchedules =
+            scheduleRepository.findByEmployeeIdAndServiceDateBetween(
+                employeeId = employeeId,
+                startDate = monday.atStartOfDay(),
+                endDate = sunday.atTime(23, 59, 59),
+            )
         if (foundSchedules.isEmpty()) {
             throw EntityNotFoundException("No schedules found for employee with id '$employeeId' in the specified week")
         }
@@ -119,16 +129,19 @@ class EmployeeService(
         val guestIds = foundSchedules.mapNotNull { it.guestId }.distinct()
         val guestsMap = userRepository.findAllById(guestIds).associateBy { it.id!! }
         val startTime = foundSchedules.minOf { it -> it.serviceDate.toLocalTime() }
-        val endTime = foundSchedules.maxOf { it ->
-            it.serviceDate.toLocalTime().plus(servicesMap[it.serviceId]?.duration?.inWholeMinutes ?: 10)
-        }
+        val endTime =
+            foundSchedules.maxOf { it ->
+                it.serviceDate.toLocalTime().plus(servicesMap[it.serviceId]?.duration?.inWholeMinutes ?: 10)
+            }
         return ScheduleData(
-            schedules = foundSchedules.map { schedule ->
-                ScheduleData.convertToDTO(
-                    schedule = schedule,
-                    guest = guestsMap[schedule.guestId],
-                    service = servicesMap[schedule.serviceId]
-                ) },
+            schedules =
+                foundSchedules.map { schedule ->
+                    ScheduleData.convertToDTO(
+                        schedule = schedule,
+                        guest = guestsMap[schedule.guestId],
+                        service = servicesMap[schedule.serviceId],
+                    )
+                },
             startDate = startTime.atDate(LocalDate.now()),
             endDate = endTime.atDate(LocalDate.now()),
         )
