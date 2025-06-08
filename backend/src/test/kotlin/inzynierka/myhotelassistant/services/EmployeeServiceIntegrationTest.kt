@@ -1,6 +1,6 @@
 package inzynierka.myhotelassistant.services
 
-import inzynierka.myhotelassistant.controllers.user.EmployeeController
+import inzynierka.myhotelassistant.controllers.user.EmployeeManagementController
 import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.repositories.UserRepository
@@ -44,7 +44,7 @@ class EmployeeServiceIntegrationTest {
     private lateinit var passwordEncoder: PasswordEncoder
 
     private val employeeDTOWithoutRoles =
-        EmployeeController.EmployeeDTO(
+        EmployeeManagementController.EmployeeDTO(
             username = "jan.kowalski",
             password = "secret123",
             email = "jan@example.com",

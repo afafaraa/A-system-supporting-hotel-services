@@ -30,4 +30,9 @@ class ServiceService(
             .findFirstByNameIgnoreCase(name)
 
     fun save(service: ServiceEntity): ServiceEntity = serviceRepository.save(service)
+
+    fun getSchedulesByIds(ids: List<String>): Map<String, ServiceEntity> {
+        if (ids.isEmpty()) return emptyMap()
+        return serviceRepository.findAllById(ids).associateBy { it.id!! }
+    }
 }

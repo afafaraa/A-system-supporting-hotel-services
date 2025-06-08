@@ -3,29 +3,30 @@ import { useEffect, useState, useCallback } from "react";
 import { axiosAuthApi } from "../../middleware/axiosApi";
 import { Box, Button, CircularProgress, Paper, Tab, Tabs, Typography } from "@mui/material";
 import { Employee } from "../../types";
-import { startOfWeek, addWeeks, subWeeks } from "date-fns";
+import {startOfWeek, addWeeks, subWeeks, format, addMinutes} from "date-fns";
 import {Schedule, ScheduleCard, ScheduleTable} from "../../components/layout/ScheduleTable.tsx";
+import {DateWithHour} from "../../utils/utils.ts";
 
 
 //to do: add shifts from EmployeeData instead of exampleShifts
 // shifts: Shift[];
 
 const exampleShifts: Schedule[] = [
-  { id: '1', weekday: 0, startHour: 8, endHour: 12, title: 'Cleaning', room: 'Room 301', status: 'IN_PROGRESS'},
-  { id: '2', weekday: 1, startHour: 10, endHour: 15, title: 'Cleaning', room: 'Room 302', status: 'REQUESTED' },
-  { id: '3', weekday: 2, startHour: 7, endHour: 11, title: 'Cleaning', room: 'Room 305', status: 'REQUESTED' },
-  { id: '4', weekday: 4, startHour: 14, endHour: 20, title: 'Cleaning', room: 'Room 310', status: 'REQUESTED' },
-  { id: '5', weekday: 5, startHour: 7, endHour: 15, title: 'Cleaning', room: 'Floor 1', status: 'REQUESTED' },
+  { id: '1', serviceId: "123", weekday: "MONDAY", date: DateWithHour(8), duration: (12-8)*60, title: 'Cleaning', room: 'Room 301', status: 'IN_PROGRESS', guestName: "John Doe", orderTime: undefined },
+  { id: '2', serviceId: "123", weekday: "TUESDAY", date: DateWithHour(10), duration: (15-10)*60, title: 'Cleaning', room: 'Room 302', status: 'REQUESTED', guestName: "Jane Smith", orderTime: undefined },
+  { id: '3', serviceId: "123", weekday: "WEDNESDAY", date: DateWithHour(7), duration: (11-7)*60, title: 'Cleaning', room: 'Room 305', status: 'REQUESTED', guestName: "Alice Johnson", orderTime: undefined },
+  { id: '4', serviceId: "123", weekday: "FRIDAY", date: DateWithHour(14), duration: (20-14)*60, title: 'Cleaning', room: 'Room 310', status: 'REQUESTED', guestName: "Bob Brown", orderTime: undefined },
+  { id: '5', serviceId: "123", weekday: "SATURDAY", date: DateWithHour(7), duration: (15-7)*60, title: 'Cleaning', room: 'Floor 1', status: 'REQUESTED', guestName: "Charlie White", orderTime: undefined },
 ];
 
-const MIN_HOUR = 6;
-const MAX_HOUR = 22;
+const MIN_HOUR = DateWithHour(6);
+const MAX_HOUR = DateWithHour(22);
 
 function EmployeeDetailsPage() {
   const { username } = useParams<{ username: string }>();
   const [tab, setTab] = useState(0);
   const [detail, setDetail] = useState<Employee | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentWeekStart, setCurrentWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
 
@@ -86,15 +87,18 @@ function EmployeeDetailsPage() {
       {tab === 0 && (
         <ScheduleTable currentWeekStart={currentWeekStart}
                        handlePrevWeek={handlePrevWeek} handleNextWeek={handleNextWeek}
-                       startHour={MIN_HOUR} endHour={MAX_HOUR}>
+                       startDate={MIN_HOUR} endDate={MAX_HOUR}>
           {exampleShifts.map((shift) => {
             return (
-              <ScheduleCard key={shift.id} shift={shift} startHour={MIN_HOUR}>
+              <ScheduleCard key={shift.id} shift={shift} startDate={MIN_HOUR} onClick={() => console.log("TO DO")}>
                 <Box gap={5}>
                   <Typography fontWeight="bold">{shift.title}</Typography>
                   <Typography>{shift.room}</Typography>
                   <Typography color="text.secondary">
-                    {shift.startHour}:00-{shift.endHour}:00
+                    {shift.duration ?
+                      `${format(shift.date, "HH:mm")} - ${format(addMinutes(shift.date, shift.duration), "HH:mm")}`
+                      : format(shift.date, "HH:mm")
+                    }
                   </Typography>
                   <Typography>{shift.status}</Typography>
                 </Box>

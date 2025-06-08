@@ -1,23 +1,34 @@
 package inzynierka.myhotelassistant.services
 
-import inzynierka.myhotelassistant.controllers.user.EmployeeController
+import inzynierka.myhotelassistant.controllers.user.EmployeeManagementController
+import inzynierka.myhotelassistant.dto.ScheduleData
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidRoleNameException
 import inzynierka.myhotelassistant.exceptions.HttpException.UserAlreadyExistsException
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.Role.Companion.employeeRoles
 import inzynierka.myhotelassistant.models.user.UserEntity
+import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
+import inzynierka.myhotelassistant.utils.AuthHeaderDataExtractor
 import org.springframework.data.domain.Pageable
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAdjusters
 import kotlin.jvm.Throws
 
 @Service
 class EmployeeService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
+    private val authExtractor: AuthHeaderDataExtractor,
+    private val scheduleRepository: ScheduleRepository,
+    private val serviceService: ServiceService,
 ) {
     fun findByIdOrThrow(id: String): UserEntity {
         val user =
@@ -33,7 +44,7 @@ class EmployeeService(
     fun getAllEmployees(pageable: Pageable): List<UserEntity> = userRepository.findByRoleIn(employeeRoles, pageable).content
 
     @Throws(InvalidRoleNameException::class)
-    fun createEmployee(employeeDTO: EmployeeController.EmployeeDTO): UserEntity =
+    fun createEmployee(employeeDTO: EmployeeManagementController.EmployeeDTO): UserEntity =
         UserEntity(
             username = employeeDTO.username,
             password = passwordEncoder.encode(employeeDTO.password),
@@ -78,5 +89,54 @@ class EmployeeService(
         if (oldRole == newRole) throw InvalidRoleNameException("User already has this role")
         user.role = newRole
         userRepository.save(user)
+    }
+
+    private operator fun LocalTime.plus(minutes: Long): LocalTime = this.plus(minutes, ChronoUnit.MINUTES)
+
+    fun findAllAssignedSchedules(date: LocalDate, authHeader: String): ScheduleData {
+        val username = authExtractor.decodeJwtData(authHeader).username
+        val employeeId = findByUsernameOrThrow(username).id!!
+        return findAllAssignedSchedulesByEmployeeId(date, employeeId)
+    }
+
+    fun findAllAssignedSchedulesByUsername(date: LocalDate, username: String): ScheduleData {
+        val employeeId = findByUsernameOrThrow(username).id!!
+        return findAllAssignedSchedulesByEmployeeId(date, employeeId)
+    }
+
+    private fun findAllAssignedSchedulesByEmployeeId(date: LocalDate, employeeId: String): ScheduleData {
+        val (monday, sunday) = getWeekBounds(date)
+        val foundSchedules = scheduleRepository.findByEmployeeIdAndServiceDateBetween(
+            employeeId = employeeId,
+            startDate = monday.atStartOfDay(),
+            endDate = sunday.atTime(23, 59, 59),
+        )
+        if (foundSchedules.isEmpty()) {
+            throw EntityNotFoundException("No schedules found for employee with id '$employeeId' in the specified week")
+        }
+        val serviceIds = foundSchedules.map { it.serviceId }.distinct()
+        val servicesMap = serviceService.getSchedulesByIds(serviceIds)
+        val guestIds = foundSchedules.mapNotNull { it.guestId }.distinct()
+        val guestsMap = userRepository.findAllById(guestIds).associateBy { it.id!! }
+        val startTime = foundSchedules.minOf { it -> it.serviceDate.toLocalTime() }
+        val endTime = foundSchedules.maxOf { it ->
+            it.serviceDate.toLocalTime().plus(servicesMap[it.serviceId]?.duration?.inWholeMinutes ?: 10)
+        }
+        return ScheduleData(
+            schedules = foundSchedules.map { schedule ->
+                ScheduleData.convertToDTO(
+                    schedule = schedule,
+                    guest = guestsMap[schedule.guestId],
+                    service = servicesMap[schedule.serviceId]
+                ) },
+            startDate = startTime.atDate(LocalDate.now()),
+            endDate = endTime.atDate(LocalDate.now()),
+        )
+    }
+
+    private fun getWeekBounds(day: LocalDate): Pair<LocalDate, LocalDate> {
+        val monday = day.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+        val sunday = day.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
+        return monday to sunday
     }
 }

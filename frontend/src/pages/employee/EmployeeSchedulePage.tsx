@@ -2,43 +2,43 @@ import {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
 import PageContainer from "../../components/layout/PageContainer.tsx";
-import {Box, Button, Tab, Tabs, Typography} from "@mui/material";
-import {addWeeks, startOfWeek, subWeeks} from "date-fns";
+import {Box, Tab, Tabs, Typography} from "@mui/material";
+import {addDays, addMinutes, addWeeks, format, startOfWeek, subWeeks} from "date-fns";
 import {useNavigate} from "react-router-dom";
-import {Schedule, ScheduleCard, ScheduleTable} from "../../components/layout/ScheduleTable.tsx";
+import {Schedule, ScheduleCard, ScheduleData, ScheduleTable} from "../../components/layout/ScheduleTable.tsx";
 import {useTranslation} from "react-i18next";
+import {axiosAuthApi} from "../../middleware/axiosApi.ts";
+import {getYearWeek} from "../../utils/utils.ts";
 
 function EmployeeSchedulePage() {
   const navigate = useNavigate();
   const user = useSelector(selectUser);
   const [tab, setTab] = useState(0);
-  const [currentWeekStart, setCurrentWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
+  const [currentWeekStart, setCurrentWeekStart] = useState<Date>(startOfWeek(new Date(), { weekStartsOn: 1 }));
+  const [scheduleCache, setScheduleCache] = useState<Map<number, Schedule[]>>(new Map());
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date());
   const { t } = useTranslation();
-  const tc = (key: string) => t(`pages.my_schedule.${key}`)
-
-  const startHour = 6;
-  const endHour = 22;
-
-  const exampleShifts: Schedule[] = [
-    { id: '1', weekday: 0, startHour: 8, endHour: 12, title: 'Cleaning', room: 'Room 301', status: 'IN_PROGRESS'},
-    { id: '2', weekday: 1, startHour: 10, endHour: 15, title: 'Cleaning', room: 'Room 302', status: 'REQUESTED' },
-    { id: '3', weekday: 2, startHour: 7, endHour: 11, title: 'Cleaning', room: 'Room 305', status: 'REQUESTED' },
-    { id: '4', weekday: 4, startHour: 14, endHour: 20, title: 'Cleaning', room: 'Room 310', status: 'REQUESTED' },
-    { id: '5', weekday: 5, startHour: 7, endHour: 15, title: 'Cleaning', room: 'Floor 1', status: 'REQUESTED' },
-  ];
-
-  const exampleShifts2: Schedule[] = [
-    { id: '6', weekday: 0, startHour: 7, endHour: 8, title: 'Maintenance', room: 'Room 401', status: 'IN_PROGRESS'},
-    { id: '7', weekday: 0, startHour: 10, endHour: 13, title: 'Cleaning', room: 'Room 402', status: 'REQUESTED' },
-    { id: '8', weekday: 1, startHour: 9, endHour: 12, title: 'Serving dishes', room: 'Room 405', status: 'REQUESTED' },
-    { id: '9', weekday: 3, startHour: 15, endHour: 21, title: 'Maintenance', room: 'Room 410', status: 'REQUESTED' },
-    { id: '10', weekday: 5, startHour: 8, endHour: 16, title: 'Maintenance', room: 'Floor 2', status: 'REQUESTED' },
-  ];
+  const tc = (key: string) => t(`pages.my_schedule.${key}`);
 
   useEffect(() => {
     if (user === null) return;
-    //axiosAuthApi.get('/employee/schedule');
-  }, [user]);
+    const yearWeek = getYearWeek(currentWeekStart);
+    if (!scheduleCache.has(yearWeek)) {
+      axiosAuthApi.get<ScheduleData>('/employee/week-schedule?date=' + addDays(currentWeekStart, 1).toISOString())
+        .then(res => {
+          console.log("Response:", res);
+          setScheduleCache(prev => {
+            const newMap = new Map(prev);
+            newMap.set(yearWeek, res.data.schedules);
+            setStartDate(new Date(res.data.startDate));
+            setEndDate(new Date(res.data.endDate));
+            return newMap;
+          });
+        })
+        .catch(err => console.log("Error:", err));
+    }
+  }, [user, currentWeekStart, scheduleCache]);
 
   const handlePrevWeek = () => {
     setCurrentWeekStart(prev => subWeeks(prev, 1));
@@ -50,19 +50,17 @@ function EmployeeSchedulePage() {
 
   const renderShiftCard = (shift: Schedule) => {
     return (
-      <ScheduleCard key={shift.id} shift={shift} startHour={startHour}>
+      <ScheduleCard key={shift.id} shift={shift} startDate={startDate} onClick={() => navigate('/employee/service/' + shift.id)}>
         <Box gap={5}>
           <Typography fontWeight="bold">{shift.title}</Typography>
           <Typography>{shift.room}</Typography>
           <Typography color="text.secondary">
-            {shift.startHour}:00-{shift.endHour}:00
+            {shift.duration ?
+              `${format(shift.date, "HH:mm")} - ${format(addMinutes(shift.date, shift.duration), "HH:mm")}`
+              : format(shift.date, "HH:mm")
+            }
           </Typography>
           <Typography>{shift.status}</Typography>
-        </Box>
-        <Box mt={1} textAlign="center">
-          <Button size="small" variant="outlined" onClick={() => navigate('/employee/service/' + shift.id)}>
-            {tc("details")}
-          </Button>
         </Box>
       </ScheduleCard>
     );
@@ -75,11 +73,12 @@ function EmployeeSchedulePage() {
         <Tab label={tc("unassigned")} />
       </Tabs>
 
+      <button onClick={() => console.log("Current week schedule:", scheduleCache) }>Wciśnij</button>
       <ScheduleTable currentWeekStart={currentWeekStart}
                      handlePrevWeek={handlePrevWeek} handleNextWeek={handleNextWeek}
-                     startHour={startHour} endHour={endHour}>
-        {tab === 0 && exampleShifts.map(renderShiftCard)}
-        {tab === 1 && exampleShifts2.map(renderShiftCard)}
+                     startDate={startDate} endDate={endDate}>
+        {tab === 0 && scheduleCache.get(getYearWeek(currentWeekStart))?.map(renderShiftCard)}
+        {tab === 1 && <>Nothing...</>}
       </ScheduleTable>
     </PageContainer>
   );
