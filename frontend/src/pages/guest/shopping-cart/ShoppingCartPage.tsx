@@ -31,16 +31,15 @@ function ShoppingCartPage() {
       const cartList : CartProps[] = [];
       const items = localStorage.getItem("CART");
       if (items) {
-        console.log(items)
         const parsedItems = JSON.parse(items);
         for (const id of parsedItems) {
           const response = await axiosAuthApi.get(`/schedule/get/cart/id/${id}`)
           const cartItem: CartProps = response.data;
-          console.log(cartItem);
-          cartList.push(cartItem);
+          if (cartItem) {
+            cartList.push(cartItem);
+          }
         }
       }
-      console.log(cartList);
       setCart(cartList);
     } catch (e) {
       console.error(e);
@@ -57,8 +56,12 @@ function ShoppingCartPage() {
     fetchCartData();
     try {
       for (const item of cart) {
-        const response = await axiosAuthApi.post(`/guest/order/add/${item.id}/${user?.username}`);
-        console.log(response);
+        console.log(item, user)
+        const response = await axiosAuthApi.post(`/guest/order/services`,{
+          id: item.id,
+          username: user?.username,
+        });
+        console.log(response.data);
       }
 
     } catch(e) {

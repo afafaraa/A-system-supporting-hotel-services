@@ -1,9 +1,11 @@
 package inzynierka.myhotelassistant.controllers.schedule
 import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserRequest
+import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.services.EmployeeService
 import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
+import inzynierka.myhotelassistant.services.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -22,6 +24,7 @@ class ScheduleController(
     private val scheduleService: ScheduleService,
     private val employeeService: EmployeeService,
     private val serviceService: ServiceService,
+    private val userService: UserService,
 ) {
     data class ScheduleForCartResponse(
         val id: String,
@@ -39,6 +42,7 @@ class ScheduleController(
         val serviceDate: LocalDateTime,
         val weekday: DayOfWeek,
         val isOrdered: Boolean,
+        val status: OrderStatus,
     )
 
 
@@ -58,7 +62,8 @@ class ScheduleController(
                     "${emp.name} ${emp.surname}",
                     schedule.serviceDate,
                     schedule.weekday,
-                    schedule.isOrdered
+                    schedule.isOrdered,
+                    schedule.status,
                 )
             }
     }

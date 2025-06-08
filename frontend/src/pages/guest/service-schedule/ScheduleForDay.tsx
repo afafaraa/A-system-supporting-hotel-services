@@ -10,6 +10,7 @@ type ScheduleProps = {
   serviceDate: string;
   weekday: Weekday;
   inCart: boolean;
+  status: string;
 };
 
 enum Weekday {
@@ -114,7 +115,6 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
       newDate.setDate(prev.getDate() + (next ? 7 : -7));
       return newDate;
     });
-    await fetchSchedule();
   };
 
   const formatEndOfWeek = () => {
@@ -157,23 +157,47 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
       {filteredSchedule.length === 0 ? (
         <Typography>No services available for this day.</Typography>
       ) : (
-        filteredSchedule.map((item) => (
-          <div key={item.id} style={{ display: 'flex', gap: '5px' }}>
-            <div style={{ padding: '10px 15px', borderRadius: '5px', width: '70%', display: 'flex', justifyContent: 'space-between', background: "#ddd" }}>
-              <div>{item.employeeFullName}</div>
-              <div>
-                {String(new Date(item.serviceDate).getHours()).padStart(2, '0')}:
-                {String(new Date(item.serviceDate).getMinutes()).padStart(2, '0')}
-              </div>
-            </div>
-            {item.inCart ? (<Button onClick={() => removeFromCart(item)} sx={{ minWidth: 'auto', width: '50px', background: "#ddd"}}>
-              -
-            </Button>) : (<Button onClick={() => addToCart(item)} sx={{ minWidth: 'auto', width: '50px',background: "#ddd" }}>
-              +
-            </Button>)}
+        filteredSchedule.sort((a,b) => new Date(a.serviceDate).getTime() - new Date(b.serviceDate).getTime()).map((item) => {
+          const available = new Date() > new Date(item.serviceDate) || item.status !== 'AVAILABLE';
 
-          </div>
-        ))
+          return (
+            <div key={item.id} style={{ display: 'flex', gap: '5px', opacity: available ? 0.5 : 1, pointerEvents: available ? 'none' : 'auto' }}>
+              <div
+                style={{
+                  padding: '10px 15px',
+                  borderRadius: '5px',
+                  width: '70%',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  background: '#ddd',
+                }}
+              >
+                <div>{item.employeeFullName}</div>
+                <div>
+                  {String(new Date(item.serviceDate).getHours()).padStart(2, '0')}:
+                  {String(new Date(item.serviceDate).getMinutes()).padStart(2, '0')}
+                </div>
+              </div>
+              {item.inCart ? (
+                <Button
+                  onClick={() => removeFromCart(item)}
+                  sx={{ minWidth: 'auto', width: '50px', background: '#ddd' }}
+                  disabled={available}
+                >
+                  -
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => addToCart(item)}
+                  sx={{ minWidth: 'auto', width: '50px', background: '#ddd' }}
+                  disabled={available}
+                >
+                  +
+                </Button>
+              )}
+            </div>
+          );
+        })
       )}
 
     </div>

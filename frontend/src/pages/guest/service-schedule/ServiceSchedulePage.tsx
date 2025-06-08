@@ -35,7 +35,7 @@ function ServiceSchedulePage (){
   return (
     <div style={{width:'100%'}}>
       <AuthenticatedHeader title={service.name} />
-      <main style={{width: '100%', backgroundColor: 'white', borderRadius: '10px', marginTop: '20px', padding: '60px 60px'}}>
+      <main style={{width: '100%', backgroundColor: 'white', borderRadius: '10px', margin: '20px 0', padding: '60px 60px'}}>
         <Grid  sx={{gap: 2, }} container spacing={{xs: 2, md: 3}} columns={{ xs: 1, sm: 2}}>
           <Grid size={1}>
             <h4 style={{fontSize: '1.5em', marginBottom: '5px'}}>Najbliższe terminy</h4>
@@ -50,8 +50,20 @@ function ServiceSchedulePage (){
             </div>
           </Grid>
         </Grid>
-
       </main>
+      <div style={{padding: '10px'}}>
+        {service.rating.map((it,index) => (
+          <div key={index} style={{width: '60%', background: 'white', padding: '15px 20px', marginTop: '8px'}}>
+            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+              <div>{it.fullName}</div>
+              <StarRating rating={[it]}/>
+            </div>
+            {it.comment === null || it.comment.length > 0 ? (<div>({it.fullName} left no comment)</div>) : (
+              <div>{it.comment}</div>
+            )}
+          </div>
+        ))}
+      </div>
 
     </div>
   )

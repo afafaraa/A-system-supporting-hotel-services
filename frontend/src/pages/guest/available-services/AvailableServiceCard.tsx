@@ -8,7 +8,13 @@ export type ServiceProps = {
   description: string;
   image: string;
   price: number;
-  rating: number[];
+  rating: Rating[];
+}
+
+export type Rating = {
+  fullName: string;
+  rating: number;
+  comment: string;
 }
 
 function AvailableServiceCard({service}: {service: ServiceProps}) {

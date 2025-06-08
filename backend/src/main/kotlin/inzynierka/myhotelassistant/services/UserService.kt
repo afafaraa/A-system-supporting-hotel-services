@@ -29,6 +29,10 @@ class UserService(
     private val codeService: RegistrationCodeService,
     private val passwordEncoder: PasswordEncoder,
 ) : UserDetailsService {
+
+    fun findByRole(role: Role): List<UserEntity>? {
+        return userRepository.findByRole(role)
+    }
     fun findById(id: String): UserEntity? {
         val user = userRepository.findById(id)
         return user.getOrNull()

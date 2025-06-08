@@ -1,14 +1,18 @@
-import {axiosAuthApi} from "../../middleware/axiosApi.ts";
+import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import {useSelector} from "react-redux";
-import {selectUser} from "../../redux/slices/userSlice.ts";
+import {selectUser} from "../../../redux/slices/userSlice.ts";
 import {useEffect, useState} from "react";
-import AuthenticatedHeader from "../../components/layout/AuthenticatedHeader.tsx";
+import AuthenticatedHeader from "../../../components/layout/AuthenticatedHeader.tsx";
+import ServiceItem from "./ServiceItem.tsx";
 
-type RequestedServiceProps = {
+export type RequestedServiceProps = {
   id: string;
-  scheduleId: string;
-  orderDate: string;
-  orderForDate: string;
+  name: string;
+  employeeId: string;
+  employeeFullName: string;
+  imageUrl: string;
+  price: number;
+  datetime: string;
   status: string;
 };
 
@@ -23,7 +27,7 @@ function RequestedServicesPage() {
   const fetchRequestedServices = async () => {
     try {
       if (user) {
-        const response = await axiosAuthApi.get(`/guest/order/get/all/pending/${user.username}`);
+        const response = await axiosAuthApi.get(`/guest/order/get/all/requested/${user.username}`);
         setServices(response.data);
       }
     } catch (e) {
@@ -35,7 +39,7 @@ function RequestedServicesPage() {
     <div style={{width: '100%'}}>
       <AuthenticatedHeader title={"Oczekujące usługi"}/>
       {services.length > 0 && services.map((service: RequestedServiceProps, index) => (
-        <div key={index}>{service.id}</div>
+        <ServiceItem index={index} item={service} />
       ))}
     </div>
   )
