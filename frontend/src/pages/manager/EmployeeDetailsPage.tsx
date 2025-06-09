@@ -203,7 +203,6 @@ function EmployeeDetailsPage() {
           <Typography variant="body1">Username: <strong>{detail.username}</strong></Typography>
           <Typography variant="body1">Email: <strong>{detail.email}</strong></Typography>
           <Typography variant="body1">Role: <strong>{detail.role}</strong></Typography>
-          <Typography variant="body1">Status: <strong>{detail.occupation}</strong></Typography>
         </Box>
       )}
 
