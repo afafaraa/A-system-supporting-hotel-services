@@ -127,7 +127,6 @@ function NotificationsPage() {
       {error &&
           <Alert severity="error" sx={{mb: 3, border: '1px solid red'}}>{error}.</Alert>
       }
-
       <List sx={{boxShadow: 4, borderRadius: 2, overflow: 'hidden'}} disablePadding>
         <ListSubheader sx={{display: 'flex', p: 0.5,
           backgroundColor: 'background.default', alignItems: 'center', '& svg': {m: 1,}}}>

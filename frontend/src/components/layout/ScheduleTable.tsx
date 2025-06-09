@@ -27,6 +27,7 @@ interface ScheduleTableHeaderProps extends WeekSwitchContainerProps {
   children: React.ReactNode;
   startDate: Date;
   endDate: Date;
+  InfoContainer?: React.ReactNode;
 }
 
 interface WeekSwitchContainerProps {
@@ -38,7 +39,7 @@ interface WeekSwitchContainerProps {
 const density = 4;
 const rowSize = 60; // in pixels
 
-export const ScheduleTable = ({children, startDate, endDate, currentWeekStart, handlePrevWeek, handleNextWeek}: ScheduleTableHeaderProps) => {
+export const ScheduleTable = ({children, startDate, endDate, currentWeekStart, handlePrevWeek, handleNextWeek, InfoContainer}: ScheduleTableHeaderProps) => {
   const startHour = startDate.getHours();
   const endHour = endDate.getMinutes() != 0 ? endDate.getHours() + 1 : endDate.getHours();
   const hours = Array.from({ length: (endHour - startHour) + 1 }, (_, i) => i + startHour);
@@ -49,6 +50,7 @@ export const ScheduleTable = ({children, startDate, endDate, currentWeekStart, h
                            handlePrevWeek={handlePrevWeek}
                            handleNextWeek={handleNextWeek}/>
       <WeekDayLabelsContainer/>
+      {InfoContainer && <Box>{InfoContainer}</Box>}
       <Box
         display="grid"
         gridTemplateColumns="50px repeat(7, 1fr)"

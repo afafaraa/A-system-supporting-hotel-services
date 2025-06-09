@@ -34,8 +34,8 @@ function ScheduleDetails({open, onClose, schedule}: Props) {
       </IconButton>
 
       <DialogContent>
-        <Stack spacing={3}>
-          <Typography variant="h5" fontWeight="bold" pt={1.5}>
+        <Stack spacing={2}>
+          <Typography variant="h5" fontWeight="bold" pt={1} pb={0.5}>
             {schedule.title || tc("unknownService")}
           </Typography>
 
@@ -58,19 +58,17 @@ function ScheduleDetails({open, onClose, schedule}: Props) {
             </Typography>
           </Box>
 
-          {schedule.guestName && (
-            <Box display="flex" alignItems="center" gap={2}>
-              <PersonIcon color="action" />
-              <Typography>{schedule.guestName}</Typography>
-            </Box>
-          )}
+          <Box display="flex" alignItems="center" gap={2}>
+            <PersonIcon color="action" />
+            <Typography>{schedule.guestName || "Unknown guest"}</Typography>
+          </Box>
 
-          {schedule.room && (
-            <Box display="flex" alignItems="center" gap={2}>
-              <RoomIcon color="action" />
-              <Typography>{schedule.room}</Typography>
-            </Box>
-          )}
+          <Box display="flex" alignItems="center" gap={2}>
+            <RoomIcon color="action" />
+            <Typography>{schedule.room || "No room assigned"}</Typography>
+          </Box>
+
+          <Divider />
 
           <Box sx={{ mt: 2 }}>
             <Typography fontSize="0.9rem">
@@ -82,11 +80,10 @@ function ScheduleDetails({open, onClose, schedule}: Props) {
             </Typography>
           </Box>
 
-          {schedule.orderTime && (
-            <Typography color="text.secondary" fontSize="0.9rem">
-              {tc("orderTime")}: {schedule.orderTime}
-            </Typography>
-          )}
+          <Typography color="text.secondary" fontSize="0.9rem">
+            {tc("orderTime")}: {schedule.orderTime || "Unknown"}
+          </Typography>
+
         </Stack>
       </DialogContent>
     </Dialog>

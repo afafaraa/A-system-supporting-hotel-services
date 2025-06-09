@@ -1,44 +1,81 @@
 import {useEffect, useState} from "react";
-import {useSelector} from "react-redux";
-import {selectUser} from "../../redux/slices/userSlice.ts";
 import PageContainer from "../../components/layout/PageContainer.tsx";
-import {Box, Tab, Tabs, Typography} from "@mui/material";
+import {Alert, Box, Tab, Tabs, Typography} from "@mui/material";
 import {addDays, addMinutes, addWeeks, format, startOfWeek, subWeeks} from "date-fns";
 import {Schedule, ScheduleCard, ScheduleData, ScheduleTable} from "../../components/layout/ScheduleTable.tsx";
 import {useTranslation} from "react-i18next";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {getYearWeek, orderStatus} from "../../utils/utils.ts";
 import ScheduleDetails from "./ScheduleDetails.tsx";
+import {isAxiosError} from "axios";
 
 function EmployeeSchedulePage() {
-  const user = useSelector(selectUser);
   const [tab, setTab] = useState(0);
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(startOfWeek(new Date(), { weekStartsOn: 1 }));
-  const [scheduleCache, setScheduleCache] = useState<Map<number, Schedule[]>>(new Map());
+  const [assignedScheduleCache, setAssignedScheduleCache] = useState<Map<number, Schedule[]>>(new Map());
+  const [unassignedScheduleCache, setUnassignedScheduleCache] = useState<Map<number, Schedule[]>>(new Map());
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.my_schedule.${key}`);
 
   useEffect(() => {
-    if (user === null) return;
+    setInfo(null);
+    setError(null);
+  }, [currentWeekStart, tab]);
+
+  useEffect(() => {
+    if (tab !== 0) return;
     const yearWeek = getYearWeek(currentWeekStart);
-    if (tab === 0 && !scheduleCache.has(yearWeek)) {
-      axiosAuthApi.get<ScheduleData>('/employee/week-schedule?date=' + addDays(currentWeekStart, 1).toISOString())
-        .then(res => {
-          console.log("Response:", res);
-          setScheduleCache(prev => {
-            const newMap = new Map(prev);
-            newMap.set(yearWeek, res.data.schedules);
-            setStartDate(new Date(res.data.startDate));
-            setEndDate(new Date(res.data.endDate));
-            return newMap;
-          });
-        })
-        .catch(err => console.log("Error:", err));
-    }
-  }, [user, currentWeekStart, scheduleCache, tab]);
+    if (assignedScheduleCache.has(yearWeek)) return;
+    axiosAuthApi.get<ScheduleData>('/employee/week-schedule?date=' + addDays(currentWeekStart, 1).toISOString())
+      .then(res => {
+        console.log("Response:", res);
+        setAssignedScheduleCache(prev => {
+          const newMap = new Map(prev);
+          newMap.set(yearWeek, res.data.schedules);
+          setStartDate(new Date(res.data.startDate));
+          setEndDate(new Date(res.data.endDate));
+          return newMap;
+        });
+      })
+      .catch(err => {
+        if (isAxiosError(err)) {
+          if (err.response?.status === 404) setInfo("No assigned schedules found for this week");
+          else setError("Unable to fetch schedules: " + err.message);
+        } else {
+          setError("An unexpected error occurred while fetching schedules");
+        }
+      });
+  }, [assignedScheduleCache, currentWeekStart, tab]);
+
+  useEffect(() => {
+    if (tab !== 1) return;
+    const yearWeek = getYearWeek(currentWeekStart);
+    if (unassignedScheduleCache.has(yearWeek)) return;
+    axiosAuthApi.get<ScheduleData>('/schedule/available/week-schedule?date=' + addDays(currentWeekStart, 1).toISOString())
+      .then(res => {
+        console.log("Response2:", res);
+        setUnassignedScheduleCache(prev => {
+          const newMap = new Map(prev);
+          newMap.set(yearWeek, res.data.schedules);
+          setStartDate(new Date(res.data.startDate));
+          setEndDate(new Date(res.data.endDate));
+          return newMap;
+        });
+      })
+      .catch(err => {
+        if (isAxiosError(err)) {
+          if (err.response?.status === 404) setInfo("No available schedules was found for this week");
+          else setError("Unable to fetch schedules: " + err.message);
+        } else {
+          setError("An unexpected error occurred while fetching schedules");
+        }
+      });
+  }, [unassignedScheduleCache, currentWeekStart, tab]);
 
   const handlePrevWeek = () => {
     setCurrentWeekStart(prev => subWeeks(prev, 1));
@@ -76,11 +113,19 @@ function EmployeeSchedulePage() {
         <Tab label={tc("unassigned")} />
       </Tabs>
 
+
+
       <ScheduleTable currentWeekStart={currentWeekStart}
                      handlePrevWeek={handlePrevWeek} handleNextWeek={handleNextWeek}
-                     startDate={startDate} endDate={endDate}>
-        {tab === 0 && scheduleCache.get(getYearWeek(currentWeekStart))?.map(renderShiftCard)}
-        {tab === 1 && <>Nothing...</>}
+                     startDate={startDate} endDate={endDate}
+                     InfoContainer={
+                      <>
+                        {info && <Alert severity="info" sx={{border: '1px solid blue', my: 2}}>{info}.</Alert>}
+                        {error && <Alert severity="error" sx={{border: '1px solid red', my: 2}}>{error}.</Alert>}
+                      </>
+                     }>
+        {tab === 0 && assignedScheduleCache.get(getYearWeek(currentWeekStart))?.map(renderShiftCard)}
+        {tab === 1 && unassignedScheduleCache.get(getYearWeek(currentWeekStart))?.map(renderShiftCard)}
       </ScheduleTable>
 
       {selectedSchedule && (

@@ -11,14 +11,13 @@ import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
 import inzynierka.myhotelassistant.utils.AuthHeaderDataExtractor
+import inzynierka.myhotelassistant.utils.SchedulesToScheduleDataConverter
 import org.springframework.data.domain.Pageable
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.LocalTime
-import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 import kotlin.jvm.Throws
 
@@ -28,7 +27,7 @@ class EmployeeService(
     private val passwordEncoder: PasswordEncoder,
     private val authExtractor: AuthHeaderDataExtractor,
     private val scheduleRepository: ScheduleRepository,
-    private val serviceService: ServiceService,
+    private val scheduleDateConverter: SchedulesToScheduleDataConverter,
 ) {
     fun findByIdOrThrow(id: String): UserEntity {
         val user =
@@ -91,8 +90,6 @@ class EmployeeService(
         userRepository.save(user)
     }
 
-    private operator fun LocalTime.plus(minutes: Long): LocalTime = this.plus(minutes, ChronoUnit.MINUTES)
-
     fun findAllAssignedSchedules(
         date: LocalDate,
         authHeader: String,
@@ -124,27 +121,7 @@ class EmployeeService(
         if (foundSchedules.isEmpty()) {
             throw EntityNotFoundException("No schedules found for employee with id '$employeeId' in the specified week")
         }
-        val serviceIds = foundSchedules.map { it.serviceId }.distinct()
-        val servicesMap = serviceService.getSchedulesByIds(serviceIds)
-        val guestIds = foundSchedules.mapNotNull { it.guestId }.distinct()
-        val guestsMap = userRepository.findAllById(guestIds).associateBy { it.id!! }
-        val startTime = foundSchedules.minOf { it -> it.serviceDate.toLocalTime() }
-        val endTime =
-            foundSchedules.maxOf { it ->
-                it.serviceDate.toLocalTime().plus(servicesMap[it.serviceId]?.duration?.inWholeMinutes ?: 10)
-            }
-        return ScheduleData(
-            schedules =
-                foundSchedules.map { schedule ->
-                    ScheduleData.convertToDTO(
-                        schedule = schedule,
-                        guest = guestsMap[schedule.guestId],
-                        service = servicesMap[schedule.serviceId],
-                    )
-                },
-            startDate = startTime.atDate(LocalDate.now()),
-            endDate = endTime.atDate(LocalDate.now()),
-        )
+        return scheduleDateConverter.convert(foundSchedules, date)
     }
 
     private fun getWeekBounds(day: LocalDate): Pair<LocalDate, LocalDate> {

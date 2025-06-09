@@ -1,4 +1,6 @@
 package inzynierka.myhotelassistant.controllers.schedule
+import inzynierka.myhotelassistant.dto.ScheduleData
+import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.services.EmployeeService
 import inzynierka.myhotelassistant.services.ScheduleService
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
+import java.time.format.DateTimeParseException
 
 @RestController
 @RequestMapping("/schedule")
@@ -58,5 +62,18 @@ class ScheduleController(
             service.price,
             scheduleItem.serviceDate,
         )
+    }
+
+    @GetMapping("/available/week-schedule")
+    @ResponseStatus(HttpStatus.OK)
+    fun getAvailableWeekSchedule(
+        @RequestParam date: String,
+    ): ScheduleData {
+        try {
+            val parsedDate = ZonedDateTime.parse(date).toLocalDate()
+            return scheduleService.getAvailableWeekSchedule(parsedDate)
+        } catch (_: DateTimeParseException) {
+            throw InvalidArgumentException("Invalid date format. Expected format is ISO_ZONED_DATE_TIME.")
+        }
     }
 }
