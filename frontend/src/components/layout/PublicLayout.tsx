@@ -6,11 +6,13 @@ import LanguageSwitcher from "./LanguageSwitcher.tsx";
 function PublicLayout() {
 
   return (
-    <Container disableGutters maxWidth={false} sx={{height:"100vh", backgroundColor: 'background.default'}}>
-      <Box sx={{position: 'fixed'}}>
+    <Container disableGutters maxWidth={false} sx={{height:"100vh"}}>
+      <Box position="fixed">
         <LanguageSwitcher/>
       </Box>
-      <Outlet />
+      <Box height="inherit" px="10px">
+        <Outlet />
+      </Box>
     </Container>
   )
 }
