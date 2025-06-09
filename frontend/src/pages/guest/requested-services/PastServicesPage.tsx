@@ -4,6 +4,7 @@ import {selectUser} from "../../../redux/slices/userSlice.ts";
 import {useEffect, useState} from "react";
 import AuthenticatedHeader from "../../../components/layout/AuthenticatedHeader.tsx";
 import ServiceItem from "./ServiceItem.tsx";
+import {useTranslation} from "react-i18next";
 
 export type RequestedServiceProps = {
   id: string;
@@ -19,6 +20,7 @@ export type RequestedServiceProps = {
 function PastServicesPage() {
   const user = useSelector(selectUser);
   const [services, setServices] = useState([]);
+  const {t} = useTranslation();
 
   useEffect(() => {
     fetchRequestedServices();
@@ -38,7 +40,7 @@ function PastServicesPage() {
 
   return (
     <div style={{width: '100%'}}>
-      <AuthenticatedHeader title={"Historyczne usługi"}/>
+      <AuthenticatedHeader title={t('pages.past_services.title')}/>
       {services.length > 0 && services.map((service: RequestedServiceProps, index) => (
         <ServiceItem index={index} item={service} fetchData={fetchRequestedServices}/>
       ))}

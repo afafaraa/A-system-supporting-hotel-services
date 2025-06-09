@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { axiosAuthApi } from "../../../middleware/axiosApi.ts";
 import { Button, Typography, Box } from "@mui/material";
 import { ServiceProps } from "../available-services/AvailableServiceCard.tsx";
+import {useTranslation} from "react-i18next";
 
 type ScheduleProps = {
   id: string;
@@ -47,6 +48,7 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
     monday.setDate(now.getDate() + diff);
     return monday;
   });
+  const {t} = useTranslation();
 
   useEffect(() => {
     fetchSchedule();
@@ -149,13 +151,13 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
               color: currDay === day ? 'white' : '',
             }}
           >
-            {currDay}
+            {t(`pages.service_schedule.${currDay}`)}
           </Button>
         ))}
         <Button onClick={() => changeWeek(true)} sx={{ minWidth: 'auto', width: '37px', borderRadius: '100%' }}>{'>'}</Button>
       </div>
       {filteredSchedule.length === 0 ? (
-        <Typography>No services available for this day.</Typography>
+        <Typography>{t('pages.service_schedule.noServiceAvailable')}</Typography>
       ) : (
         filteredSchedule.sort((a,b) => new Date(a.serviceDate).getTime() - new Date(b.serviceDate).getTime()).map((item) => {
           const available = new Date() > new Date(item.serviceDate) || item.status !== 'AVAILABLE';

@@ -2,9 +2,11 @@ import {Dialog, Button} from "@mui/material";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import {useSelector} from "react-redux";
 import {selectUser} from "../../../redux/slices/userSlice.ts";
+import {useTranslation} from "react-i18next";
 
 function CancelServiceDialog({open, setOpen, scheduleId, fetchData}: {open: boolean, setOpen: (open: boolean) => void, scheduleId: string, fetchData: () => void}) {
   const user = useSelector(selectUser);
+  const { t } = useTranslation();
 
   const cancel = async () => {
     try {
@@ -22,11 +24,11 @@ function CancelServiceDialog({open, setOpen, scheduleId, fetchData}: {open: bool
 
   return (
     <Dialog open={open}>
-      <div style={{padding: '15px'}}>
-        Are you sure?
-        <div style={{marginTop:'10px'}}>
-          <Button sx={{marginRight: '5px'}} onClick={cancel}>Cancel service</Button>
-          <Button variant="contained" onClick={() => setOpen(false)}>Dont cancel</Button>
+      <div style={{padding: '20px', textAlign: 'center', fontSize: '20px'}}>
+        {t('pages.requested_services.confirmationDialog')}
+        <div style={{marginTop:'15px'}}>
+          <Button sx={{marginRight: '10px'}} onClick={cancel}>{t('pages.requested_services.yes')}</Button>
+          <Button variant="contained" onClick={() => setOpen(false)}>{t('pages.requested_services.no')}</Button>
         </div>
       </div>
     </Dialog>

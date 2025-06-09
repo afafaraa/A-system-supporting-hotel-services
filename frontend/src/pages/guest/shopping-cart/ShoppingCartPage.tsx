@@ -6,6 +6,7 @@ import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import ShoppingCartItem from "./ShoppingCartItem.tsx";
 import {useSelector} from "react-redux";
 import {selectUser} from "../../../redux/slices/userSlice.ts";
+import {useTranslation} from "react-i18next";
 
 export type CartProps = {
   id: string;
@@ -22,6 +23,7 @@ function ShoppingCartPage() {
   const [cart, setCart] = useState<CartProps[]>([]);
   const [bill, setBill] = useState<number>(0);
   const user = useSelector(selectUser);
+  const {t} = useTranslation();
 
   useEffect(() => {
     fetchCartData();
@@ -92,10 +94,10 @@ function ShoppingCartPage() {
       }}>
         <Grid sx={{gap: 2,}} container spacing={{xs: 2, md: 3}} columns={{xs: 1, md: 2}}>
           <Grid sx={{backgroundColor: 'white', padding: {xs: '15px', sm: '30px 25px'}}} size={1}>
-            <Button variant="contained" sx={{mb: '5px'}} onClick={clearCart}>Usuń wszystko</Button>
+            <Button variant="contained" sx={{mb: '5px'}} onClick={clearCart}>{t('buttons.deleteAll')}</Button>
             {cart.length > 0 ? cart.map((item, index) => (
               <ShoppingCartItem key={index} index={index} item={item} fetchCartData={fetchCartData}/>
-            )) : <p>No items in cart</p>}
+            )) : <p>{t('pages.shopping_cart.noItems')}</p>}
           </Grid>
           <Grid sx={{display: 'flex', flexDirection: 'column', gap: '15px', }} size={1}>
             <div style={{
@@ -106,20 +108,20 @@ function ShoppingCartPage() {
               gap: '10px'
             }}>
               <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                <Typography variant='body1'>Cart value:</Typography>
+                <Typography variant='body1'>{t('pages.shopping_cart.cartValue')}:</Typography>
                 <div style={{fontWeight: '700'}}>{cart.length > 0 ? (
                   cart.reduce((acc, curr) => acc + curr.price, 0).toFixed(2)
                 ) : (0)} $
                 </div>
               </div>
               <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                <Typography variant='body1'>Current bill:</Typography>
+                <Typography variant='body1'>{t('pages.shopping_cart.currentBill')}:</Typography>
                 <div style={{fontWeight: '700'}}>{bill.toFixed(2)} $</div>
               </div>
-              <Button onClick={orderServices} variant="contained">Pay</Button>
-              <Button onClick={orderServices} variant="contained">Add to bill</Button>
+              <Button onClick={orderServices} variant="contained">{t('pages.shopping_cart.pay')}</Button>
+              <Button onClick={orderServices} variant="contained">{t('pages.shopping_cart.addToBill')}</Button>
             </div>
-            <Button onClick={() => navigate("/services/available")} sx={{backgroundColor: 'white'}}>Continue shopping</Button>
+            <Button onClick={() => navigate("/services/available")} sx={{backgroundColor: 'white'}}>{t('pages.shopping_cart.continueShopping')}</Button>
           </Grid>
         </Grid>
 

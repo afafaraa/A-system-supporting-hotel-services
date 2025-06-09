@@ -1,7 +1,9 @@
 import {Button, Typography} from "@mui/material";
 import {CartProps} from "./ShoppingCartPage.tsx";
+import {useTranslation} from "react-i18next";
 
 function ShoppingCartItem ({item, index, fetchCartData}: {item: CartProps, index: number, fetchCartData: () => void}) {
+  const {t} = useTranslation();
 
   const deleteItem = (itemId: string) => {
     const itemsString: string | null = localStorage.getItem("CART");
@@ -29,7 +31,7 @@ function ShoppingCartItem ({item, index, fetchCartData}: {item: CartProps, index
         </div>
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'end'}}>
           <div>{(new Date(item.datetime)).toLocaleDateString()} : {(new Date(item.datetime)).toLocaleTimeString().slice(0,5)}</div>
-          <Button variant="contained" color="error" onClick={() => deleteItem(item.id)}>Usun</Button>
+          <Button variant="contained" color="error" onClick={() => deleteItem(item.id)}>{t('buttons.delete')}</Button>
         </div>
       </div>
     </div>
