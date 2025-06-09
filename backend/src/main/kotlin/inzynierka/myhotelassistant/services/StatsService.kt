@@ -19,8 +19,6 @@ class StatsService(
         val name: String,
         val orderCount: Int,
         val revenue: Double,
-        val averageRating: Double,
-        val rating: List<Int>,
     )
     fun getStats(): StatsResponse {
         val allOrders = scheduleRepository.findAll()
@@ -55,17 +53,12 @@ class StatsService(
         return allServices.map { service ->
             val relatedSchedules = allSchedules.filter { it.serviceId == service.id && it.isOrdered }
             val totalRevenue = relatedSchedules.sumOf { service.price }
-            val avgRating = if (service.rating.isNotEmpty())
-                service.rating.average()
-            else 0.0
 
             ServiceStatsDto(
                 id = service.id ?: "",
                 name = service.name,
                 orderCount = relatedSchedules.size,
-                revenue = totalRevenue,
-                averageRating = avgRating,
-                rating = service.rating
+                revenue = totalRevenue
             )
         }
     }

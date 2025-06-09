@@ -5,17 +5,15 @@ import {
     PieChart, Pie, Cell, Legend as ReLegend
 } from "recharts";
 import { axiosAuthApi } from "../../middleware/axiosApi";
-import StarRating from "../guest/available-services/StarRating";
 import { useTranslation } from "react-i18next";
 
 type PopularService = { name: string; percent: number };
+
 type ServiceStat = {
     id: string | number;
     name: string;
     orderCount: number;
     revenue: number;
-    rating: number;
-    averageRating: number;
 };
 type SalesData = { date: string; value: number };
 
@@ -142,12 +140,6 @@ function StatsPage() {
                                     <Box>
                                         <Typography variant="body2">{tc("orders")}: {service.orderCount}</Typography>
                                         <Typography variant="body2">{tc("revenue")}: {service.revenue.toFixed(2)}$</Typography>
-                                    </Box>
-                                    <Box textAlign="right">
-                                        <StarRating rating={[service.rating]} />
-                                        <Typography variant="body2">
-                                            Avg: {service.averageRating.toFixed(2)} / 5
-                                        </Typography>
                                     </Box>
                                 </Box>
                             </CardContent>
