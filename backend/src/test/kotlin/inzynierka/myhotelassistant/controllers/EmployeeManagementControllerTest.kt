@@ -4,7 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import inzynierka.myhotelassistant.configs.RSAKeyConfig
 import inzynierka.myhotelassistant.configs.SecurityConfig
-import inzynierka.myhotelassistant.controllers.user.EmployeeController
+import inzynierka.myhotelassistant.controllers.user.EmployeeManagementController
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.EmployeeService
@@ -24,9 +24,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import kotlin.test.assertEquals
 
-@WebMvcTest(EmployeeController::class)
+@WebMvcTest(EmployeeManagementController::class)
 @Import(SecurityConfig::class, RSAKeyConfig::class)
-class EmployeeControllerTest {
+class EmployeeManagementControllerTest {
     @Autowired
     lateinit var mvc: MockMvc
 
@@ -49,7 +49,7 @@ class EmployeeControllerTest {
         val validator = Validation.buildDefaultValidatorFactory().validator
 
         var invalidRequest =
-            EmployeeController.EmployeeDTO(
+            EmployeeManagementController.EmployeeDTO(
                 username = "no", // to short
                 password = "123", // to short
                 email = "invalid-email", // invalid email
@@ -61,7 +61,7 @@ class EmployeeControllerTest {
         assertEquals(4, violations.size)
 
         invalidRequest =
-            EmployeeController.EmployeeDTO(
+            EmployeeManagementController.EmployeeDTO(
                 username = "invalid characters!@#", // invalid characters
                 password = "thats a good password",
                 email = "test.email@test.c",
@@ -77,7 +77,7 @@ class EmployeeControllerTest {
     @WithMockUser(roles = ["MANAGER"])
     fun addEmployeeTest() {
         val employeeDTO =
-            EmployeeController.EmployeeDTO(
+            EmployeeManagementController.EmployeeDTO(
                 username = "employee",
                 password = "password123",
                 email = "employee@example.com",

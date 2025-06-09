@@ -5,19 +5,19 @@ import inzynierka.myhotelassistant.models.notification.NotificationDTO
 import inzynierka.myhotelassistant.models.notification.NotificationEntity
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.repositories.NotificationRepository
-import org.springframework.security.oauth2.jwt.JwtDecoder
+import inzynierka.myhotelassistant.utils.AuthHeaderDataExtractor
 import org.springframework.stereotype.Service
 import java.time.Duration
 import java.time.Instant
 
 @Service
 class NotificationService(
-    private val jwtDecoder: JwtDecoder,
     private val userService: UserService,
     private val notificationRepository: NotificationRepository,
+    private val authExtractor: AuthHeaderDataExtractor,
 ) {
     fun getNotifications(authHeader: String): List<NotificationDTO> {
-        val jwtData = decodeJwtData(authHeader)
+        val jwtData = authExtractor.decodeJwtData(authHeader)
         return getNotificationsFromUsername(jwtData.username)
     }
 
@@ -25,7 +25,7 @@ class NotificationService(
         username: String,
         authHeader: String,
     ): List<NotificationDTO> {
-        val jwtData = decodeJwtData(authHeader)
+        val jwtData = authExtractor.decodeJwtData(authHeader)
         if (username != jwtData.username && !isRoleEntitled(jwtData.role)) {
             throw NoPermissionException("You do not have permission to notifications of user: $username.")
         }
@@ -44,7 +44,7 @@ class NotificationService(
         notificationIds: List<String>,
         authHeader: String,
     ) {
-        val jwtData = decodeJwtData(authHeader)
+        val jwtData = authExtractor.decodeJwtData(authHeader)
         val userId: String = userService.findByUsernameOrThrow(jwtData.username).id!!
         val now = Instant.now()
         val notifications: List<NotificationEntity> = notificationRepository.findAllById(notificationIds)
@@ -61,7 +61,7 @@ class NotificationService(
         notificationIds: List<String>,
         authHeader: String,
     ) {
-        val jwtData = decodeJwtData(authHeader)
+        val jwtData = authExtractor.decodeJwtData(authHeader)
         val userId: String = userService.findByUsernameOrThrow(jwtData.username).id!!
         notificationRepository.deleteAllByUserIdAndIdIn(userId, notificationIds)
     }
@@ -69,19 +69,6 @@ class NotificationService(
     fun removeReadNotifications(daysBack: Integer): Long {
         val readBefore = Instant.now().minus(Duration.ofDays(daysBack.toLong()))
         return notificationRepository.deleteAllByIsReadTrueAndReadAtBefore(readBefore)
-    }
-
-    private data class JwtData(
-        val username: String,
-        val role: String,
-    )
-
-    private fun decodeJwtData(authHeader: String): JwtData {
-        val token = authHeader.split(" ")[1]
-        val jwt = jwtDecoder.decode(token)
-        val username = jwt.subject
-        val role = jwt.getClaimAsString("role")?.split("_")?.get(1) ?: Role.GUEST.name
-        return JwtData(username, role)
     }
 
     fun convertToDTO(notification: NotificationEntity): NotificationDTO =

@@ -24,6 +24,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import BuildIcon from '@mui/icons-material/Build';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LanguageSwitcher from "./LanguageSwitcher.tsx";
+import {useTranslation} from "react-i18next";
 
 const drawerWidth = 240;
 
@@ -39,6 +40,8 @@ function Navbar(props: Props) {
   const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
+  const tc = (key: string) => t(`navbar.${key}`);
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -56,17 +59,17 @@ function Navbar(props: Props) {
   };
 
   const nav = [
-    {text: 'Home', icon: HomeIcon, navTo: '/home', roles: null},
-    {text: 'Available services', icon: DesignServicesIcon, navTo: '/services/available' , roles: ['ROLE_GUEST']},
-    {text: 'Shopping cart', icon: ShoppingCartIcon, navTo: '/services/shopping-cart', roles: ['ROLE_GUEST']},
-    {text: 'Requested services', icon: AssignmentTurnedInIcon, navTo: '/services/requested', roles: ['ROLE_GUEST']},
-    {text: 'Past services', icon: HistoryIcon, navTo: '/services/history', roles: ['ROLE_GUEST']},
-    {text: 'My schedule', icon: EventNoteIcon, navTo: '/employee/schedule', roles: ['ROLE_EMPLOYEE', 'ROLE_ADMIN']},
-    {text: 'Notifications', icon: NotificationsIcon, navTo: '/notifications', roles: null},
-    {text: 'Personnel', icon: GroupIcon, navTo: '/employees', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
-    {text: 'Services', icon: BuildIcon, navTo: '/management/services', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
-    {text: 'Statistics', icon: BarChartIcon, navTo: '/management/statistics', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
-    {text: 'Logout', icon: LogoutIcon, navTo: '/logout', roles: null}
+    {text: tc("home"), icon: HomeIcon, navTo: '/home', roles: null},
+    {text: tc("availableServices"), icon: DesignServicesIcon, navTo: '/services/available' , roles: ['ROLE_GUEST']},
+    {text: tc("shoppingCart"), icon: ShoppingCartIcon, navTo: '/services/shopping-cart', roles: ['ROLE_GUEST']},
+    {text: tc("requestedServices"), icon: AssignmentTurnedInIcon, navTo: '/services/requested', roles: ['ROLE_GUEST']},
+    {text: tc("pastServices"), icon: HistoryIcon, navTo: '/services/history', roles: ['ROLE_GUEST']},
+    {text: tc("mySchedule"), icon: EventNoteIcon, navTo: '/employee/schedule', roles: ['ROLE_EMPLOYEE', 'ROLE_RECEPTIONIST', 'ROLE_MANAGER', 'ROLE_ADMIN']},
+    {text: tc("notifications"), icon: NotificationsIcon, navTo: '/notifications', roles: null},
+    {text: tc("personnel"), icon: GroupIcon, navTo: '/employees', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
+    {text: tc("services"), icon: BuildIcon, navTo: '/management/services', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
+    {text: tc("stats"), icon: BarChartIcon, navTo: '/management/statistics', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
+    {text: tc("logout"), icon: LogoutIcon, navTo: '/logout', roles: null}
   ]
 
   const isSelected = (navTo: string): boolean => {
