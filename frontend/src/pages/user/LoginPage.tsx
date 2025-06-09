@@ -31,8 +31,8 @@ function LoginPage(){
     }
   }, [error]);
 
-  const login = async (e: FormEvent) => {
-    e.preventDefault();
+  const login = async (e?: FormEvent) => {
+    e?.preventDefault();
     setError(null);
     axiosApi.post('/open/token', { username, password })
       .then(res => {
@@ -47,9 +47,9 @@ function LoginPage(){
   }
 
   return (
-    <Box sx={{display: "flex", justifyContent: "center", justifyItems: "center", alignItems: "center", height: "100%"}}>
-      <FormControl sx={{minWidth: '25%', minHeight: '65%', backgroundColor: 'white', padding: 6, gap: 2, borderRadius: 6, boxShadow: 10, justifyContent: 'center' }}>
-        <Typography variant="h1" sx={{textAlign: 'center', fontSize: '32px', mb: 2 }}>{tc("title")}</Typography>
+    <Box display="flex" justifyContent="center" alignItems="center" height="inherit">
+      <FormControl sx={{minWidth: '25%', minHeight: '50%', p: 6, gap: 2, borderRadius: 6, boxShadow: 10, justifyContent: 'center', backgroundColor: "background.paper"}}>
+        <Typography variant="h4" align="center" sx={{mb: 2}}>{tc("title")}</Typography>
         <TextField
           label={tc("username")}
           autoComplete="username"
@@ -74,7 +74,7 @@ function LoginPage(){
                   <IconButton
                     onClick={() => setShowPassword((prev) => !prev)}
                     edge="end"
-                    size='small'
+                    size="small"
                   >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
@@ -90,8 +90,30 @@ function LoginPage(){
         <Link style={{textAlign: 'center'}} to="/reset-password-email">{tc("resetPassword")}</Link>
         <Link style={{textAlign: 'center'}} to="/register">{tc("registerWithCode")}</Link>
       </FormControl>
+
+      <Box position="fixed" my="auto" left={4} display={{xs: "none", md: "flex"}} flexDirection="column" gap={0.8}>
+        <p>Quick log-in:</p>
+         <button onClick={() => {
+           setUsername("user"); setPassword("password"); login();
+         }}>Log as user</button>
+        <button onClick={() => {
+          setUsername("admin"); setPassword("password"); login();
+        }}>Log as admin</button>
+        <button onClick={() => {
+          setUsername("employee1"); setPassword("password"); login();
+        }}>Log as employee1</button>
+        <button onClick={() => {
+          setUsername("employee2"); setPassword("password123"); login();
+        }}>Log as employee2</button>
+        <button onClick={() => {
+          setUsername("employee3"); setPassword("easy"); login();
+        }}>Log as employee3</button>
+        <button onClick={() => {
+          setUsername("manager"); setPassword("password"); login();
+        }}>Log as manager</button>
+      </Box>
     </Box>
-  )
+  );
 }
 
 export default LoginPage;
