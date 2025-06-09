@@ -1,6 +1,5 @@
 package inzynierka.myhotelassistant.controllers.user
 
-import inzynierka.myhotelassistant.controllers.schedule.ScheduleController.ScheduleForCartResponse
 import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.services.ScheduleService
@@ -50,7 +49,6 @@ class GuestController(
         val username: String,
     )
 
-
     @GetMapping("/employee/get/id/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun getScheduledEmployeeNameById(
@@ -65,7 +63,9 @@ class GuestController(
 
     @PostMapping("/order/cancel")
     @ResponseStatus(HttpStatus.OK)
-    fun cancelOrderByGuest(@RequestBody req: CancelOrderRequest) {
+    fun cancelOrderByGuest(
+        @RequestBody req: CancelOrderRequest,
+    ) {
         val user = userService.findByUsernameOrThrow(req.username)
         val scheduledService = scheduleService.findByIdOrThrow(req.orderId)
 
@@ -86,7 +86,6 @@ class GuestController(
         scheduleService.save(scheduledService)
     }
 
-
     @PostMapping("/order/services")
     @ResponseStatus(HttpStatus.CREATED)
     fun orderServicesFromSchedule(
@@ -101,7 +100,9 @@ class GuestController(
 
     @GetMapping("/order/get/all/requested/{username}")
     @ResponseStatus(HttpStatus.OK)
-    fun getAllPendingOrdersForUser(@PathVariable username: String): List<ScheduleForPastAndRequestedServicesResponse>? {
+    fun getAllPendingOrdersForUser(
+        @PathVariable username: String,
+    ): List<ScheduleForPastAndRequestedServicesResponse>? {
         val userId = userService.findByUsernameOrThrow(username).id
         if (userId != null) {
             return findAllByStatusAndUserId(listOf(OrderStatus.PENDING, OrderStatus.IN_PROGRESS), userId)
@@ -111,7 +112,9 @@ class GuestController(
 
     @GetMapping("/order/get/all/past/{username}")
     @ResponseStatus(HttpStatus.OK)
-    fun getAllPastOrdersForUser(@PathVariable username: String): List<ScheduleForPastAndRequestedServicesResponse>? {
+    fun getAllPastOrdersForUser(
+        @PathVariable username: String,
+    ): List<ScheduleForPastAndRequestedServicesResponse>? {
         val userId = userService.findByUsernameOrThrow(username).id
         if (userId != null) {
             return findAllByStatusAndUserId(listOf(OrderStatus.FINISHED, OrderStatus.CANCELED), userId)
@@ -119,9 +122,13 @@ class GuestController(
         return null
     }
 
-    private fun findAllByStatusAndUserId(statusList: List<OrderStatus>, userId: String): List<ScheduleForPastAndRequestedServicesResponse> {
-        return scheduleService.findAll()
-            .filter { statusList.contains(it.status) && it.guestId == userId}
+    private fun findAllByStatusAndUserId(
+        statusList: List<OrderStatus>,
+        userId: String,
+    ): List<ScheduleForPastAndRequestedServicesResponse> =
+        scheduleService
+            .findAll()
+            .filter { statusList.contains(it.status) && it.guestId == userId }
             .mapNotNull { scheduleItem ->
                 val assignedEmployee = scheduleItem.employeeId?.let { userService.findById(it) }
                 val serviceOpt = scheduleItem.serviceId?.let { serviceService.findById(it) }
@@ -144,7 +151,4 @@ class GuestController(
                     }
                 }
             }
-    }
-
-
 }

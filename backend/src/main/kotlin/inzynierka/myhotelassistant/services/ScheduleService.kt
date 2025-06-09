@@ -1,10 +1,7 @@
 package inzynierka.myhotelassistant.services
 
-import inzynierka.myhotelassistant.controllers.schedule.ScheduleController
-import inzynierka.myhotelassistant.controllers.user.GuestController.ScheduleForPastAndRequestedServicesResponse
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
-import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import org.springframework.stereotype.Service
@@ -18,7 +15,6 @@ import java.time.temporal.TemporalAdjusters
 class ScheduleService(
     private val scheduleRepository: ScheduleRepository,
 ) {
-
     fun findAll(): List<ScheduleEntity> = scheduleRepository.findAll()
 
     fun findByIdOrThrow(id: String): ScheduleEntity =
@@ -32,9 +28,7 @@ class ScheduleService(
         return null
     }
 
-    fun save(schedule: ScheduleEntity): ScheduleEntity {
-        return scheduleRepository.save(schedule)
-    }
+    fun save(schedule: ScheduleEntity): ScheduleEntity = scheduleRepository.save(schedule)
 
     fun findScheduleForCurrentWeekById(
         id: String,

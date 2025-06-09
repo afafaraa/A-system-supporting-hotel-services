@@ -28,15 +28,14 @@ import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalAdjusters
 import kotlin.collections.forEach
 import kotlin.math.roundToInt
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.times
-import java.time.LocalTime
 
 @Profile("dev")
 @Component
@@ -194,7 +193,10 @@ class DatabaseSeeder(
                         price = (5 + random.nextDouble(5.0, 50.0)).let { (it * 100).roundToInt() / 100.0 },
                         type = serviceData.serviceType,
                         disabled = false,
-                        rating = List(random.nextInt(1, 3)) {Rating(user?.get(0)?.name!! + " " + user.get(0).surname, random.nextInt(1, 5), "comment") }.toMutableList(),
+                        rating =
+                            List(random.nextInt(1, 3)) {
+                                Rating(user?.get(0)?.name!! + " " + user.get(0).surname, random.nextInt(1, 5), "comment")
+                            }.toMutableList(),
                         duration = duration,
                         maxAvailable = random.nextInt(1, 10),
                         weekday = weeklySchedule,
@@ -207,91 +209,96 @@ class DatabaseSeeder(
     }
 
     fun addSchedule() {
-            val services = serviceService.findAll()
-            val allEmployees = employeeService.getAllEmployees(Pageable.unpaged())
-            val schedule = scheduleRepository.findAll()
-            if (!schedule.isEmpty()) {
-                return
-            }
+        val services = serviceService.findAll()
+        val allEmployees = employeeService.getAllEmployees(Pageable.unpaged())
+        val schedule = scheduleRepository.findAll()
+        if (!schedule.isEmpty()) {
+            return
+        }
 
-            val employeeAvailability: MutableMap<String, MutableList<Pair<LocalDateTime, LocalDateTime>>> = mutableMapOf()
-            allEmployees.forEach { employee ->
-                employeeAvailability[employee.id!!] = mutableListOf()
-            }
+        val employeeAvailability: MutableMap<String, MutableList<Pair<LocalDateTime, LocalDateTime>>> = mutableMapOf()
+        allEmployees.forEach { employee ->
+            employeeAvailability[employee.id!!] = mutableListOf()
+        }
 
-            val today = LocalDate.now()
-            val startDate = today.minusWeeks(2)
-            val endDate = today.plusWeeks(3)
+        val today = LocalDate.now()
+        val startDate = today.minusWeeks(2)
+        val endDate = today.plusWeeks(3)
 
-            var currentDate = startDate
-            while (!currentDate.isAfter(endDate)) {
-                val numberOfServicesToday = Random.nextInt(5, 10) // 2 to 6 services a day
+        var currentDate = startDate
+        while (!currentDate.isAfter(endDate)) {
+            val numberOfServicesToday = Random.nextInt(5, 10) // 2 to 6 services a day
 
-                for (service in services) {
-                    for (i in 0 until numberOfServicesToday) {
+            for (service in services) {
+                for (i in 0 until numberOfServicesToday) {
+                    val availableWeekdayHours = service.weekday.filter { it.day == currentDate.dayOfWeek }
 
-                        val availableWeekdayHours = service.weekday.filter { it.day == currentDate.dayOfWeek }
+                    if (availableWeekdayHours.isNotEmpty()) {
+                        val randomWeekdayHour = availableWeekdayHours.random()
+                        val serviceDurationMinutes = service.duration.inWholeMinutes
 
-                        if (availableWeekdayHours.isNotEmpty()) {
-                            val randomWeekdayHour = availableWeekdayHours.random()
-                            val serviceDurationMinutes = service.duration.inWholeMinutes
-
-                            var assigned = false
-                            val possibleStartTimes = (randomWeekdayHour.startHour..randomWeekdayHour.endHour).flatMap { hour ->
-                                listOf(
-                                    LocalTime.of(hour, 0),
-                                    LocalTime.of(hour, 15),
-                                    LocalTime.of(hour, 30),
-                                    LocalTime.of(hour, 45)
-                                )
-                            }.filter { it.plusMinutes(serviceDurationMinutes).isBefore(LocalTime.of(randomWeekdayHour.endHour, 59)) }
+                        var assigned = false
+                        val possibleStartTimes =
+                            (randomWeekdayHour.startHour..randomWeekdayHour.endHour)
+                                .flatMap { hour ->
+                                    listOf(
+                                        LocalTime.of(hour, 0),
+                                        LocalTime.of(hour, 15),
+                                        LocalTime.of(hour, 30),
+                                        LocalTime.of(hour, 45),
+                                    )
+                                }.filter { it.plusMinutes(serviceDurationMinutes).isBefore(LocalTime.of(randomWeekdayHour.endHour, 59)) }
                                 .shuffled()
 
-                            for (potentialStartTime in possibleStartTimes) {
-                                val proposedDateTime = currentDate.atTime(potentialStartTime)
-                                val serviceEndTime = proposedDateTime.plusMinutes(serviceDurationMinutes)
-                                val breakEndTime = serviceEndTime.plusMinutes(15) // 15 min break
+                        for (potentialStartTime in possibleStartTimes) {
+                            val proposedDateTime = currentDate.atTime(potentialStartTime)
+                            val serviceEndTime = proposedDateTime.plusMinutes(serviceDurationMinutes)
+                            val breakEndTime = serviceEndTime.plusMinutes(15) // 15 min break
 
-                                val availableEmployeesForService = allEmployees.shuffled().filter { employee ->
+                            val availableEmployeesForService =
+                                allEmployees.shuffled().filter { employee ->
                                     val employeeId = employee.id!!
                                     val occupiedSlots = employeeAvailability[employeeId] ?: mutableListOf()
 
-                                    val hasOverlap = occupiedSlots.any { (slotStart, slotEnd) ->
-                                        (proposedDateTime.isBefore(slotEnd) && serviceEndTime.isAfter(slotStart))
-                                    }
+                                    val hasOverlap =
+                                        occupiedSlots.any { (slotStart, slotEnd) ->
+                                            (proposedDateTime.isBefore(slotEnd) && serviceEndTime.isAfter(slotStart))
+                                        }
                                     !hasOverlap
                                 }
 
-                                if (availableEmployeesForService.isNotEmpty()) {
-                                    val chosenEmployee = availableEmployeesForService.first()
+                            if (availableEmployeesForService.isNotEmpty()) {
+                                val chosenEmployee = availableEmployeesForService.first()
 
-                                    val scheduleEntity = ScheduleEntity(
+                                val scheduleEntity =
+                                    ScheduleEntity(
                                         serviceId = service.id!!,
                                         serviceDate = proposedDateTime,
                                         weekday = currentDate.dayOfWeek,
                                         employeeId = chosenEmployee.id,
                                         isOrdered = false,
-                                        guestId = null
+                                        guestId = null,
                                     )
 
-                                    employeeAvailability[chosenEmployee.id!!]?.add(Pair(proposedDateTime, breakEndTime))
-                                    employeeAvailability[chosenEmployee.id!!]?.sortBy { it.first } // Keep sorted
+                                employeeAvailability[chosenEmployee.id!!]?.add(Pair(proposedDateTime, breakEndTime))
+                                employeeAvailability[chosenEmployee.id!!]?.sortBy { it.first } // Keep sorted
 
-                                    scheduleRepository.save(scheduleEntity)
-                                    logger.info("Schedule added: ${service.name} on $currentDate at $proposedDateTime with Employee ${chosenEmployee.id}")
-                                    assigned = true
-                                    break
-                                }
-                            }
-                            if (!assigned) {
-                                logger.warn("Could not find a suitable time and employee for service ${service.name} on $currentDate")
+                                scheduleRepository.save(scheduleEntity)
+                                logger.info(
+                                    "Schedule added: ${service.name} on $currentDate at $proposedDateTime with Employee ${chosenEmployee.id}",
+                                )
+                                assigned = true
+                                break
                             }
                         }
+                        if (!assigned) {
+                            logger.warn("Could not find a suitable time and employee for service ${service.name} on $currentDate")
+                        }
                     }
-
                 }
-                currentDate = currentDate.plusDays(1)
             }
+            currentDate = currentDate.plusDays(1)
+        }
     }
 
     fun addOrders() {
@@ -339,7 +346,6 @@ class DatabaseSeeder(
             }
         }
     }
-
 
     private fun addManager() {
         if (!userRepo.existsByUsername("manager")) {
@@ -465,7 +471,7 @@ class DatabaseSeeder(
                 "Tennis court",
                 "Access to our outdoor tennis court, including equipment rental.",
                 "https://i.pinimg.com/736x/f4/4c/44/f44c44e8fa684046a1133ad6ef97b93f.jpg",
-                ServiceType.PLACE_RESERVATION
+                ServiceType.PLACE_RESERVATION,
             ),
         )
 }

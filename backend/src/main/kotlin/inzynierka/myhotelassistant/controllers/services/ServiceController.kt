@@ -48,7 +48,9 @@ class ServiceController(
 
     @PostMapping("/rate")
     @ResponseStatus(HttpStatus.OK)
-    fun rateService(@RequestBody req: RateServiceRequestBody) {
+    fun rateService(
+        @RequestBody req: RateServiceRequestBody,
+    ) {
         val guest = userService.findByUsernameOrThrow(req.username)
         println(guest)
         val serviceId = scheduleService.findByIdOrThrow(req.scheduleId).serviceId

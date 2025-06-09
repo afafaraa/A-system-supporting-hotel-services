@@ -1,7 +1,5 @@
 package inzynierka.myhotelassistant.controllers.schedule
-import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserRequest
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
-import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.services.EmployeeService
 import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
@@ -9,8 +7,6 @@ import inzynierka.myhotelassistant.services.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -45,15 +41,14 @@ class ScheduleController(
         val status: OrderStatus,
     )
 
-
-
     @GetMapping("/get/week/id/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun getScheduleByServiceIdForWeek(
         @PathVariable id: String,
         @RequestParam date: String,
-    ): List<ScheduleForWeekResponse>{
-        return scheduleService.findScheduleForCurrentWeekById(id, date)
+    ): List<ScheduleForWeekResponse> {
+        return scheduleService
+            .findScheduleForCurrentWeekById(id, date)
             .mapNotNull { schedule ->
                 val empId = schedule.employeeId ?: return@mapNotNull null
                 val emp = employeeService.findByIdOrThrow(empId)
