@@ -62,6 +62,53 @@
         "orderTime": "Data zamówienia",
         "durationUnknown": "Czas nieokreślony"
       }
+    },
+    "available_services": {
+      "title": "Dostępne usługi"
+    },
+    "requested_services": {
+      "title": "Zamówione usługi",
+      "confirmationDialog": "Anulować usługę?",
+      "yes": "Tak",
+      "no": "Nie"
+    },
+    "past_services": {
+      "title": "Zrealizowane usługi",
+      "rateServiceDialog": "Oceń usługę",
+      "addComment": "Dodaj komentarz",
+      "cancelComment": "Anuluj komentarz",
+      "commentInputPlaceholder": "Napisz swój komentarz tutaj",
+      "rate": "Oceń",
+      "IN_PROGRESS": "W trakcie realizacji",
+      "PENDING": "Oczekuje na akceptację",
+      "CANCELED": "Anulowana przez pracownika",
+      "FINISHED": "Zakończona"
+    },
+    "shopping_cart": {
+      "title": "Koszyk",
+      "noItems": "Brak produktów w koszyku",
+      "cartValue": "Wartość koszyka",
+      "currentBill": "Bieżący rachunek",
+      "pay": "Zapłać",
+      "addToBill": "Dodaj do rachunku",
+      "continueShopping": "Kontynuuj zakupy"
+    },
+    "service_schedule": {
+      "M": "Pn",
+      "T": "Wt",
+      "W": "Śr",
+      "Th": "Cz",
+      "F": "Pt",
+      "S": "Sb",
+      "Su": "Nd",
+      "noServiceAvailable": "Brak dostępnych usług w tym dniu.",
+      "nextAvailableServices": "Najbliższe terminy usług"
     }
+  },
+  "buttons": {
+    "cancel": "Anuluj",
+    "submit": "Zatwietdź",
+    "delete": "Usuń",
+    "deleteAll": "Usuń wszystko"
   }
 }

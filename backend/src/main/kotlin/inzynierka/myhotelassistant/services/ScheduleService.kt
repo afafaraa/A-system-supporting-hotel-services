@@ -18,10 +18,20 @@ class ScheduleService(
     private val scheduleRepository: ScheduleRepository,
     private val scheduleDateConverter: SchedulesToScheduleDataConverter,
 ) {
+    fun findAll(): List<ScheduleEntity> = scheduleRepository.findAll()
+
     fun findByIdOrThrow(id: String): ScheduleEntity =
         scheduleRepository
             .findById(id)
             .orElseThrow { EntityNotFoundException("Schedule not found") }
+
+    fun findById(id: String): ScheduleEntity? {
+        val it = scheduleRepository.findById(id)
+        if (it.isPresent) return it.get()
+        return null
+    }
+
+    fun save(schedule: ScheduleEntity): ScheduleEntity = scheduleRepository.save(schedule)
 
     fun findScheduleForCurrentWeekById(
         id: String,

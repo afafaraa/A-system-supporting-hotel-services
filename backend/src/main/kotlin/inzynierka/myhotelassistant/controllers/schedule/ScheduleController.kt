@@ -1,7 +1,7 @@
 package inzynierka.myhotelassistant.controllers.schedule
 import inzynierka.myhotelassistant.dto.ScheduleData
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
-import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
+import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.services.EmployeeService
 import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeParseException
@@ -33,20 +34,44 @@ class ScheduleController(
         val datetime: LocalDateTime,
     )
 
+    data class ScheduleForWeekResponse(
+        val id: String,
+        val employeeFullName: String?,
+        val serviceDate: LocalDateTime,
+        val weekday: DayOfWeek,
+        val isOrdered: Boolean,
+        val status: OrderStatus,
+    )
+
     @GetMapping("/get/week/id/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun getScheduleByServiceIdForWeek(
         @PathVariable id: String,
         @RequestParam date: String,
-    ): List<ScheduleEntity> = scheduleService.findScheduleForCurrentWeekById(id, date)
+    ): List<ScheduleForWeekResponse> {
+        return scheduleService
+            .findScheduleForCurrentWeekById(id, date)
+            .mapNotNull { schedule ->
+                val empId = schedule.employeeId ?: return@mapNotNull null
+                val emp = employeeService.findByIdOrThrow(empId)
+                ScheduleForWeekResponse(
+                    schedule.id ?: "",
+                    "${emp.name} ${emp.surname}",
+                    schedule.serviceDate,
+                    schedule.weekday,
+                    schedule.isOrdered,
+                    schedule.status,
+                )
+            }
+    }
 
     @GetMapping("/get/cart/id/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun getScheduleForCartById(
         @PathVariable id: String,
     ): ScheduleForCartResponse? {
-        val scheduleItem = scheduleService.findByIdOrThrow(id)
-        if (scheduleItem.employeeId == null) return null
+        val scheduleItem = scheduleService.findById(id)
+        if (scheduleItem?.employeeId == null) return null
         val assignedEmployee = employeeService.findByIdOrThrow(scheduleItem.employeeId!!)
         val serviceOpt = serviceService.findById(scheduleItem.serviceId)
         if (!serviceOpt.isPresent) {
