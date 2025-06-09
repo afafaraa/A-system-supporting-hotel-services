@@ -9,19 +9,19 @@ import inzynierka.myhotelassistant.repositories.ServiceRepository
 import org.springframework.stereotype.Service
 import java.time.format.DateTimeFormatter
 
-data class ServiceStatsDto(//TO-DO  Remove this DTO after presentation
-    val id: String,
-    val name: String,
-    val orderCount: Int,
-    val revenue: Double,
-    val averageRating: Double,
-    val rating: List<Int>,
-)
 @Service
 class StatsService(
     private val scheduleRepository: ScheduleRepository,
     private val serviceRepository: ServiceRepository
 ) {
+    data class ServiceStatsDto(//TO-DO  Remove this DTO after presentation
+        val id: String,
+        val name: String,
+        val orderCount: Int,
+        val revenue: Double,
+        val averageRating: Double,
+        val rating: List<Int>,
+    )
     fun getStats(): StatsResponse {
         val allOrders = scheduleRepository.findAll()
             .filter { it.status != OrderStatus.CANCELED }

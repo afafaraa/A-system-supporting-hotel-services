@@ -9,6 +9,7 @@ import inzynierka.myhotelassistant.utils.SchedulesToScheduleDataConverter
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.time.temporal.TemporalAdjusters
@@ -27,7 +28,7 @@ class ScheduleService(
         id: String,
         date: String,
     ): List<ScheduleEntity> {
-        var parsedDate: LocalDate
+        val parsedDate: LocalDate
         try {
             parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         } catch (_: DateTimeParseException) {
@@ -43,7 +44,7 @@ class ScheduleService(
         )
     }
 
-    private fun weekBounds(day: LocalDate): Pair<LocalDate, LocalDate> {
+    fun weekBounds(day: LocalDate): Pair<LocalDate, LocalDate> {
         val monday = day.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
         val sunday = day.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
         return monday to sunday
@@ -62,4 +63,11 @@ class ScheduleService(
         }
         return scheduleDateConverter.convert(foundSchedules, date)
     }
+
+    fun findByEmployeeIdAndDateRange(
+        employeeId: String,
+        start: LocalDateTime,
+        end: LocalDateTime
+    ): List<ScheduleEntity> =
+        scheduleRepository.findByEmployeeIdAndServiceDateBetween(employeeId, start, end)
 }
