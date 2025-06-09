@@ -1,8 +1,7 @@
 package inzynierka.myhotelassistant.controllers.schedule
-import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.dto.ScheduleData
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
-import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
+import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.services.EmployeeService
 import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
@@ -25,7 +24,6 @@ class ScheduleController(
     private val scheduleService: ScheduleService,
     private val employeeService: EmployeeService,
     private val serviceService: ServiceService,
-    private val userService: UserService,
 ) {
     data class ScheduleForCartResponse(
         val id: String,
