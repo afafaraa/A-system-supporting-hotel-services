@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 import { axiosAuthApi } from "../../../middleware/axiosApi.ts";
-import { Button, Typography } from "@mui/material";
+import { Button, Typography, Box } from "@mui/material";
 import { ServiceProps } from "../available-services/AvailableServiceCard.tsx";
+import {useTranslation} from "react-i18next";
 
 type ScheduleProps = {
   id: string;
-  serviceId: string;
-  employeeId: string;
-  active: boolean;
-  serviceDate: Date;
+  employeeFullName: string;
+  isOrdered: boolean;
+  serviceDate: string;
   weekday: Weekday;
   inCart: boolean;
+  status: string;
 };
 
 enum Weekday {
@@ -47,6 +48,7 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
     monday.setDate(now.getDate() + diff);
     return monday;
   });
+  const {t} = useTranslation();
 
   useEffect(() => {
     fetchSchedule();
@@ -91,7 +93,7 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
     setLoading(true);
     try {
       const response = await axiosAuthApi(`/schedule/get/week/id/${service.id}`, {
-        params: { date: weekMonday },
+        params: { date: weekMonday.toISOString().split("T")[0] },
       });
       const stringifiedItems = localStorage.getItem("CART");
       let parsedItemIds: string[] = [];
@@ -115,7 +117,6 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
       newDate.setDate(prev.getDate() + (next ? 7 : -7));
       return newDate;
     });
-    await fetchSchedule();
   };
 
   const formatEndOfWeek = () => {
@@ -150,27 +151,55 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
               color: currDay === day ? 'white' : '',
             }}
           >
-            {currDay}
+            {t(`pages.service_schedule.${currDay}`)}
           </Button>
         ))}
         <Button onClick={() => changeWeek(true)} sx={{ minWidth: 'auto', width: '37px', borderRadius: '100%' }}>{'>'}</Button>
       </div>
       {filteredSchedule.length === 0 ? (
-        <Typography>No services available for this day.</Typography>
+        <Typography>{t('pages.service_schedule.noServiceAvailable')}</Typography>
       ) : (
-        filteredSchedule.map((item) => (
-          <div key={item.id} style={{ display: 'flex' }}>
-            <Typography sx={{ padding: '10px 15px', borderRadius: '10px', width: '70%' }}>
-              {JSON.stringify(item.id)}
-            </Typography>
-            {item.inCart ? (<Button onClick={() => removeFromCart(item)} sx={{ minWidth: 'auto', width: '50px' }}>
-              -
-            </Button>) : (<Button onClick={() => addToCart(item)} sx={{ minWidth: 'auto', width: '50px' }}>
-              +
-            </Button>)}
+        filteredSchedule.sort((a,b) => new Date(a.serviceDate).getTime() - new Date(b.serviceDate).getTime()).map((item) => {
+          const available = new Date() > new Date(item.serviceDate) || item.status !== 'AVAILABLE';
 
-          </div>
-        ))
+          return (
+            <div key={item.id} style={{ display: 'flex', gap: '5px', opacity: available ? 0.5 : 1, pointerEvents: available ? 'none' : 'auto', width: '100%' }}>
+              <Box
+                sx={{
+                  padding: '10px 15px',
+                  borderRadius: '5px',
+                  width: {xs: '100%', md:'70%'},
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  background: '#ddd',
+                }}
+              >
+                <div>{item.employeeFullName}</div>
+                <div>
+                  {String(new Date(item.serviceDate).getHours()).padStart(2, '0')}:
+                  {String(new Date(item.serviceDate).getMinutes()).padStart(2, '0')}
+                </div>
+              </Box>
+              {item.inCart ? (
+                <Button
+                  onClick={() => removeFromCart(item)}
+                  sx={{ minWidth: 'auto', width: '50px', background: '#ddd' }}
+                  disabled={available}
+                >
+                  -
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => addToCart(item)}
+                  sx={{ minWidth: 'auto', width: '50px', background: '#ddd' }}
+                  disabled={available}
+                >
+                  +
+                </Button>
+              )}
+            </div>
+          );
+        })
       )}
 
     </div>

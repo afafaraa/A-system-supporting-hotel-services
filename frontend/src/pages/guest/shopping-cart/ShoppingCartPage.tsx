@@ -6,6 +6,7 @@ import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import ShoppingCartItem from "./ShoppingCartItem.tsx";
 import {useSelector} from "react-redux";
 import {selectUser} from "../../../redux/slices/userSlice.ts";
+import {useTranslation} from "react-i18next";
 
 export type CartProps = {
   id: string;
@@ -20,10 +21,14 @@ export type CartProps = {
 function ShoppingCartPage() {
   const navigate = useNavigate();
   const [cart, setCart] = useState<CartProps[]>([]);
+  const [bill, setBill] = useState<number>(0);
   const user = useSelector(selectUser);
+  const {t} = useTranslation();
 
   useEffect(() => {
     fetchCartData();
+    fetchCurrentBill();
+
   },[])
 
   const fetchCartData = async () => {
@@ -35,10 +40,21 @@ function ShoppingCartPage() {
         for (const id of parsedItems) {
           const response = await axiosAuthApi.get(`/schedule/get/cart/id/${id}`)
           const cartItem: CartProps = response.data;
-          cartList.push(cartItem);
+          if (cartItem) {
+            cartList.push(cartItem);
+          }
         }
       }
       setCart(cartList);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  const fetchCurrentBill = async () => {
+    try {
+      const response = await axiosAuthApi.get(`/guest/bill/get/${user?.username}`)
+      setBill(response.data);
     } catch (e) {
       console.error(e);
     }
@@ -54,12 +70,17 @@ function ShoppingCartPage() {
     fetchCartData();
     try {
       for (const item of cart) {
-        const response = await axiosAuthApi.post(`/guest/order/add/${item.id}/${user?.username}`);
-        console.log(response);
+        console.log(item, user)
+        const response = await axiosAuthApi.post(`/guest/order/services`,{
+          id: item.id,
+          username: user?.username,
+        });
+        console.log(response.data);
       }
-
     } catch(e) {
       console.error(e);
+    } finally {
+      fetchCurrentBill();
     }
   }
 
@@ -71,25 +92,36 @@ function ShoppingCartPage() {
         borderRadius: '10px',
         marginTop: '20px',
       }}>
-        <Grid sx={{gap: 2,}} container spacing={{xs: 2, md: 3}} columns={{sm: 1, md: 2}}>
-          <Grid sx={{backgroundColor: 'white', padding: '30px 25px'}} size={1}>
-            <Button variant="contained" sx={{mb: '5px'}} onClick={clearCart}>Usuń wszystko</Button>
+        <Grid sx={{gap: 2,}} container spacing={{xs: 2, md: 3}} columns={{xs: 1, md: 2}}>
+          <Grid sx={{backgroundColor: 'white', padding: {xs: '15px', sm: '30px 25px'}}} size={1}>
+            <Button variant="contained" sx={{mb: '5px'}} onClick={clearCart}>{t('buttons.deleteAll')}</Button>
             {cart.length > 0 ? cart.map((item, index) => (
-              <ShoppingCartItem index={index} item={item} fetchCartData={fetchCartData}/>
-            )) : <p>No items in cart</p>}
+              <ShoppingCartItem key={index} index={index} item={item} fetchCartData={fetchCartData}/>
+            )) : <p>{t('pages.shopping_cart.noItems')}</p>}
           </Grid>
           <Grid sx={{display: 'flex', flexDirection: 'column', gap: '15px', }} size={1}>
-            <div style={{display: 'flex', flexDirection: 'column', backgroundColor: 'white', padding: '25px', gap: '10px'}}>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              backgroundColor: 'white',
+              padding: '25px',
+              gap: '10px'
+            }}>
               <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                <Typography variant='body1'>Wartość koszyka:</Typography>
+                <Typography variant='body1'>{t('pages.shopping_cart.cartValue')}:</Typography>
                 <div style={{fontWeight: '700'}}>{cart.length > 0 ? (
                   cart.reduce((acc, curr) => acc + curr.price, 0).toFixed(2)
-                ) : (0)} $</div>
+                ) : (0)} $
+                </div>
               </div>
-              <Button onClick={orderServices} variant="contained">Zaplać</Button>
-              <Button onClick={orderServices} variant="contained">Dodaj do rachunku</Button>
+              <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                <Typography variant='body1'>{t('pages.shopping_cart.currentBill')}:</Typography>
+                <div style={{fontWeight: '700'}}>{bill.toFixed(2)} $</div>
+              </div>
+              <Button onClick={orderServices} variant="contained">{t('pages.shopping_cart.pay')}</Button>
+              <Button onClick={orderServices} variant="contained">{t('pages.shopping_cart.addToBill')}</Button>
             </div>
-            <Button onClick={() => navigate("/services/available")} sx={{backgroundColor: 'white'}}>Kontynuuj zakupy</Button>
+            <Button onClick={() => navigate("/services/available")} sx={{backgroundColor: 'white'}}>{t('pages.shopping_cart.continueShopping')}</Button>
           </Grid>
         </Grid>
 

@@ -109,6 +109,53 @@
       "role": "Role",
       "workSchedule": "Work Schedule",
       "employeeData": "Employee Data"
+    },
+    "available_services": {
+      "title": "Available services"
+    },
+    "requested_services": {
+      "title": "Requested services",
+      "confirmationDialog": "Cancel service?",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "past_services": {
+      "title": "Past services",
+      "rateServiceDialog": "Rate service",
+      "addComment": "Add comment",
+      "cancelComment": "Cancel comment",
+      "commentInputPlaceholder": "Write your comment here",
+      "rate": "Rate",
+      "IN_PROGRESS": "In progress",
+      "PENDING": "Waiting for approval",
+      "CANCELED": "Canceled by employee",
+      "FINISHED": "Finished"
+    },
+    "shopping_cart": {
+      "title": "Shopping cart",
+      "noItems": "No items in cart",
+      "cartValue": "Cart value",
+      "currentBill": "Current bill",
+      "pay": "Pay",
+      "addToBill": "Add to bill",
+      "continueShopping": "Continue shopping"
+    },
+    "service_schedule": {
+      "M": "M",
+      "T": "T",
+      "W": "W",
+      "Th": "Th",
+      "F": "F",
+      "S": "S",
+      "Su": "Su",
+      "noServiceAvailable": "No services available for this day.",
+      "nextAvailableServices": "Next available service dates"
     }
+  },
+  "buttons": {
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "delete": "Delete",
+    "deleteAll": "Delete all"
   }
 }

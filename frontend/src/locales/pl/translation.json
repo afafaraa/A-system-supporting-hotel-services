@@ -63,52 +63,52 @@
         "durationUnknown": "Czas nieokreślony"
       }
     },
-    "stats": {
-      "title": "Statystyki",
-      "general": "Ogólne",
-      "services": "Usługi",
-      "purchasedServices": "Zamówione usługi",
-      "revenue": "Przychód",
-      "popularServices": "Popularne usługi",
-      "salesOverTime": "Sprzedaż w czasie",
-      "orders": "Zamówienia"
+    "available_services": {
+      "title": "Dostępne usługi"
     },
-    "servicesList": {
-      "title": "Lista usług",
-      "availability": "Dostępność",
-      "all": "Wszystkie",
-      "unavailable": "Niedostępne",
-      "available": "Dostępne",
-      "type": "Typ",
-      "generalService": "Usługa ogólna",
-      "placeReservation": "Rezerwacja miejsca",
-      "addService": "Dodaj usługę",
-      "serviceName": "Nazwa usługi",
-      "description": "Opis",
-      "price": "Cena",
-      "actions": "Akcje",
-      "edit": "Edytuj"
+    "requested_services": {
+      "title": "Zamówione usługi",
+      "confirmationDialog": "Anulować usługę?",
+      "yes": "Tak",
+      "no": "Nie"
     },
-    "personnel": {
-      "title": "Personel",
-      "addEmployee": "Dodaj pracownika",
-      "name": "Imię",
-      "position": "Stanowisko",
-      "email": "Email",
-      "stats": "Status",
-      "actions": "Akcje",
-      "preview": "Podgląd",
-      "previous": "Poprzedni",
-      "next": "Następny"
+    "past_services": {
+      "title": "Zrealizowane usługi",
+      "rateServiceDialog": "Oceń usługę",
+      "addComment": "Dodaj komentarz",
+      "cancelComment": "Anuluj komentarz",
+      "commentInputPlaceholder": "Napisz swój komentarz tutaj",
+      "rate": "Oceń",
+      "IN_PROGRESS": "W trakcie realizacji",
+      "PENDING": "Oczekuje na akceptację",
+      "CANCELED": "Anulowana przez pracownika",
+      "FINISHED": "Zakończona"
     },
-    "personnelDetails": {
-      "edit": "Edytuj pracownika",
-      "name": "Imię",
-      "username": "Nazwa użytkownika",
-      "email": "Email",
-      "role": "Stanowisko",
-      "workSchedule": "Harmonogram pracy",
-      "employeeData": "Dane pracownika"
+    "shopping_cart": {
+      "title": "Koszyk",
+      "noItems": "Brak produktów w koszyku",
+      "cartValue": "Wartość koszyka",
+      "currentBill": "Bieżący rachunek",
+      "pay": "Zapłać",
+      "addToBill": "Dodaj do rachunku",
+      "continueShopping": "Kontynuuj zakupy"
+    },
+    "service_schedule": {
+      "M": "Pn",
+      "T": "Wt",
+      "W": "Śr",
+      "Th": "Cz",
+      "F": "Pt",
+      "S": "Sb",
+      "Su": "Nd",
+      "noServiceAvailable": "Brak dostępnych usług w tym dniu.",
+      "nextAvailableServices": "Najbliższe terminy usług"
     }
+  },
+  "buttons": {
+    "cancel": "Anuluj",
+    "submit": "Zatwietdź",
+    "delete": "Usuń",
+    "deleteAll": "Usuń wszystko"
   }
 }

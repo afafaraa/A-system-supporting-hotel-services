@@ -4,6 +4,7 @@ import inzynierka.myhotelassistant.models.notification.NotificationEntity
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
+import inzynierka.myhotelassistant.models.service.Rating
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.models.service.ServiceType
 import inzynierka.myhotelassistant.models.service.WeekdayHour
@@ -15,7 +16,9 @@ import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
 import inzynierka.myhotelassistant.services.EmployeeService
+import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
+import inzynierka.myhotelassistant.services.UserService
 import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
@@ -26,8 +29,8 @@ import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalAdjusters
 import kotlin.collections.forEach
 import kotlin.math.roundToInt
 import kotlin.random.Random
@@ -45,6 +48,8 @@ class DatabaseSeeder(
     private val notificationRepository: NotificationRepository,
     private val scheduleRepository: ScheduleRepository,
     private val employeeService: EmployeeService,
+    private val userService: UserService,
+    private val scheduleService: ScheduleService,
 ) {
     private val logger = LoggerFactory.getLogger(DatabaseSeeder::class.java)
 
@@ -56,6 +61,7 @@ class DatabaseSeeder(
             addTestEmployees()
             addServices()
             addSchedule()
+            addOrders()
             addManager()
             addTestNotifications()
         } catch (e: Exception) {
@@ -167,6 +173,7 @@ class DatabaseSeeder(
     }
 
     private fun addServices() {
+        val user = userService.findByRole(Role.GUEST)
         serviceDataList.forEachIndexed { index, serviceData ->
             if (serviceService.findByName(serviceData.name) == null) {
                 val random = Random(System.currentTimeMillis() + index)
@@ -187,9 +194,12 @@ class DatabaseSeeder(
                         name = serviceData.name,
                         description = serviceData.description,
                         price = (5 + random.nextDouble(5.0, 50.0)).let { (it * 100).roundToInt() / 100.0 },
-                        type = if (random.nextBoolean()) ServiceType.GENERAL_SERVICE else ServiceType.PLACE_RESERVATION,
+                        type = serviceData.serviceType,
                         disabled = false,
-                        rating = List(random.nextInt(3, 7)) { 3 + random.nextInt(3) }.toMutableList(),
+                        rating =
+                            List(random.nextInt(1, 3)) {
+                                Rating(user?.get(0)?.name!! + " " + user.get(0).surname, random.nextInt(1, 5), "comment")
+                            }.toMutableList(),
                         duration = duration,
                         maxAvailable = random.nextInt(1, 10),
                         weekday = weeklySchedule,
@@ -203,43 +213,152 @@ class DatabaseSeeder(
 
     fun addSchedule() {
         val services = serviceService.findAll()
-        val today = LocalDate.now()
         val allEmployees = employeeService.getAllEmployees(Pageable.unpaged())
-        val allGuests = userRepo.findByRole(Role.GUEST)
-        val availableChance = 3 // 30%
+        val schedule = scheduleRepository.findAll()
+        if (!schedule.isEmpty()) {
+            return
+        }
 
-        services.forEach { service ->
-            service.weekday.forEach { weekdayHour ->
-                val targetDate = today.with(TemporalAdjusters.nextOrSame(weekdayHour.day))
-                val dateTime = targetDate.atTime(weekdayHour.startHour, 0)
+        val employeeAvailability: MutableMap<String, MutableList<Pair<LocalDateTime, LocalDateTime>>> = mutableMapOf()
+        allEmployees.forEach { employee ->
+            employeeAvailability[employee.id!!] = mutableListOf()
+        }
 
-                if (service.id != null) {
-                    var schedule: ScheduleEntity
-                    if (Random.nextInt(10) < availableChance) {
-                        schedule =
-                            ScheduleEntity(
-                                serviceId = service.id,
-                                serviceDate = dateTime,
-                                weekday = weekdayHour.day,
-                            )
-                    } else {
-                        schedule =
-                            ScheduleEntity(
-                                serviceId = service.id,
-                                serviceDate = dateTime,
-                                weekday = weekdayHour.day,
-                                employeeId = allEmployees.random().id,
-                                isOrdered = true,
-                                orderTime = dateTime.minus(Random.nextLong(60 * 24 * 3), ChronoUnit.MINUTES),
-                                guestId = allGuests.random().id,
-                                status = OrderStatus.PENDING,
-                            )
+        val today = LocalDate.now()
+        val startDate = today.minusWeeks(2)
+        val endDate = today.plusWeeks(3)
+
+        var currentDate = startDate
+        while (!currentDate.isAfter(endDate)) {
+            val numberOfServicesToday = Random.nextInt(5, 10) // 2 to 6 services a day
+
+            for (service in services) {
+                for (i in 0 until numberOfServicesToday) {
+                    val availableWeekdayHours = service.weekday.filter { it.day == currentDate.dayOfWeek }
+
+                    if (availableWeekdayHours.isNotEmpty()) {
+                        val randomWeekdayHour = availableWeekdayHours.random()
+                        val serviceDurationMinutes = service.duration.inWholeMinutes
+
+                        var assigned = false
+                        val possibleStartTimes =
+                            (randomWeekdayHour.startHour..randomWeekdayHour.endHour)
+                                .flatMap { hour ->
+                                    listOf(
+                                        LocalTime.of(hour, 0),
+                                        LocalTime.of(hour, 15),
+                                        LocalTime.of(hour, 30),
+                                        LocalTime.of(hour, 45),
+                                    )
+                                }.filter { it.plusMinutes(serviceDurationMinutes).isBefore(LocalTime.of(randomWeekdayHour.endHour, 59)) }
+                                .shuffled()
+
+                        for (potentialStartTime in possibleStartTimes) {
+                            val proposedDateTime = currentDate.atTime(potentialStartTime)
+                            val serviceEndTime = proposedDateTime.plusMinutes(serviceDurationMinutes)
+                            val breakEndTime = serviceEndTime.plusMinutes(15) // 15 min break
+
+                            val availableEmployeesForService =
+                                allEmployees.shuffled().filter { employee ->
+                                    val employeeId = employee.id!!
+                                    val occupiedSlots = employeeAvailability[employeeId] ?: mutableListOf()
+
+                                    val hasOverlap =
+                                        occupiedSlots.any { (slotStart, slotEnd) ->
+                                            (proposedDateTime.isBefore(slotEnd) && serviceEndTime.isAfter(slotStart))
+                                        }
+                                    !hasOverlap
+                                }
+
+                            if (availableEmployeesForService.isNotEmpty()) {
+                                val chosenEmployee = availableEmployeesForService.first()
+
+                                val scheduleEntity =
+                                    ScheduleEntity(
+                                        serviceId = service.id!!,
+                                        serviceDate = proposedDateTime,
+                                        weekday = currentDate.dayOfWeek,
+                                        employeeId = chosenEmployee.id,
+                                        isOrdered = false,
+                                        guestId = null,
+                                    )
+
+                                employeeAvailability[chosenEmployee.id!!]?.add(Pair(proposedDateTime, breakEndTime))
+                                employeeAvailability[chosenEmployee.id!!]?.sortBy { it.first } // Keep sorted
+
+                                scheduleRepository.save(scheduleEntity)
+                                logger.info(
+                                    "Schedule added: ${service.name} on $currentDate at $proposedDateTime with Employee ${chosenEmployee.id}",
+                                )
+                                assigned = true
+                                break
+                            }
+                        }
+                        if (!assigned) {
+                            logger.warn("Could not find a suitable time and employee for service ${service.name} on $currentDate")
+                        }
                     }
-                    logger.info("Schedule added: ${service.name} on ${weekdayHour.day} at $dateTime")
-
-                    scheduleRepository.save(schedule)
                 }
             }
+            currentDate = currentDate.plusDays(1)
+        }
+    }
+
+    fun addOrders() {
+        val scheduleList = scheduleRepository.findAll().toMutableList()
+        val guests = userService.findByRole(Role.GUEST)
+
+        if (scheduleList.isEmpty() || guests?.isEmpty() == true) return
+
+        val now = LocalDateTime.now()
+
+        guests?.forEach { guest ->
+            val availableSchedules = scheduleList.filter { it.guestId == null }.shuffled()
+
+            if (availableSchedules.isEmpty()) return@forEach
+
+            val requestedCount = Random.nextInt(3, 6)
+            val pastCount = Random.nextInt(10, 16)
+
+            val requestedStatuses = listOf(OrderStatus.PENDING, OrderStatus.IN_PROGRESS)
+            val pastStatuses = listOf(OrderStatus.FINISHED, OrderStatus.CANCELED)
+
+            val totalCount = requestedCount + pastCount
+            val schedulesToUpdate = availableSchedules.take(totalCount)
+
+            schedulesToUpdate.take(pastCount).forEach { schedule ->
+                if (schedule.serviceDate.isAfter(now)) {
+                    schedule.serviceDate = now.minusDays(Random.nextLong(1, 15))
+                }
+                schedule.status = pastStatuses.random()
+                schedule.isOrdered = true
+                schedule.guestId = guest.id
+                schedule.orderTime = schedule.serviceDate.minusHours(Random.nextLong(1, 48))
+                if (schedule.status == OrderStatus.FINISHED) {
+                    val service = serviceService.findByIdOrThrow(schedule.serviceId)
+                    guest.guestData?.let { data ->
+                        data.bill += service.price
+                    }
+                }
+
+                scheduleRepository.save(schedule)
+            }
+
+            schedulesToUpdate.drop(pastCount).forEach { schedule ->
+                if (schedule.serviceDate.isBefore(now)) {
+                    schedule.serviceDate = now.plusDays(Random.nextLong(1, 15))
+                }
+                schedule.status = requestedStatuses.random()
+                schedule.isOrdered = true
+                schedule.guestId = guest.id
+                schedule.orderTime = now.minusHours(Random.nextLong(1, 48))
+                val service = serviceService.findByIdOrThrow(schedule.serviceId)
+                guest.guestData?.let { data ->
+                    data.bill += service.price
+                }
+                scheduleRepository.save(schedule)
+            }
+            userService.save(guest)
         }
     }
 
@@ -310,6 +429,7 @@ class DatabaseSeeder(
         val name: String,
         val description: String,
         val imageUrl: String,
+        val serviceType: ServiceType,
     )
 
     val serviceDataList =
@@ -318,46 +438,55 @@ class DatabaseSeeder(
                 "Room cleaning",
                 "Thorough cleaning of your room, including dusting, vacuuming, and sanitizing surfaces.",
                 "https://i.pinimg.com/736x/b0/9b/77/b09b77d8e801fac4a0d2baa99dbff57b.jpg",
+                ServiceType.GENERAL_SERVICE,
             ),
             ServiceData(
                 "Laundry",
                 "Professional washing, drying, and folding of your clothes using eco-friendly detergents.",
                 "https://i.pinimg.com/736x/9d/42/6d/9d426da81011154cfa1e7aa01782c1ca.jpg",
+                ServiceType.GENERAL_SERVICE,
             ),
             ServiceData(
                 "Spa access",
                 "Relax in our luxury spa with sauna, jacuzzi, and massage services.",
                 "https://i.pinimg.com/736x/9f/88/01/9f880100ad711d2173157e9c9452ec19.jpg",
+                ServiceType.PLACE_RESERVATION,
             ),
             ServiceData(
                 "Gym session",
                 "Access to a fully equipped fitness center with personal trainers available.",
                 "https://i.pinimg.com/736x/3f/1b/c7/3f1bc780ba6582314b5e71b7a46efe1e.jpg",
+                ServiceType.PLACE_RESERVATION,
             ),
             ServiceData(
                 "Airport shuttle",
                 "Convenient transport to and from the airport with comfortable seating and AC.",
                 "https://i.pinimg.com/736x/69/56/cb/6956cbcb567a3206dd01d2e00848d21a.jpg",
+                ServiceType.GENERAL_SERVICE,
             ),
             ServiceData(
                 "Breakfast delivery",
                 "Enjoy a fresh breakfast delivered straight to your room every morning.",
                 "https://i.pinimg.com/736x/4a/d0/c7/4ad0c71087dfaa177127736d6ff65898.jpg",
+                ServiceType.GENERAL_SERVICE,
             ),
             ServiceData(
                 "City tour",
                 "Guided tour of the city's main attractions, history, and local culture.",
                 "https://i.pinimg.com/736x/cb/ba/bb/cbbabb1bd63a761bad5fe0db8db7465c.jpg",
+                ServiceType.GENERAL_SERVICE,
             ),
             ServiceData(
                 "Valet parking",
                 "Fast and secure valet parking service available 24/7.",
                 "https://i.pinimg.com/736x/4b/4a/a6/4b4aa6644b4e9db0d14d202917b18c1b.jpg",
+                ServiceType.GENERAL_SERVICE,
             ),
             ServiceData(
                 "Tennis court",
                 "Access to our outdoor tennis court, including equipment rental.",
                 "https://i.pinimg.com/736x/f4/4c/44/f44c44e8fa684046a1133ad6ef97b93f.jpg",
+                ServiceType.PLACE_RESERVATION,
             ),
         )
 }
