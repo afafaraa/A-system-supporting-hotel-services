@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDate
 import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -111,28 +111,31 @@ class ScheduleController(
     @ResponseStatus(HttpStatus.OK)
     fun getEmployeeScheduleForWeek(
         @PathVariable username: String,
-        @RequestParam date: String
+        @RequestParam date: String,
     ): List<ShiftData> {
-        val parsedDate = try {
-            LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-        } catch (e: DateTimeParseException) {
-            throw InvalidArgumentException("Invalid date format. Expected format is 'yyyy-MM-dd'.")
-        }
+        val parsedDate =
+            try {
+                LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            } catch (e: DateTimeParseException) {
+                throw InvalidArgumentException("Invalid date format. Expected format is 'yyyy-MM-dd'.")
+            }
 
         val employee = employeeService.findByUsernameOrThrow(username)
         val (monday, sunday) = scheduleService.weekBounds(parsedDate)
 
-        val schedules = scheduleService.findByEmployeeIdAndDateRange(
-            employee.id!!,
-            monday.atStartOfDay(),
-            sunday.atTime(23, 59, 59),
-        )
+        val schedules =
+            scheduleService.findByEmployeeIdAndDateRange(
+                employee.id!!,
+                monday.atStartOfDay(),
+                sunday.atTime(23, 59, 59),
+            )
 
         return schedules.map {
             val serviceName = serviceService.findById(it.serviceId).orElse(null)?.name ?: "Unknown"
-            val guestUsername = it.guestId?.let { gid ->
-                userService.findById(gid)?.username
-            } ?: "N/A"
+            val guestUsername =
+                it.guestId?.let { gid ->
+                    userService.findById(gid)?.username
+                } ?: "N/A"
 
             ShiftData(
                 id = it.id!!,

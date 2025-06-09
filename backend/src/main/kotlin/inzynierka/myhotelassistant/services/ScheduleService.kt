@@ -77,7 +77,6 @@ class ScheduleService(
     fun findByEmployeeIdAndDateRange(
         employeeId: String,
         start: LocalDateTime,
-        end: LocalDateTime
-    ): List<ScheduleEntity> =
-        scheduleRepository.findByEmployeeIdAndServiceDateBetween(employeeId, start, end)
+        end: LocalDateTime,
+    ): List<ScheduleEntity> = scheduleRepository.findByEmployeeIdAndServiceDateBetween(employeeId, start, end)
 }
