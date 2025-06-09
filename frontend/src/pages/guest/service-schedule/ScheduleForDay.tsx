@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { axiosAuthApi } from "../../../middleware/axiosApi.ts";
-import { Button, Typography } from "@mui/material";
+import { Button, Typography, Box } from "@mui/material";
 import { ServiceProps } from "../available-services/AvailableServiceCard.tsx";
 
 type ScheduleProps = {
@@ -161,12 +161,12 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
           const available = new Date() > new Date(item.serviceDate) || item.status !== 'AVAILABLE';
 
           return (
-            <div key={item.id} style={{ display: 'flex', gap: '5px', opacity: available ? 0.5 : 1, pointerEvents: available ? 'none' : 'auto' }}>
-              <div
-                style={{
+            <div key={item.id} style={{ display: 'flex', gap: '5px', opacity: available ? 0.5 : 1, pointerEvents: available ? 'none' : 'auto', width: '100%' }}>
+              <Box
+                sx={{
                   padding: '10px 15px',
                   borderRadius: '5px',
-                  width: '70%',
+                  width: {xs: '100%', md:'70%'},
                   display: 'flex',
                   justifyContent: 'space-between',
                   background: '#ddd',
@@ -177,7 +177,7 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
                   {String(new Date(item.serviceDate).getHours()).padStart(2, '0')}:
                   {String(new Date(item.serviceDate).getMinutes()).padStart(2, '0')}
                 </div>
-              </div>
+              </Box>
               {item.inCart ? (
                 <Button
                   onClick={() => removeFromCart(item)}

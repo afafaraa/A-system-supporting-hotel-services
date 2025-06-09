@@ -1,4 +1,4 @@
-import {Typography, Button} from "@mui/material";
+import {Typography, Button, Box} from "@mui/material";
 import {RequestedServiceProps} from "./RequestedServicesPage.tsx";
 import {useState} from "react";
 import RateServiceDialog from "./RateServiceDialog.tsx";
@@ -13,11 +13,11 @@ function ServiceItem ({item, index, fetchData}: {item: RequestedServiceProps, in
       <RateServiceDialog open={openRate} setOpen={setOpenRate} scheduleId={item.id} fetchData={fetchData}/>
       <CancelServiceDialog open={openCancel} setOpen={setOpenCancel} scheduleId={item.id} fetchData={fetchData}/>
       <img style={{height: '120px', aspectRatio: '1 / 1', objectFit: 'cover', display: 'block'}} src={item.imageUrl} alt="img"/>
-      <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', padding: '5px 20px'}}>
+      <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', padding: {xs: '0 10px', sm: '5px 20px'}}}>
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <div>
-            <Typography variant="h5">{item.name}</Typography>
-            <Typography sx={{lineHeight: '14px'}} variant="body2">{item.employeeFullName}</Typography>
+            <Typography sx={{fontSize: {xs: '1em', sm: '1.5em'}}} variant="h5">{item.name}</Typography>
+            <Typography sx={{lineHeight: '14px', fontSize: {xs: '0.8em', sm: '1em'}}} variant="body2">{item.employeeFullName}</Typography>
             <div>{item.status}</div>
           </div>
           <div style={{fontWeight: '700'}}>{item.price}$</div>
@@ -30,7 +30,7 @@ function ServiceItem ({item, index, fetchData}: {item: RequestedServiceProps, in
             <Button variant="contained" disabled={item.status === "CANCELED"} onClick={() => setOpenRate(true)}>Rate</Button>
           )}
           </div>
-      </div>
+      </Box>
     </div>
   )
 }

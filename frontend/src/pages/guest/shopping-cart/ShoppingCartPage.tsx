@@ -90,8 +90,8 @@ function ShoppingCartPage() {
         borderRadius: '10px',
         marginTop: '20px',
       }}>
-        <Grid sx={{gap: 2,}} container spacing={{xs: 2, md: 3}} columns={{sm: 1, md: 2}}>
-          <Grid sx={{backgroundColor: 'white', padding: '30px 25px'}} size={1}>
+        <Grid sx={{gap: 2,}} container spacing={{xs: 2, md: 3}} columns={{xs: 1, md: 2}}>
+          <Grid sx={{backgroundColor: 'white', padding: {xs: '15px', sm: '30px 25px'}}} size={1}>
             <Button variant="contained" sx={{mb: '5px'}} onClick={clearCart}>Usuń wszystko</Button>
             {cart.length > 0 ? cart.map((item, index) => (
               <ShoppingCartItem key={index} index={index} item={item} fetchCartData={fetchCartData}/>
