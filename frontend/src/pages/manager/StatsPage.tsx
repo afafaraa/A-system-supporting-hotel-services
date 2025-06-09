@@ -6,6 +6,8 @@ import {
 } from "recharts";
 import { axiosAuthApi } from "../../middleware/axiosApi";
 import StarRating from "../guest/available-services/StarRating";
+import { useTranslation } from "react-i18next";
+
 type PopularService = { name: string; percent: number };
 type ServiceStat = {
     id: string | number;
@@ -18,6 +20,8 @@ type ServiceStat = {
 type SalesData = { date: string; value: number };
 
 function StatsPage() {
+    const { t } = useTranslation();
+    const tc = (key: string) => t(`pages.stats.${key}`);
     const [tab, setTab] = useState(0);
 
     const [totalPurchases, setTotalPurchases] = useState(0);
@@ -54,12 +58,12 @@ function StatsPage() {
     return (
         <Box p={2} width="100%" mr={4}>
             <Typography variant="h4" gutterBottom>
-                Statistics
+                {tc("title")}
             </Typography>
 
             <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 2 }}>
-                <Tab label="General" />
-                <Tab label="Services" />
+                <Tab label={tc("general")} />
+                <Tab label={tc("services")} />
             </Tabs>
 
             {tab === 0 && (
@@ -71,7 +75,7 @@ function StatsPage() {
                 >
                     <Card sx={{ gridColumn: 1, gridRow: 1 }}>
                         <CardContent>
-                            <Typography variant="subtitle1">Purchased services</Typography>
+                            <Typography variant="subtitle1">{tc("purchasedServices")}</Typography>
                             <Typography variant="h3" mt={1}>
                                 {totalPurchases}
                             </Typography>
@@ -80,7 +84,7 @@ function StatsPage() {
 
                     <Card sx={{ gridColumn: 2, gridRow: 1 }}>
                         <CardContent>
-                            <Typography variant="subtitle1">Revenue</Typography>
+                            <Typography variant="subtitle1">{tc("revenue")}</Typography>
                             <Typography variant="h3" mt={1}>
                                 {totalRevenue.toLocaleString()}$
                             </Typography>
@@ -89,7 +93,7 @@ function StatsPage() {
 
                     <Paper sx={{ p: 2, gridColumn: 3, gridRow: '1 / 4' }}>
                         <Typography variant="subtitle1" gutterBottom>
-                            Popular services
+                            {tc("popularServices")}
                         </Typography>
                         <PieChart width={300} height={300}>
                             <Pie
@@ -111,7 +115,7 @@ function StatsPage() {
 
                     <Paper sx={{ p: 2, gridColumn: '1 / 3', gridRow: '2 / 4' }}>
                         <Typography variant="subtitle1" gutterBottom>
-                            Sales over time
+                            {tc("salesOverTime")}
                         </Typography>
                         <LineChart
                             width={500}
@@ -136,8 +140,8 @@ function StatsPage() {
                                 <Typography variant="h6">{service.name}</Typography>
                                 <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
                                     <Box>
-                                        <Typography variant="body2">Orders: {service.orderCount}</Typography>
-                                        <Typography variant="body2">Revenue: {service.revenue.toFixed(2)}$</Typography>
+                                        <Typography variant="body2">{tc("orders")}: {service.orderCount}</Typography>
+                                        <Typography variant="body2">{tc("revenue")}: {service.revenue.toFixed(2)}$</Typography>
                                     </Box>
                                     <Box textAlign="right">
                                         <StarRating rating={[service.rating]} />

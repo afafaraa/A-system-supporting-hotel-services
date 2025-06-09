@@ -62,6 +62,53 @@
         "orderTime": "Order time",
         "durationUnknown": "Duration unknown"
       }
+    },
+    "stats": {
+      "title": "Statistics",
+      "general": "General",
+      "services": "Services",
+      "purchasedServices": "Purchased services",
+      "revenue": "Revenue",
+      "popularServices": "Popular services",
+      "salesOverTime": "Sales over time",
+      "orders": "Orders"
+    },
+    "servicesList": {
+      "title": "Services List",
+      "availability": "Availability",
+      "all": "All",
+      "unavailable": "Unavailable",
+      "available": "Available",
+      "type": "Type",
+      "generalService": "General Service",
+      "placeReservaion": "Place Reservation",
+      "addService": "Add Service",
+      "serviceName": "Service Name",
+      "description": "Description",
+      "price": "Price",
+      "actions": "Actions",
+      "edit": "Edit"
+    },
+    "personnel": {
+      "title": "Personnel",
+      "addEmployee": "Add Employee",
+      "name": "Name",
+      "position": "Position",
+      "email": "Email",
+      "stats": "Status",
+      "actions": "Actions",
+      "preview": "Preview",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "personnelDetails": {
+      "edit": "Edit Employee",
+      "name": "Name",
+      "username": "Username",
+      "email": "Email",
+      "role": "Role",
+      "workSchedule": "Work Schedule",
+      "employeeData": "Employee Data"
     }
   }
 }

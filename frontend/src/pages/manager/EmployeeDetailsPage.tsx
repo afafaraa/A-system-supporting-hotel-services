@@ -7,6 +7,7 @@ import { Shift } from "../../types";
 import {startOfWeek, addWeeks, subWeeks, format, addMinutes} from "date-fns";
 import { ScheduleCard, ScheduleTable} from "../../components/layout/ScheduleTable.tsx";
 import {DateWithHour} from "../../utils/utils.ts";
+import { useTranslation } from "react-i18next";
 
 
 const MIN_HOUR = DateWithHour(6);
@@ -20,6 +21,8 @@ function EmployeeDetailsPage() {
   const [error, setError] = useState<string | null>(null);
   const [currentWeekStart, setCurrentWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
   const [shifts, setShifts] = useState<Shift[]>([]);
+  const { t } = useTranslation();
+  const tc = (key: string) => t(`pages.personnelDetails.${key}`);
 
   const fetchShifts = useCallback(async () => {
     try {
@@ -83,8 +86,8 @@ function EmployeeDetailsPage() {
       </Typography>
       <Box my={2}>
         <Tabs value={tab} onChange={(_, v) => setTab(v)}>
-          <Tab label="Work Schedule" />
-          <Tab label="Employee data" />
+          <Tab label={tc("workSchedule")} />
+          <Tab label={tc("employeeData")} />
         </Tabs>
       </Box>
       {tab === 0 && (
@@ -129,7 +132,7 @@ function EmployeeDetailsPage() {
                 </Box>
                 <Box mt={1} textAlign="center">
                   <Button size="small" variant="outlined">
-                    Edytuj
+                    {tc("edit")}
                   </Button>
                 </Box>
               </ScheduleCard>
@@ -140,10 +143,10 @@ function EmployeeDetailsPage() {
 
       {tab === 1 && detail && (
         <Box display="flex" flexDirection="column" component={Paper} p={4} mt={2} gap={2}>
-          <Typography variant="body1">Name: <strong>{detail.name} {detail.surname}</strong></Typography>
-          <Typography variant="body1">Username: <strong>{detail.username}</strong></Typography>
-          <Typography variant="body1">Email: <strong>{detail.email}</strong></Typography>
-          <Typography variant="body1">Role: <strong>{detail.role}</strong></Typography>
+          <Typography variant="body1">{tc("name")}: <strong>{detail.name} {detail.surname}</strong></Typography>
+          <Typography variant="body1">{tc("username")}: <strong>{detail.username}</strong></Typography>
+          <Typography variant="body1">{tc("email")}: <strong>{detail.email}</strong></Typography>
+          <Typography variant="body1">{tc("role")}: <strong>{detail.role}</strong></Typography>
         </Box>
       )}
 

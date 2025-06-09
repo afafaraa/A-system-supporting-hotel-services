@@ -19,8 +19,11 @@ import {
 } from '@mui/material';
 import ServiceForm from './ServiceForm';
 import { Service } from '../../types';
+import { useTranslation } from "react-i18next";
 
 function ServicesListPage() {
+    const { t } = useTranslation();
+    const tc = (key: string) => t(`pages.servicesList.${key}`);
     const [allServices, setAllServices] = useState<Service[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -72,7 +75,7 @@ function ServicesListPage() {
 
     return (
         <Box p={2} sx={{ width: '100%', mr:10 }}>
-            <Typography variant="h4" gutterBottom>Services</Typography>
+            <Typography variant="h4" gutterBottom>{tc("title")}</Typography>
 
             <Box display="flex" justifyContent="space-between" mb={2} flexWrap="wrap" gap={2}>
                 <Box display="flex" gap={2} flexWrap="wrap">
@@ -83,29 +86,29 @@ function ServicesListPage() {
                         onChange={e => setFilterName(e.target.value)}
                     />
                     <FormControl size="small" sx={{ width: 140 }}>
-                        <InputLabel id="availability-label">Availability</InputLabel>
+                        <InputLabel id="availability-label">{tc("availability")}</InputLabel>
                         <Select
                             labelId="availability-label"
-                            label="Availability"
+                            label={tc("availability")}
                             value={filterAvailability}
                             onChange={e => setFilterAvailability(e.target.value as "all" | "true" | "false")}
                         >
-                            <MenuItem value="all">All</MenuItem>
-                            <MenuItem value="true">Unavailable</MenuItem>
-                            <MenuItem value="false">Available</MenuItem>
+                            <MenuItem value="all">{tc("all")}</MenuItem>
+                            <MenuItem value="true">{tc("unavailable")}</MenuItem>
+                            <MenuItem value="false">{tc("available")}</MenuItem>
                         </Select>
                     </FormControl>
                     <FormControl size="small" sx={{ width: 180 }}>
-                        <InputLabel id="type-label">Type</InputLabel>
+                        <InputLabel id="type-label">{tc("type")}</InputLabel>
                         <Select
                             labelId="type-label"
-                            label="Type"
+                            label={tc("type")}
                             value={filterType}
                             onChange={e => setFilterType(e.target.value as "ALL" | "GENERAL_SERVICE" | "PLACE_RESERVATION")}
                         >
-                            <MenuItem value="ALL">All</MenuItem>
-                            <MenuItem value="GENERAL_SERVICE">General Service</MenuItem>
-                            <MenuItem value="PLACE_RESERVATION">Place Reservation</MenuItem>
+                            <MenuItem value="ALL">{tc("all")}</MenuItem>
+                            <MenuItem value="GENERAL_SERVICE">{tc("generalService")}</MenuItem>
+                            <MenuItem value="PLACE_RESERVATION">{tc("placeReservation")}</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>
@@ -113,7 +116,7 @@ function ServicesListPage() {
                     setEditing(undefined)
                     setModalOpen(true);
                 }}>
-                    Add Service
+                    {tc("addService")}
                 </Button>
             </Box>
 
@@ -121,12 +124,12 @@ function ServicesListPage() {
                 <Table>
                     <TableHead sx={{ backgroundColor: '#f5f5f5' }}>
                         <TableRow>
-                            <TableCell>Service Name</TableCell>
-                            <TableCell>Description</TableCell>
-                            <TableCell>Price</TableCell>
-                            <TableCell>Type</TableCell>
-                            <TableCell>Availability</TableCell>
-                            <TableCell>Actions</TableCell>
+                            <TableCell>{tc("serviceName")}</TableCell>
+                            <TableCell>{tc("description")}</TableCell>
+                            <TableCell>{tc("price")}</TableCell>
+                            <TableCell>{tc("type")}</TableCell>
+                            <TableCell>{tc("availability")}</TableCell>
+                            <TableCell>{tc("actions")}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -145,7 +148,7 @@ function ServicesListPage() {
                                             setModalOpen(true);
                                         }}
                                     >
-                                        Edit
+                                        {tc("edit")}
                                     </Button>
                                 </TableCell>
                             </TableRow>
@@ -153,7 +156,7 @@ function ServicesListPage() {
                         {filteredServices.length === 0 && (
                             <TableRow>
                                 <TableCell colSpan={6} align="center">
-                                    No services match your filters
+                                    {tc("noServices")} {tc("matchFilters")}
                                 </TableCell>
                             </TableRow>
                         )}

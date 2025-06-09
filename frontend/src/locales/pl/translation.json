@@ -62,6 +62,53 @@
         "orderTime": "Data zamówienia",
         "durationUnknown": "Czas nieokreślony"
       }
+    },
+    "stats": {
+      "title": "Statystyki",
+      "general": "Ogólne",
+      "services": "Usługi",
+      "purchasedServices": "Zamówione usługi",
+      "revenue": "Przychód",
+      "popularServices": "Popularne usługi",
+      "salesOverTime": "Sprzedaż w czasie",
+      "orders": "Zamówienia"
+    },
+    "servicesList": {
+      "title": "Lista usług",
+      "availability": "Dostępność",
+      "all": "Wszystkie",
+      "unavailable": "Niedostępne",
+      "available": "Dostępne",
+      "type": "Typ",
+      "generalService": "Usługa ogólna",
+      "placeReservation": "Rezerwacja miejsca",
+      "addService": "Dodaj usługę",
+      "serviceName": "Nazwa usługi",
+      "description": "Opis",
+      "price": "Cena",
+      "actions": "Akcje",
+      "edit": "Edytuj"
+    },
+    "personnel": {
+      "title": "Personel",
+      "addEmployee": "Dodaj pracownika",
+      "name": "Imię",
+      "position": "Stanowisko",
+      "email": "Email",
+      "stats": "Status",
+      "actions": "Akcje",
+      "preview": "Podgląd",
+      "previous": "Poprzedni",
+      "next": "Następny"
+    },
+    "personnelDetails": {
+      "edit": "Edytuj pracownika",
+      "name": "Imię",
+      "username": "Nazwa użytkownika",
+      "email": "Email",
+      "role": "Stanowisko",
+      "workSchedule": "Harmonogram pracy",
+      "employeeData": "Dane pracownika"
     }
   }
 }
