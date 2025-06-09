@@ -2,6 +2,7 @@ package inzynierka.myhotelassistant.utils
 
 import inzynierka.myhotelassistant.models.notification.NotificationEntity
 import inzynierka.myhotelassistant.models.room.RoomEntity
+import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.models.service.ServiceType
@@ -204,6 +205,8 @@ class DatabaseSeeder(
         val services = serviceService.findAll()
         val today = LocalDate.now()
         val allEmployees = employeeService.getAllEmployees(Pageable.unpaged())
+        val allGuests = userRepo.findByRole(Role.GUEST)
+        val availableChance = 3 // 30%
 
         services.forEach { service ->
             service.weekday.forEach { weekdayHour ->
@@ -211,15 +214,27 @@ class DatabaseSeeder(
                 val dateTime = targetDate.atTime(weekdayHour.startHour, 0)
 
                 if (service.id != null) {
-                    val schedule =
-                        ScheduleEntity(
-                            serviceId = service.id,
-                            serviceDate = dateTime,
-                            weekday = weekdayHour.day,
-                            employeeId = allEmployees.random().id,
-                            isOrdered = false,
-                            guestId = null,
-                        )
+                    var schedule: ScheduleEntity
+                    if (Random.nextInt(10) < availableChance) {
+                        schedule =
+                            ScheduleEntity(
+                                serviceId = service.id,
+                                serviceDate = dateTime,
+                                weekday = weekdayHour.day,
+                            )
+                    } else {
+                        schedule =
+                            ScheduleEntity(
+                                serviceId = service.id,
+                                serviceDate = dateTime,
+                                weekday = weekdayHour.day,
+                                employeeId = allEmployees.random().id,
+                                isOrdered = true,
+                                orderTime = dateTime.minus(Random.nextLong(60 * 24 * 3), ChronoUnit.MINUTES),
+                                guestId = allGuests.random().id,
+                                status = OrderStatus.PENDING,
+                            )
+                    }
                     logger.info("Schedule added: ${service.name} on ${weekdayHour.day} at $dateTime")
 
                     scheduleRepository.save(schedule)

@@ -73,6 +73,8 @@ class SecurityConfig {
                     .hasAnyRole(Role.ADMIN.name)
                     .requestMatchers("/management/**")
                     .hasAnyRole(Role.MANAGER.name)
+                    .requestMatchers("/employee/**")
+                    .hasAnyRole(Role.EMPLOYEE.name)
                     .anyRequest()
                     .authenticated()
             }.sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
