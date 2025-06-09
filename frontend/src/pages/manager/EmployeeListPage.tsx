@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Employee } from "../../types";
+import { useTranslation } from "react-i18next";
 
 const sectors = [
   { label: "Room service", role: "EMPLOYEE" },
@@ -32,6 +33,8 @@ function EmployeeListPage() {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(0);
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const tc = (key: string) => t(`pages.personnel.${key}`);
 
   const pageSize = 10;
   
@@ -80,7 +83,7 @@ function EmployeeListPage() {
   return (
     <Box p={2} width={"100%"} mr={10}>
       <Typography variant="h4" gutterBottom>
-        Personnel
+        {tc("title")}
       </Typography>
 
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -90,7 +93,7 @@ function EmployeeListPage() {
           ))}
         </Tabs>
         <Button variant="contained" onClick={() => navigate("/employees/new")}>
-          Add Employee
+          {tc("addEmployee")}
         </Button>
       </Box>
 
@@ -98,11 +101,11 @@ function EmployeeListPage() {
         <Table>
           <TableHead sx={{ backgroundColor: "#f0f0f0" }}>
             <TableRow>
-              <TableCell sx={{ width: '25%'}}>Name</TableCell>
-              <TableCell sx={{ width: '25%'}}>Position</TableCell>
-              <TableCell sx={{ width: '25%'}}>Email</TableCell>
+              <TableCell sx={{ width: '25%'}}>{tc("name")}</TableCell>
+              <TableCell sx={{ width: '25%'}}>{tc("position")}</TableCell>
+              <TableCell sx={{ width: '25%'}}>{tc("email")}</TableCell>
               <TableCell sx={{ width: '15%'}}>Status</TableCell>
-              <TableCell sx={{ width: '15%'}} align="right">Actions</TableCell>
+              <TableCell sx={{ width: '15%'}} align="right">{tc("actions")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -120,7 +123,7 @@ function EmployeeListPage() {
                     size="small"
                     onClick={() => navigate(`/employees/${emp.username}`)}
                   >
-                    Preview
+                    {tc("preview")}
                   </Button>
                 </TableCell>
               </TableRow>
@@ -130,13 +133,13 @@ function EmployeeListPage() {
         {employees.length > pageSize && (
           <Stack direction="row" spacing={1} justifyContent="space-between">
             <Button onClick={() => setPage(prev => Math.max(prev - 1, 0))} disabled={page === 0}>
-              Previous
+              {tc("previous")}
             </Button>
             <Button
               onClick={() => setPage(prev => Math.min(prev + 1, Math.floor(employees.length / pageSize) - 1))}
               disabled={page === Math.floor(employees.length / pageSize) - 1}
             >
-              Next
+              {tc("next")}
             </Button>
           </Stack>
         )}
