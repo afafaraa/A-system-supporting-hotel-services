@@ -11,6 +11,7 @@ import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
+import inzynierka.myhotelassistant.utils.AuthHeaderDataExtractor
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
@@ -28,6 +29,7 @@ class UserService(
     private val userRepository: UserRepository,
     private val codeService: RegistrationCodeService,
     private val passwordEncoder: PasswordEncoder,
+    private val authExtractor: AuthHeaderDataExtractor,
 ) : UserDetailsService {
     fun findById(id: String): UserEntity? {
         val user = userRepository.findById(id)
@@ -133,4 +135,9 @@ class UserService(
             surname = request.surname.lowercase().replaceFirstChar { it.uppercase() },
             role = Role.ADMIN,
         )
+
+    fun getCurrentUser(authHeader: String): UserEntity {
+        val data: AuthHeaderDataExtractor.JwtData = authExtractor.decodeJwtData(authHeader)
+        return findByUsernameOrThrow(data.username)
+    }
 }
