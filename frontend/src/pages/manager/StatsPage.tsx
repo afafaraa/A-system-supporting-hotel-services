@@ -1,33 +1,54 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Tab, Tabs, Typography, Paper, Card, CardContent } from "@mui/material";
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as ReTooltip,
     PieChart, Pie, Cell, Legend as ReLegend
 } from "recharts";
+import { axiosAuthApi } from "../../middleware/axiosApi";
+import StarRating from "../guest/available-services/StarRating";
+type PopularService = { name: string; percent: number };
+type ServiceStat = {
+    id: string | number;
+    name: string;
+    orderCount: number;
+    revenue: number;
+    rating: number;
+    averageRating: number;
+};
+type SalesData = { date: string; value: number };
 
 function StatsPage() {
     const [tab, setTab] = useState(0);
 
-    // TO DO: Fetch data from backend
-    const totalPurchases = 98;
-    const totalRevenue = 21321.0;
+    const [totalPurchases, setTotalPurchases] = useState(0);
+    const [totalRevenue, setTotalRevenue] = useState(0);
+    const [popularServices, setPopularServices] = useState<PopularService[]>([]);
+    const [salesData, setSalesData] = useState<SalesData[]>([]);
+    const [serviceStats, setServiceStats] = useState<ServiceStat[]>([]);
 
-    const salesData = [
-        { date: '17.02', value: 80 },
-        { date: '18.02', value: 150 },
-        { date: '19.02', value: 230 },
-        { date: '20.02', value: 90 },
-        { date: '21.02', value: 200 },
-        { date: '22.02', value: 100 },
-        { date: '23.02', value: 200 },
-    ];
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const [generalRes, serviceRes] = await Promise.all([
+                    axiosAuthApi.get("/management/stats"),
+                    axiosAuthApi.get("/management/stats/services")
+                ]);
+                const generalData = generalRes.data;
+                setTotalPurchases(generalData.totalPurchases);
+                setTotalRevenue(generalData.totalRevenue);
+                setPopularServices(generalData.popularServices);
+                setSalesData(generalData.salesOverTime);
 
-    const popularServices = [
-        { name: 'Room cleaning', percent: 60 },
-        { name: 'Laundry', percent: 20 },
-        { name: 'Spa access', percent: 20 },
-    ];
+                const serviceData = serviceRes.data;
+                setServiceStats(serviceData);
+            } catch (e) {
+                console.error("Failed to fetch stats", e);
+            }
+        };
+        fetchStats();
+    }, []);
 
+    
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
 
     return (
@@ -105,6 +126,29 @@ function StatsPage() {
                             <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} />
                         </LineChart>
                     </Paper>
+                </Box>
+            )}
+            {tab === 1 && (
+                <Box display="flex" flexDirection="column" gap={2}>
+                    {serviceStats.map((service) => (
+                        <Card key={service.id}>
+                            <CardContent>
+                                <Typography variant="h6">{service.name}</Typography>
+                                <Box display="flex" alignItems="center" justifyContent="space-between" mt={1}>
+                                    <Box>
+                                        <Typography variant="body2">Orders: {service.orderCount}</Typography>
+                                        <Typography variant="body2">Revenue: {service.revenue.toFixed(2)}$</Typography>
+                                    </Box>
+                                    <Box textAlign="right">
+                                        <StarRating rating={[service.rating]} />
+                                        <Typography variant="body2">
+                                            Avg: {service.averageRating.toFixed(2)} / 5
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                            </CardContent>
+                        </Card>
+                    ))}
                 </Box>
             )}
         </Box>
