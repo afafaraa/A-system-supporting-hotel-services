@@ -6,7 +6,7 @@ import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import {useSelector} from "react-redux";
 import {selectUser} from "../../../redux/slices/userSlice.ts";
 
-function RateServiceDialog({open, setOpen, scheduleId}: {open: boolean, setOpen: (b: boolean) => void, scheduleId: string}) {
+function RateServiceDialog({open, setOpen, scheduleId, fetchData}: {open: boolean, setOpen: (b: boolean) => void, scheduleId: string, fetchData: () => void}) {
   const [commentOpen, setCommentOpen] = useState<boolean>(false);
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
@@ -33,6 +33,7 @@ function RateServiceDialog({open, setOpen, scheduleId}: {open: boolean, setOpen:
       setRating(0);
       setComment("");
       setCommentOpen(false);
+      fetchData()
     }
   };
 

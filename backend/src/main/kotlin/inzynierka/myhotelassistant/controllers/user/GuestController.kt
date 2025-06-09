@@ -49,6 +49,11 @@ class GuestController(
         val username: String,
     )
 
+    data class AddToBillRequest(
+        val amount: Double,
+        val username: String,
+    )
+
     @GetMapping("/employee/get/id/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun getScheduledEmployeeNameById(
@@ -68,6 +73,7 @@ class GuestController(
     ) {
         val user = userService.findByUsernameOrThrow(req.username)
         val scheduledService = scheduleService.findByIdOrThrow(req.orderId)
+        val service = serviceService.findByIdOrThrow(scheduledService.serviceId)
 
         if (user.id != scheduledService.guestId) {
             throw HttpException.NoPermissionException("You are not allowed to cancel order for other guests")
@@ -76,14 +82,18 @@ class GuestController(
         val now = LocalDateTime.now()
         val serviceDate = scheduledService.serviceDate
 
-        if (Duration.between(now, serviceDate).toHours() < 24) {
+        if (Duration.between(now, serviceDate).toHours() < 1) {
             throw HttpException.NoPermissionException("Cannot cancel the order less than 24 hours before the service")
         }
 
         scheduledService.isOrdered = false
         scheduledService.guestId = null
         scheduledService.status = OrderStatus.AVAILABLE
+        user.guestData?.let { data ->
+            data.bill -= service.price
+        }
         scheduleService.save(scheduledService)
+        userService.save(user)
     }
 
     @PostMapping("/order/services")
@@ -91,11 +101,17 @@ class GuestController(
     fun orderServicesFromSchedule(
         @RequestBody req: OrderServicesRequestBody,
     ) {
-        val schedule = scheduleService.findById(req.id)
-        schedule?.isOrdered = true
-        schedule?.guestId = userService.findByUsernameOrThrow(req.username).id
-        schedule?.status = OrderStatus.PENDING
-        scheduleService.save(schedule!!)
+        val schedule = scheduleService.findByIdOrThrow(req.id)
+        val guest = userService.findByUsernameOrThrow(req.username)
+        val service = serviceService.findByIdOrThrow(schedule.serviceId)
+        schedule.isOrdered = true
+        schedule.guestId = guest.id
+        schedule.status = OrderStatus.PENDING
+        guest.guestData?.let { data ->
+            data.bill += service.price
+        }
+        scheduleService.save(schedule)
+        userService.save(guest)
     }
 
     @GetMapping("/order/get/all/requested/{username}")
@@ -120,6 +136,15 @@ class GuestController(
             return findAllByStatusAndUserId(listOf(OrderStatus.FINISHED, OrderStatus.CANCELED), userId)
         }
         return null
+    }
+
+    @GetMapping("/bill/get/{username}")
+    @ResponseStatus(HttpStatus.OK)
+    fun getBill(
+        @PathVariable username: String,
+    ): Double {
+        val guest = userService.findByUsernameOrThrow(username)
+        return guest.guestData?.bill ?: 0.0
     }
 
     private fun findAllByStatusAndUserId(

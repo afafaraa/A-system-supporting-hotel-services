@@ -40,7 +40,7 @@ function PastServicesPage() {
     <div style={{width: '100%'}}>
       <AuthenticatedHeader title={"Historyczne usługi"}/>
       {services.length > 0 && services.map((service: RequestedServiceProps, index) => (
-        <ServiceItem index={index} item={service} />
+        <ServiceItem index={index} item={service} fetchData={fetchRequestedServices}/>
       ))}
     </div>
   )

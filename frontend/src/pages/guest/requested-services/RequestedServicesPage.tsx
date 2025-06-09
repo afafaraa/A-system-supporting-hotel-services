@@ -35,11 +35,12 @@ function RequestedServicesPage() {
     }
   }
 
+  console.log(services);
   return (
     <div style={{width: '100%'}}>
       <AuthenticatedHeader title={"Oczekujące usługi"}/>
       {services.length > 0 && services.map((service: RequestedServiceProps, index) => (
-        <ServiceItem index={index} item={service} />
+        <ServiceItem index={index} item={service} fetchData={fetchRequestedServices}/>
       ))}
     </div>
   )

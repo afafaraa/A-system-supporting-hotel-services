@@ -20,10 +20,13 @@ export type CartProps = {
 function ShoppingCartPage() {
   const navigate = useNavigate();
   const [cart, setCart] = useState<CartProps[]>([]);
+  const [bill, setBill] = useState<number>(0);
   const user = useSelector(selectUser);
 
   useEffect(() => {
     fetchCartData();
+    fetchCurrentBill();
+
   },[])
 
   const fetchCartData = async () => {
@@ -46,6 +49,15 @@ function ShoppingCartPage() {
     }
   }
 
+  const fetchCurrentBill = async () => {
+    try {
+      const response = await axiosAuthApi.get(`/guest/bill/get/${user?.username}`)
+      setBill(response.data);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   const clearCart = () => {
     setCart([]);
     localStorage.setItem("CART", JSON.stringify([]));
@@ -63,9 +75,10 @@ function ShoppingCartPage() {
         });
         console.log(response.data);
       }
-
     } catch(e) {
       console.error(e);
+    } finally {
+      fetchCurrentBill();
     }
   }
 
@@ -85,17 +98,28 @@ function ShoppingCartPage() {
             )) : <p>No items in cart</p>}
           </Grid>
           <Grid sx={{display: 'flex', flexDirection: 'column', gap: '15px', }} size={1}>
-            <div style={{display: 'flex', flexDirection: 'column', backgroundColor: 'white', padding: '25px', gap: '10px'}}>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              backgroundColor: 'white',
+              padding: '25px',
+              gap: '10px'
+            }}>
               <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                <Typography variant='body1'>Wartość koszyka:</Typography>
+                <Typography variant='body1'>Cart value:</Typography>
                 <div style={{fontWeight: '700'}}>{cart.length > 0 ? (
                   cart.reduce((acc, curr) => acc + curr.price, 0).toFixed(2)
-                ) : (0)} $</div>
+                ) : (0)} $
+                </div>
               </div>
-              <Button onClick={orderServices} variant="contained">Zaplać</Button>
-              <Button onClick={orderServices} variant="contained">Dodaj do rachunku</Button>
+              <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                <Typography variant='body1'>Current bill:</Typography>
+                <div style={{fontWeight: '700'}}>{bill.toFixed(2)} $</div>
+              </div>
+              <Button onClick={orderServices} variant="contained">Pay</Button>
+              <Button onClick={orderServices} variant="contained">Add to bill</Button>
             </div>
-            <Button onClick={() => navigate("/services/available")} sx={{backgroundColor: 'white'}}>Kontynuuj zakupy</Button>
+            <Button onClick={() => navigate("/services/available")} sx={{backgroundColor: 'white'}}>Continue shopping</Button>
           </Grid>
         </Grid>
 

@@ -16,6 +16,7 @@ import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
 import inzynierka.myhotelassistant.services.EmployeeService
+import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
 import inzynierka.myhotelassistant.services.UserService
 import jakarta.annotation.PostConstruct
@@ -48,6 +49,7 @@ class DatabaseSeeder(
     private val scheduleRepository: ScheduleRepository,
     private val employeeService: EmployeeService,
     private val userService: UserService,
+    private val scheduleService: ScheduleService,
 ) {
     private val logger = LoggerFactory.getLogger(DatabaseSeeder::class.java)
 
@@ -59,6 +61,7 @@ class DatabaseSeeder(
             addTestEmployees()
             addServices()
             addSchedule()
+            addOrders()
             addManager()
             addTestNotifications()
         } catch (e: Exception) {
@@ -331,6 +334,13 @@ class DatabaseSeeder(
                 schedule.isOrdered = true
                 schedule.guestId = guest.id
                 schedule.orderTime = schedule.serviceDate.minusHours(Random.nextLong(1, 48))
+                if (schedule.status == OrderStatus.FINISHED) {
+                    val service = serviceService.findByIdOrThrow(schedule.serviceId)
+                    guest.guestData?.let { data ->
+                        data.bill += service.price
+                    }
+                }
+
                 scheduleRepository.save(schedule)
             }
 
@@ -342,8 +352,13 @@ class DatabaseSeeder(
                 schedule.isOrdered = true
                 schedule.guestId = guest.id
                 schedule.orderTime = now.minusHours(Random.nextLong(1, 48))
+                val service = serviceService.findByIdOrThrow(schedule.serviceId)
+                guest.guestData?.let { data ->
+                    data.bill += service.price
+                }
                 scheduleRepository.save(schedule)
             }
+            userService.save(guest)
         }
     }
 

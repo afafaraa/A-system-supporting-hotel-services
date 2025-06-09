@@ -21,15 +21,15 @@ const StarRating: React.FC<StarRatingProps> = ({ rating, outOf = 5 }) => {
   const ratingAvg = calcRating();
   for (let i = 1; i <= outOf; i++) {
     if (i <= ratingAvg) {
-      stars.push(<span key={i}><StarIcon /></span>);
+      stars.push(<span key={i}><StarIcon sx={{fontSize: '1.4em'}} /></span>);
     } else if (i - ratingAvg < 1) {
-      stars.push(<span key={i}><StarHalfIcon /></span>);
+      stars.push(<span key={i}><StarHalfIcon sx={{fontSize: '1.4em'}} /></span>);
     } else {
-      stars.push(<span key={i}><StarOutlineIcon /></span>);
+      stars.push(<span key={i}><StarOutlineIcon sx={{fontSize: '1.4em'}} /></span>);
     }
   }
 
-  return <div style={{ color: 'gold', fontSize: '24px' }}>{stars}</div>;
+  return <div style={{ color: 'gold' }}>{stars}</div>;
 };
 
 export default StarRating;

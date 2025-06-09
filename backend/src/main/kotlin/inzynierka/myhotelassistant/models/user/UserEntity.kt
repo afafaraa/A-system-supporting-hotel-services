@@ -15,6 +15,6 @@ data class UserEntity(
     var password: String,
     val name: String,
     val surname: String,
-    val guestData: GuestData? = null,
+    var guestData: GuestData? = null,
     val employeeData: EmployeeData? = null,
 )
