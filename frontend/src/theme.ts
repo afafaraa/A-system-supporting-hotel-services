@@ -36,4 +36,13 @@ const theme = createTheme({
   },
 });
 
+
+export const mainActionButtonSx = {
+  backgroundColor: "primary.dark",
+  color: "white",
+  fontWeight: "bold",
+  textTransform: "none",
+  "&:hover": { backgroundColor: "primary.light" }
+};
+
 export default theme;

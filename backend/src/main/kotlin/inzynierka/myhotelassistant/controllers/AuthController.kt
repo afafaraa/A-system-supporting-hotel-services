@@ -3,6 +3,8 @@ package inzynierka.myhotelassistant.controllers
 import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.services.UserService
 import inzynierka.myhotelassistant.utils.EmailSender
+import jakarta.validation.Valid
+import jakarta.validation.constraints.Email
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -56,12 +58,13 @@ class AuthController(
         )
 
     data class EmailRequest(
+        @field:Email(message = "Email should be valid")
         val email: String,
     )
 
     @PostMapping("/send-reset-password-email")
     fun sendResetPasswordEmail(
-        @RequestBody req: EmailRequest,
+        @RequestBody @Valid req: EmailRequest,
     ) {
         val token = tokenService.generateResetPasswordToken(10, req.email)
         emailSender.sendResetPasswordLink(

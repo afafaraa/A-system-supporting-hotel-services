@@ -23,12 +23,22 @@
   },
   "pages": {
     "login": {
-      "title": "Login Page",
+      "title": "Login",
       "username": "Username",
       "password": "Password",
       "loginButton": "Login",
-      "resetPassword": "Click to reset password",
-      "registerWithCode": "Click to register with code"
+      "resetPassword": "Forgot your password? Reset password.",
+      "registerWithCode": "Don't have an account? Register with a code.",
+      "invalidCredentials": "Invalid login credentials."
+    },
+    "register": {
+      "title": "Register",
+      "code": "Registration Code",
+      "username": "Username",
+      "password": "Password",
+      "registerButton": "Register",
+      "goBack": "Go back to login",
+      "invalidCodeError": "Invalid registration code."
     },
     "notifications": {
       "title": "Notifications",
@@ -157,5 +167,11 @@
     "submit": "Submit",
     "delete": "Delete",
     "deleteAll": "Delete all"
+  },
+  "error": {
+    "networkError": "Server connection error.",
+    "serverError": "Server error. Please try again later.",
+    "unknownError": "Unknown error occurred.",
+    "emptyFields": "All fields must be filled."
   }
 }

@@ -27,8 +27,18 @@
       "username": "Nazwa użytkownika",
       "password": "Hasło",
       "loginButton": "Zaloguj się",
-      "resetPassword": "Kliknij, aby zresetować hasło",
-      "registerWithCode": "Kliknij, aby zarejestrować się z kodem"
+      "resetPassword": "Nie pamiętasz hasła? Zresetuj hasło.",
+      "registerWithCode": "Nie masz konta? Zarejestruj się za pomocą kodu.",
+      "invalidCredentials": "Nieprawidłowe dane logowania."
+    },
+    "register": {
+      "title": "Rejestracja",
+      "code": "Kod rejestracyjny",
+      "username": "Nazwa użytkownika",
+      "password": "Hasło",
+      "registerButton": "Zarejestruj się",
+      "goBack": "Wróć do logowania",
+      "invalidCodeError": "Nieprawidłowy kod rejestracyjny."
     },
     "notifications": {
       "title": "Powiadomienia",
@@ -157,5 +167,11 @@
     "submit": "Zatwietdź",
     "delete": "Usuń",
     "deleteAll": "Usuń wszystko"
+  },
+  "error": {
+    "networkError": "Błąd połączenia z serwerem.",
+    "serverError": "Błąd serwera. Spróbuj ponownie później.",
+    "unknownError": "Wystąpił nieznany błąd.",
+    "emptyFields": "Wszystkie pola muszą być wypełnione."
   }
 }
