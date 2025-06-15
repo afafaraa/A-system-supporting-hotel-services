@@ -40,6 +40,19 @@
       "goBack": "Wróć do logowania",
       "invalidCodeError": "Nieprawidłowy kod rejestracyjny."
     },
+    "reset-password": {
+      "title": "Resetowanie hasła",
+      "email": "Twój adres email",
+      "sendButton": "Wyślij link do resetowania hasła",
+      "successMessage": "Link do resetowania hasła został wysłany na podany adres email.",
+      "goBack": "Wróć do logowania",
+      "newPassword": "Nowe hasło",
+      "repeatPassword": "Powtórz hasło",
+      "passwordsDoNotMatch": "Hasła nie pasują do siebie.",
+      "resetPasswordButton": "Zresetuj hasło",
+      "resetPasswordSuccess": "Hasło zostało pomyślnie zresetowane. Możesz teraz się zalogować.",
+      "invalidToken": "Nieprawidłowy lub wygasły link."
+    },
     "notifications": {
       "title": "Powiadomienia",
       "tooltip": {

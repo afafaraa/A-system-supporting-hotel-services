@@ -11,7 +11,7 @@ function SendResetPasswordEmail(){
     const [info, setInfo] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const { t } = useTranslation();
-    const tc = (key: string) => t(`pages.sendResetPasswordEmail.${key}`);
+    const tc = (key: string) => t(`pages.reset-password.${key}`);
 
     useEffect(() => {
         if (error) {
@@ -28,12 +28,12 @@ function SendResetPasswordEmail(){
             const res = await axiosApi.post(
               '/open/send-reset-password-email', { email: email }
             )
-            setInfo(tc("emailSent"));
+            setInfo(tc("successMessage"));
             console.log(res);
         } catch (err) {
             if (isAxiosError(err) && err.response) {
                 if (err.response.status === 400) setError(tc("invalidEmail"));
-                else if (err.response.status === 401) setInfo(tc("emailSent"));
+                else if (err.response.status === 401) setInfo("Powinno działać, ale nie działa.");
                 else setError(t("error.unknownError"));
             } else setError(t("error.unknownError"));
         } finally {
@@ -42,21 +42,21 @@ function SendResetPasswordEmail(){
     }
     return (
       <FormControl component="form" onSubmit={sendEmail} sx={{px: 6, py: 8, borderRadius: 6, boxShadow: 10, backgroundColor: "background.paper"}}>
-        <Typography variant="h4" fontWeight="bold" align="center" sx={{mb: 4}}>Reset your password</Typography>
+        <Typography variant="h4" fontWeight="bold" align="center" sx={{mb: 4}}>{tc("title")}</Typography>
         <TextField sx={{mb: 4}}
-          label="Your email address"
+          label={tc("email")}
           autoComplete="email"
           onChange={e => setEmail(e.target.value)}
           type="email"
           name="email"
           id="email"
-          placeholder="Your email address"
+          placeholder={tc("email")}
         />
-        <Button onClick={sendEmail} type="submit" loading={loading} sx={mainActionButtonSx}>Send reset password email</Button>
+        <Button onClick={sendEmail} type="submit" loading={loading} sx={mainActionButtonSx}>{tc("sendButton")}</Button>
         {info && <Alert severity="info" sx={{mt: 2}}>{info}</Alert>}
         {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
         <Link href="/login" align="center" fontSize={14} mt={3} color="textPrimary" sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"} }}>
-          go back to login
+          {tc("goBack")}
         </Link>
       </FormControl>
     )

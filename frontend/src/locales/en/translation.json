@@ -38,7 +38,24 @@
       "password": "Password",
       "registerButton": "Register",
       "goBack": "Go back to login",
-      "invalidCodeError": "Invalid registration code."
+      "invalidCodeError": "Invalid registration code.",
+      "newPassword": "New Password",
+      "repeatPassword": "Repeat Password",
+      "passwordsDoNotMatch": "Passwords do not match.",
+      "resetPasswordButton": "Reset Password"
+    },
+    "reset-password": {
+      "title": "Reset Password",
+      "email": "Your Email Address",
+      "sendButton": "Send Password Reset Link",
+      "successMessage": "A password reset link has been sent to the provided email address.",
+      "goBack": "Go back to login",
+      "newPassword": "New Password",
+      "repeatPassword": "Repeat Password",
+      "passwordsDoNotMatch": "Passwords do not match.",
+      "resetPasswordButton": "Reset Password",
+      "resetPasswordSuccess": "Password has been successfully reset. You can now log in.",
+      "invalidToken": "Invalid or expired link."
     },
     "notifications": {
       "title": "Notifications",
