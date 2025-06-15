@@ -50,6 +50,8 @@ function ResetPasswordPage() {
                     setError(tc("invalidToken"));
                 } else if (err.response.status === 401) {
                     setError(tc("invalidToken"));
+                // } else if (err.response.status === 404) {
+                //     setError(tc("userNotFound"));
                 } else {
                     setError(t("error.unknownError"));
                 }

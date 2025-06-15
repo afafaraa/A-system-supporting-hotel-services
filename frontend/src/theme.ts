@@ -33,6 +33,15 @@ const theme = createTheme({
         },
       },
     },
+    MuiAlert: {
+      styleOverrides: {
+        root: {
+          whiteSpace: 'normal',
+          wordBreak: 'break-word',
+          width: '100%',
+        },
+      },
+    },
   },
 });
 

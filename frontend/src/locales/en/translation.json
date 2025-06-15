@@ -55,7 +55,8 @@
       "passwordsDoNotMatch": "Passwords do not match.",
       "resetPasswordButton": "Reset Password",
       "resetPasswordSuccess": "Password has been successfully reset. You can now log in.",
-      "invalidToken": "Invalid or expired link."
+      "invalidToken": "Invalid or expired link.",
+      "invalidEmail": "Invalid email address."
     },
     "notifications": {
       "title": "Notifications",

@@ -51,7 +51,8 @@
       "passwordsDoNotMatch": "Hasła nie pasują do siebie.",
       "resetPasswordButton": "Zresetuj hasło",
       "resetPasswordSuccess": "Hasło zostało pomyślnie zresetowane. Możesz teraz się zalogować.",
-      "invalidToken": "Nieprawidłowy lub wygasły link."
+      "invalidToken": "Nieprawidłowy lub wygasły link.",
+      "invalidEmail": "Nieprawidłowy adres email."
     },
     "notifications": {
       "title": "Powiadomienia",

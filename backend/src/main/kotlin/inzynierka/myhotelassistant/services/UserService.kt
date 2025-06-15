@@ -52,6 +52,8 @@ class UserService(
 
     fun save(user: UserEntity): UserEntity = userRepository.save(user)
 
+    fun findByEmail(email: String): UserEntity? = userRepository.findByEmail(email)
+
     fun findByEmailOrThrow(email: String): UserEntity =
         userRepository.findByEmail(email)
             ?: throw EntityNotFoundException("User with given email was not found")

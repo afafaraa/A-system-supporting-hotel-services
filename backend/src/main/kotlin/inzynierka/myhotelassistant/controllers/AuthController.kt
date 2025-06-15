@@ -66,11 +66,13 @@ class AuthController(
     fun sendResetPasswordEmail(
         @RequestBody @Valid req: EmailRequest,
     ) {
-        val token = tokenService.generateResetPasswordToken(10, req.email)
-        emailSender.sendResetPasswordLink(
-            email = req.email,
-            link = "http://localhost:5173/reset-password/$token",
-        )
+        if (userService.findByEmail(req.email) != null) {
+            val token = tokenService.generateResetPasswordToken(10, req.email)
+            emailSender.sendResetPasswordLink(
+                email = req.email,
+                link = "http://localhost:5173/reset-password/$token",
+            )
+        }
     }
 
     data class ResetPasswordRequest(
