@@ -127,7 +127,7 @@ function LoginPage(){
             },
           }}
         />
-        <Link href="/reset-password-email" align="end" fontSize={14} mt={1} mb={4} color="textSecondary" sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"} }}>{tc("resetPassword")}</Link>
+        <Link href="/reset-password-email" align="right" fontSize={14} mt={1} mb={4} color="textSecondary" sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"} }}>{tc("resetPassword")}</Link>
 
         <Button variant="contained" onClick={login} type="submit" loading={loading} sx={mainActionButtonSx}>
           {tc("loginButton")}
