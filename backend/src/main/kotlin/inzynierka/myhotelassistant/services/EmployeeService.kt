@@ -1,31 +1,23 @@
 package inzynierka.myhotelassistant.services
 
 import inzynierka.myhotelassistant.controllers.user.EmployeeManagementController
-import inzynierka.myhotelassistant.dto.ScheduleData
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidRoleNameException
 import inzynierka.myhotelassistant.exceptions.HttpException.UserAlreadyExistsException
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.Role.Companion.employeeRoles
 import inzynierka.myhotelassistant.models.user.UserEntity
-import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
-import inzynierka.myhotelassistant.utils.SchedulesToScheduleDataConverter
 import org.springframework.data.domain.Pageable
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.temporal.TemporalAdjusters
 import kotlin.jvm.Throws
 
 @Service
 class EmployeeService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val scheduleRepository: ScheduleRepository,
-    private val scheduleDateConverter: SchedulesToScheduleDataConverter,
 ) {
     fun findByIdOrThrow(id: String): UserEntity {
         val user =
@@ -86,36 +78,5 @@ class EmployeeService(
         if (oldRole == newRole) throw InvalidRoleNameException("User already has this role")
         user.role = newRole
         userRepository.save(user)
-    }
-
-    fun findAllAssignedSchedulesByUsername(
-        date: LocalDate,
-        username: String,
-    ): ScheduleData {
-        val employeeId = findByUsernameOrThrow(username).id!!
-        return findAllAssignedSchedulesByEmployeeId(date, employeeId)
-    }
-
-    private fun findAllAssignedSchedulesByEmployeeId(
-        date: LocalDate,
-        employeeId: String,
-    ): ScheduleData {
-        val (monday, sunday) = getWeekBounds(date)
-        val foundSchedules =
-            scheduleRepository.findByEmployeeIdAndServiceDateBetween(
-                employeeId = employeeId,
-                startDate = monday.atStartOfDay(),
-                endDate = sunday.atTime(23, 59, 59),
-            )
-        if (foundSchedules.isEmpty()) {
-            throw EntityNotFoundException("No schedules found for employee with id '$employeeId' in the specified week")
-        }
-        return scheduleDateConverter.convert(foundSchedules, date)
-    }
-
-    private fun getWeekBounds(day: LocalDate): Pair<LocalDate, LocalDate> {
-        val monday = day.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-        val sunday = day.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
-        return monday to sunday
     }
 }

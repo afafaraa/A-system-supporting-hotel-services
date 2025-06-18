@@ -1,7 +1,5 @@
 package inzynierka.myhotelassistant.controllers.user
 
-import inzynierka.myhotelassistant.dto.ScheduleData
-import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.EmployeeService
 import jakarta.validation.Valid
@@ -21,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import java.time.ZonedDateTime
-import java.time.format.DateTimeParseException
 
 @RestController
 @RequestMapping("/management/employees")
@@ -114,19 +110,5 @@ class EmployeeManagementController(
     ) {
         employeeService.changeRole(username, role)
         logger.debug("Changed role of employee: $username to $role")
-    }
-
-    @GetMapping("/week-schedule")
-    @ResponseStatus(HttpStatus.OK)
-    fun getAssignedSchedules(
-        @RequestParam date: String,
-        @RequestParam username: String,
-    ): ScheduleData {
-        try {
-            val parsedDate = ZonedDateTime.parse(date).toLocalDate()
-            return employeeService.findAllAssignedSchedulesByUsername(parsedDate, username)
-        } catch (_: DateTimeParseException) {
-            throw InvalidArgumentException("Invalid date format. Expected format is ISO_ZONED_DATE_TIME.")
-        }
     }
 }

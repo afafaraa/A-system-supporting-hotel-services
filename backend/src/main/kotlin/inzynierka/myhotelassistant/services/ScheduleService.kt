@@ -1,12 +1,12 @@
 package inzynierka.myhotelassistant.services
 
-import inzynierka.myhotelassistant.dto.ScheduleData
+import inzynierka.myhotelassistant.dto.ScheduleDTO
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.utils.AuthHeaderDataExtractor
-import inzynierka.myhotelassistant.utils.SchedulesToScheduleDataConverter
+import inzynierka.myhotelassistant.utils.SchedulesToDTOConverter
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -18,7 +18,7 @@ import java.time.temporal.TemporalAdjusters
 @Service
 class ScheduleService(
     private val scheduleRepository: ScheduleRepository,
-    private val scheduleDateConverter: SchedulesToScheduleDataConverter,
+    private val scheduleDateConverter: SchedulesToDTOConverter,
     private val authExtractor: AuthHeaderDataExtractor,
     private val employeeService: EmployeeService,
 ) {
@@ -66,7 +66,7 @@ class ScheduleService(
     fun getEmployeeWeekSchedule(
         date: LocalDate,
         authHeader: String,
-    ): ScheduleData {
+    ): List<ScheduleDTO> {
         val username = authExtractor.decodeJwtData(authHeader).username
         val employeeId = employeeService.findByUsernameOrThrow(username).id!!
         val (monday, sunday) = weekBounds(date)
@@ -79,7 +79,7 @@ class ScheduleService(
         if (foundSchedules.isEmpty()) {
             throw EntityNotFoundException("No available schedules found in the specified week")
         }
-        return scheduleDateConverter.convert(foundSchedules, date)
+        return scheduleDateConverter.convert(foundSchedules)
     }
 
     fun findByEmployeeIdAndDateRange(

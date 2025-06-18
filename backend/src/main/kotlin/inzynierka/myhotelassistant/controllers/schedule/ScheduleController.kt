@@ -1,5 +1,5 @@
 package inzynierka.myhotelassistant.controllers.schedule
-import inzynierka.myhotelassistant.dto.ScheduleData
+import inzynierka.myhotelassistant.dto.ScheduleDTO
 import inzynierka.myhotelassistant.dto.ShiftData
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
@@ -54,11 +54,11 @@ class ScheduleController(
     fun getScheduleByServiceIdForWeek(
         @PathVariable id: String,
         @RequestParam date: String,
-    ): List<ScheduleForWeekResponse> {
-        return scheduleService
+    ): List<ScheduleForWeekResponse> =
+        scheduleService
             .findScheduleForCurrentWeekById(id, date)
-            .mapNotNull { schedule ->
-                val empId = schedule.employeeId ?: return@mapNotNull null
+            .map { schedule ->
+                val empId = schedule.employeeId
                 val emp = employeeService.findByIdOrThrow(empId)
                 ScheduleForWeekResponse(
                     schedule.id ?: "",
@@ -69,7 +69,6 @@ class ScheduleController(
                     schedule.status,
                 )
             }
-    }
 
     @GetMapping("/get/cart/id/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -78,7 +77,7 @@ class ScheduleController(
     ): ScheduleForCartResponse? {
         val scheduleItem = scheduleService.findById(id)
         if (scheduleItem?.employeeId == null) return null
-        val assignedEmployee = employeeService.findByIdOrThrow(scheduleItem.employeeId!!)
+        val assignedEmployee = employeeService.findByIdOrThrow(scheduleItem.employeeId)
         val serviceOpt = serviceService.findById(scheduleItem.serviceId)
         if (!serviceOpt.isPresent) {
             return null
@@ -87,7 +86,7 @@ class ScheduleController(
         return ScheduleForCartResponse(
             id,
             service.name,
-            scheduleItem.employeeId!!,
+            scheduleItem.employeeId,
             assignedEmployee.name + " " + assignedEmployee.surname,
             service.image ?: "",
             service.price,
@@ -100,7 +99,7 @@ class ScheduleController(
     fun getWholeWeekSchedule(
         @RequestParam date: String,
         @RequestHeader("Authorization") authHeader: String,
-    ): ScheduleData {
+    ): List<ScheduleDTO> {
         try {
             val parsedDate = ZonedDateTime.parse(date).toLocalDate()
             return scheduleService.getEmployeeWeekSchedule(parsedDate, authHeader)
@@ -118,7 +117,7 @@ class ScheduleController(
         val parsedDate =
             try {
                 LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-            } catch (e: DateTimeParseException) {
+            } catch (_: DateTimeParseException) {
                 throw InvalidArgumentException("Invalid date format. Expected format is 'yyyy-MM-dd'.")
             }
 

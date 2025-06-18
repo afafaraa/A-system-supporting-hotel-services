@@ -3,29 +3,22 @@ package inzynierka.myhotelassistant.dto
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.models.user.UserEntity
-import java.time.LocalDateTime
 import kotlin.time.DurationUnit
 
-data class ScheduleData(
-    val schedules: List<ScheduleDTO>,
-    val startDate: LocalDateTime,
-    val endDate: LocalDateTime,
+data class ScheduleDTO(
+    val id: String,
+    val serviceId: String,
+    val title: String?,
+    val date: String,
+    val duration: Int?,
+    val weekday: String,
+    val guestName: String?,
+    val room: String?,
+    val orderTime: String?,
+    val status: String,
 ) {
-    data class ScheduleDTO(
-        val id: String,
-        val serviceId: String,
-        val title: String?,
-        val date: String,
-        val duration: Int?,
-        val weekday: String,
-        val guestName: String?,
-        val room: String?,
-        val orderTime: String?,
-        val status: String,
-    )
-
     companion object {
-        fun convertToDTO(
+        fun toDTO(
             schedule: ScheduleEntity,
             service: ServiceEntity?,
             guest: UserEntity?,
