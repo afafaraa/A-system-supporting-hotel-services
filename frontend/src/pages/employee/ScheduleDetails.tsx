@@ -6,7 +6,7 @@ import RoomIcon from '@mui/icons-material/Room';
 import EventIcon from '@mui/icons-material/Event';
 import { format, addMinutes } from 'date-fns';
 import { useTranslation } from "react-i18next";
-import {OrderStatus, Schedule} from "../../components/layout/ScheduleTable.tsx";
+import {Schedule, OrderStatus} from "../../types/schedule.ts";
 import { orderStatus } from "../../utils/utils.ts"
 
 type Props = {
@@ -86,7 +86,7 @@ function ScheduleDetails({open, onClose, schedule}: Props) {
 
           {schedule.orderTime &&
             <Typography color="text.secondary" fontSize="0.9rem">
-              {tc("orderTime")}: {schedule.orderTime}
+              {tc("orderTime")}: {new Date(schedule.orderTime).toLocaleString(t("date.locale"))}
             </Typography>
           }
 

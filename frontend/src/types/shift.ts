@@ -1,3 +1,5 @@
+import {OrderStatus} from "./schedule.ts";
+
 export type Shift = {
     id: string;
     weekday: string;
@@ -5,7 +7,7 @@ export type Shift = {
     endHour: number;
     title: string;
     guest: string;
-    status: string;
+    status: OrderStatus;
     serviceId: string;
     orderTime?: string;
   };

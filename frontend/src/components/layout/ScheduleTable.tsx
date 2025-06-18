@@ -3,33 +3,7 @@ import {addDays, format} from "date-fns";
 import React from "react";
 import {useTranslation} from "react-i18next";
 import {weekDayToInt} from "../../utils/utils.ts";
-
-export interface ScheduleData {
-  schedules: Schedule[],
-  startDate: Date,
-  endDate: Date,
-}
-
-export interface Schedule {
-  id: string,
-  serviceId: string,
-  title: string | undefined,
-  date: Date,
-  duration: number | undefined,
-  weekday: string,
-  guestName: string | undefined,
-  room: string | undefined,
-  orderTime: string | undefined,
-  status: OrderStatus,
-}
-
-export enum OrderStatus {
-  available = "AVAILABLE",
-  requested = "REQUESTED",
-  active = "ACTIVE",
-  completed = "COMPLETED",
-  canceled = "CANCELED",
-}
+import {Schedule} from "../../types/schedule.ts";
 
 interface ScheduleTableHeaderProps extends WeekSwitchContainerProps {
   children: React.ReactNode;
@@ -126,17 +100,23 @@ const TableTimeGrid = ({hours}: {hours: number[]}) => {
           >
             {hour}:00
           </Box>
-          {Array.from({ length: 7 }).map((_, col) => (
-            <Box
-              key={`bg-${row}-${col}`}
-              gridColumn={col + 2}
-              gridRow={`${density * row + 1} / span ${density}`}
-              bgcolor={row % 2 === 0 ? '#f5f5f5' : '#ffffff'}
-              borderLeft="1px solid #eaeaea"
-              borderBottom="1px solid #eaeaea"
-            />
-          ))}
+          <Box
+            key={`bg-${row}`}
+            gridColumn="2 / span 7"
+            gridRow={`${density * row + 1} / span ${density}`}
+            bgcolor={row % 2 === 0 ? '#f5f5f5' : '#ffffff'}
+            borderBottom={row === hours.length - 1 ? "1px solid #ccc" : "1px solid #eaeaea"}
+          />
         </React.Fragment>
+      ))}
+      {Array.from({ length: 6 }).map((_, i) => (
+        <Box
+          key={`vline-${i}`}
+          gridColumn={i + 3}
+          gridRow="1 / -1"
+          borderLeft="1px solid #eaeaea"
+          borderRight={i === 5 ? "1px solid #ccc" : "none"}
+        />
       ))}
     </>
   )
