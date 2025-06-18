@@ -20,7 +20,15 @@ export interface Schedule {
   guestName: string | undefined,
   room: string | undefined,
   orderTime: string | undefined,
-  status: string,
+  status: OrderStatus,
+}
+
+export enum OrderStatus {
+  available = "AVAILABLE",
+  requested = "REQUESTED",
+  active = "ACTIVE",
+  completed = "COMPLETED",
+  canceled = "CANCELED",
 }
 
 interface ScheduleTableHeaderProps extends WeekSwitchContainerProps {

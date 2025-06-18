@@ -82,8 +82,9 @@
     },
     "my_schedule": {
       "title": "My schedule",
-      "current": "Current",
-      "unassigned": "Unassigned",
+      "confirmed": "Confirmed",
+      "unconfirmed": "Unconfirmed",
+      "all": "All",
       "details": {
         "unknownService": "Unknown service",
         "status": "Status",

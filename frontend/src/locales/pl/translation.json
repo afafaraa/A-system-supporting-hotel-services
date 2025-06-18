@@ -78,8 +78,9 @@
     },
     "my_schedule": {
       "title": "Mój harmonogram",
-      "current": "Moje",
-      "unassigned": "Nieprzypisane",
+      "confirmed": "Potwierdzone",
+      "unconfirmed": "Niepotwierdzone",
+      "all": "Wszystkie",
       "details": {
         "unknownService": "Nieznana usługa",
         "status": "Status",

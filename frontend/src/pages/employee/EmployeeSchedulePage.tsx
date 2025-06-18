@@ -2,18 +2,23 @@ import {useEffect, useState} from "react";
 import PageContainer from "../../components/layout/PageContainer.tsx";
 import {Alert, Box, Tab, Tabs, Typography} from "@mui/material";
 import {addDays, addMinutes, addWeeks, format, startOfWeek, subWeeks} from "date-fns";
-import {Schedule, ScheduleCard, ScheduleData, ScheduleTable} from "../../components/layout/ScheduleTable.tsx";
+import {OrderStatus, Schedule, ScheduleCard, ScheduleData, ScheduleTable} from "../../components/layout/ScheduleTable.tsx";
 import {useTranslation} from "react-i18next";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {getYearWeek, orderStatus} from "../../utils/utils.ts";
 import ScheduleDetails from "./ScheduleDetails.tsx";
 import {isAxiosError} from "axios";
 
+// TAB 0: Confirmed by employee
+// TAB 1: Reserved by guest, but not confirmed by employee
+// TAB 2: Only assigned to employee, not reserved by guest
+
 function EmployeeSchedulePage() {
   const [tab, setTab] = useState(0);
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(startOfWeek(new Date(), { weekStartsOn: 1 }));
-  const [assignedScheduleCache, setAssignedScheduleCache] = useState<Map<number, Schedule[]>>(new Map());
-  const [unassignedScheduleCache, setUnassignedScheduleCache] = useState<Map<number, Schedule[]>>(new Map());
+  const [confirmedSchedule, setConfirmedSchedule] = useState<Map<number, Schedule[]>>(new Map());
+  const [unconfirmedSchedule, setUnconfirmedSchedule] = useState<Map<number, Schedule[]>>(new Map());
+  const [allSchedules, setAllSchedules] = useState<Map<number, Schedule[]>>(new Map());
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
@@ -26,56 +31,41 @@ function EmployeeSchedulePage() {
     setInfo(null);
     setError(null);
   }, [currentWeekStart, tab]);
+  
+  const updateSchedulesData = (data: ScheduleData, yearWeek: number) => {
+    setAllSchedules(prev => {
+      const newMap = new Map(prev);
+      newMap.set(yearWeek, data.schedules);
+      return newMap;
+    });
+    setConfirmedSchedule(prev => {
+      const newMap = new Map(prev);
+      newMap.set(yearWeek, data.schedules.filter(s => [OrderStatus.active, OrderStatus.completed, OrderStatus.canceled].includes(s.status)))
+      return newMap;
+    })
+    setUnconfirmedSchedule(prev => {
+      const newMap = new Map(prev);
+      newMap.set(yearWeek, data.schedules.filter(s => s.status === OrderStatus.requested))
+      return newMap;
+    })
+    setStartDate(new Date(data.startDate)); // TODO
+    setEndDate(new Date(data.endDate));     // TODO
+  }
 
   useEffect(() => {
-    if (tab !== 0) return;
     const yearWeek = getYearWeek(currentWeekStart);
-    if (assignedScheduleCache.has(yearWeek)) return;
-    axiosAuthApi.get<ScheduleData>('/employee/week-schedule?date=' + addDays(currentWeekStart, 1).toISOString())
-      .then(res => {
-        console.log("Response:", res);
-        setAssignedScheduleCache(prev => {
-          const newMap = new Map(prev);
-          newMap.set(yearWeek, res.data.schedules);
-          setStartDate(new Date(res.data.startDate));
-          setEndDate(new Date(res.data.endDate));
-          return newMap;
-        });
-      })
+    if (allSchedules.has(yearWeek)) return;
+    axiosAuthApi.get<ScheduleData>('/schedule/week-schedule?date=' + addDays(currentWeekStart, 1).toISOString())
+      .then(res => updateSchedulesData(res.data, yearWeek))
       .catch(err => {
         if (isAxiosError(err)) {
-          if (err.response?.status === 404) setInfo("No assigned schedules found for this week");
+          if (err.response?.status === 404) setInfo("No available schedules was found for this week"); // TODO
           else setError("Unable to fetch schedules: " + err.message);
         } else {
           setError("An unexpected error occurred while fetching schedules");
         }
       });
-  }, [assignedScheduleCache, currentWeekStart, tab]);
-
-  useEffect(() => {
-    if (tab !== 1) return;
-    const yearWeek = getYearWeek(currentWeekStart);
-    if (unassignedScheduleCache.has(yearWeek)) return;
-    axiosAuthApi.get<ScheduleData>('/schedule/available/week-schedule?date=' + addDays(currentWeekStart, 1).toISOString())
-      .then(res => {
-        console.log("Response2:", res);
-        setUnassignedScheduleCache(prev => {
-          const newMap = new Map(prev);
-          newMap.set(yearWeek, res.data.schedules);
-          setStartDate(new Date(res.data.startDate));
-          setEndDate(new Date(res.data.endDate));
-          return newMap;
-        });
-      })
-      .catch(err => {
-        if (isAxiosError(err)) {
-          if (err.response?.status === 404) setInfo("No available schedules was found for this week");
-          else setError("Unable to fetch schedules: " + err.message);
-        } else {
-          setError("An unexpected error occurred while fetching schedules");
-        }
-      });
-  }, [unassignedScheduleCache, currentWeekStart, tab]);
+  }, [allSchedules, currentWeekStart, tab]);
 
   const handlePrevWeek = () => {
     setCurrentWeekStart(prev => subWeeks(prev, 1));
@@ -109,11 +99,10 @@ function EmployeeSchedulePage() {
   return (
     <PageContainer title={tc("title")}>
       <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 2 }}>
-        <Tab label={tc("current")} />
-        <Tab label={tc("unassigned")} />
+        <Tab label={tc("confirmed")} />
+        <Tab label={tc("unconfirmed")} />
+        <Tab label={tc("all")} />
       </Tabs>
-
-
 
       <ScheduleTable currentWeekStart={currentWeekStart}
                      handlePrevWeek={handlePrevWeek} handleNextWeek={handleNextWeek}
@@ -124,8 +113,9 @@ function EmployeeSchedulePage() {
                         {error && <Alert severity="error" sx={{border: '1px solid red', my: 2}}>{error}.</Alert>}
                       </>
                      }>
-        {tab === 0 && assignedScheduleCache.get(getYearWeek(currentWeekStart))?.map(renderShiftCard)}
-        {tab === 1 && unassignedScheduleCache.get(getYearWeek(currentWeekStart))?.map(renderShiftCard)}
+        {tab === 0 && confirmedSchedule.get(getYearWeek(currentWeekStart))?.map(renderShiftCard)}
+        {tab === 1 && unconfirmedSchedule.get(getYearWeek(currentWeekStart))?.map(renderShiftCard)}
+        {tab === 2 && allSchedules.get(getYearWeek(currentWeekStart))?.map(renderShiftCard)}
       </ScheduleTable>
 
       {selectedSchedule && (

@@ -10,6 +10,7 @@ import inzynierka.myhotelassistant.services.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -94,14 +95,15 @@ class ScheduleController(
         )
     }
 
-    @GetMapping("/available/week-schedule")
+    @GetMapping("/week-schedule")
     @ResponseStatus(HttpStatus.OK)
-    fun getAvailableWeekSchedule(
+    fun getWholeWeekSchedule(
         @RequestParam date: String,
+        @RequestHeader("Authorization") authHeader: String,
     ): ScheduleData {
         try {
             val parsedDate = ZonedDateTime.parse(date).toLocalDate()
-            return scheduleService.getAvailableWeekSchedule(parsedDate)
+            return scheduleService.getEmployeeWeekSchedule(parsedDate, authHeader)
         } catch (_: DateTimeParseException) {
             throw InvalidArgumentException("Invalid date format. Expected format is ISO_ZONED_DATE_TIME.")
         }

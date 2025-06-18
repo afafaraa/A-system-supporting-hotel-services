@@ -106,7 +106,7 @@ class GuestController(
         val service = serviceService.findByIdOrThrow(schedule.serviceId)
         schedule.isOrdered = true
         schedule.guestId = guest.id
-        schedule.status = OrderStatus.PENDING
+        schedule.status = OrderStatus.REQUESTED
         guest.guestData?.let { data ->
             data.bill += service.price
         }
@@ -121,7 +121,7 @@ class GuestController(
     ): List<ScheduleForPastAndRequestedServicesResponse>? {
         val userId = userService.findByUsernameOrThrow(username).id
         if (userId != null) {
-            return findAllByStatusAndUserId(listOf(OrderStatus.PENDING, OrderStatus.IN_PROGRESS), userId)
+            return findAllByStatusAndUserId(listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE), userId)
         }
         return null
     }
@@ -133,7 +133,7 @@ class GuestController(
     ): List<ScheduleForPastAndRequestedServicesResponse>? {
         val userId = userService.findByUsernameOrThrow(username).id
         if (userId != null) {
-            return findAllByStatusAndUserId(listOf(OrderStatus.FINISHED, OrderStatus.CANCELED), userId)
+            return findAllByStatusAndUserId(listOf(OrderStatus.COMPLETED, OrderStatus.CANCELED), userId)
         }
         return null
     }

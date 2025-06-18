@@ -24,10 +24,4 @@ interface ScheduleRepository : MongoRepository<ScheduleEntity, String> {
         startDate: LocalDateTime,
         endDate: LocalDateTime,
     ): List<ScheduleEntity>
-
-    fun findByIsOrderedAndServiceDateBetween(
-        isOrdered: Boolean,
-        startDate: LocalDateTime,
-        endDate: LocalDateTime,
-    ): List<ScheduleEntity>
 }

@@ -10,7 +10,6 @@ import inzynierka.myhotelassistant.models.user.Role.Companion.employeeRoles
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
-import inzynierka.myhotelassistant.utils.AuthHeaderDataExtractor
 import inzynierka.myhotelassistant.utils.SchedulesToScheduleDataConverter
 import org.springframework.data.domain.Pageable
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -25,7 +24,6 @@ import kotlin.jvm.Throws
 class EmployeeService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val authExtractor: AuthHeaderDataExtractor,
     private val scheduleRepository: ScheduleRepository,
     private val scheduleDateConverter: SchedulesToScheduleDataConverter,
 ) {
@@ -88,15 +86,6 @@ class EmployeeService(
         if (oldRole == newRole) throw InvalidRoleNameException("User already has this role")
         user.role = newRole
         userRepository.save(user)
-    }
-
-    fun findAllAssignedSchedules(
-        date: LocalDate,
-        authHeader: String,
-    ): ScheduleData {
-        val username = authExtractor.decodeJwtData(authHeader).username
-        val employeeId = findByUsernameOrThrow(username).id!!
-        return findAllAssignedSchedulesByEmployeeId(date, employeeId)
     }
 
     fun findAllAssignedSchedulesByUsername(

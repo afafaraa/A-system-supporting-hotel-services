@@ -278,13 +278,13 @@ class DatabaseSeeder(
                                         serviceId = service.id!!,
                                         serviceDate = proposedDateTime,
                                         weekday = currentDate.dayOfWeek,
-                                        employeeId = chosenEmployee.id,
+                                        employeeId = chosenEmployee.id!!,
                                         isOrdered = false,
                                         guestId = null,
                                     )
 
-                                employeeAvailability[chosenEmployee.id!!]?.add(Pair(proposedDateTime, breakEndTime))
-                                employeeAvailability[chosenEmployee.id!!]?.sortBy { it.first } // Keep sorted
+                                employeeAvailability[chosenEmployee.id]?.add(Pair(proposedDateTime, breakEndTime))
+                                employeeAvailability[chosenEmployee.id]?.sortBy { it.first } // Keep sorted
 
                                 scheduleRepository.save(scheduleEntity)
                                 logger.info(
@@ -320,8 +320,8 @@ class DatabaseSeeder(
             val requestedCount = Random.nextInt(3, 6)
             val pastCount = Random.nextInt(10, 16)
 
-            val requestedStatuses = listOf(OrderStatus.PENDING, OrderStatus.IN_PROGRESS)
-            val pastStatuses = listOf(OrderStatus.FINISHED, OrderStatus.CANCELED)
+            val requestedStatuses = listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE)
+            val pastStatuses = listOf(OrderStatus.COMPLETED, OrderStatus.CANCELED)
 
             val totalCount = requestedCount + pastCount
             val schedulesToUpdate = availableSchedules.take(totalCount)
@@ -334,7 +334,7 @@ class DatabaseSeeder(
                 schedule.isOrdered = true
                 schedule.guestId = guest.id
                 schedule.orderTime = schedule.serviceDate.minusHours(Random.nextLong(1, 48))
-                if (schedule.status == OrderStatus.FINISHED) {
+                if (schedule.status == OrderStatus.COMPLETED) {
                     val service = serviceService.findByIdOrThrow(schedule.serviceId)
                     guest.guestData?.let { data ->
                         data.bill += service.price

@@ -1,4 +1,5 @@
 import {getISOWeek} from "date-fns";
+import {OrderStatus} from "../components/layout/ScheduleTable.tsx";
 
 export function getYearWeek(date: Date): number {
   const year = date.getFullYear();
@@ -22,10 +23,10 @@ export const DateWithHour = (hour: number) => {
   return now;
 }
 
-export const orderStatus: Record<string, {text: string, background: string}> = {
+export const orderStatus: Record<OrderStatus, {text: string, background: string}> = {
   "AVAILABLE": {text: "#27a6e0", background: "#b8e7fb"},
-  "PENDING": {text: "#9a73c7", background: "#ddcbf2"},
-  "IN_PROGRESS": {text: "#5ea5aa", background: "#cbf0f2"},
-  "FINISHED": {text: "#5eaa62", background: "#cce8cd"},
+  "REQUESTED": {text: "#9a73c7", background: "#ddcbf2"},
+  "ACTIVE": {text: "#5ea5aa", background: "#cbf0f2"},
+  "COMPLETED": {text: "#5eaa62", background: "#cce8cd"},
   "CANCELED": {text: "#eee", background: "#333"},
 }

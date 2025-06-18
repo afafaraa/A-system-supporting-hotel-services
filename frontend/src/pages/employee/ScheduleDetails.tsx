@@ -6,7 +6,7 @@ import RoomIcon from '@mui/icons-material/Room';
 import EventIcon from '@mui/icons-material/Event';
 import { format, addMinutes } from 'date-fns';
 import { useTranslation } from "react-i18next";
-import { Schedule } from "../../components/layout/ScheduleTable.tsx";
+import {OrderStatus, Schedule} from "../../components/layout/ScheduleTable.tsx";
 import { orderStatus } from "../../utils/utils.ts"
 
 type Props = {
@@ -58,15 +58,19 @@ function ScheduleDetails({open, onClose, schedule}: Props) {
             </Typography>
           </Box>
 
-          <Box display="flex" alignItems="center" gap={2}>
-            <PersonIcon color="action" />
-            <Typography>{schedule.guestName || "Unknown guest"}</Typography>
-          </Box>
+          {schedule.status !== OrderStatus.available &&
+            <>
+              <Box display="flex" alignItems="center" gap={2}>
+                <PersonIcon color="action" />
+                <Typography>{schedule.guestName || "Unknown guest"}</Typography>
+              </Box>
 
-          <Box display="flex" alignItems="center" gap={2}>
-            <RoomIcon color="action" />
-            <Typography>{schedule.room || "No room assigned"}</Typography>
-          </Box>
+              <Box display="flex" alignItems="center" gap={2}>
+                <RoomIcon color="action" />
+                <Typography>{schedule.room || "No room assigned"}</Typography>
+              </Box>
+            </>
+          }
 
           <Divider />
 
@@ -80,9 +84,11 @@ function ScheduleDetails({open, onClose, schedule}: Props) {
             </Typography>
           </Box>
 
-          <Typography color="text.secondary" fontSize="0.9rem">
-            {tc("orderTime")}: {schedule.orderTime || "Unknown"}
-          </Typography>
+          {schedule.orderTime &&
+            <Typography color="text.secondary" fontSize="0.9rem">
+              {tc("orderTime")}: {schedule.orderTime}
+            </Typography>
+          }
 
         </Stack>
       </DialogContent>
