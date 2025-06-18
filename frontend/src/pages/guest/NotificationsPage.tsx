@@ -151,14 +151,14 @@ function NotificationsPage() {
         { isLoading ?
           <>
             <Divider key={`divider_loading`} component="li"/>
-            <Box sx={{p: 4}} textAlign="center"><CircularProgress /></Box>
+            <Box sx={{p: 4, backgroundColor: "background.paper"}} textAlign="center"><CircularProgress /></Box>
           </>
           :
           <>
           {notifications.length === 0 ?
             <>
               <Divider key={`divider_empty`} component="li"/>
-              <Box sx={{p: 4}}>
+              <Box sx={{p: 4, backgroundColor: "background.paper"}}>
                 <Typography variant="body1" align="center">{tc("empty")}</Typography>
               </Box>
             </>
