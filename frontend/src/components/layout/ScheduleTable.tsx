@@ -138,25 +138,28 @@ export const ScheduleCard = ({children, shift, startDate, onClick}: ScheduleCard
   return (
     <Paper
       key={shift.id}
-      elevation={3}
+      elevation={0}
       onClick={onClick}
       sx={{
         gridColumn: col,
         gridRow: `${Math.round(startRow * density + 1)} / span ${Math.round(rowSpan * density)}`,
         zIndex: `${Math.round(startRow * density + 1)}`,
-        p: 1,
-        borderRadius: 1,
+        m: 0.1,
+        mx: 0.5,
+        borderRadius: 3,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         fontSize: '0.85rem',
-        mx: 0.5,
         overflow: 'hidden',
         transition: 'transform 0.3s ease, box-shadow 0.3s ease',
         '&:hover': {
           transform: 'scale(1.10)',
           cursor: 'pointer',
           zIndex: 1000,
+          boxShadow: 10,
+          m: 0,
+          gridRow: `${Math.round(startRow * density + 1)} / span ${Math.max(density * 1.5, Math.round(rowSpan * density))}`,
         },
       }}
     >

@@ -6,7 +6,7 @@ import {ScheduleCard, ScheduleTable} from "../../components/layout/ScheduleTable
 import {Schedule, OrderStatus} from "../../types/schedule.ts";
 import {useTranslation} from "react-i18next";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
-import {getEndTime, getStartTime, getYearWeek, orderStatus} from "../../utils/utils.ts";
+import {getEndTime, getStartTime, getYearWeek} from "../../utils/utils.ts";
 import ScheduleDetails from "./ScheduleDetails.tsx";
 import {isAxiosError} from "axios";
 
@@ -81,18 +81,21 @@ function EmployeeSchedulePage() {
   const renderShiftCard = (schedule: Schedule) => {
     return (
       <ScheduleCard key={schedule.id} shift={schedule} startDate={startDate} onClick={() => setSelectedSchedule(schedule)}>
-        <Box gap={5}>
-          <Typography fontWeight="bold">{schedule.title}</Typography>
-          <Typography>{schedule.room}</Typography>
+        <Box gap={5} height="100%" p={1} position="relative" borderRadius="inherit"
+             bgcolor={`calendar.${schedule.status}.background`}
+             borderLeft={theme => `5px solid ${theme.palette.calendar[schedule.status].primary}`}>
+          <Typography fontWeight="bold" noWrap>{schedule.title}</Typography>
+          {/*<Typography>{schedule.room}</Typography>*/}
           <Typography color="text.secondary">
             {schedule.duration ?
               `${format(schedule.date, "HH:mm")} - ${format(addMinutes(schedule.date, schedule.duration), "HH:mm")}`
               : format(schedule.date, "HH:mm")
             }
           </Typography>
-          <Box component="span" sx={{px: 1, py: 0.5, borderRadius: 1, color: `${orderStatus[schedule.status].text}`,
-            backgroundColor: `${orderStatus[schedule.status].background}`, display: 'inline-block'}}>
-            {schedule.status}
+          <Box px={0.8} py={0.4} position="absolute" bottom={0} right={0} fontWeight="bold"
+               color={`calendar.${schedule.status}.background`} bgcolor={`calendar.${schedule.status}.primary`}
+               sx={{borderTopLeftRadius: 10}}>
+            {t(`order_status.${schedule.status}`)}
           </Box>
         </Box>
       </ScheduleCard>

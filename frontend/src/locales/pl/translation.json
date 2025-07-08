@@ -188,5 +188,12 @@
     "serverError": "Błąd serwera. Spróbuj ponownie później.",
     "unknownError": "Wystąpił nieznany błąd.",
     "emptyFields": "Wszystkie pola muszą być wypełnione."
+  },
+  "order_status": {
+    "AVAILABLE": "DOSTĘPNY",
+    "REQUESTED": "ZAMÓWIONY",
+    "ACTIVE": "AKTYWNY",
+    "COMPLETED": "UKOŃCZONY",
+    "CANCELED": "ANULOWANY"
   }
 }

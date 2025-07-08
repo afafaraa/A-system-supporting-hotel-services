@@ -120,20 +120,22 @@ function EmployeeDetailsPage() {
                 startDate={MIN_HOUR}
                 onClick={() => console.log("TO DO")}
               >
-                <Box gap={5}>
-                  <Typography fontWeight="bold">{shift.title}</Typography>
-                  <Typography>{shift.guest}</Typography>
-                  <Typography color="text.secondary">
-                    {duration
-                      ? `${format(shiftDate, "HH:mm")} - ${format(addMinutes(shiftDate, duration), "HH:mm")}`
-                      : format(shiftDate, "HH:mm")}
-                  </Typography>
-                  <Typography>{shift.status}</Typography>
-                </Box>
-                <Box mt={1} textAlign="center">
-                  <Button size="small" variant="outlined">
-                    {tc("edit")}
-                  </Button>
+                <Box p={1}>
+                  <Box gap={5}>
+                    <Typography fontWeight="bold">{shift.title}</Typography>
+                    <Typography>{shift.guest}</Typography>
+                    <Typography color="text.secondary">
+                      {duration
+                        ? `${format(shiftDate, "HH:mm")} - ${format(addMinutes(shiftDate, duration), "HH:mm")}`
+                        : format(shiftDate, "HH:mm")}
+                    </Typography>
+                    <Typography>{shift.status}</Typography>
+                  </Box>
+                  <Box mt={1} textAlign="center">
+                    <Button size="small" variant="outlined">
+                      {tc("edit")}
+                    </Button>
+                  </Box>
                 </Box>
               </ScheduleCard>
             );

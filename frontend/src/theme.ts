@@ -1,9 +1,20 @@
 import {createTheme} from "@mui/material";
 import {cyan, indigo} from "@mui/material/colors";
+import {OrderStatus} from "./types/schedule.ts";
 
 declare module '@mui/material/styles' {
   interface TypeBackground {
     primaryLight: string;
+  }
+
+  type CalendarColors = {primary: string, background: string};
+
+  interface Palette {
+    calendar: Record<OrderStatus, CalendarColors>
+  }
+
+  interface PaletteOptions {
+    calendar?: Palette["calendar"];
   }
 }
 
@@ -24,6 +35,13 @@ const theme = createTheme({
       secondary: '#666',
       disabled: '#999',
     },
+    calendar: {
+      AVAILABLE: {primary: "hsl(200 60% 70%)", background: "hsl(200 60% 95%)"},
+      REQUESTED: {primary: "hsl(268 80% 70%)", background: "hsl(268 80% 93%)"},
+      ACTIVE: {primary: "hsl(183 40% 60%)", background: "hsl(183 60% 93%)"},
+      COMPLETED: {primary: "hsl(122 40% 60%)", background: "hsl(122 60% 93%)"},
+      CANCELED: {primary: "hsl(200 10% 30%)", background: "hsl(200 10% 90%)"},
+    }
   },
   components: {
     MuiTooltip: {

@@ -192,5 +192,12 @@
     "serverError": "Server error. Please try again later.",
     "unknownError": "Unknown error occurred.",
     "emptyFields": "All fields must be filled."
+  },
+  "order_status": {
+    "AVAILABLE": "AVAILABLE",
+    "REQUESTED": "REQUESTED",
+    "ACTIVE": "ACTIVE",
+    "COMPLETED": "COMPLETED",
+    "CANCELED": "CANCELED"
   }
 }

@@ -7,7 +7,6 @@ import EventIcon from '@mui/icons-material/Event';
 import { format, addMinutes } from 'date-fns';
 import { useTranslation } from "react-i18next";
 import {Schedule, OrderStatus} from "../../types/schedule.ts";
-import { orderStatus } from "../../utils/utils.ts"
 
 type Props = {
   open: boolean;
@@ -75,11 +74,11 @@ function ScheduleDetails({open, onClose, schedule}: Props) {
           <Divider />
 
           <Box sx={{ mt: 2 }}>
-            <Typography fontSize="0.9rem">
+            <Typography fontSize="0.9rem" fontWeight="bold">
               {tc("status")}:
-              <Box component="span" sx={{ml: 1, px: 1.5, py: 0.5, borderRadius: 1, color: `${orderStatus[schedule.status].text}`,
-                backgroundColor: `${orderStatus[schedule.status].background}`, display: 'inline-block'}}>
-                {schedule.status}
+              <Box component="span" sx={{ml: 1, px: 1.2, py: 0.4, borderRadius: 1, color: `calendar.${schedule.status}.background`,
+                backgroundColor: `calendar.${schedule.status}.primary`, display: 'inline-block'}}>
+                {t(`order_status.${schedule.status}`)}
               </Box>
             </Typography>
           </Box>
