@@ -3,7 +3,6 @@ package inzynierka.myhotelassistant.utils
 import inzynierka.myhotelassistant.models.notification.NotificationEntity
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
-import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.models.service.Rating
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.models.service.ServiceType
@@ -15,21 +14,16 @@ import inzynierka.myhotelassistant.repositories.NotificationRepository
 import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
-import inzynierka.myhotelassistant.services.EmployeeService
-import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
 import inzynierka.myhotelassistant.services.UserService
 import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
-import org.springframework.data.domain.Pageable
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.time.DayOfWeek
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import kotlin.collections.forEach
 import kotlin.math.roundToInt
@@ -47,11 +41,10 @@ class DatabaseSeeder(
     private val serviceService: ServiceService,
     private val notificationRepository: NotificationRepository,
     private val scheduleRepository: ScheduleRepository,
-    private val employeeService: EmployeeService,
     private val userService: UserService,
-    private val scheduleService: ScheduleService,
+    private val schedulesGenerator: SchedulesGenerator
 ) {
-    private val logger = LoggerFactory.getLogger(DatabaseSeeder::class.java)
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     @PostConstruct
     fun addDefaultUserToDatabase() {
@@ -59,8 +52,9 @@ class DatabaseSeeder(
             addTestAdminAndUser()
             addTestRooms()
             addTestEmployees()
+            addTestGuests()
             addServices()
-            addSchedule()
+            schedulesGenerator.createSchedules()
             addOrders()
             addManager()
             addTestNotifications()
@@ -172,6 +166,60 @@ class DatabaseSeeder(
         }
     }
 
+    private fun addTestGuests() {
+        if (!userRepo.existsByUsername("guest1")) {
+            userRepo.save(
+                UserEntity(
+                    role = Role.GUEST,
+                    email = "guest1@gmail.com",
+                    username = "guest1",
+                    password = passwordEncoder.encode("guest1"),
+                    name = "Alice",
+                    surname = "Johnson",
+                    guestData = GuestData(
+                        roomNumber = "121",
+                        checkInDate = Instant.now().minus(10, ChronoUnit.DAYS),
+                        checkOutDate = Instant.now().plus(5, ChronoUnit.DAYS),
+                    ),
+                )
+            )
+        }
+        if (!userRepo.existsByUsername("guest2")) {
+            userRepo.save(
+                UserEntity(
+                    role = Role.GUEST,
+                    email = "guest2@gmail.com",
+                    username = "guest2",
+                    password = passwordEncoder.encode("guest2"),
+                    name = "Bob",
+                    surname = "Smith",
+                    guestData = GuestData(
+                        roomNumber = "002",
+                        checkInDate = Instant.now().minus(17, ChronoUnit.DAYS),
+                        checkOutDate = Instant.now().plus(10, ChronoUnit.DAYS),
+                    ),
+                )
+            )
+        }
+        if (!userRepo.existsByUsername("guest3")) {
+            userRepo.save(
+                UserEntity(
+                    role = Role.GUEST,
+                    email = "guest3@gmail.com",
+                    username = "guest3",
+                    password = passwordEncoder.encode("guest3"),
+                    name = "Charlie",
+                    surname = "Brown",
+                    guestData = GuestData(
+                        roomNumber = "316",
+                        checkInDate = Instant.now().minus(12, ChronoUnit.DAYS),
+                        checkOutDate = Instant.now().plus(3, ChronoUnit.DAYS),
+                    ),
+                )
+            )
+        }
+    }
+
     private fun addServices() {
         val user = userService.findByRole(Role.GUEST)
         serviceDataList.forEachIndexed { index, serviceData ->
@@ -211,153 +259,54 @@ class DatabaseSeeder(
         }
     }
 
-    fun addSchedule() {
-        val services = serviceService.findAll()
-        val allEmployees = employeeService.getAllEmployees(Pageable.unpaged())
-        val schedule = scheduleRepository.findAll()
-        if (!schedule.isEmpty()) {
-            return
-        }
-
-        val employeeAvailability: MutableMap<String, MutableList<Pair<LocalDateTime, LocalDateTime>>> = mutableMapOf()
-        allEmployees.forEach { employee ->
-            employeeAvailability[employee.id!!] = mutableListOf()
-        }
-
-        val today = LocalDate.now()
-        val startDate = today.minusWeeks(2)
-        val endDate = today.plusWeeks(3)
-
-        var currentDate = startDate
-        while (!currentDate.isAfter(endDate)) {
-            val numberOfServicesToday = Random.nextInt(5, 10) // 2 to 6 services a day
-
-            for (service in services) {
-                for (i in 0 until numberOfServicesToday) {
-                    val availableWeekdayHours = service.weekday.filter { it.day == currentDate.dayOfWeek }
-
-                    if (availableWeekdayHours.isNotEmpty()) {
-                        val randomWeekdayHour = availableWeekdayHours.random()
-                        val serviceDurationMinutes = service.duration.inWholeMinutes
-
-                        var assigned = false
-                        val possibleStartTimes =
-                            (randomWeekdayHour.startHour..randomWeekdayHour.endHour)
-                                .flatMap { hour ->
-                                    listOf(
-                                        LocalTime.of(hour, 0),
-                                        LocalTime.of(hour, 15),
-                                        LocalTime.of(hour, 30),
-                                        LocalTime.of(hour, 45),
-                                    )
-                                }.filter { it.plusMinutes(serviceDurationMinutes).isBefore(LocalTime.of(randomWeekdayHour.endHour, 59)) }
-                                .shuffled()
-
-                        for (potentialStartTime in possibleStartTimes) {
-                            val proposedDateTime = currentDate.atTime(potentialStartTime)
-                            val serviceEndTime = proposedDateTime.plusMinutes(serviceDurationMinutes)
-                            val breakEndTime = serviceEndTime.plusMinutes(15) // 15 min break
-
-                            val availableEmployeesForService =
-                                allEmployees.shuffled().filter { employee ->
-                                    val employeeId = employee.id!!
-                                    val occupiedSlots = employeeAvailability[employeeId] ?: mutableListOf()
-
-                                    val hasOverlap =
-                                        occupiedSlots.any { (slotStart, slotEnd) ->
-                                            (proposedDateTime.isBefore(slotEnd) && serviceEndTime.isAfter(slotStart))
-                                        }
-                                    !hasOverlap
-                                }
-
-                            if (availableEmployeesForService.isNotEmpty()) {
-                                val chosenEmployee = availableEmployeesForService.first()
-
-                                val scheduleEntity =
-                                    ScheduleEntity(
-                                        serviceId = service.id!!,
-                                        serviceDate = proposedDateTime,
-                                        weekday = currentDate.dayOfWeek,
-                                        employeeId = chosenEmployee.id!!,
-                                        isOrdered = false,
-                                        guestId = null,
-                                    )
-
-                                employeeAvailability[chosenEmployee.id]?.add(Pair(proposedDateTime, breakEndTime))
-                                employeeAvailability[chosenEmployee.id]?.sortBy { it.first } // Keep sorted
-
-                                scheduleRepository.save(scheduleEntity)
-                                logger.info(
-                                    "Schedule added: ${service.name} on $currentDate at $proposedDateTime with Employee ${chosenEmployee.id}",
-                                )
-                                assigned = true
-                                break
-                            }
-                        }
-                        if (!assigned) {
-                            logger.warn("Could not find a suitable time and employee for service ${service.name} on $currentDate")
-                        }
-                    }
-                }
-            }
-            currentDate = currentDate.plusDays(1)
-        }
-    }
-
     fun addOrders() {
-        val scheduleList = scheduleRepository.findAll().toMutableList()
+        val schedules = scheduleRepository.findAll()
+        println("Rozmiar schedule: ${schedules.size}")
         val guests = userService.findByRole(Role.GUEST)
-
-        if (scheduleList.isEmpty() || guests?.isEmpty() == true) return
+        println("Liczba gości: ${guests.size}")
+        if (schedules.isEmpty() || guests.isEmpty()) return
 
         val now = LocalDateTime.now()
+        val requestedStatuses = listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE)
+        val pastStatuses = listOf(OrderStatus.COMPLETED, OrderStatus.CANCELED)
 
-        guests?.forEach { guest ->
-            val availableSchedules = scheduleList.filter { it.guestId == null }.shuffled()
+        val availableSchedules = schedules.filter { it.guestId == null }
+        val pastSchedules = availableSchedules.filter { it.serviceDate.isBefore(now) }.shuffled().toMutableList()
+        val futureSchedules = availableSchedules.filter { !it.serviceDate.isBefore(now) }.shuffled().toMutableList()
 
-            if (availableSchedules.isEmpty()) return@forEach
+        for (guest in guests) {
+            if (pastSchedules.isEmpty() && futureSchedules.isEmpty()) break
 
-            val requestedCount = Random.nextInt(3, 6)
-            val pastCount = Random.nextInt(10, 16)
+            val requestedCount = if (futureSchedules.isEmpty()) 0 else Random.nextInt(15, 30)
+            var schedules = futureSchedules.takeLast(requestedCount)
+            futureSchedules.subList(schedules.size - requestedCount, schedules.size).clear()
 
-            val requestedStatuses = listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE)
-            val pastStatuses = listOf(OrderStatus.COMPLETED, OrderStatus.CANCELED)
+            schedules.forEach { schedule ->
+                schedule.status = requestedStatuses.random()
+                schedule.isOrdered = true
+                schedule.guestId = guest.id
+                schedule.orderTime = now.minusHours(Random.nextLong(1, 48))
+                val service = serviceService.findByIdOrThrow(schedule.serviceId)
+                guest.guestData?.let { data -> data.bill += service.price }
+                scheduleRepository.save(schedule)
+            }
 
-            val totalCount = requestedCount + pastCount
-            val schedulesToUpdate = availableSchedules.take(totalCount)
+            val pastCount = if (pastSchedules.isEmpty()) 0 else Random.nextInt(10, 20)
+            schedules = pastSchedules.takeLast(pastCount)
+            pastSchedules.subList(pastSchedules.size - pastCount, pastSchedules.size).clear()
 
-            schedulesToUpdate.take(pastCount).forEach { schedule ->
-                if (schedule.serviceDate.isAfter(now)) {
-                    schedule.serviceDate = now.minusDays(Random.nextLong(1, 15))
-                }
+            schedules.forEach { schedule ->
                 schedule.status = pastStatuses.random()
                 schedule.isOrdered = true
                 schedule.guestId = guest.id
                 schedule.orderTime = schedule.serviceDate.minusHours(Random.nextLong(1, 48))
                 if (schedule.status == OrderStatus.COMPLETED) {
                     val service = serviceService.findByIdOrThrow(schedule.serviceId)
-                    guest.guestData?.let { data ->
-                        data.bill += service.price
-                    }
-                }
-
-                scheduleRepository.save(schedule)
-            }
-
-            schedulesToUpdate.drop(pastCount).forEach { schedule ->
-                if (schedule.serviceDate.isBefore(now)) {
-                    schedule.serviceDate = now.plusDays(Random.nextLong(1, 15))
-                }
-                schedule.status = requestedStatuses.random()
-                schedule.isOrdered = true
-                schedule.guestId = guest.id
-                schedule.orderTime = now.minusHours(Random.nextLong(1, 48))
-                val service = serviceService.findByIdOrThrow(schedule.serviceId)
-                guest.guestData?.let { data ->
-                    data.bill += service.price
+                    guest.guestData?.let { data -> data.bill += service.price }
                 }
                 scheduleRepository.save(schedule)
             }
+
             userService.save(guest)
         }
     }

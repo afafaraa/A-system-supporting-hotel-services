@@ -26,3 +26,5 @@ app:
   notification:
     expiration:
       days: 30
+  schedules-generator:
+    days-ahead: 21
