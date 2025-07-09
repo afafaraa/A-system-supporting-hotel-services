@@ -181,11 +181,11 @@ class DatabaseSeeder(
                 val weeklySchedule =
                     DayOfWeek.entries
                         .map { day ->
-                            val startHour = random.nextInt(6, 18)
+                            val startHour = random.nextInt(6, 14)
                             WeekdayHour(
                                 day = day,
                                 startHour = startHour,
-                                endHour = startHour + random.nextInt(1, 4),
+                                endHour = startHour + random.nextInt(4, 10),
                             )
                         }.toMutableList()
 
@@ -198,7 +198,7 @@ class DatabaseSeeder(
                         disabled = false,
                         rating =
                             List(random.nextInt(1, 3)) {
-                                Rating(user?.get(0)?.name!! + " " + user.get(0).surname, random.nextInt(1, 5), "comment")
+                                Rating(user[0].name + " " + user[0].surname, random.nextInt(1, 5), "comment")
                             }.toMutableList(),
                         duration = duration,
                         maxAvailable = random.nextInt(1, 10),
