@@ -8,6 +8,7 @@ import inzynierka.myhotelassistant.controllers.user.EmployeeManagementController
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.EmployeeService
+import inzynierka.myhotelassistant.services.ScheduleService
 import jakarta.validation.Validation
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
@@ -35,6 +36,9 @@ class EmployeeManagementControllerTest {
 
     @MockitoBean
     private lateinit var userDetailsService: UserDetailsService
+
+    @MockitoBean
+    private lateinit var scheduleService: ScheduleService
 
     @Test
     @WithMockUser(roles = ["GUEST", "EMPLOYEE", "RECEPTIONIST"])
