@@ -124,20 +124,21 @@ const TableTimeGrid = ({hours}: {hours: number[]}) => {
 
 interface ScheduleCardProps {
   children: React.ReactNode;
-  shift: Schedule;
+  schedule: Schedule;
   startDate: Date;
+  statusName: string;
   onClick: () => void;
 }
 
-export const ScheduleCard = ({children, shift, startDate, onClick}: ScheduleCardProps) => {
-  const col = weekDayToInt[shift.weekday] + 2;
-  const date = new Date(shift.date);
+export const ScheduleCard = ({children, schedule, startDate, statusName, onClick}: ScheduleCardProps) => {
+  const col = weekDayToInt[schedule.weekday] + 2;
+  const date = new Date(schedule.date);
   const shiftStart = date.getHours() + date.getMinutes() / 60
   const startRow = shiftStart - startDate.getHours();
-  const rowSpan = shift.duration ? (shift.duration / 60) : 1;
+  const rowSpan = schedule.duration ? (schedule.duration / 60) : 1;
   return (
     <Paper
-      key={shift.id}
+      key={schedule.id}
       elevation={0}
       onClick={onClick}
       sx={{
@@ -163,7 +164,16 @@ export const ScheduleCard = ({children, shift, startDate, onClick}: ScheduleCard
         },
       }}
     >
+      <Box gap={5} height="100%" p={1} position="relative" borderRadius="inherit"
+           bgcolor={`calendar.${schedule.status}.background`}
+           borderLeft={theme => `5px solid ${theme.palette.calendar[schedule.status].primary}`}>
       {children}
+        <Box px={0.8} py={0.4} position="absolute" bottom={0} right={0} fontWeight="bold"
+             color={`calendar.${schedule.status}.background`} bgcolor={`calendar.${schedule.status}.primary`}
+             sx={{borderTopLeftRadius: 10}}>
+          {statusName}
+        </Box>
+      </Box>
     </Paper>
   );
 }

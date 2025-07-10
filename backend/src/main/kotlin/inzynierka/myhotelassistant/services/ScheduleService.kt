@@ -10,7 +10,7 @@ import inzynierka.myhotelassistant.utils.SchedulesToDTOConverter
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.time.temporal.TemporalAdjusters
@@ -63,28 +63,37 @@ class ScheduleService(
         return monday to sunday
     }
 
-    fun getEmployeeWeekSchedule(
+    fun getMyWeekSchedule(
         date: LocalDate,
         authHeader: String,
     ): List<ScheduleDTO> {
         val username = authExtractor.decodeJwtData(authHeader).username
         val employeeId = employeeService.findByUsernameOrThrow(username).id!!
+        return getEmployeeWeekSchedule(employeeId, date)
+    }
+
+    fun getEmployeeWeekScheduleByUsername(
+        username: String,
+        date: LocalDate,
+    ): List<ScheduleDTO> {
+        val employeeId = employeeService.findByUsernameOrThrow(username).id!!
+        return getEmployeeWeekSchedule(employeeId, date)
+    }
+
+    private fun getEmployeeWeekSchedule(
+        employeeId: String,
+        date: LocalDate,
+    ): List<ScheduleDTO> {
         val (monday, sunday) = weekBounds(date)
         val foundSchedules =
             scheduleRepository.findByEmployeeIdAndServiceDateBetween(
                 employeeId = employeeId,
                 startDate = monday.atStartOfDay(),
-                endDate = sunday.atTime(23, 59, 59),
+                endDate = sunday.atTime(LocalTime.MAX),
             )
         if (foundSchedules.isEmpty()) {
             throw EntityNotFoundException("No available schedules found in the specified week")
         }
         return scheduleDateConverter.convert(foundSchedules)
     }
-
-    fun findByEmployeeIdAndDateRange(
-        employeeId: String,
-        start: LocalDateTime,
-        end: LocalDateTime,
-    ): List<ScheduleEntity> = scheduleRepository.findByEmployeeIdAndServiceDateBetween(employeeId, start, end)
 }

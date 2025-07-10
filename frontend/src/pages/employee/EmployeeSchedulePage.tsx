@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useState} from "react";
 import PageContainer from "../../components/layout/PageContainer.tsx";
-import {Alert, Box, Tab, Tabs, Typography} from "@mui/material";
+import {Alert, Tab, Tabs, Typography} from "@mui/material";
 import {addDays, addMinutes, addWeeks, format, startOfWeek, subWeeks} from "date-fns";
 import {ScheduleCard, ScheduleTable} from "../../components/layout/ScheduleTable.tsx";
 import {Schedule, OrderStatus} from "../../types/schedule.ts";
@@ -33,16 +33,13 @@ function EmployeeSchedulePage() {
   
   useEffect(() => {
     setError(null);
-    const yearWeek = getYearWeek(currentWeekStart);
-    const currentSchedules = scheduleMap[tab].get(yearWeek) || [];
-    if (currentSchedules.length === 0) setInfo("No schedules was found for this week");
-    else setInfo(null);
+    setInfo(null);
   }, [currentWeekStart, scheduleMap, tab]);
 
   useEffect(() => {
     const yearWeek = getYearWeek(currentWeekStart);
     if (scheduleMap[2].has(yearWeek)) return;
-    axiosAuthApi.get<Schedule[]>('/schedule/week-schedule?date=' + addDays(currentWeekStart, 1).toISOString())
+    axiosAuthApi.get<Schedule[]>('/schedule?date=' + addDays(currentWeekStart, 1).toISOString())
       .then(res => {
         const updated: Record<TabIndex, Map<number, Schedule[]>> = {
           0: new Map(scheduleMap[0]),
@@ -56,11 +53,8 @@ function EmployeeSchedulePage() {
       })
       .catch(err => {
         if (isAxiosError(err)) {
-          if (err.response?.status === 404) setInfo("No schedules was found for this week");
-          else setError("Unable to fetch schedules: " + err.message);
-        } else {
-          setError("An unexpected error occurred while fetching schedules");
-        }
+          if (err.response?.status !== 404) setError("Unable to fetch schedules: " + err.message);
+        } else { setError("An unexpected error occurred while fetching schedules"); }
       });
   }, [currentWeekStart, scheduleMap, tab]);
 
@@ -80,24 +74,15 @@ function EmployeeSchedulePage() {
 
   const renderShiftCard = (schedule: Schedule) => {
     return (
-      <ScheduleCard key={schedule.id} shift={schedule} startDate={startDate} onClick={() => setSelectedSchedule(schedule)}>
-        <Box gap={5} height="100%" p={1} position="relative" borderRadius="inherit"
-             bgcolor={`calendar.${schedule.status}.background`}
-             borderLeft={theme => `5px solid ${theme.palette.calendar[schedule.status].primary}`}>
-          <Typography fontWeight="bold" noWrap>{schedule.title}</Typography>
-          {/*<Typography>{schedule.room}</Typography>*/}
-          <Typography color="text.secondary">
-            {schedule.duration ?
-              `${format(schedule.date, "HH:mm")} - ${format(addMinutes(schedule.date, schedule.duration), "HH:mm")}`
-              : format(schedule.date, "HH:mm")
-            }
-          </Typography>
-          <Box px={0.8} py={0.4} position="absolute" bottom={0} right={0} fontWeight="bold"
-               color={`calendar.${schedule.status}.background`} bgcolor={`calendar.${schedule.status}.primary`}
-               sx={{borderTopLeftRadius: 10}}>
-            {t(`order_status.${schedule.status}`)}
-          </Box>
-        </Box>
+      <ScheduleCard key={schedule.id} schedule={schedule} startDate={startDate}
+                    statusName={t(`order_status.${schedule.status}`)} onClick={() => setSelectedSchedule(schedule)}>
+        <Typography fontWeight="bold" noWrap>{schedule.title}</Typography>
+        <Typography color="text.secondary">
+          {schedule.duration ?
+            `${format(schedule.date, "HH:mm")} - ${format(addMinutes(schedule.date, schedule.duration), "HH:mm")}`
+            : format(schedule.date, "HH:mm")
+          }
+        </Typography>
       </ScheduleCard>
     );
   }

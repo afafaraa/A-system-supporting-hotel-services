@@ -1,7 +1,10 @@
 package inzynierka.myhotelassistant.controllers.user
 
+import inzynierka.myhotelassistant.dto.ScheduleDTO
+import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.EmployeeService
+import inzynierka.myhotelassistant.services.ScheduleService
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.Pattern
@@ -19,11 +22,14 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import java.time.ZonedDateTime
+import java.time.format.DateTimeParseException
 
 @RestController
 @RequestMapping("/management/employees")
 class EmployeeManagementController(
     private val employeeService: EmployeeService,
+    private val scheduleService: ScheduleService,
 ) {
     private val logger = LoggerFactory.getLogger(EmployeeManagementController::class.java)
 
@@ -78,6 +84,20 @@ class EmployeeManagementController(
         employee.password = passwordMask
         logger.debug("Found employee: ${employee.username}")
         return employee
+    }
+
+    @GetMapping(value = ["/username/{username}/schedule"], params = ["date"])
+    @ResponseStatus(HttpStatus.OK)
+    fun getEmployeeWeekSchedule(
+        @PathVariable username: String,
+        @RequestParam date: String,
+    ): List<ScheduleDTO> {
+        try {
+            val parsedDate = ZonedDateTime.parse(date).toLocalDate()
+            return scheduleService.getEmployeeWeekScheduleByUsername(username, parsedDate)
+        } catch (_: DateTimeParseException) {
+            throw InvalidArgumentException("Invalid date format. Expected format is ISO_ZONED_DATE_TIME.")
+        }
     }
 
     @GetMapping
