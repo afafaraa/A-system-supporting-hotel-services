@@ -26,6 +26,7 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.collections.forEach
+import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.hours
@@ -280,7 +281,7 @@ class DatabaseSeeder(
 
             val requestedCount = if (futureSchedules.isEmpty()) 0 else Random.nextInt(15, 30)
             var schedules = futureSchedules.takeLast(requestedCount)
-            futureSchedules.subList(schedules.size - requestedCount, schedules.size).clear()
+            futureSchedules.subList(max(0, schedules.size - requestedCount), schedules.size).clear()
 
             schedules.forEach { schedule ->
                 schedule.status = requestedStatuses.random()
@@ -293,7 +294,7 @@ class DatabaseSeeder(
 
             val pastCount = if (pastSchedules.isEmpty()) 0 else Random.nextInt(10, 20)
             schedules = pastSchedules.takeLast(pastCount)
-            pastSchedules.subList(pastSchedules.size - pastCount, pastSchedules.size).clear()
+            pastSchedules.subList(max(0, pastSchedules.size - pastCount), pastSchedules.size).clear()
 
             schedules.forEach { schedule ->
                 schedule.status = pastStatuses.random()

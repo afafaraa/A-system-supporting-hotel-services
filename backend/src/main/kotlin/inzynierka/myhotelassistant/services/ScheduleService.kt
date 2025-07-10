@@ -5,7 +5,6 @@ import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundExcept
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
-import inzynierka.myhotelassistant.utils.AuthHeaderDataExtractor
 import inzynierka.myhotelassistant.utils.SchedulesToDTOConverter
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
@@ -19,7 +18,6 @@ import java.time.temporal.TemporalAdjusters
 class ScheduleService(
     private val scheduleRepository: ScheduleRepository,
     private val scheduleDateConverter: SchedulesToDTOConverter,
-    private val authExtractor: AuthHeaderDataExtractor,
     private val employeeService: EmployeeService,
 ) {
     fun findAll(): List<ScheduleEntity> = scheduleRepository.findAll()
@@ -65,9 +63,8 @@ class ScheduleService(
 
     fun getMyWeekSchedule(
         date: LocalDate,
-        authHeader: String,
+        username: String,
     ): List<ScheduleDTO> {
-        val username = authExtractor.decodeJwtData(authHeader).username
         val employeeId = employeeService.findByUsernameOrThrow(username).id!!
         return getEmployeeWeekSchedule(employeeId, date)
     }
