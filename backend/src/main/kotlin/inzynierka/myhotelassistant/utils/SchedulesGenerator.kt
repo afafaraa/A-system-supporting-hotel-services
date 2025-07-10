@@ -20,7 +20,6 @@ class SchedulesGenerator(
     private val employeeService: EmployeeService,
     private val scheduleRepository: ScheduleRepository,
 ) {
-
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     @Value("\${app.schedules-generator.days-ahead:21}")
@@ -45,22 +44,26 @@ class SchedulesGenerator(
         val schedulesToSave = mutableListOf<ScheduleEntity>()
 
         val employeeAvailability: MutableMap<String, MutableList<Pair<LocalDateTime, LocalDateTime>>> =
-            employees.associate { employee ->
-                employee.id!! to mutableListOf<Pair<LocalDateTime, LocalDateTime>>()
-            }.toMutableMap()
+            employees
+                .associate { employee ->
+                    employee.id!! to mutableListOf<Pair<LocalDateTime, LocalDateTime>>()
+                }.toMutableMap()
 
         for (service in services) {
-            val latest = scheduleRepository.findFirstByServiceIdAndServiceDateBetweenOrderByServiceDateDesc(
-                serviceId = service.id!!,
-                startDate = start.atTime(LocalTime.MIN),
-                endDate = end.atTime(LocalTime.MAX),
-            )
+            val latest =
+                scheduleRepository.findFirstByServiceIdAndServiceDateBetweenOrderByServiceDateDesc(
+                    serviceId = service.id!!,
+                    startDate = start.atTime(LocalTime.MIN),
+                    endDate = end.atTime(LocalTime.MAX),
+                )
             // If the latest schedule is already on the last day, skip creating new schedules
-            if (latest != null && latest.serviceDate.toLocalDate() == end)
+            if (latest != null && latest.serviceDate.toLocalDate() == end) {
                 continue
+            }
             // If there are schedules for this service, start from the next day after the latest one
-            val localStart: LocalDate = latest?.serviceDate?.toLocalDate()?.plusDays(1)
-                ?: start
+            val localStart: LocalDate =
+                latest?.serviceDate?.toLocalDate()?.plusDays(1)
+                    ?: start
 
             var currentDate = localStart
             while (!currentDate.isAfter(end)) {
@@ -76,24 +79,26 @@ class SchedulesGenerator(
 
                     val startTime = LocalTime.of(randomWeekdayHour.startHour, 0)
                     val endTime = LocalTime.of(randomWeekdayHour.endHour, 0)
-                    val possibleStartTimes = generateSequence(startTime) { it.plusMinutes(15) }
-                        .takeWhile { !it.plusMinutes(serviceDurationMinutes).isAfter(endTime) }
-                        .toList()
-                        .shuffled()
+                    val possibleStartTimes =
+                        generateSequence(startTime) { it.plusMinutes(15) }
+                            .takeWhile { !it.plusMinutes(serviceDurationMinutes).isAfter(endTime) }
+                            .toList()
+                            .shuffled()
 
                     for (potentialStartTime in possibleStartTimes) {
                         val proposedDateTime = currentDate.atTime(potentialStartTime)
                         val serviceEndTime = proposedDateTime.plusMinutes(serviceDurationMinutes)
                         val breakEndTime = serviceEndTime.plusMinutes(15) // 15 min break
 
-                        val chosenEmployee = employees.shuffled().firstOrNull { employee ->
-                            val occupiedSlots = employeeAvailability[employee.id!!] ?: mutableListOf()
-                            val hasOverlap = occupiedSlots.any { (slotStart, slotEnd) ->
-                                proposedDateTime.isBefore(slotEnd) && serviceEndTime.isAfter(slotStart)
-                            }
-                            !hasOverlap
-
-                        } ?: continue
+                        val chosenEmployee =
+                            employees.shuffled().firstOrNull { employee ->
+                                val occupiedSlots = employeeAvailability[employee.id!!] ?: mutableListOf()
+                                val hasOverlap =
+                                    occupiedSlots.any { (slotStart, slotEnd) ->
+                                        proposedDateTime.isBefore(slotEnd) && serviceEndTime.isAfter(slotStart)
+                                    }
+                                !hasOverlap
+                            } ?: continue
 
                         val scheduleEntity =
                             ScheduleEntity(

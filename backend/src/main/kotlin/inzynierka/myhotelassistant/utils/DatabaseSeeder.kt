@@ -42,7 +42,7 @@ class DatabaseSeeder(
     private val notificationRepository: NotificationRepository,
     private val scheduleRepository: ScheduleRepository,
     private val userService: UserService,
-    private val schedulesGenerator: SchedulesGenerator
+    private val schedulesGenerator: SchedulesGenerator,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -176,12 +176,13 @@ class DatabaseSeeder(
                     password = passwordEncoder.encode("guest1"),
                     name = "Alice",
                     surname = "Johnson",
-                    guestData = GuestData(
-                        roomNumber = "121",
-                        checkInDate = Instant.now().minus(10, ChronoUnit.DAYS),
-                        checkOutDate = Instant.now().plus(5, ChronoUnit.DAYS),
-                    ),
-                )
+                    guestData =
+                        GuestData(
+                            roomNumber = "121",
+                            checkInDate = Instant.now().minus(10, ChronoUnit.DAYS),
+                            checkOutDate = Instant.now().plus(5, ChronoUnit.DAYS),
+                        ),
+                ),
             )
         }
         if (!userRepo.existsByUsername("guest2")) {
@@ -193,12 +194,13 @@ class DatabaseSeeder(
                     password = passwordEncoder.encode("guest2"),
                     name = "Bob",
                     surname = "Smith",
-                    guestData = GuestData(
-                        roomNumber = "002",
-                        checkInDate = Instant.now().minus(17, ChronoUnit.DAYS),
-                        checkOutDate = Instant.now().plus(10, ChronoUnit.DAYS),
-                    ),
-                )
+                    guestData =
+                        GuestData(
+                            roomNumber = "002",
+                            checkInDate = Instant.now().minus(17, ChronoUnit.DAYS),
+                            checkOutDate = Instant.now().plus(10, ChronoUnit.DAYS),
+                        ),
+                ),
             )
         }
         if (!userRepo.existsByUsername("guest3")) {
@@ -210,12 +212,13 @@ class DatabaseSeeder(
                     password = passwordEncoder.encode("guest3"),
                     name = "Charlie",
                     surname = "Brown",
-                    guestData = GuestData(
-                        roomNumber = "316",
-                        checkInDate = Instant.now().minus(12, ChronoUnit.DAYS),
-                        checkOutDate = Instant.now().plus(3, ChronoUnit.DAYS),
-                    ),
-                )
+                    guestData =
+                        GuestData(
+                            roomNumber = "316",
+                            checkInDate = Instant.now().minus(12, ChronoUnit.DAYS),
+                            checkOutDate = Instant.now().plus(3, ChronoUnit.DAYS),
+                        ),
+                ),
             )
         }
     }
