@@ -155,10 +155,10 @@
       "cancelComment": "Cancel comment",
       "commentInputPlaceholder": "Write your comment here",
       "rate": "Rate",
-      "IN_PROGRESS": "In progress",
-      "PENDING": "Waiting for approval",
+      "ACTIVE": "In progress",
+      "REQUESTED": "Waiting for approval",
       "CANCELED": "Canceled by employee",
-      "FINISHED": "Finished"
+      "COMPLETED": "Finished"
     },
     "shopping_cart": {
       "title": "Shopping cart",

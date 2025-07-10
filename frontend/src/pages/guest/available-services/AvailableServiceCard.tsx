@@ -21,10 +21,10 @@ function AvailableServiceCard({service}: {service: ServiceProps}) {
   const navigate = useNavigate();
 
   return (
-    <Card onClick={() => navigate(`/service-schedule/${service.id}`)} elevation={0} sx={{height: {xs: '60vh',sm: '42vh',
+    <Card onClick={() => navigate(`/service-schedule/${service.id}`)} elevation={8} sx={{height: {xs: '60vh',sm: '42vh',
         transition: 'transform 0.3s ease, box-shadow 0.3s ease',
         '&:hover': {
-          transform: 'scale(1.03)',
+          transform: 'scale(1.05)',
           cursor: 'pointer',
         },
       }}}>

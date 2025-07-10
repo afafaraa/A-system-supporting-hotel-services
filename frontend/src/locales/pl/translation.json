@@ -151,10 +151,10 @@
       "cancelComment": "Anuluj komentarz",
       "commentInputPlaceholder": "Napisz swój komentarz tutaj",
       "rate": "Oceń",
-      "IN_PROGRESS": "W trakcie realizacji",
-      "PENDING": "Oczekuje na akceptację",
+      "ACTIVE": "W trakcie realizacji",
+      "REQUESTED": "Oczekuje na akceptację",
       "CANCELED": "Anulowana przez pracownika",
-      "FINISHED": "Zakończona"
+      "COMPLETED": "Zakończona"
     },
     "shopping_cart": {
       "title": "Koszyk",
