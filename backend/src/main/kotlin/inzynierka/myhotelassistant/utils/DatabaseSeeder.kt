@@ -261,9 +261,7 @@ class DatabaseSeeder(
 
     fun addOrders() {
         val schedules = scheduleRepository.findAll()
-        println("Rozmiar schedule: ${schedules.size}")
         val guests = userService.findByRole(Role.GUEST)
-        println("Liczba gości: ${guests.size}")
         if (schedules.isEmpty() || guests.isEmpty()) return
 
         val now = LocalDateTime.now()
@@ -283,7 +281,6 @@ class DatabaseSeeder(
 
             schedules.forEach { schedule ->
                 schedule.status = requestedStatuses.random()
-                schedule.isOrdered = true
                 schedule.guestId = guest.id
                 schedule.orderTime = now.minusHours(Random.nextLong(1, 48))
                 val service = serviceService.findByIdOrThrow(schedule.serviceId)
@@ -297,7 +294,6 @@ class DatabaseSeeder(
 
             schedules.forEach { schedule ->
                 schedule.status = pastStatuses.random()
-                schedule.isOrdered = true
                 schedule.guestId = guest.id
                 schedule.orderTime = schedule.serviceDate.minusHours(Random.nextLong(1, 48))
                 if (schedule.status == OrderStatus.COMPLETED) {

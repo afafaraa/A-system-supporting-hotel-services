@@ -65,7 +65,7 @@ class ScheduleController(
                     "${emp.name} ${emp.surname}",
                     schedule.serviceDate,
                     schedule.weekday,
-                    schedule.isOrdered,
+                    schedule.status != OrderStatus.AVAILABLE,
                     schedule.status,
                 )
             }

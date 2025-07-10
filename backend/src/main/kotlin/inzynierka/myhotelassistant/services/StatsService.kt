@@ -58,7 +58,7 @@ class StatsService(
         val allSchedules = scheduleRepository.findAll()
 
         return allServices.map { service ->
-            val relatedSchedules = allSchedules.filter { it.serviceId == service.id && it.isOrdered }
+            val relatedSchedules = allSchedules.filter { it.serviceId == service.id && it.status != OrderStatus.AVAILABLE }
             val totalRevenue = relatedSchedules.sumOf { service.price }
 
             ServiceStatsDto(

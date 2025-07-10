@@ -101,8 +101,6 @@ class SchedulesGenerator(
                                 serviceDate = proposedDateTime,
                                 weekday = currentDate.dayOfWeek,
                                 employeeId = chosenEmployee.id!!,
-                                isOrdered = false,
-                                guestId = null,
                             )
 
                         employeeAvailability[chosenEmployee.id]?.add(proposedDateTime to breakEndTime)
