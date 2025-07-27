@@ -45,7 +45,6 @@ function RegisterPage(){
         navigate('/home');
       }
     } catch (err) {
-      console.log()
       if (isAxiosError(err) && err.response && err.response.status === 400) setError(tc("invalidCodeError"));
       else setError(t("error.unknownError"));
     } finally {

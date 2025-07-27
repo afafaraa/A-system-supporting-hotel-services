@@ -33,11 +33,11 @@ function LoginPage(){
   }, [user, navigate]);
 
   useEffect(() => {
-    if (usernameError && username != '') setUsernameError(null);
+    if (usernameError && username !== '') setUsernameError(null);
   }, [username, usernameError]);
 
   useEffect(() => {
-    if (passwordError && isPasswordEmpty && password != '') setPasswordError(null);
+    if (passwordError && isPasswordEmpty && password !== '') setPasswordError(null);
   }, [password, passwordError, isPasswordEmpty]);
 
   useEffect(() => {
