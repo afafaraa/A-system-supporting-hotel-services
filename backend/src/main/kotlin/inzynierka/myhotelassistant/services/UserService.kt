@@ -11,7 +11,6 @@ import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
-import inzynierka.myhotelassistant.utils.AuthHeaderDataExtractor
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
@@ -29,9 +28,8 @@ class UserService(
     private val userRepository: UserRepository,
     private val codeService: RegistrationCodeService,
     private val passwordEncoder: PasswordEncoder,
-    private val authExtractor: AuthHeaderDataExtractor,
 ) : UserDetailsService {
-    fun findByRole(role: Role): List<UserEntity>? = userRepository.findByRole(role)
+    fun findByRole(role: Role): List<UserEntity> = userRepository.findByRole(role)
 
     fun findById(id: String): UserEntity? {
         val user = userRepository.findById(id)
@@ -51,6 +49,8 @@ class UserService(
     }
 
     fun save(user: UserEntity): UserEntity = userRepository.save(user)
+
+    fun findByEmail(email: String): UserEntity? = userRepository.findByEmail(email)
 
     fun findByEmailOrThrow(email: String): UserEntity =
         userRepository.findByEmail(email)
@@ -138,8 +138,5 @@ class UserService(
             role = Role.ADMIN,
         )
 
-    fun getCurrentUser(authHeader: String): UserEntity {
-        val data: AuthHeaderDataExtractor.JwtData = authExtractor.decodeJwtData(authHeader)
-        return findByUsernameOrThrow(data.username)
-    }
+    fun getCurrentUser(username: String) = findByUsernameOrThrow(username)
 }

@@ -19,6 +19,8 @@ services:
       - SPRING_APPLICATION_NAME=MyHotelAssistant
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/mongo-hotel
+      - SPRING_MAIL_USERNAME=${GMAIL_USERNAME}
+      - SPRING_MAIL_PASSWORD=${GMAIL_APP_PASSWORD}
     depends_on:
       - mongo
 

@@ -27,8 +27,32 @@
       "username": "Nazwa użytkownika",
       "password": "Hasło",
       "loginButton": "Zaloguj się",
-      "resetPassword": "Kliknij, aby zresetować hasło",
-      "registerWithCode": "Kliknij, aby zarejestrować się z kodem"
+      "resetPassword": "Nie pamiętasz hasła? Zresetuj hasło.",
+      "registerWithCode": "Nie masz konta? Zarejestruj się za pomocą kodu.",
+      "invalidCredentials": "Nieprawidłowe dane logowania."
+    },
+    "register": {
+      "title": "Rejestracja",
+      "code": "Kod rejestracyjny",
+      "username": "Nazwa użytkownika",
+      "password": "Hasło",
+      "registerButton": "Zarejestruj się",
+      "goBack": "Wróć do logowania",
+      "invalidCodeError": "Nieprawidłowy kod rejestracyjny."
+    },
+    "reset-password": {
+      "title": "Resetowanie hasła",
+      "email": "Twój adres email",
+      "sendButton": "Wyślij link do resetowania hasła",
+      "successMessage": "Link do resetowania hasła został wysłany na podany adres email.",
+      "goBack": "Wróć do logowania",
+      "newPassword": "Nowe hasło",
+      "repeatPassword": "Powtórz hasło",
+      "passwordsDoNotMatch": "Hasła nie pasują do siebie.",
+      "resetPasswordButton": "Zresetuj hasło",
+      "resetPasswordSuccess": "Hasło zostało pomyślnie zresetowane. Możesz teraz się zalogować.",
+      "invalidToken": "Nieprawidłowy lub wygasły link.",
+      "invalidEmail": "Nieprawidłowy adres email."
     },
     "notifications": {
       "title": "Powiadomienia",
@@ -54,8 +78,9 @@
     },
     "my_schedule": {
       "title": "Mój harmonogram",
-      "current": "Moje",
-      "unassigned": "Nieprzypisane",
+      "confirmed": "Potwierdzone",
+      "unconfirmed": "Niepotwierdzone",
+      "all": "Wszystkie",
       "details": {
         "unknownService": "Nieznana usługa",
         "status": "Status",
@@ -126,10 +151,10 @@
       "cancelComment": "Anuluj komentarz",
       "commentInputPlaceholder": "Napisz swój komentarz tutaj",
       "rate": "Oceń",
-      "IN_PROGRESS": "W trakcie realizacji",
-      "PENDING": "Oczekuje na akceptację",
+      "ACTIVE": "W trakcie realizacji",
+      "REQUESTED": "Oczekuje na akceptację",
       "CANCELED": "Anulowana przez pracownika",
-      "FINISHED": "Zakończona"
+      "COMPLETED": "Zakończona"
     },
     "shopping_cart": {
       "title": "Koszyk",
@@ -157,5 +182,18 @@
     "submit": "Zatwietdź",
     "delete": "Usuń",
     "deleteAll": "Usuń wszystko"
+  },
+  "error": {
+    "networkError": "Błąd połączenia z serwerem.",
+    "serverError": "Błąd serwera. Spróbuj ponownie później.",
+    "unknownError": "Wystąpił nieznany błąd.",
+    "emptyFields": "Wszystkie pola muszą być wypełnione."
+  },
+  "order_status": {
+    "AVAILABLE": "DOSTĘPNY",
+    "REQUESTED": "ZAMÓWIONY",
+    "ACTIVE": "AKTYWNY",
+    "COMPLETED": "UKOŃCZONY",
+    "CANCELED": "ANULOWANY"
   }
 }

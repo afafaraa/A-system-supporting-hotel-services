@@ -6,8 +6,7 @@ import RoomIcon from '@mui/icons-material/Room';
 import EventIcon from '@mui/icons-material/Event';
 import { format, addMinutes } from 'date-fns';
 import { useTranslation } from "react-i18next";
-import { Schedule } from "../../components/layout/ScheduleTable.tsx";
-import { orderStatus } from "../../utils/utils.ts"
+import {Schedule, OrderStatus} from "../../types/schedule.ts";
 
 type Props = {
   open: boolean;
@@ -58,31 +57,37 @@ function ScheduleDetails({open, onClose, schedule}: Props) {
             </Typography>
           </Box>
 
-          <Box display="flex" alignItems="center" gap={2}>
-            <PersonIcon color="action" />
-            <Typography>{schedule.guestName || "Unknown guest"}</Typography>
-          </Box>
+          {schedule.status !== OrderStatus.available &&
+            <>
+              <Box display="flex" alignItems="center" gap={2}>
+                <PersonIcon color="action" />
+                <Typography>{schedule.guestName || "Unknown guest"}</Typography>
+              </Box>
 
-          <Box display="flex" alignItems="center" gap={2}>
-            <RoomIcon color="action" />
-            <Typography>{schedule.room || "No room assigned"}</Typography>
-          </Box>
+              <Box display="flex" alignItems="center" gap={2}>
+                <RoomIcon color="action" />
+                <Typography>{schedule.room || "No room assigned"}</Typography>
+              </Box>
+            </>
+          }
 
           <Divider />
 
           <Box sx={{ mt: 2 }}>
-            <Typography fontSize="0.9rem">
+            <Typography fontSize="0.9rem" fontWeight="bold">
               {tc("status")}:
-              <Box component="span" sx={{ml: 1, px: 1.5, py: 0.5, borderRadius: 1, color: `${orderStatus[schedule.status].text}`,
-                backgroundColor: `${orderStatus[schedule.status].background}`, display: 'inline-block'}}>
-                {schedule.status}
+              <Box component="span" sx={{ml: 1, px: 1.2, py: 0.4, borderRadius: 1, color: `calendar.${schedule.status}.background`,
+                backgroundColor: `calendar.${schedule.status}.primary`, display: 'inline-block'}}>
+                {t(`order_status.${schedule.status}`)}
               </Box>
             </Typography>
           </Box>
 
-          <Typography color="text.secondary" fontSize="0.9rem">
-            {tc("orderTime")}: {schedule.orderTime || "Unknown"}
-          </Typography>
+          {schedule.orderTime &&
+            <Typography color="text.secondary" fontSize="0.9rem">
+              {tc("orderTime")}: {new Date(schedule.orderTime).toLocaleString(t("date.locale"))}
+            </Typography>
+          }
 
         </Stack>
       </DialogContent>

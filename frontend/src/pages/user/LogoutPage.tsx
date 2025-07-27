@@ -12,11 +12,7 @@ function LogoutPage() {
     navigate("/");
   }, [dispatch, navigate]);
 
-  return (
-    <div>
-      Logout Page
-    </div>
-  )
+  return null;
 }
 
 export default LogoutPage;

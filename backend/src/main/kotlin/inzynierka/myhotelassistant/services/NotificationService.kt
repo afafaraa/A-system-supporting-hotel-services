@@ -5,8 +5,9 @@ import inzynierka.myhotelassistant.models.notification.NotificationDTO
 import inzynierka.myhotelassistant.models.notification.NotificationEntity
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.repositories.NotificationRepository
-import inzynierka.myhotelassistant.utils.AuthHeaderDataExtractor
+import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
+import java.security.Principal
 import java.time.Duration
 import java.time.Instant
 
@@ -14,19 +15,14 @@ import java.time.Instant
 class NotificationService(
     private val userService: UserService,
     private val notificationRepository: NotificationRepository,
-    private val authExtractor: AuthHeaderDataExtractor,
 ) {
-    fun getNotifications(authHeader: String): List<NotificationDTO> {
-        val jwtData = authExtractor.decodeJwtData(authHeader)
-        return getNotificationsFromUsername(jwtData.username)
-    }
-
     fun getNotificationsOfGivenUser(
         username: String,
-        authHeader: String,
+        authentication: Authentication,
     ): List<NotificationDTO> {
-        val jwtData = authExtractor.decodeJwtData(authHeader)
-        if (username != jwtData.username && !isRoleEntitled(jwtData.role)) {
+        val principal = authentication.principal as Principal
+        val role = authentication.authorities.first().authority
+        if (username != principal.name && !isRoleEntitled(role)) {
             throw NoPermissionException("You do not have permission to notifications of user: $username.")
         }
         return getNotificationsFromUsername(username)
@@ -34,7 +30,7 @@ class NotificationService(
 
     private fun isRoleEntitled(role: String): Boolean = role == Role.MANAGER.name || role == Role.ADMIN.name
 
-    private fun getNotificationsFromUsername(username: String): List<NotificationDTO> {
+    fun getNotificationsFromUsername(username: String): List<NotificationDTO> {
         val userId: String = userService.findByUsernameOrThrow(username).id!!
         val notifications: List<NotificationEntity> = notificationRepository.findAllByUserIdOrderByCreatedAtDesc(userId)
         return notifications.map { convertToDTO(it) }
@@ -42,10 +38,9 @@ class NotificationService(
 
     fun markAsRead(
         notificationIds: List<String>,
-        authHeader: String,
+        username: String,
     ) {
-        val jwtData = authExtractor.decodeJwtData(authHeader)
-        val userId: String = userService.findByUsernameOrThrow(jwtData.username).id!!
+        val userId: String = userService.findByUsernameOrThrow(username).id!!
         val now = Instant.now()
         val notifications: List<NotificationEntity> = notificationRepository.findAllById(notificationIds)
         notifications
@@ -59,10 +54,9 @@ class NotificationService(
 
     fun removeSelectedNotifications(
         notificationIds: List<String>,
-        authHeader: String,
+        username: String,
     ) {
-        val jwtData = authExtractor.decodeJwtData(authHeader)
-        val userId: String = userService.findByUsernameOrThrow(jwtData.username).id!!
+        val userId: String = userService.findByUsernameOrThrow(username).id!!
         notificationRepository.deleteAllByUserIdAndIdIn(userId, notificationIds)
     }
 

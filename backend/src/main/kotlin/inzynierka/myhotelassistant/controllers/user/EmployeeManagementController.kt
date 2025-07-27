@@ -1,9 +1,10 @@
 package inzynierka.myhotelassistant.controllers.user
 
-import inzynierka.myhotelassistant.dto.ScheduleData
+import inzynierka.myhotelassistant.dto.ScheduleDTO
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.EmployeeService
+import inzynierka.myhotelassistant.services.ScheduleService
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.Pattern
@@ -28,6 +29,7 @@ import java.time.format.DateTimeParseException
 @RequestMapping("/management/employees")
 class EmployeeManagementController(
     private val employeeService: EmployeeService,
+    private val scheduleService: ScheduleService,
 ) {
     private val logger = LoggerFactory.getLogger(EmployeeManagementController::class.java)
 
@@ -84,6 +86,20 @@ class EmployeeManagementController(
         return employee
     }
 
+    @GetMapping(value = ["/username/{username}/schedule"], params = ["date"])
+    @ResponseStatus(HttpStatus.OK)
+    fun getEmployeeWeekSchedule(
+        @PathVariable username: String,
+        @RequestParam date: String,
+    ): List<ScheduleDTO> {
+        try {
+            val parsedDate = ZonedDateTime.parse(date).toLocalDate()
+            return scheduleService.getEmployeeWeekScheduleByUsername(username, parsedDate)
+        } catch (_: DateTimeParseException) {
+            throw InvalidArgumentException("Invalid date format. Expected format is ISO_ZONED_DATE_TIME.")
+        }
+    }
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     fun getEmployees(
@@ -114,19 +130,5 @@ class EmployeeManagementController(
     ) {
         employeeService.changeRole(username, role)
         logger.debug("Changed role of employee: $username to $role")
-    }
-
-    @GetMapping("/week-schedule")
-    @ResponseStatus(HttpStatus.OK)
-    fun getAssignedSchedules(
-        @RequestParam date: String,
-        @RequestParam username: String,
-    ): ScheduleData {
-        try {
-            val parsedDate = ZonedDateTime.parse(date).toLocalDate()
-            return employeeService.findAllAssignedSchedulesByUsername(parsedDate, username)
-        } catch (_: DateTimeParseException) {
-            throw InvalidArgumentException("Invalid date format. Expected format is ISO_ZONED_DATE_TIME.")
-        }
     }
 }

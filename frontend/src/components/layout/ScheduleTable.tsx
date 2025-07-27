@@ -3,25 +3,7 @@ import {addDays, format} from "date-fns";
 import React from "react";
 import {useTranslation} from "react-i18next";
 import {weekDayToInt} from "../../utils/utils.ts";
-
-export interface ScheduleData {
-  schedules: Schedule[],
-  startDate: Date,
-  endDate: Date,
-}
-
-export interface Schedule {
-  id: string,
-  serviceId: string,
-  title: string | undefined,
-  date: Date,
-  duration: number | undefined,
-  weekday: string,
-  guestName: string | undefined,
-  room: string | undefined,
-  orderTime: string | undefined,
-  status: string,
-}
+import {Schedule} from "../../types/schedule.ts";
 
 interface ScheduleTableHeaderProps extends WeekSwitchContainerProps {
   children: React.ReactNode;
@@ -118,17 +100,23 @@ const TableTimeGrid = ({hours}: {hours: number[]}) => {
           >
             {hour}:00
           </Box>
-          {Array.from({ length: 7 }).map((_, col) => (
-            <Box
-              key={`bg-${row}-${col}`}
-              gridColumn={col + 2}
-              gridRow={`${density * row + 1} / span ${density}`}
-              bgcolor={row % 2 === 0 ? '#f5f5f5' : '#ffffff'}
-              borderLeft="1px solid #eaeaea"
-              borderBottom="1px solid #eaeaea"
-            />
-          ))}
+          <Box
+            key={`bg-${row}`}
+            gridColumn="2 / span 7"
+            gridRow={`${density * row + 1} / span ${density}`}
+            bgcolor={row % 2 === 0 ? '#f5f5f5' : '#ffffff'}
+            borderBottom={row === hours.length - 1 ? "1px solid #ccc" : "1px solid #eaeaea"}
+          />
         </React.Fragment>
+      ))}
+      {Array.from({ length: 6 }).map((_, i) => (
+        <Box
+          key={`vline-${i}`}
+          gridColumn={i + 3}
+          gridRow="1 / -1"
+          borderLeft="1px solid #eaeaea"
+          borderRight={i === 5 ? "1px solid #ccc" : "none"}
+        />
       ))}
     </>
   )
@@ -136,43 +124,56 @@ const TableTimeGrid = ({hours}: {hours: number[]}) => {
 
 interface ScheduleCardProps {
   children: React.ReactNode;
-  shift: Schedule;
+  schedule: Schedule;
   startDate: Date;
+  statusName: string;
   onClick: () => void;
 }
 
-export const ScheduleCard = ({children, shift, startDate, onClick}: ScheduleCardProps) => {
-  const col = weekDayToInt[shift.weekday] + 2;
-  const date = new Date(shift.date);
+export const ScheduleCard = ({children, schedule, startDate, statusName, onClick}: ScheduleCardProps) => {
+  const col = weekDayToInt[schedule.weekday] + 2;
+  const date = new Date(schedule.date);
   const shiftStart = date.getHours() + date.getMinutes() / 60
   const startRow = shiftStart - startDate.getHours();
-  const rowSpan = shift.duration ? (shift.duration / 60) : 1;
+  const rowSpan = schedule.duration ? (schedule.duration / 60) : 1;
   return (
     <Paper
-      key={shift.id}
-      elevation={3}
+      key={schedule.id}
+      elevation={0}
       onClick={onClick}
       sx={{
         gridColumn: col,
         gridRow: `${Math.round(startRow * density + 1)} / span ${Math.round(rowSpan * density)}`,
         zIndex: `${Math.round(startRow * density + 1)}`,
-        p: 1,
-        borderRadius: 1,
+        m: 0.1,
+        mx: 0.5,
+        borderRadius: 3,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         fontSize: '0.85rem',
-        mx: 0.5,
         overflow: 'hidden',
         transition: 'transform 0.3s ease, box-shadow 0.3s ease',
         '&:hover': {
           transform: 'scale(1.10)',
           cursor: 'pointer',
           zIndex: 1000,
+          boxShadow: 10,
+          m: 0,
+          gridRow: `${Math.round(startRow * density + 1)} / span ${Math.max(density * 1.5, Math.round(rowSpan * density))}`,
         },
       }}
     >
+      <Box gap={5} height="100%" p={1} position="relative" borderRadius="inherit"
+           bgcolor={`calendar.${schedule.status}.background`}
+           borderLeft={theme => `5px solid ${theme.palette.calendar[schedule.status].primary}`}>
       {children}
+        <Box px={0.8} py={0.4} position="absolute" bottom={0} right={0} fontWeight="bold"
+             color={`calendar.${schedule.status}.background`} bgcolor={`calendar.${schedule.status}.primary`}
+             sx={{borderTopLeftRadius: 10}}>
+          {statusName}
+        </Box>
+      </Box>
     </Paper>
   );
 }

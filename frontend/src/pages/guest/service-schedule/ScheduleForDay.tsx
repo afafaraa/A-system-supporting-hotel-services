@@ -3,6 +3,7 @@ import { axiosAuthApi } from "../../../middleware/axiosApi.ts";
 import { Button, Typography, Box } from "@mui/material";
 import { ServiceProps } from "../available-services/AvailableServiceCard.tsx";
 import {useTranslation} from "react-i18next";
+import {OrderStatus} from "../../../types/schedule.ts";
 
 type ScheduleProps = {
   id: string;
@@ -160,7 +161,7 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
         <Typography>{t('pages.service_schedule.noServiceAvailable')}</Typography>
       ) : (
         filteredSchedule.sort((a,b) => new Date(a.serviceDate).getTime() - new Date(b.serviceDate).getTime()).map((item) => {
-          const available = new Date() > new Date(item.serviceDate) || item.status !== 'AVAILABLE';
+          const available = new Date() > new Date(item.serviceDate) || item.status !== OrderStatus.available;
 
           return (
             <div key={item.id} style={{ display: 'flex', gap: '5px', opacity: available ? 0.5 : 1, pointerEvents: available ? 'none' : 'auto', width: '100%' }}>

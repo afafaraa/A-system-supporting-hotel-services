@@ -1,15 +1,15 @@
 package inzynierka.myhotelassistant.services
 
-import inzynierka.myhotelassistant.dto.ScheduleData
+import inzynierka.myhotelassistant.dto.ScheduleDTO
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
-import inzynierka.myhotelassistant.utils.SchedulesToScheduleDataConverter
+import inzynierka.myhotelassistant.utils.SchedulesToDTOConverter
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.time.temporal.TemporalAdjusters
@@ -17,7 +17,8 @@ import java.time.temporal.TemporalAdjusters
 @Service
 class ScheduleService(
     private val scheduleRepository: ScheduleRepository,
-    private val scheduleDateConverter: SchedulesToScheduleDataConverter,
+    private val scheduleDateConverter: SchedulesToDTOConverter,
+    private val employeeService: EmployeeService,
 ) {
     fun findAll(): List<ScheduleEntity> = scheduleRepository.findAll()
 
@@ -60,23 +61,36 @@ class ScheduleService(
         return monday to sunday
     }
 
-    fun getAvailableWeekSchedule(date: LocalDate): ScheduleData {
+    fun getMyWeekSchedule(
+        date: LocalDate,
+        username: String,
+    ): List<ScheduleDTO> {
+        val employeeId = employeeService.findByUsernameOrThrow(username).id!!
+        return getEmployeeWeekSchedule(employeeId, date)
+    }
+
+    fun getEmployeeWeekScheduleByUsername(
+        username: String,
+        date: LocalDate,
+    ): List<ScheduleDTO> {
+        val employeeId = employeeService.findByUsernameOrThrow(username).id!!
+        return getEmployeeWeekSchedule(employeeId, date)
+    }
+
+    private fun getEmployeeWeekSchedule(
+        employeeId: String,
+        date: LocalDate,
+    ): List<ScheduleDTO> {
         val (monday, sunday) = weekBounds(date)
         val foundSchedules =
-            scheduleRepository.findByIsOrderedAndServiceDateBetween(
-                isOrdered = false,
+            scheduleRepository.findByEmployeeIdAndServiceDateBetween(
+                employeeId = employeeId,
                 startDate = monday.atStartOfDay(),
-                endDate = sunday.atTime(23, 59, 59),
+                endDate = sunday.atTime(LocalTime.MAX),
             )
         if (foundSchedules.isEmpty()) {
             throw EntityNotFoundException("No available schedules found in the specified week")
         }
-        return scheduleDateConverter.convert(foundSchedules, date)
+        return scheduleDateConverter.convert(foundSchedules)
     }
-
-    fun findByEmployeeIdAndDateRange(
-        employeeId: String,
-        start: LocalDateTime,
-        end: LocalDateTime,
-    ): List<ScheduleEntity> = scheduleRepository.findByEmployeeIdAndServiceDateBetween(employeeId, start, end)
 }

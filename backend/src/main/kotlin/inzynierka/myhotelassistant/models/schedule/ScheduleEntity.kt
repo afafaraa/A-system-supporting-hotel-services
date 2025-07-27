@@ -11,9 +11,8 @@ data class ScheduleEntity(
     var serviceId: String,
     var serviceDate: LocalDateTime,
     var weekday: DayOfWeek,
-    var employeeId: String? = null,
+    var employeeId: String,
     var guestId: String? = null,
-    var isOrdered: Boolean = false,
     var orderTime: LocalDateTime? = null,
     var status: OrderStatus = OrderStatus.AVAILABLE,
 )

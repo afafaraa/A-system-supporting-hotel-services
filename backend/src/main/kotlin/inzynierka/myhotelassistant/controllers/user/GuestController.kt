@@ -86,7 +86,6 @@ class GuestController(
             throw HttpException.NoPermissionException("Cannot cancel the order less than 24 hours before the service")
         }
 
-        scheduledService.isOrdered = false
         scheduledService.guestId = null
         scheduledService.status = OrderStatus.AVAILABLE
         user.guestData?.let { data ->
@@ -104,9 +103,8 @@ class GuestController(
         val schedule = scheduleService.findByIdOrThrow(req.id)
         val guest = userService.findByUsernameOrThrow(req.username)
         val service = serviceService.findByIdOrThrow(schedule.serviceId)
-        schedule.isOrdered = true
         schedule.guestId = guest.id
-        schedule.status = OrderStatus.PENDING
+        schedule.status = OrderStatus.REQUESTED
         guest.guestData?.let { data ->
             data.bill += service.price
         }
@@ -121,7 +119,7 @@ class GuestController(
     ): List<ScheduleForPastAndRequestedServicesResponse>? {
         val userId = userService.findByUsernameOrThrow(username).id
         if (userId != null) {
-            return findAllByStatusAndUserId(listOf(OrderStatus.PENDING, OrderStatus.IN_PROGRESS), userId)
+            return findAllByStatusAndUserId(listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE), userId)
         }
         return null
     }
@@ -133,7 +131,7 @@ class GuestController(
     ): List<ScheduleForPastAndRequestedServicesResponse>? {
         val userId = userService.findByUsernameOrThrow(username).id
         if (userId != null) {
-            return findAllByStatusAndUserId(listOf(OrderStatus.FINISHED, OrderStatus.CANCELED), userId)
+            return findAllByStatusAndUserId(listOf(OrderStatus.COMPLETED, OrderStatus.CANCELED), userId)
         }
         return null
     }
@@ -155,10 +153,10 @@ class GuestController(
             .findAll()
             .filter { statusList.contains(it.status) && it.guestId == userId }
             .mapNotNull { scheduleItem ->
-                val assignedEmployee = scheduleItem.employeeId?.let { userService.findById(it) }
-                val serviceOpt = scheduleItem.serviceId?.let { serviceService.findById(it) }
+                val assignedEmployee = userService.findById(scheduleItem.employeeId)
+                val serviceOpt = serviceService.findById(scheduleItem.serviceId)
 
-                if (assignedEmployee == null || serviceOpt == null || serviceOpt.isEmpty) {
+                if (assignedEmployee == null || serviceOpt.isEmpty) {
                     null
                 } else {
                     val service = serviceOpt.get()
@@ -166,7 +164,7 @@ class GuestController(
                         ScheduleForPastAndRequestedServicesResponse(
                             it,
                             service.name,
-                            scheduleItem.employeeId!!,
+                            scheduleItem.employeeId,
                             assignedEmployee.name + " " + assignedEmployee.surname,
                             service.image ?: "",
                             service.price,
