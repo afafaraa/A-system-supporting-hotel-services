@@ -87,7 +87,9 @@
         "orderTime": "Data zamówienia",
         "durationUnknown": "Czas nieokreślony",
         "confirm": "Zatwierdź usługę",
-        "reject": "Odrzuć usługę"
+        "reject": "Odrzuć usługę",
+        "complete": "Oznacz usługę jako zakończoną",
+        "cancel": "Anuluj usługę"
       }
     },
     "available_services": {

@@ -72,8 +72,8 @@ function EmployeeSchedulePage() {
   const endDate = useMemo(() =>
     getEndTime(scheduleMap[tab].get(getYearWeek(currentWeekStart))), [scheduleMap, tab, currentWeekStart]);
 
-  const getTabIndexForSchedule = (schedule: Schedule): TabIndex | undefined => {
-    return (Object.keys(tabFilters) as unknown as TabIndex[]).find(tabIdx => tabFilters[tabIdx](schedule));
+  const getTabIndexesForSchedule = (schedule: Schedule): TabIndex[] => {
+    return (Object.keys(tabFilters) as unknown as TabIndex[]).filter(tabIdx => tabFilters[tabIdx](schedule));
   };
 
   const onScheduleUpdated = (oldSchedule: Schedule, newSchedule: Schedule) => {
@@ -91,11 +91,13 @@ function EmployeeSchedulePage() {
       if (schedules !== undefined) updated[i].set(yearWeek, schedules);
     })
 
-    const currTab = getTabIndexForSchedule(newSchedule) || tab;
-    const schedules = updated[currTab].get(yearWeek) || [];
+    const currTabs = getTabIndexesForSchedule(newSchedule);
+    for (const currTab of currTabs) {
+      const schedules = updated[currTab].get(yearWeek) || [];
+      schedules.push(newSchedule);
+      updated[currTab].set(yearWeek, schedules);
+    }
 
-    schedules.push(newSchedule);
-    updated[currTab].set(yearWeek, schedules);
     setScheduleMap(updated);
   }
 

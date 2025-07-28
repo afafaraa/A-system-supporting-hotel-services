@@ -59,6 +59,32 @@ function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
       .finally(() => setLoading(false));
   }
 
+  const handleCompleteSchedule = () => {
+    setLoading(true);
+    setError(null);
+    axiosAuthApi.patch(`/schedule/${schedule.id}/complete`)
+      .then(res => {
+        onScheduleUpdated(schedule, res.data)
+      })
+      .catch(err => {
+        setError(err.message);
+      })
+      .finally(() => setLoading(false));
+  }
+
+  const handleCancelSchedule = () => {
+    setLoading(true);
+    setError(null);
+    axiosAuthApi.patch(`/schedule/${schedule.id}/cancel`)
+      .then(res => {
+        onScheduleUpdated(schedule, res.data)
+      })
+      .catch(err => {
+        setError(err.message);
+      })
+      .finally(() => setLoading(false));
+  }
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <IconButton onClick={onClose} sx={{position: 'absolute', right: 8, top: 8}}>
@@ -128,6 +154,15 @@ function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
                       sx={{fontWeight: "bold", textTransform: "none"}}>{tc("confirm")}</Button>
               <Button color="error" variant="contained" startIcon={<CancelIcon/>} loading={loading} onClick={handleRejectSchedule}
                       sx={{fontWeight: "bold", textTransform: "none"}}>{tc("reject")}</Button>
+            </>
+          }
+
+          {schedule.status === OrderStatus.active &&
+            <>
+              <Button color="success" variant="contained" startIcon={<CheckCircleIcon/>} loading={loading} onClick={handleCompleteSchedule}
+                      sx={{fontWeight: "bold", textTransform: "none"}}>{tc("complete")}</Button>
+              <Button color="error" variant="contained" startIcon={<CancelIcon/>} loading={loading} onClick={handleCancelSchedule}
+                      sx={{fontWeight: "bold", textTransform: "none"}}>{tc("cancel")}</Button>
             </>
           }
 

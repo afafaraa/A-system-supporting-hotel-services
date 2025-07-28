@@ -91,7 +91,9 @@
         "orderTime": "Order time",
         "durationUnknown": "Duration unknown",
         "confirm": "Confirm service",
-        "reject": "Reject service"
+        "reject": "Reject service",
+        "complete": "Set service as completed",
+        "cancel": "Cancel service"
       }
     },
     "stats": {
