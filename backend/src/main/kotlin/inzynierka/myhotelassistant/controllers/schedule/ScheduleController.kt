@@ -7,6 +7,7 @@ import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -102,4 +103,16 @@ class ScheduleController(
             throw InvalidArgumentException("Invalid date format. Expected format is ISO_ZONED_DATE_TIME.")
         }
     }
+
+    @PatchMapping("/{scheduleId}/confirm")
+    @ResponseStatus(HttpStatus.OK)
+    fun confirmRequestedSchedule(
+        @PathVariable scheduleId: String,
+    ): ScheduleDTO = scheduleService.changeScheduleStatus(scheduleId, OrderStatus.ACTIVE)
+
+    @PatchMapping("/{scheduleId}/reject")
+    @ResponseStatus(HttpStatus.OK)
+    fun rejectRequestedSchedule(
+        @PathVariable scheduleId: String,
+    ): ScheduleDTO = scheduleService.changeScheduleStatus(scheduleId, OrderStatus.CANCELED)
 }

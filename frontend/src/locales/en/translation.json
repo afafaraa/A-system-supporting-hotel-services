@@ -89,7 +89,9 @@
         "unknownService": "Unknown service",
         "status": "Status",
         "orderTime": "Order time",
-        "durationUnknown": "Duration unknown"
+        "durationUnknown": "Duration unknown",
+        "confirm": "Confirm service",
+        "reject": "Reject service"
       }
     },
     "stats": {

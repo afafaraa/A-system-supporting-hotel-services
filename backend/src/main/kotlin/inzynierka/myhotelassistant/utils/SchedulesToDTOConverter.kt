@@ -12,7 +12,7 @@ class SchedulesToDTOConverter(
     private val serviceService: ServiceService,
     private val userRepository: UserRepository,
 ) {
-    fun convert(schedules: List<ScheduleEntity>): List<ScheduleDTO> {
+    fun convertList(schedules: List<ScheduleEntity>): List<ScheduleDTO> {
         val serviceIds = schedules.map { it.serviceId }.distinct()
         val servicesMap = serviceService.getSchedulesByIds(serviceIds)
         val guestIds = schedules.mapNotNull { it.guestId }.distinct()
@@ -25,4 +25,11 @@ class SchedulesToDTOConverter(
             )
         }
     }
+
+    fun convert(schedule: ScheduleEntity): ScheduleDTO =
+        ScheduleDTO.toDTO(
+            schedule = schedule,
+            guest = userRepository.findById(schedule.guestId ?: "").orElse(null),
+            service = serviceService.findByIdOrThrow(schedule.serviceId),
+        )
 }

@@ -1,4 +1,4 @@
-import {Dialog, DialogContent, IconButton, Stack, Typography, Box, Divider} from "@mui/material";
+import {Dialog, DialogContent, IconButton, Stack, Typography, Box, Divider, Button} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PersonIcon from '@mui/icons-material/Person';
@@ -7,14 +7,21 @@ import EventIcon from '@mui/icons-material/Event';
 import { format, addMinutes } from 'date-fns';
 import { useTranslation } from "react-i18next";
 import {Schedule, OrderStatus} from "../../types/schedule.ts";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import {axiosAuthApi} from "../../middleware/axiosApi.ts";
+import {useState} from "react";
 
 type Props = {
   open: boolean;
   onClose: () => void;
   schedule: Schedule;
+  onScheduleUpdated: (oldSchedule: Schedule, newSchedule: Schedule) => void;
 }
 
-function ScheduleDetails({open, onClose, schedule}: Props) {
+function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.my_schedule.details.${key}`);
 
@@ -24,6 +31,32 @@ function ScheduleDetails({open, onClose, schedule}: Props) {
     const dateStr = date.toLocaleDateString(t('date.locale'), {day: 'numeric', month: 'long', year: 'numeric'});
     const sep = t('date.separator');
     return `${dayOfWeek}${sep} ${dateStr}`
+  }
+
+  const handleConfirmSchedule = () => {
+    setLoading(true);
+    setError(null);
+    axiosAuthApi.patch(`/schedule/${schedule.id}/confirm`)
+      .then(res => {
+        onScheduleUpdated(schedule, res.data)
+      })
+      .catch(err => {
+        setError(err.message);
+      })
+      .finally(() => setLoading(false));
+  }
+
+  const handleRejectSchedule = () => {
+    setLoading(true);
+    setError(null);
+    axiosAuthApi.patch(`/schedule/${schedule.id}/reject`)
+      .then(res => {
+        onScheduleUpdated(schedule, res.data)
+      })
+      .catch(err => {
+        setError(err.message);
+      })
+      .finally(() => setLoading(false));
   }
 
   return (
@@ -88,6 +121,17 @@ function ScheduleDetails({open, onClose, schedule}: Props) {
               {tc("orderTime")}: {new Date(schedule.orderTime).toLocaleString(t("date.locale"))}
             </Typography>
           }
+
+          {schedule.status === OrderStatus.requested &&
+            <>
+              <Button variant="contained" startIcon={<CheckCircleIcon/>} loading={loading} onClick={handleConfirmSchedule}
+                      sx={{fontWeight: "bold", textTransform: "none"}}>{tc("confirm")}</Button>
+              <Button color="error" variant="contained" startIcon={<CancelIcon/>} loading={loading} onClick={handleRejectSchedule}
+                      sx={{fontWeight: "bold", textTransform: "none"}}>{tc("reject")}</Button>
+            </>
+          }
+
+          {error && <Typography color="error" variant="body2">{error}</Typography>}
 
         </Stack>
       </DialogContent>

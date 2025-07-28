@@ -85,7 +85,9 @@
         "unknownService": "Nieznana usługa",
         "status": "Status",
         "orderTime": "Data zamówienia",
-        "durationUnknown": "Czas nieokreślony"
+        "durationUnknown": "Czas nieokreślony",
+        "confirm": "Zatwierdź usługę",
+        "reject": "Odrzuć usługę"
       }
     },
     "available_services": {

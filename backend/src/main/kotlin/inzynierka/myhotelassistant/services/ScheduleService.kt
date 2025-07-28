@@ -3,6 +3,7 @@ package inzynierka.myhotelassistant.services
 import inzynierka.myhotelassistant.dto.ScheduleDTO
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
+import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.utils.SchedulesToDTOConverter
@@ -88,9 +89,17 @@ class ScheduleService(
                 startDate = monday.atStartOfDay(),
                 endDate = sunday.atTime(LocalTime.MAX),
             )
-        if (foundSchedules.isEmpty()) {
-            throw EntityNotFoundException("No available schedules found in the specified week")
-        }
-        return scheduleDateConverter.convert(foundSchedules)
+        if (foundSchedules.isEmpty()) return emptyList()
+        return scheduleDateConverter.convertList(foundSchedules)
+    }
+
+    fun changeScheduleStatus(
+        scheduleId: String,
+        newScheduleStatus: OrderStatus,
+    ): ScheduleDTO {
+        val schedule = findByIdOrThrow(scheduleId)
+        schedule.status = newScheduleStatus
+        save(schedule)
+        return scheduleDateConverter.convert(schedule)
     }
 }

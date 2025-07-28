@@ -72,6 +72,33 @@ function EmployeeSchedulePage() {
   const endDate = useMemo(() =>
     getEndTime(scheduleMap[tab].get(getYearWeek(currentWeekStart))), [scheduleMap, tab, currentWeekStart]);
 
+  const getTabIndexForSchedule = (schedule: Schedule): TabIndex | undefined => {
+    return (Object.keys(tabFilters) as unknown as TabIndex[]).find(tabIdx => tabFilters[tabIdx](schedule));
+  };
+
+  const onScheduleUpdated = (oldSchedule: Schedule, newSchedule: Schedule) => {
+    setSelectedSchedule(newSchedule);
+
+    const updated: Record<TabIndex, Map<number, Schedule[]>> = {
+      0: new Map(scheduleMap[0]),
+      1: new Map(scheduleMap[1]),
+      2: new Map(scheduleMap[2])
+    };
+
+    const yearWeek = getYearWeek(new Date(oldSchedule.date));
+    (Object.keys(updated) as unknown as TabIndex[]).forEach(i => {
+      const schedules = updated[i].get(yearWeek)?.filter(s => s.id !== oldSchedule.id)
+      if (schedules !== undefined) updated[i].set(yearWeek, schedules);
+    })
+
+    const currTab = getTabIndexForSchedule(newSchedule) || tab;
+    const schedules = updated[currTab].get(yearWeek) || [];
+
+    schedules.push(newSchedule);
+    updated[currTab].set(yearWeek, schedules);
+    setScheduleMap(updated);
+  }
+
   const renderShiftCard = (schedule: Schedule) => {
     return (
       <ScheduleCard key={schedule.id} schedule={schedule} startDate={startDate}
@@ -110,6 +137,7 @@ function EmployeeSchedulePage() {
         <ScheduleDetails open={true}
                          onClose={() => setSelectedSchedule(null)}
                          schedule={selectedSchedule}
+                         onScheduleUpdated={onScheduleUpdated}
         />
       )}
     </PageContainer>
