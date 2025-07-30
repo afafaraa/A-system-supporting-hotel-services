@@ -199,5 +199,14 @@
     "ACTIVE": "AKTYWNY",
     "COMPLETED": "UKOŃCZONY",
     "CANCELED": "ANULOWANY"
+  },
+  "confirmation_dialog": {
+    "title": "Potwierdzenie akcji",
+    "confirm": "Potwierdź",
+    "cancel": "Anuluj",
+    "description": {
+      "cancel": "Czy na pewno chcesz anulować tę usługę?",
+      "reject": "Czy na pewno chcesz odrzucić tę usługę?"
+    }
   }
 }

@@ -11,6 +11,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {useState} from "react";
+import ConfirmationDialog from "../../components/layout/ConfirmationDialog.tsx"
 
 type Props = {
   open: boolean;
@@ -22,6 +23,8 @@ type Props = {
 function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const [actionToConfirm, setActionToConfirm] = useState<"reject" | "cancel" | null>(null);
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.my_schedule.details.${key}`);
 
@@ -84,6 +87,21 @@ function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
       })
       .finally(() => setLoading(false));
   }
+
+  const confirmAction = (action: "reject" | "cancel") => {
+    setActionToConfirm(action);
+    setConfirmationOpen(true);
+  };
+
+  const handleConfirmedAction = () => {
+    if (actionToConfirm === "reject") {
+      handleRejectSchedule();
+    } else if (actionToConfirm === "cancel") {
+      handleCancelSchedule();
+    }
+    setConfirmationOpen(false);
+    setActionToConfirm(null);
+  };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -152,7 +170,7 @@ function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
             <>
               <Button variant="contained" startIcon={<CheckCircleIcon/>} loading={loading} onClick={handleConfirmSchedule}
                       sx={{fontWeight: "bold", textTransform: "none"}}>{tc("confirm")}</Button>
-              <Button color="error" variant="contained" startIcon={<CancelIcon/>} loading={loading} onClick={handleRejectSchedule}
+              <Button color="error" variant="contained" startIcon={<CancelIcon/>} loading={loading} onClick={() => confirmAction("reject")}
                       sx={{fontWeight: "bold", textTransform: "none"}}>{tc("reject")}</Button>
             </>
           }
@@ -161,7 +179,7 @@ function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
             <>
               <Button color="success" variant="contained" startIcon={<CheckCircleIcon/>} loading={loading} onClick={handleCompleteSchedule}
                       sx={{fontWeight: "bold", textTransform: "none"}}>{tc("complete")}</Button>
-              <Button color="error" variant="contained" startIcon={<CancelIcon/>} loading={loading} onClick={handleCancelSchedule}
+              <Button color="error" variant="contained" startIcon={<CancelIcon/>} loading={loading} onClick={() => confirmAction("cancel")}
                       sx={{fontWeight: "bold", textTransform: "none"}}>{tc("cancel")}</Button>
             </>
           }
@@ -170,6 +188,21 @@ function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
 
         </Stack>
       </DialogContent>
+
+      <ConfirmationDialog
+        open={confirmationOpen}
+        title={t("confirmation_dialog.title")}
+        description={
+          actionToConfirm === "reject"
+            ? t("confirmation_dialog.description.reject")
+            : t("confirmation_dialog.description.cancel")
+        }
+        onCancel={() => setConfirmationOpen(false)}
+        onConfirm={handleConfirmedAction}
+        confirmText={t("confirmation_dialog.confirm")}
+        cancelText={t("confirmation_dialog.cancel")}
+      />
+
     </Dialog>
   );
 }

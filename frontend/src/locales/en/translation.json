@@ -203,5 +203,14 @@
     "ACTIVE": "ACTIVE",
     "COMPLETED": "COMPLETED",
     "CANCELED": "CANCELED"
+  },
+  "confirmation_dialog": {
+    "title": "Action confirmation",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "description": {
+      "cancel": "Are you sure you want to cancel this service?",
+      "reject": "Are you sure you want to reject this service?"
+    }
   }
 }
