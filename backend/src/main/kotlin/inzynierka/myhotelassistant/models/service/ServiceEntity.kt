@@ -13,7 +13,7 @@ data class ServiceEntity(
     var type: ServiceType,
     var disabled: Boolean,
     var rating: MutableList<Rating>,
-    var duration: Duration,
+    var duration: Long,
     var maxAvailable: Int? = null,
     var weekday: MutableList<WeekdayHour> = mutableListOf(),
     var image: String? = null,

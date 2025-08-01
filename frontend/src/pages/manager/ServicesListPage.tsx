@@ -17,7 +17,7 @@ import {
     Select,
     MenuItem
 } from '@mui/material';
-import ServiceForm from './ServiceForm';
+import ServiceForm from './forms/ServiceForm';
 import { Service } from '../../types';
 import { useTranslation } from "react-i18next";
 
@@ -137,7 +137,7 @@ function ServicesListPage() {
                             <TableRow key={s.id} hover>
                                 <TableCell>{s.name}</TableCell>
                                 <TableCell>{s.description}</TableCell>
-                                <TableCell>{s.price}</TableCell>
+                                <TableCell>{s.price}$</TableCell>
                                 <TableCell>{s.type}</TableCell>
                                 <TableCell>{s.disabled ? 'Unavailable' : 'Available'}</TableCell>
                                 <TableCell>

@@ -73,7 +73,7 @@ class SchedulesGenerator(
                     if (availableWeekdayHours.isEmpty()) return@repeat
 
                     val randomWeekdayHour = availableWeekdayHours.random()
-                    val serviceDurationMinutes = service.duration.inWholeMinutes
+                    val serviceDurationMinutes = service.duration.toLong()
 
                     var assigned = false
 

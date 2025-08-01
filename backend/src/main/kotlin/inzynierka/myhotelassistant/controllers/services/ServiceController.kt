@@ -7,9 +7,12 @@ import inzynierka.myhotelassistant.services.ServiceService
 import inzynierka.myhotelassistant.services.UserService
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -58,5 +61,47 @@ class ServiceController(
         println(service)
         service.rating.add(Rating(guest.name + " " + guest.surname, req.rating, req.comment))
         serviceService.save(service)
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createService(@RequestBody service: ServiceEntity): ServiceEntity {
+        return serviceService.save(service)
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun updateService(
+        @PathVariable id: String,
+        @RequestBody updated: ServiceEntity
+    ): ResponseEntity<ServiceEntity> {
+        val existing = serviceService.findByIdOrThrow(id)
+        val merged = existing.copy(
+            name = updated.name,
+            description = updated.description,
+            price = updated.price,
+            type = updated.type,
+            disabled = updated.disabled,
+            duration = updated.duration,
+            maxAvailable = updated.maxAvailable,
+            weekday = updated.weekday,
+            image = updated.image
+        )
+
+        val saved =  serviceService.save(merged)
+        return ResponseEntity.ok(saved)
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteServiceWithOption(
+        @PathVariable id: String,
+        @RequestParam(required = true) deleteOption: Int
+    ): ResponseEntity<String> {
+        return try {
+            serviceService.deleteService(id, deleteOption)
+            ResponseEntity.ok("Service deleted")
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.message ?: "Server error")
+        }
     }
 }

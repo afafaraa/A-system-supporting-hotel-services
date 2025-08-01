@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Service, WeekdayHour } from "../../types";
-import { axiosAuthApi } from "../../middleware/axiosApi";
+import { Service, WeekdayHour } from "../../../types";
+import { axiosAuthApi } from "../../../middleware/axiosApi";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Switch, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 
@@ -19,7 +19,8 @@ function ServiceForm({ open, initial, onClose, onSaved }: Props) {
         price: 0,
         type: "GENERAL_SERVICE",
         disabled: false,
-        maxAvailable: 0,
+        duration: 60,
+        maxAvailable: 1,
         weekday: [],
         image: "",
     });
@@ -59,7 +60,12 @@ function ServiceForm({ open, initial, onClose, onSaved }: Props) {
         try {
             const url = isEdit ? `/services/${initial?.id}` : "/services";
             const method = isEdit ? "patch" : "post";
-            const res = await axiosAuthApi[method]<Service>(url, form);
+            const payload = {
+                ...form,
+                rating: []
+            };
+
+            const res = await axiosAuthApi[method]<Service>(url, payload);
             onSaved(res.data);
             onClose();
         } catch (e) {
@@ -100,6 +106,12 @@ function ServiceForm({ open, initial, onClose, onSaved }: Props) {
                         value={form.price}
                         onChange={(e) => handleChange("price", parseFloat(e.target.value))}
                         required
+                    />
+                    <TextField
+                        label="Duration"
+                        type="number"
+                        value={form.duration}
+                        onChange={(e) => handleChange("duration", parseInt(e.target.value))}
                     />
                     <TextField
                         label="Max Available"
