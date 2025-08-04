@@ -180,6 +180,10 @@ function ServicesListPage() {
                     return [svc, ...prev];
                 });
                 }}
+                onDeleted={() => {
+                    setModalOpen(false);
+                    setAllServices(prev => prev.filter(s => s.id !== editing?.id));
+                }}
             />
         </Box>
     );

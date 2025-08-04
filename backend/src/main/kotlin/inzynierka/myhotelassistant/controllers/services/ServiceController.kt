@@ -1,5 +1,7 @@
 package inzynierka.myhotelassistant.controllers.services
 
+import inzynierka.myhotelassistant.dto.ServiceCreateRequest
+import inzynierka.myhotelassistant.dto.ServiceResponse
 import inzynierka.myhotelassistant.models.service.Rating
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.services.ScheduleService
@@ -65,16 +67,19 @@ class ServiceController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createService(@RequestBody service: ServiceEntity): ServiceEntity {
-        return serviceService.save(service)
+    fun createService(@RequestBody request: ServiceCreateRequest): ServiceResponse {
+        val entity = request.toEntity()
+        val savedEntity = serviceService.save(entity)
+        return ServiceResponse.from(savedEntity)
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun updateService(
         @PathVariable id: String,
-        @RequestBody updated: ServiceEntity
-    ): ResponseEntity<ServiceEntity> {
+        @RequestBody request: ServiceCreateRequest
+    ): ServiceEntity {
+        val updated = request.toEntity().copy(id = id)
         val existing = serviceService.findByIdOrThrow(id)
         val merged = existing.copy(
             name = updated.name,
@@ -88,8 +93,7 @@ class ServiceController(
             image = updated.image
         )
 
-        val saved =  serviceService.save(merged)
-        return ResponseEntity.ok(saved)
+        return serviceService.save(merged)
     }
 
     @DeleteMapping("/{id}")
