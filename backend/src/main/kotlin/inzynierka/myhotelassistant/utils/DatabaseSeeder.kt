@@ -229,7 +229,7 @@ class DatabaseSeeder(
         serviceDataList.forEachIndexed { index, serviceData ->
             if (serviceService.findByName(serviceData.name) == null) {
                 val random = Random(System.currentTimeMillis() + index)
-                val duration = random.nextInt(1, 3).hours + random.nextInt(0, 4).minutes
+                val duration = random.nextInt(1, 3).hours + random.nextInt(0, 4) * 15.minutes
                 val weeklySchedule =
                     DayOfWeek.entries
                         .map { day ->

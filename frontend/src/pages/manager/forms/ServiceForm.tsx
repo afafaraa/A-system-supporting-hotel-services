@@ -85,7 +85,7 @@ function ServiceForm({ open, initial, onClose, onSaved, onDeleted }: Props) {
       const method = isEdit ? "put" : "post";
       const payload = {
         ...form,
-        rating: [],
+        rating: isEdit ? form.rating ?? [] : [],
       };
 
       const res = await axiosAuthApi[method]<Service>(url, payload);

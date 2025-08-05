@@ -107,7 +107,11 @@ class ServiceController(
         try {
             serviceService.deleteService(id, deleteOption)
             ResponseEntity.ok("Service deleted")
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message ?: "Invalid request")
+        } catch (e: NoSuchElementException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.message ?: "Service not found")
         } catch (e: Exception) {
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.message ?: "Server error")
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error")
         }
 }

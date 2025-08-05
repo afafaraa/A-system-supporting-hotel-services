@@ -137,7 +137,9 @@ function ServicesListPage() {
                             <TableRow key={s.id} hover>
                                 <TableCell>{s.name}</TableCell>
                                 <TableCell>{s.description}</TableCell>
-                                <TableCell>{s.price}$</TableCell>
+                                <TableCell>
+                                    {new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(s.price)}
+                                </TableCell>
                                 <TableCell>{s.type}</TableCell>
                                 <TableCell>{s.disabled ? 'Unavailable' : 'Available'}</TableCell>
                                 <TableCell>
