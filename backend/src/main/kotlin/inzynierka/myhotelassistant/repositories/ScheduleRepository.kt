@@ -25,7 +25,5 @@ interface ScheduleRepository : MongoRepository<ScheduleEntity, String> {
         endDate: LocalDateTime,
     ): ScheduleEntity?
 
-    fun findAllByServiceId(
-        serviceId: String,
-    ): List<ScheduleEntity>
+    fun findAllByServiceId(serviceId: String): List<ScheduleEntity>
 }

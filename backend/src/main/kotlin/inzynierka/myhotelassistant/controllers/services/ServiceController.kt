@@ -67,7 +67,9 @@ class ServiceController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createService(@RequestBody request: ServiceCreateRequest): ServiceResponse {
+    fun createService(
+        @RequestBody request: ServiceCreateRequest,
+    ): ServiceResponse {
         val entity = request.toEntity()
         val savedEntity = serviceService.save(entity)
         return ServiceResponse.from(savedEntity)
@@ -77,21 +79,22 @@ class ServiceController(
     @ResponseStatus(HttpStatus.OK)
     fun updateService(
         @PathVariable id: String,
-        @RequestBody request: ServiceCreateRequest
+        @RequestBody request: ServiceCreateRequest,
     ): ServiceEntity {
         val updated = request.toEntity().copy(id = id)
         val existing = serviceService.findByIdOrThrow(id)
-        val merged = existing.copy(
-            name = updated.name,
-            description = updated.description,
-            price = updated.price,
-            type = updated.type,
-            disabled = updated.disabled,
-            duration = updated.duration,
-            maxAvailable = updated.maxAvailable,
-            weekday = updated.weekday,
-            image = updated.image
-        )
+        val merged =
+            existing.copy(
+                name = updated.name,
+                description = updated.description,
+                price = updated.price,
+                type = updated.type,
+                disabled = updated.disabled,
+                duration = updated.duration,
+                maxAvailable = updated.maxAvailable,
+                weekday = updated.weekday,
+                image = updated.image,
+            )
 
         return serviceService.save(merged)
     }
@@ -99,13 +102,12 @@ class ServiceController(
     @DeleteMapping("/{id}")
     fun deleteServiceWithOption(
         @PathVariable id: String,
-        @RequestParam(required = true) deleteOption: Int
-    ): ResponseEntity<String> {
-        return try {
+        @RequestParam(required = true) deleteOption: Int,
+    ): ResponseEntity<String> =
+        try {
             serviceService.deleteService(id, deleteOption)
             ResponseEntity.ok("Service deleted")
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.message ?: "Server error")
         }
-    }
 }

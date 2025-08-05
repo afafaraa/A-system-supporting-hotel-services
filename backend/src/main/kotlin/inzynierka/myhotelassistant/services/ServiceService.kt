@@ -40,18 +40,23 @@ class ServiceService(
         return serviceRepository.findAllById(ids).associateBy { it.id!! }
     }
 
-    fun deleteService(serviceId: String, deleteOption: Int) {
-        val service = serviceRepository.findById(serviceId).orElseThrow {
-            IllegalArgumentException("Could not find service with given 'id':$serviceId")
-        }
+    fun deleteService(
+        serviceId: String,
+        deleteOption: Int,
+    ) {
+        val service =
+            serviceRepository.findById(serviceId).orElseThrow {
+                IllegalArgumentException("Could not find service with given 'id':$serviceId")
+            }
 
         val relatedOrders = scheduleRepository.findAllByServiceId(serviceId)
 
         when (deleteOption) {
             1 -> {
-                val toDelete = relatedOrders.filter {
-                    it.status == OrderStatus.AVAILABLE || it.status == OrderStatus.REQUESTED
-                }
+                val toDelete =
+                    relatedOrders.filter {
+                        it.status == OrderStatus.AVAILABLE || it.status == OrderStatus.REQUESTED
+                    }
                 scheduleRepository.deleteAll(toDelete)
             }
             2 -> {

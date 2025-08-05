@@ -17,18 +17,19 @@ data class ServiceCreateRequest(
     var weekday: List<WeekdayHour> = emptyList(),
     var image: String? = null,
 ) {
-    fun toEntity(): ServiceEntity = ServiceEntity(
-        name = name,
-        description = description,
-        price = price,
-        type = type,
-        disabled = disabled,
-        rating = mutableListOf(),
-        duration = duration.seconds,
-        maxAvailable = maxAvailable,
-        weekday = weekday.toMutableList(),
-        image = image
-    )
+    fun toEntity(): ServiceEntity =
+        ServiceEntity(
+            name = name,
+            description = description,
+            price = price,
+            type = type,
+            disabled = disabled,
+            rating = mutableListOf(),
+            duration = duration.seconds,
+            maxAvailable = maxAvailable,
+            weekday = weekday.toMutableList(),
+            image = image,
+        )
 }
 
 data class ServiceResponse(
@@ -45,18 +46,19 @@ data class ServiceResponse(
     val image: String?,
 ) {
     companion object {
-        fun from(entity: ServiceEntity): ServiceResponse = ServiceResponse(
-            id = entity.id,
-            name = entity.name,
-            description = entity.description,
-            price = entity.price,
-            type = entity.type,
-            disabled = entity.disabled,
-            rating = entity.rating,
-            duration = entity.duration.inWholeSeconds,
-            maxAvailable = entity.maxAvailable,
-            weekday = entity.weekday,
-            image = entity.image
-        )
+        fun from(entity: ServiceEntity): ServiceResponse =
+            ServiceResponse(
+                id = entity.id,
+                name = entity.name,
+                description = entity.description,
+                price = entity.price,
+                type = entity.type,
+                disabled = entity.disabled,
+                rating = entity.rating,
+                duration = entity.duration.inWholeSeconds,
+                maxAvailable = entity.maxAvailable,
+                weekday = entity.weekday,
+                image = entity.image,
+            )
     }
 }
