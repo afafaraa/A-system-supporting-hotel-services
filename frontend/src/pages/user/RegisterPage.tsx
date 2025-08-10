@@ -5,7 +5,7 @@ import {Button, FormControl, TextField, Typography, InputAdornment, IconButton, 
 import {useDispatch} from "react-redux";
 import {setUserData} from "../../components/auth/auth.tsx";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
-import {mainActionButtonSx} from "../../theme.ts";
+import {mainActionButtonSx} from "../../theme/theme.ts";
 import PersonIcon from "@mui/icons-material/Person";
 import KeyIcon from '@mui/icons-material/Key';
 import Link from "@mui/material/Link";

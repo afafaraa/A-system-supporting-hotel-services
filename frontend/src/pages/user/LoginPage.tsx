@@ -11,7 +11,9 @@ import {selectUser} from "../../redux/slices/userSlice.ts";
 import {setUserData} from "../../components/auth/auth.tsx";
 import {useTranslation} from "react-i18next";
 import {isAxiosError} from "axios";
-import {mainActionButtonSx} from "../../theme.ts";
+import {mainActionButtonSx} from "../../theme/theme.ts";
+import Logo from "../../../public/hotel.svg?react";
+import {pallete} from "../../theme/pallete.ts";
 
 function LoginPage(){
   const user = useSelector(selectUser);
@@ -79,7 +81,12 @@ function LoginPage(){
     <>
       <FormControl component="form" onSubmit={login}
                    sx={{px: 3, py: 8, '@media (min-width:420px)': {px: 6},
-                     borderRadius: 6, boxShadow: 10, backgroundColor: "background.paper"}}>
+                     borderRadius: 4,
+                     border: '1px solid rgba(0,0,0,0.25)',
+                     display: 'flex',
+                     alignItems: 'center',
+                   }}>
+        <Logo style={{background: pallete.light.primary, padding: '5px 10px', color: pallete.light.icon, borderRadius: '10%'}} width={70} height={70} />
         <Typography variant="h4" fontWeight="bold" align="center" mb={4}>{tc("title")}</Typography>
         <TextField sx={{mb: 2}}
           error={!!usernameError}

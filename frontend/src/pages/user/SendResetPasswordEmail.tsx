@@ -1,7 +1,7 @@
 import {FormEvent, useEffect, useState} from 'react';
 import axiosApi from '../../middleware/axiosApi';
 import {Alert, Button, FormControl, Link, TextField, Typography} from "@mui/material";
-import {mainActionButtonSx} from "../../theme.ts";
+import {mainActionButtonSx} from "../../theme/theme.ts";
 import {useTranslation} from "react-i18next";
 import {isAxiosError} from "axios";
 

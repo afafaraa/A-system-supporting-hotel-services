@@ -1,6 +1,7 @@
 import {createTheme} from "@mui/material";
 import {cyan, indigo} from "@mui/material/colors";
-import {OrderStatus} from "./types/schedule.ts";
+import {OrderStatus} from "../types/schedule.ts";
+import {pallete} from "./pallete.ts";
 
 declare module '@mui/material/styles' {
   interface TypeBackground {
@@ -71,5 +72,24 @@ export const mainActionButtonSx = {
   textTransform: "none",
   "&:hover": { backgroundColor: "primary.light" }
 };
+
+export const lightTheme = createTheme({
+  components: {
+    MuiContainer: {
+      styleOverrides: {
+        root: {
+          backgroundColor: pallete.light.background.primary,
+        }
+      }
+    },
+    MuiFormControl: {
+      styleOverrides: {
+        root: {
+          backgroundColor: pallete.light.background.secondary,
+        }
+      }
+    }
+  }
+})
 
 export default theme;

@@ -5,7 +5,7 @@ import {FormControl, InputAdornment, IconButton, TextField, Typography, Alert} f
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
-import {mainActionButtonSx} from "../../theme.ts";
+import {mainActionButtonSx} from "../../theme/theme.ts";
 import {useTranslation} from "react-i18next";
 import {isAxiosError} from "axios";
 
