@@ -211,7 +211,8 @@
     "description": {
       "cancel": "Are you sure you want to cancel this service?",
       "reject": "Are you sure you want to reject this service?"
-    }
+    },
+    "select_reason": "Select a reason"
   },
   "cancellation_reasons": {
     "overlapping_terms": "Overlapping terms",

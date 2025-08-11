@@ -207,7 +207,8 @@
     "description": {
       "cancel": "Czy na pewno chcesz anulować tę usługę?",
       "reject": "Czy na pewno chcesz odrzucić tę usługę?"
-    }
+    },
+    "select_reason": "Wybierz powód"
   },
   "cancellation_reasons": {
     "overlapping_terms": "Nakładające się terminy",

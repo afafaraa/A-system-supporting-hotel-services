@@ -38,7 +38,7 @@ function ConfirmationWithReasonDialog({open, title, description, onCancel, onCon
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText gutterBottom>{description}</DialogContentText>
-        <DialogContentText gutterBottom>Select a reason:</DialogContentText>
+        <DialogContentText gutterBottom>{t("confirmation_dialog.select_reason")}:</DialogContentText>
         <FormControl fullWidth>
           <InputLabel id="reason-label">Reason</InputLabel>
           <Select
