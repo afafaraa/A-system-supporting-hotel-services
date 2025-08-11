@@ -212,5 +212,11 @@
       "cancel": "Are you sure you want to cancel this service?",
       "reject": "Are you sure you want to reject this service?"
     }
+  },
+  "cancellation_reasons": {
+    "overlapping_terms": "Overlapping terms",
+    "personal_reasons": "Personal reason",
+    "illness": "Illness",
+    "other": "Other reason"
   }
 }

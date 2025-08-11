@@ -3,6 +3,7 @@ package inzynierka.myhotelassistant.services
 import inzynierka.myhotelassistant.dto.ScheduleDTO
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
+import inzynierka.myhotelassistant.models.schedule.CancellationReason
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
@@ -96,8 +97,10 @@ class ScheduleService(
     fun changeScheduleStatus(
         scheduleId: String,
         newScheduleStatus: OrderStatus,
+        reason: String? = null,
     ): ScheduleDTO {
         val schedule = findByIdOrThrow(scheduleId)
+        reason?.let { schedule.cancellationReason = CancellationReason.fromString(it) }
         schedule.status = newScheduleStatus
         save(schedule)
         return scheduleDateConverter.convert(schedule)

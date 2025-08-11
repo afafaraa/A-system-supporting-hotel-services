@@ -11,7 +11,8 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {useState} from "react";
-import ConfirmationDialog from "../../components/layout/ConfirmationDialog.tsx"
+import ConfirmationWithReasonDialog from "../../components/layout/ConfirmationWithReasonDialog.tsx"
+import {CancellationReason} from "../../types/cancellation_reasons.ts";
 
 type Props = {
   open: boolean;
@@ -49,10 +50,10 @@ function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
       .finally(() => setLoading(false));
   }
 
-  const handleRejectSchedule = () => {
+  const handleRejectSchedule = (reason: CancellationReason) => {
     setLoading(true);
     setError(null);
-    axiosAuthApi.patch(`/schedule/${schedule.id}/reject`)
+    axiosAuthApi.patch(`/schedule/${schedule.id}/reject?reason=${reason}`)
       .then(res => {
         onScheduleUpdated(schedule, res.data)
       })
@@ -75,10 +76,10 @@ function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
       .finally(() => setLoading(false));
   }
 
-  const handleCancelSchedule = () => {
+  const handleCancelSchedule = (reason: CancellationReason) => {
     setLoading(true);
     setError(null);
-    axiosAuthApi.patch(`/schedule/${schedule.id}/cancel`)
+    axiosAuthApi.patch(`/schedule/${schedule.id}/cancel?reason=${reason}`)
       .then(res => {
         onScheduleUpdated(schedule, res.data)
       })
@@ -93,11 +94,11 @@ function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
     setConfirmationOpen(true);
   };
 
-  const handleConfirmedAction = () => {
+  const handleConfirmedAction = (reason: CancellationReason) => {
     if (actionToConfirm === "reject") {
-      handleRejectSchedule();
+      handleRejectSchedule(reason);
     } else if (actionToConfirm === "cancel") {
-      handleCancelSchedule();
+      handleCancelSchedule(reason);
     }
     setConfirmationOpen(false);
     setActionToConfirm(null);
@@ -189,7 +190,7 @@ function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
         </Stack>
       </DialogContent>
 
-      <ConfirmationDialog
+      <ConfirmationWithReasonDialog
         open={confirmationOpen}
         title={t("confirmation_dialog.title")}
         description={

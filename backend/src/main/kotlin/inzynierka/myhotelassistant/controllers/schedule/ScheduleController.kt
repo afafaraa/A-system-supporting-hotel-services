@@ -114,7 +114,8 @@ class ScheduleController(
     @ResponseStatus(HttpStatus.OK)
     fun rejectRequestedSchedule(
         @PathVariable scheduleId: String,
-    ): ScheduleDTO = scheduleService.changeScheduleStatus(scheduleId, OrderStatus.CANCELED)
+        @RequestParam reason: String,
+    ): ScheduleDTO = scheduleService.changeScheduleStatus(scheduleId, OrderStatus.CANCELED, reason)
 
     @PatchMapping("/{scheduleId}/complete")
     @ResponseStatus(HttpStatus.OK)
@@ -126,5 +127,6 @@ class ScheduleController(
     @ResponseStatus(HttpStatus.OK)
     fun cancelActiveSchedule(
         @PathVariable scheduleId: String,
-    ): ScheduleDTO = scheduleService.changeScheduleStatus(scheduleId, OrderStatus.CANCELED)
+        @RequestParam reason: String,
+    ): ScheduleDTO = scheduleService.changeScheduleStatus(scheduleId, OrderStatus.CANCELED, reason)
 }

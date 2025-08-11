@@ -208,5 +208,11 @@
       "cancel": "Czy na pewno chcesz anulować tę usługę?",
       "reject": "Czy na pewno chcesz odrzucić tę usługę?"
     }
+  },
+  "cancellation_reasons": {
+    "overlapping_terms": "Nakładające się terminy",
+    "personal_reasons": "Powód osobisty",
+    "illness": "Choroba",
+    "other": "Inny powód"
   }
 }
