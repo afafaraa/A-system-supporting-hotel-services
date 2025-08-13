@@ -289,7 +289,7 @@ class DatabaseSeeder(
                 schedule.orderTime = now.minusHours(Random.nextLong(1, 48))
                 val service = serviceService.findByIdOrThrow(schedule.serviceId)
                 schedule.price = service.price
-                guest.guestData?.let { data -> data.bill += schedule.price }
+                guest.guestData?.let { data -> data.bill += schedule.price!! }
                 scheduleRepository.save(schedule)
             }
 
@@ -304,7 +304,7 @@ class DatabaseSeeder(
                 val service = serviceService.findByIdOrThrow(schedule.serviceId)
                 schedule.price = service.price
                 if (schedule.status == OrderStatus.COMPLETED) {
-                    guest.guestData?.let { data -> data.bill += schedule.price }
+                    guest.guestData?.let { data -> data.bill += schedule.price!! }
                 }
                 scheduleRepository.save(schedule)
             }

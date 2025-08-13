@@ -29,7 +29,7 @@ class OrderService(
         scheduledService.guestId = null
         scheduledService.status = OrderStatus.AVAILABLE
         guest.guestData?.let { data ->
-            data.bill -= scheduledService.price
+            data.bill -= scheduledService.price!!
         }
         scheduleService.save(scheduledService)
         userService.save(guest)
@@ -46,7 +46,7 @@ class OrderService(
         schedule.status = OrderStatus.REQUESTED
         schedule.price = currentPrice
         guest.guestData?.let { data ->
-            data.bill += schedule.price
+            data.bill += schedule.price!!
         }
         scheduleService.save(schedule)
         userService.save(guest)
