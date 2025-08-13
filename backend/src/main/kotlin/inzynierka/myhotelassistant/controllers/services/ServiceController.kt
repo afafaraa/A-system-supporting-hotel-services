@@ -1,7 +1,7 @@
 package inzynierka.myhotelassistant.controllers.services
 
-import inzynierka.myhotelassistant.dto.ServiceCreateRequest
-import inzynierka.myhotelassistant.dto.ServiceResponse
+import inzynierka.myhotelassistant.dto.ServiceCreateRequestDTO
+import inzynierka.myhotelassistant.dto.ServiceCreateResponseDTO
 import inzynierka.myhotelassistant.models.service.Rating
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.services.ScheduleService
@@ -68,18 +68,18 @@ class ServiceController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createService(
-        @RequestBody request: ServiceCreateRequest,
-    ): ServiceResponse {
+        @RequestBody request: ServiceCreateRequestDTO,
+    ): ServiceCreateResponseDTO {
         val entity = request.toEntity()
         val savedEntity = serviceService.save(entity)
-        return ServiceResponse.from(savedEntity)
+        return ServiceCreateResponseDTO.from(savedEntity)
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun updateService(
         @PathVariable id: String,
-        @RequestBody request: ServiceCreateRequest,
+        @RequestBody request: ServiceCreateRequestDTO,
     ): ServiceEntity {
         val updated = request.toEntity().copy(id = id)
         val existing = serviceService.findByIdOrThrow(id)

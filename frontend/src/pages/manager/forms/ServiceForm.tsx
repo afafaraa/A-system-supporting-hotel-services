@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Service, WeekdayHour } from "../../../types";
 import { axiosAuthApi } from "../../../middleware/axiosApi";
 import {
@@ -17,8 +17,22 @@ import {
   RadioGroup,
   Radio,
   Typography,
+  Box,
+  CircularProgress,
+  Alert,
+  Card,
+  CardMedia,
+  IconButton,
+  Chip,
+  Stack,
 } from "@mui/material";
-import { Box } from "@mui/system";
+import {
+  CloudUpload,
+  Delete,
+  Image as ImageIcon,
+  CheckCircle,
+  Error as ErrorIcon
+} from "@mui/icons-material";
 
 type Props = {
   open: boolean;
@@ -28,8 +42,12 @@ type Props = {
   onDeleted?: (id: string) => void;
 };
 
+type UploadState = 'idle' | 'uploading' | 'success' | 'error';
+
 function ServiceForm({ open, initial, onClose, onSaved, onDeleted }: Props) {
   const isEdit = Boolean(initial?.id);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [form, setForm] = useState<Service>({
     name: "",
     description: "",
@@ -41,14 +59,40 @@ function ServiceForm({ open, initial, onClose, onSaved, onDeleted }: Props) {
     weekday: [],
     image: "",
   });
+
   const [saving, setSaving] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteOption, setDeleteOption] = useState<number>(1);
   const [deleting, setDeleting] = useState(false);
 
+  const [uploadState, setUploadState] = useState<UploadState>('idle');
+  const [uploadError, setUploadError] = useState<string>("");
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [isDragOver, setIsDragOver] = useState(false);
+
   useEffect(() => {
-    if (initial) setForm(initial);
-  }, [initial]);
+    if (open) {
+      if (initial) {
+        setForm(initial);
+        setPreviewUrl(initial.image || "");
+      } else {
+        setForm({
+          name: "",
+          description: "",
+          price: 0,
+          type: "GENERAL_SERVICE",
+          disabled: false,
+          duration: 60,
+          maxAvailable: 1,
+          weekday: [],
+          image: "",
+        });
+        setPreviewUrl("");
+      }
+      setUploadState('idle');
+      setUploadError("");
+    }
+  }, [open, initial]);
 
   const handleChange = (k: keyof Service, v: unknown) => {
     setForm((prev) => ({ ...prev, [k]: v }));
@@ -75,6 +119,118 @@ function ServiceForm({ open, initial, onClose, onSaved, onDeleted }: Props) {
       ...prev,
       weekday: prev.weekday.filter((_, i) => i !== index),
     }));
+  };
+
+  const validateFile = (file: File): string | null => {
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+    const maxSize = 10 * 1024 * 1024; // 10MB
+
+    if (!allowedTypes.includes(file.type)) {
+      return "Dozwolone są tylko pliki JPG, PNG i WebP";
+    }
+
+    if (file.size > maxSize) {
+      return "Plik nie może być większy niż 10MB";
+    }
+
+    return null;
+  };
+
+  const uploadImage = async (file: File) => {
+    const validationError = validateFile(file);
+    if (validationError) {
+      setUploadError(validationError);
+      setUploadState('error');
+      return;
+    }
+
+    setUploadState('uploading');
+    setUploadError("");
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await axiosAuthApi.post<{ imageUrl: string }>(
+          "/uploads/image",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+      );
+
+      const imageUrl = response.data.imageUrl;
+      handleChange("image", imageUrl);
+      setPreviewUrl(imageUrl);
+      setUploadState('success');
+
+      setTimeout(() => {
+        if (uploadState !== 'error') {
+          setUploadState('idle');
+        }
+      }, 2000);
+
+    } catch (error: any) {
+      console.error("Upload error:", error);
+      const errorMessage = error.response?.data?.error || "Błąd podczas uploadu";
+      setUploadError(errorMessage);
+      setUploadState('error');
+    }
+  };
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      uploadImage(file);
+    }
+  };
+
+  const handleDrop = (event: React.DragEvent) => {
+    event.preventDefault();
+    setIsDragOver(false);
+
+    const files = Array.from(event.dataTransfer.files);
+    const imageFile = files.find(file => file.type.startsWith('image/'));
+
+    if (imageFile) {
+      uploadImage(imageFile);
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent) => {
+    event.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent) => {
+    event.preventDefault();
+    setIsDragOver(false);
+  };
+
+  const handleRemoveImage = async () => {
+    if (form.image && form.image.startsWith('/uploads/')) {
+      try {
+        const fileName = form.image.split('/').pop();
+        await axiosAuthApi.delete(`/uploads/files/${fileName}`);
+      } catch (error) {
+        console.error("Error deleting file:", error);
+      }
+    }
+
+    handleChange("image", "");
+    setPreviewUrl("");
+    setUploadState('idle');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleUrlChange = (url: string) => {
+    handleChange("image", url);
+    setPreviewUrl(url);
+    setUploadState('idle');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -108,7 +264,7 @@ function ServiceForm({ open, initial, onClose, onSaved, onDeleted }: Props) {
     setDeleting(true);
     try {
       await axiosAuthApi.delete(
-        `/services/${initial.id}?deleteOption=${deleteOption}`
+          `/services/${initial.id}?deleteOption=${deleteOption}`
       );
       onDeleted?.(initial.id);
       setDeleteModalOpen(false);
@@ -126,236 +282,404 @@ function ServiceForm({ open, initial, onClose, onSaved, onDeleted }: Props) {
   };
 
   return (
-    <>
-      <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-        <DialogTitle>{isEdit ? "Edit Service" : "Add Service"}</DialogTitle>
-        <DialogContent>
-          <Box
-            component="form"
-            id="service-form"
-            display="flex"
-            flexDirection="column"
-            gap={2}
-            mt={1}
-          >
-            <TextField
-              label="Name"
-              value={form.name}
-              onChange={(e) => handleChange("name", e.target.value)}
-              required
-            />
-            <TextField
-              label="Description"
-              value={form.description}
-              onChange={(e) => handleChange("description", e.target.value)}
-              multiline
-              rows={4}
-            />
-            <TextField
-              label="Price"
-              type="number"
-              value={form.price}
-              onChange={(e) =>
-                handleChange("price", parseFloat(e.target.value))
-              }
-              required
-            />
-            <TextField
-              label="Duration"
-              type="number"
-              value={form.duration}
-              onChange={(e) =>
-                handleChange("duration", parseInt(e.target.value))
-              }
-            />
-            <TextField
-              label="Max Available"
-              type="number"
-              value={form.maxAvailable}
-              onChange={(e) =>
-                handleChange("maxAvailable", parseInt(e.target.value))
-              }
-            />
-            <FormControl>
-              <InputLabel>Type</InputLabel>
-              <Select
-                label="Type"
-                value={form.type}
-                onChange={(e) => handleChange("type", e.target.value)}
-              >
-                <MenuItem value="GENERAL_SERVICE">General Service</MenuItem>
-                <MenuItem value="PLACE_RESERVATION">Place Reservation</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={form.disabled}
-                  onChange={(e) => handleChange("disabled", e.target.checked)}
-                />
-              }
-              label={form.disabled ? "Disabled" : "Available"}
-            />
-            <TextField
-              label="Image URL"
-              value={form.image}
-              onChange={(e) => handleChange("image", e.target.value)}
-            />
-            <Box>
-              <Button onClick={addWeekday} variant="outlined">
-                Add weekday
-              </Button>
-              {Array.isArray(form.weekday) &&
-                form.weekday.map((wd, index) => (
-                  <Box
-                    key={index}
-                    display="flex"
-                    gap={2}
-                    alignItems="center"
-                    mt={3}
-                  >
-                    <FormControl>
-                      <InputLabel id={`weekday-day-label-${index}`}>
-                        Day
-                      </InputLabel>
-                      <Select
-                        labelId={`weekday-day-label-${index}`}
-                        label="Day"
-                        value={wd.day}
-                        onChange={(e) =>
-                          changeWeekday(index, "day", e.target.value)
-                        }
-                      >
-                        {[
-                          "MONDAY",
-                          "TUESDAY",
-                          "WEDNESDAY",
-                          "THURSDAY",
-                          "FRIDAY",
-                          "SATURDAY",
-                          "SUNDAY",
-                        ].map((d) => (
-                          <MenuItem key={d} value={d}>
-                            {d}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <TextField
-                      label="Start Hour"
-                      type="time"
-                      value={wd.startHour.toString().padStart(2, "0") + ":00"}
-                      onChange={(e) => {
-                        const hour = parseInt(e.target.value.split(":")[0], 10);
-                        changeWeekday(index, "startHour", hour);
-                      }}
-                    />
-                    <TextField
-                      label="End Hour"
-                      type="time"
-                      value={wd.endHour.toString().padStart(2, "0") + ":00"}
-                      onChange={(e) => {
-                        const hour = parseInt(e.target.value.split(":")[0], 10);
-                        changeWeekday(index, "endHour", hour);
-                      }}
-                    />
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      onClick={() => removeWeekday(index)}
-                    >
-                      Remove
-                    </Button>
-                  </Box>
-                ))}
-            </Box>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Box display="flex" width="100%" justifyContent="space-between">
-            <Box>
-              {isEdit && (
-                <Button
-                  onClick={handleDeleteClick}
-                  variant="outlined"
-                  color="error"
-                  disabled={saving}
-                >
-                  Delete
-                </Button>
-              )}
-            </Box>
-            <Box display="flex" gap={1}>
-              <Button onClick={onClose} disabled={saving}>
-                Cancel
-              </Button>
-              <Button
-                form="service-form"
-                type="submit"
-                variant="contained"
-                color="primary"
-                disabled={saving}
-                onClick={handleSubmit}
-              >
-                {saving ? "Saving..." : isEdit ? "Save" : "Create"}
-              </Button>
-            </Box>
-          </Box>
-        </DialogActions>
-      </Dialog>
+      <>
+        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+          <DialogTitle>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <ImageIcon />
+              <span>{isEdit ? "Edytuj Usługę" : "Dodaj Usługę"}</span>
+            </Stack>
+          </DialogTitle>
 
-      <Dialog
-        open={deleteModalOpen}
-        onClose={handleDeleteCancel}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Delete Service</DialogTitle>
-        <DialogContent>
-          <Typography variant="body1" gutterBottom>
-            Are you sure you want to delete this service? This action cannot be
-            undone.
-          </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            gutterBottom
-            sx={{ mt: 2 }}
-          >
-            Choose what to do with related orders:
-          </Typography>
-          <RadioGroup
-            value={deleteOption}
-            onChange={(e) => setDeleteOption(parseInt(e.target.value))}
-            sx={{ mt: 1 }}
-          >
-            <FormControlLabel
-              value={1}
-              control={<Radio />}
-              label="Delete available and requested orders"
-            />
-            <FormControlLabel
-              value={2}
-              control={<Radio />}
-              label="Delete only available orders"
-            />
-          </RadioGroup>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDeleteCancel} disabled={deleting}>
-            Cancel
-          </Button>
-          <Button
-            onClick={handleDeleteConfirm}
-            variant="contained"
-            color="error"
-            disabled={deleting}
-          >
-            {deleting ? "Deleting..." : "Delete Service"}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+          <DialogContent>
+            <Box
+                component="form"
+                id="service-form"
+                display="flex"
+                flexDirection="column"
+                gap={3}
+                mt={2}
+            >
+              {/* Basic Information */}
+              <Box display="grid" gridTemplateColumns="1fr 1fr" gap={2}>
+                <TextField
+                    label="Nazwa"
+                    value={form.name}
+                    onChange={(e) => handleChange("name", e.target.value)}
+                    required
+                    fullWidth
+                />
+                <TextField
+                    label="Cena"
+                    type="number"
+                    value={form.price}
+                    onChange={(e) =>
+                        handleChange("price", parseFloat(e.target.value) || 0)
+                    }
+                    required
+                    fullWidth
+                    InputProps={{
+                      endAdornment: "PLN"
+                    }}
+                />
+              </Box>
+
+              <TextField
+                  label="Opis"
+                  value={form.description}
+                  onChange={(e) => handleChange("description", e.target.value)}
+                  multiline
+                  rows={3}
+                  fullWidth
+              />
+
+              <Box display="grid" gridTemplateColumns="1fr 1fr 1fr" gap={2}>
+                <TextField
+                    label="Czas trwania (min)"
+                    type="number"
+                    value={form.duration}
+                    onChange={(e) =>
+                        handleChange("duration", parseInt(e.target.value) || 60)
+                    }
+                    fullWidth
+                />
+                <TextField
+                    label="Max dostępnych"
+                    type="number"
+                    value={form.maxAvailable}
+                    onChange={(e) =>
+                        handleChange("maxAvailable", parseInt(e.target.value) || 1)
+                    }
+                    fullWidth
+                />
+                <FormControl fullWidth>
+                  <InputLabel>Typ</InputLabel>
+                  <Select
+                      label="Typ"
+                      value={form.type}
+                      onChange={(e) => handleChange("type", e.target.value)}
+                  >
+                    <MenuItem value="GENERAL_SERVICE">Usługa Ogólna</MenuItem>
+                    <MenuItem value="PLACE_RESERVATION">Rezerwacja Miejsca</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+
+              <FormControlLabel
+                  control={
+                    <Switch
+                        checked={form.disabled}
+                        onChange={(e) => handleChange("disabled", e.target.checked)}
+                    />
+                  }
+                  label={
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      <span>{form.disabled ? "Wyłączona" : "Dostępna"}</span>
+                      <Chip
+                          size="small"
+                          label={form.disabled ? "DISABLED" : "ACTIVE"}
+                          color={form.disabled ? "error" : "success"}
+                          variant="outlined"
+                      />
+                    </Stack>
+                  }
+              />
+
+              {/* Image Upload Section */}
+              <Box>
+                <Typography variant="h6" gutterBottom>
+                  Zdjęcie Usługi
+                </Typography>
+
+                {/* Image Preview */}
+                {previewUrl && (
+                    <Card sx={{ mb: 2, position: "relative", maxWidth: 400 }}>
+                      <CardMedia
+                          component="img"
+                          height="250"
+                          image={previewUrl}
+                          alt="Podgląd usługi"
+                          sx={{ objectFit: "cover" }}
+                          onError={() => {
+                            setPreviewUrl("");
+                            setUploadError("Nie można załadować obrazu");
+                            setUploadState('error');
+                          }}
+                      />
+                      <IconButton
+                          onClick={handleRemoveImage}
+                          sx={{
+                            position: "absolute",
+                            top: 8,
+                            right: 8,
+                            bgcolor: "rgba(0,0,0,0.6)",
+                            color: "white",
+                            "&:hover": { bgcolor: "rgba(0,0,0,0.8)" },
+                          }}
+                          size="small"
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Card>
+                )}
+
+                <Box
+                    onDrop={handleDrop}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    sx={{
+                      border: 2,
+                      borderStyle: "dashed",
+                      borderColor: isDragOver ? "primary.main" : "grey.300",
+                      borderRadius: 2,
+                      p: 3,
+                      textAlign: "center",
+                      bgcolor: isDragOver ? "primary.50" : "background.paper",
+                      transition: "all 0.2s ease",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => fileInputRef.current?.click()}
+                >
+                  <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileSelect}
+                      accept="image/jpeg,image/jpg,image/png,image/webp"
+                      style={{ display: "none" }}
+                  />
+
+                  <Stack spacing={2} alignItems="center">
+                    {uploadState === 'uploading' && (
+                        <>
+                          <CircularProgress />
+                          <Typography>Uploading...</Typography>
+                        </>
+                    )}
+
+                    {uploadState === 'success' && (
+                        <>
+                          <CheckCircle color="success" sx={{ fontSize: 48 }} />
+                          <Typography color="success.main">Upload zakończony!</Typography>
+                        </>
+                    )}
+
+                    {uploadState === 'error' && (
+                        <>
+                          <ErrorIcon color="error" sx={{ fontSize: 48 }} />
+                          <Typography color="error.main">Błąd uploadu</Typography>
+                        </>
+                    )}
+
+                    {uploadState === 'idle' && (
+                        <>
+                          <CloudUpload sx={{ fontSize: 48, color: "grey.400" }} />
+                          <Typography variant="h6">
+                            Przeciągnij zdjęcie tutaj lub kliknij
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            JPG, PNG, WebP • Max 10MB
+                          </Typography>
+                        </>
+                    )}
+                  </Stack>
+                </Box>
+
+                {!previewUrl && (
+                    <Box mt={2}>
+                      <Typography variant="body2" color="text.secondary" align="center" mb={1}>
+                        lub
+                      </Typography>
+                      <TextField
+                          label="Podaj URL zdjęcia"
+                          value={form.image}
+                          onChange={(e) => handleUrlChange(e.target.value)}
+                          fullWidth
+                          size="small"
+                          placeholder="https://example.com/image.jpg"
+                      />
+                    </Box>
+                )}
+
+                {uploadError && (
+                    <Alert severity="error" sx={{ mt: 2 }}>
+                      {uploadError}
+                    </Alert>
+                )}
+              </Box>
+
+              <Box>
+                <Typography variant="h6" gutterBottom>
+                  Godziny Dostępności
+                </Typography>
+
+                <Button
+                    onClick={addWeekday}
+                    variant="outlined"
+                    sx={{ mb: 2 }}
+                    startIcon={<ImageIcon />}
+                >
+                  Dodaj dzień
+                </Button>
+
+                <Stack spacing={2}>
+                  {Array.isArray(form.weekday) &&
+                      form.weekday.map((wd, index) => (
+                          <Card key={index} variant="outlined" sx={{ p: 2 }}>
+                            <Box display="grid" gridTemplateColumns="2fr 1fr 1fr auto" gap={2} alignItems="center">
+                              <FormControl>
+                                <InputLabel>Dzień</InputLabel>
+                                <Select
+                                    label="Dzień"
+                                    value={wd.day}
+                                    onChange={(e) =>
+                                        changeWeekday(index, "day", e.target.value)
+                                    }
+                                >
+                                  {[
+                                    { value: "MONDAY", label: "Poniedziałek" },
+                                    { value: "TUESDAY", label: "Wtorek" },
+                                    { value: "WEDNESDAY", label: "Środa" },
+                                    { value: "THURSDAY", label: "Czwartek" },
+                                    { value: "FRIDAY", label: "Piątek" },
+                                    { value: "SATURDAY", label: "Sobota" },
+                                    { value: "SUNDAY", label: "Niedziela" },
+                                  ].map((day) => (
+                                      <MenuItem key={day.value} value={day.value}>
+                                        {day.label}
+                                      </MenuItem>
+                                  ))}
+                                </Select>
+                              </FormControl>
+
+                              <TextField
+                                  label="Od"
+                                  type="time"
+                                  value={wd.startHour.toString().padStart(2, "0") + ":00"}
+                                  onChange={(e) => {
+                                    const hour = parseInt(e.target.value.split(":")[0], 10);
+                                    changeWeekday(index, "startHour", hour);
+                                  }}
+                              />
+
+                              <TextField
+                                  label="Do"
+                                  type="time"
+                                  value={wd.endHour.toString().padStart(2, "0") + ":00"}
+                                  onChange={(e) => {
+                                    const hour = parseInt(e.target.value.split(":")[0], 10);
+                                    changeWeekday(index, "endHour", hour);
+                                  }}
+                              />
+
+                              <IconButton
+                                  onClick={() => removeWeekday(index)}
+                                  color="error"
+                                  size="small"
+                              >
+                                <Delete />
+                              </IconButton>
+                            </Box>
+                          </Card>
+                      ))}
+                </Stack>
+              </Box>
+            </Box>
+          </DialogContent>
+
+          <DialogActions sx={{ p: 3 }}>
+            <Box display="flex" width="100%" justifyContent="space-between">
+              <Box>
+                {isEdit && (
+                    <Button
+                        onClick={handleDeleteClick}
+                        variant="outlined"
+                        color="error"
+                        disabled={saving}
+                        startIcon={<Delete />}
+                    >
+                      Usuń
+                    </Button>
+                )}
+              </Box>
+              <Stack direction="row" spacing={1}>
+                <Button
+                    onClick={onClose}
+                    disabled={saving || uploadState === 'uploading'}
+                >
+                  Anuluj
+                </Button>
+                <Button
+                    form="service-form"
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    disabled={saving || uploadState === 'uploading'}
+                    onClick={handleSubmit}
+                    startIcon={saving ? <CircularProgress size={16} /> : null}
+                >
+                  {saving ? "Zapisywanie..." : isEdit ? "Zapisz" : "Utwórz"}
+                </Button>
+              </Stack>
+            </Box>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+            open={deleteModalOpen}
+            onClose={handleDeleteCancel}
+            maxWidth="sm"
+            fullWidth
+        >
+          <DialogTitle>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Delete color="error" />
+              <span>Usuń Usługę</span>
+            </Stack>
+          </DialogTitle>
+          <DialogContent>
+            <Alert severity="warning" sx={{ mb: 2 }}>
+              <Typography variant="body1" gutterBottom>
+                Czy na pewno chcesz usunąć tę usługę? Ta akcja jest nieodwracalna.
+              </Typography>
+            </Alert>
+
+            <Typography variant="body2" color="text.secondary" gutterBottom sx={{ mt: 2 }}>
+              Wybierz co zrobić z powiązanymi zamówieniami:
+            </Typography>
+
+            <RadioGroup
+                value={deleteOption}
+                onChange={(e) => setDeleteOption(parseInt(e.target.value))}
+                sx={{ mt: 1 }}
+            >
+              <FormControlLabel
+                  value={1}
+                  control={<Radio />}
+                  label="Usuń dostępne i żądane zamówienia"
+              />
+              <FormControlLabel
+                  value={2}
+                  control={<Radio />}
+                  label="Usuń tylko dostępne zamówienia"
+              />
+            </RadioGroup>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteCancel} disabled={deleting}>
+              Anuluj
+            </Button>
+            <Button
+                onClick={handleDeleteConfirm}
+                variant="contained"
+                color="error"
+                disabled={deleting}
+                startIcon={deleting ? <CircularProgress size={16} /> : <Delete />}
+            >
+              {deleting ? "Usuwanie..." : "Usuń Usługę"}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
   );
 }
 
