@@ -57,7 +57,7 @@ class ScheduleController(
                 val empId = schedule.employeeId
                 val emp = employeeService.findByIdOrThrow(empId)
                 ScheduleForWeekResponse(
-                    schedule.id ?: "",
+                    schedule.id!!,
                     "${emp.name} ${emp.surname}",
                     schedule.serviceDate,
                     schedule.weekday,
@@ -70,15 +70,10 @@ class ScheduleController(
     @ResponseStatus(HttpStatus.OK)
     fun getScheduleForCartById(
         @PathVariable id: String,
-    ): ScheduleForCartResponse? {
-        val scheduleItem = scheduleService.findById(id)
-        if (scheduleItem?.employeeId == null) return null
+    ): ScheduleForCartResponse {
+        val scheduleItem = scheduleService.findByIdOrThrow(id)
         val assignedEmployee = employeeService.findByIdOrThrow(scheduleItem.employeeId)
-        val serviceOpt = serviceService.findById(scheduleItem.serviceId)
-        if (!serviceOpt.isPresent) {
-            return null
-        }
-        val service = serviceOpt.get()
+        val service = serviceService.findByIdOrThrow(scheduleItem.serviceId)
         return ScheduleForCartResponse(
             id,
             service.name,

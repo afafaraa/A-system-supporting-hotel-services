@@ -2,6 +2,7 @@ package inzynierka.myhotelassistant.controllers.user
 
 import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
+import inzynierka.myhotelassistant.services.OrderService
 import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
 import inzynierka.myhotelassistant.services.UserService
@@ -13,15 +14,15 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import java.time.Duration
 import java.time.LocalDateTime
 
-@RestController()
+@RestController
 @RequestMapping("/guest")
 class GuestController(
     private val userService: UserService,
     private val scheduleService: ScheduleService,
     private val serviceService: ServiceService,
+    private val orderService: OrderService,
 ) {
     data class EmployeeNameResponse(
         val name: String,
@@ -49,20 +50,12 @@ class GuestController(
         val username: String,
     )
 
-    data class AddToBillRequest(
-        val amount: Double,
-        val username: String,
-    )
-
     @GetMapping("/employee/get/id/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun getScheduledEmployeeNameById(
         @PathVariable id: String,
     ): EmployeeNameResponse? {
-        val user = userService.findById(id)
-        if (user == null) {
-            throw HttpException.EntityNotFoundException("User not found")
-        }
+        val user = userService.findById(id) ?: throw HttpException.EntityNotFoundException("User not found")
         return EmployeeNameResponse(name = user.name, surname = user.surname)
     }
 
@@ -72,27 +65,7 @@ class GuestController(
         @RequestBody req: CancelOrderRequest,
     ) {
         val user = userService.findByUsernameOrThrow(req.username)
-        val scheduledService = scheduleService.findByIdOrThrow(req.orderId)
-        val service = serviceService.findByIdOrThrow(scheduledService.serviceId)
-
-        if (user.id != scheduledService.guestId) {
-            throw HttpException.NoPermissionException("You are not allowed to cancel order for other guests")
-        }
-
-        val now = LocalDateTime.now()
-        val serviceDate = scheduledService.serviceDate
-
-        if (Duration.between(now, serviceDate).toHours() < 1) {
-            throw HttpException.NoPermissionException("Cannot cancel the order less than 24 hours before the service")
-        }
-
-        scheduledService.guestId = null
-        scheduledService.status = OrderStatus.AVAILABLE
-        user.guestData?.let { data ->
-            data.bill -= service.price
-        }
-        scheduleService.save(scheduledService)
-        userService.save(user)
+        orderService.cancel(user, req.orderId)
     }
 
     @PostMapping("/order/services")
@@ -100,40 +73,26 @@ class GuestController(
     fun orderServicesFromSchedule(
         @RequestBody req: OrderServicesRequestBody,
     ) {
-        val schedule = scheduleService.findByIdOrThrow(req.id)
         val guest = userService.findByUsernameOrThrow(req.username)
-        val service = serviceService.findByIdOrThrow(schedule.serviceId)
-        schedule.guestId = guest.id
-        schedule.status = OrderStatus.REQUESTED
-        guest.guestData?.let { data ->
-            data.bill += service.price
-        }
-        scheduleService.save(schedule)
-        userService.save(guest)
+        orderService.order(guest, req.id)
     }
 
     @GetMapping("/order/get/all/requested/{username}")
     @ResponseStatus(HttpStatus.OK)
     fun getAllPendingOrdersForUser(
         @PathVariable username: String,
-    ): List<ScheduleForPastAndRequestedServicesResponse>? {
-        val userId = userService.findByUsernameOrThrow(username).id
-        if (userId != null) {
-            return findAllByStatusAndUserId(listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE), userId)
-        }
-        return null
+    ): List<ScheduleForPastAndRequestedServicesResponse> {
+        val userId = userService.findByUsernameOrThrow(username).id!!
+        return findAllByStatusAndUserId(listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE), userId)
     }
 
     @GetMapping("/order/get/all/past/{username}")
     @ResponseStatus(HttpStatus.OK)
     fun getAllPastOrdersForUser(
         @PathVariable username: String,
-    ): List<ScheduleForPastAndRequestedServicesResponse>? {
-        val userId = userService.findByUsernameOrThrow(username).id
-        if (userId != null) {
-            return findAllByStatusAndUserId(listOf(OrderStatus.COMPLETED, OrderStatus.CANCELED), userId)
-        }
-        return null
+    ): List<ScheduleForPastAndRequestedServicesResponse> {
+        val userId = userService.findByUsernameOrThrow(username).id!!
+        return findAllByStatusAndUserId(listOf(OrderStatus.COMPLETED, OrderStatus.CANCELED), userId)
     }
 
     @GetMapping("/bill/get/{username}")
@@ -150,8 +109,7 @@ class GuestController(
         userId: String,
     ): List<ScheduleForPastAndRequestedServicesResponse> =
         scheduleService
-            .findAll()
-            .filter { statusList.contains(it.status) && it.guestId == userId }
+            .findByGuestIdAndStatusIn(userId, statusList)
             .mapNotNull { scheduleItem ->
                 val assignedEmployee = userService.findById(scheduleItem.employeeId)
                 val serviceOpt = serviceService.findById(scheduleItem.serviceId)
