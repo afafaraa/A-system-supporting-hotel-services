@@ -89,7 +89,11 @@
         "unknownService": "Unknown service",
         "status": "Status",
         "orderTime": "Order time",
-        "durationUnknown": "Duration unknown"
+        "durationUnknown": "Duration unknown",
+        "confirm": "Confirm service",
+        "reject": "Reject service",
+        "complete": "Set service as completed",
+        "cancel": "Cancel service"
       }
     },
     "stats": {
@@ -199,5 +203,21 @@
     "ACTIVE": "ACTIVE",
     "COMPLETED": "COMPLETED",
     "CANCELED": "CANCELED"
+  },
+  "confirmation_dialog": {
+    "title": "Action confirmation",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "description": {
+      "cancel": "Are you sure you want to cancel this service?",
+      "reject": "Are you sure you want to reject this service?"
+    },
+    "select_reason": "Select a reason"
+  },
+  "cancellation_reasons": {
+    "overlapping_terms": "Overlapping terms",
+    "personal_reasons": "Personal reason",
+    "illness": "Illness",
+    "other": "Other reason"
   }
 }
