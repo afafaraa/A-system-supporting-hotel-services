@@ -2,7 +2,17 @@ import axiosApi from "../../middleware/axiosApi";
 import {FormEvent, useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import Button from '@mui/material/Button';
-import {Alert, Box, FormControl, IconButton, InputAdornment, TextField, Typography} from "@mui/material";
+import {
+  Alert,
+  Box,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  TextField,
+  Typography
+} from "@mui/material";
 import Link from '@mui/material/Link';
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import PersonIcon from '@mui/icons-material/Person';
@@ -13,7 +23,10 @@ import {useTranslation} from "react-i18next";
 import {isAxiosError} from "axios";
 import {mainActionButtonSx} from "../../theme/theme.ts";
 import Logo from "../../../public/hotel.svg?react";
-import {pallete} from "../../theme/pallete.ts";
+import {palette} from "../../theme/palette.ts";
+import {fontSizes} from "../../theme/fontSizes.ts";
+import {LogInWrapper} from "../../theme/styled-components/LogInWrapper.ts";
+import {LogInInput} from "../../theme/styled-components/LogInInput.ts";
 
 function LoginPage(){
   const user = useSelector(selectUser);
@@ -78,75 +91,52 @@ function LoginPage(){
   }
 
   return (
-    <>
-      <FormControl component="form" onSubmit={login}
-                   sx={{px: 3, py: 8, '@media (min-width:420px)': {px: 6},
-                     borderRadius: 4,
-                     border: '1px solid rgba(0,0,0,0.25)',
-                     display: 'flex',
-                     alignItems: 'center',
-                   }}>
-        <Logo style={{background: pallete.light.primary, padding: '5px 10px', color: pallete.light.icon, borderRadius: '10%'}} width={70} height={70} />
-        <Typography variant="h4" fontWeight="bold" align="center" mb={4}>{tc("title")}</Typography>
-        <TextField sx={{mb: 2}}
-          error={!!usernameError}
-          label={tc("username")}
-          autoComplete="username"
-          onChange={(e) => setUsername(e.target.value)}
-          type="text"
-          name="username"
-          id="username"
-          placeholder={tc("username")}
-          helperText={usernameError}
-          slotProps={{
-            input: {
-              endAdornment: (
-                <InputAdornment position="end">
-                  <PersonIcon sx={{mx: "2px"}}/>
-                </InputAdornment>
-              ),
-            },
+    <LogInWrapper>
+      <FormControl sx={{display: 'flex', alignItems: 'center'}} component="form" onSubmit={login}>
+        <Logo style={{
+          background: palette.light.primary,
+          padding: '5px 10px',
+          color: palette.light.icon,
+          borderRadius: '10%'
+        }} width={70} height={70}/>
+        <Typography variant="h1" fontWeight="regular" align="center" sx={{
+          color: palette.light.primary,
+          fontSize: fontSizes.md,
+          marginTop: '20px'
+        }}>{tc("title")}</Typography>
+        <Typography variant="h2" frontWeight="medium" align="center" sx={{
+          color: palette.light.text.secondary,
+          fontSize: fontSizes.xs,
+          marginBottom: '20px'
+        }}>{tc("subtitle")}</Typography>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            gap: '5px',
           }}
-        />
-        <TextField
-          error={!!passwordError}
-          label={tc("password")}
-          autoComplete="current-password"
-          onChange={(e) => setPassword(e.target.value)}
-          type={showPassword ? "text" : "password"}
-          name="password"
-          id="password"
-          placeholder={tc("password")}
-          helperText={passwordError}
-          slotProps={{
-            input: {
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    edge="end"
-                    size="small"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
-        <Link href="/reset-password-email" align="right" fontSize={14} mt={1} mb={4} color="textSecondary" sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"} }}>{tc("resetPassword")}</Link>
+        >
+          <label style={{fontWeight: '500', fontSize: '14px'}} htmlFor="username">Username</label>
+          <LogInInput onChange={(e) => setUsername(e.target.value)} id="username" placeholder="jan.kowalski@gmail.com"/>
+          <label style={{fontWeight: '500', fontSize: '14px'}} htmlFor="password">Password</label>
+          <LogInInput onChange={(e) => setPassword(e.target.value)} id="password" placeholder="************" />
+        </div>
+        <Link href="/reset-password-email" align="right" fontSize={14} mt={1} mb={2} color="textSecondary"
+              sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"}}}>{tc("resetPassword")}</Link>
 
-        <Button variant="contained" onClick={login} type="submit" loading={loading} sx={mainActionButtonSx}>
+        <Button sx={{width: '100%'}} variant="contained" onClick={login} type="submit" loading={loading}>
           {tc("loginButton")}
         </Button>
         {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
-        <Link href="/register" align="center" fontSize={14} mt={3} color="textPrimary" sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"} }}>{tc("registerWithCode")}</Link>
+        <Link href="/register" align="center" fontSize={14} mt={3} color="textPrimary"
+              sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"}}}>{tc("registerWithCode")}</Link>
       </FormControl>
 
       <Box position="fixed" my="auto" left={4} display={{xs: "none", md: "flex"}} flexDirection="column" gap={0.8}>
         <p>Quick log-in:</p>
-         <button onClick={() => {
-           setUsername("user"); setPassword("password"); login();
+        <button onClick={() => {
+          setUsername("user"); setPassword("password"); login();
          }}>Log as user</button>
         <button onClick={() => {
           setUsername("admin"); setPassword("password"); login();
@@ -164,7 +154,7 @@ function LoginPage(){
           setUsername("manager"); setPassword("password"); login();
         }}>Log as manager</button>
       </Box>
-    </>
+    </LogInWrapper>
   );
 }
 

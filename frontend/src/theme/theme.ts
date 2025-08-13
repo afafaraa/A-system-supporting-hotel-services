@@ -1,7 +1,9 @@
 import {createTheme} from "@mui/material";
 import {cyan, indigo} from "@mui/material/colors";
 import {OrderStatus} from "../types/schedule.ts";
-import {pallete} from "./pallete.ts";
+import {lightColors, palette} from "./palette.ts";
+import {LogInWrapper} from "./styled-components/LogInWrapper.ts";
+import {LogInInput} from "./styled-components/LogInInput.ts";
 
 declare module '@mui/material/styles' {
   interface TypeBackground {
@@ -78,18 +80,53 @@ export const lightTheme = createTheme({
     MuiContainer: {
       styleOverrides: {
         root: {
-          backgroundColor: pallete.light.background.primary,
+          backgroundColor: palette.light.background.primary,
         }
       }
     },
     MuiFormControl: {
       styleOverrides: {
         root: {
-          backgroundColor: pallete.light.background.secondary,
+          backgroundColor: palette.light.background.secondary,
+        }
+      }
+    },
+    LogInWrapper: {
+      styleOverrides: {
+        root: {
+          backgroundColor: palette.light.background.secondary,
+          padding: '40px 30px',
+          borderRadius: '25px',
+          boxShadow: `0px 0px 15px -1px ${palette.light.shadow}`,
+        }
+      }
+    },
+    LogInInput: {
+      styleOverrides: {
+        root: {
+          border: 'none',
+          backgroundColor: palette.light.background.tetrary,
+          padding: '8px 13px',
+          borderRadius: '20px',
+          fontSize: '12px',
+          "&:focus": {
+            outline: `4px solid ${lightColors.primary(0.4)}`,
+          },
+        }
+      }
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          backgroundColor: palette.light.secondary,
+          color: palette.light.text.tetrary,
+          fontWeight: "bold",
+          textTransform: "none",
+          "&:hover": { backgroundColor: "primary.light" }
         }
       }
     }
   }
-})
+});
 
 export default theme;

@@ -23,7 +23,8 @@
   },
   "pages": {
     "login": {
-      "title": "Login",
+      "title": "My Hotel Assistant",
+      "subtitle": "Access your hotel services and reservations",
       "username": "Username",
       "password": "Password",
       "loginButton": "Login",
