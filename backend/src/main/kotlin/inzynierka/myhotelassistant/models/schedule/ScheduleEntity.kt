@@ -14,6 +14,7 @@ data class ScheduleEntity(
     var employeeId: String,
     var guestId: String? = null,
     var orderTime: LocalDateTime? = null,
+    var price: Double,
     var status: OrderStatus = OrderStatus.AVAILABLE,
     var cancellationReason: CancellationReason? = null,
 )
