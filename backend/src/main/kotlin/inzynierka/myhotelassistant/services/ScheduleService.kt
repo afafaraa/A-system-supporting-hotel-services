@@ -100,6 +100,6 @@ class ScheduleService(
 
     fun findByGuestIdAndStatusIn(
         guestId: String,
-        statuses: List<OrderStatus>
+        statuses: List<OrderStatus>,
     ): List<ScheduleEntity> = scheduleRepository.findByGuestIdAndStatusIn(guestId, statuses)
 }

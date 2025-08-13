@@ -13,8 +13,10 @@ class OrderService(
     private val userService: UserService,
     private val serviceService: ServiceService,
 ) {
-
-    fun cancel(guest: UserEntity, orderId: String) {
+    fun cancel(
+        guest: UserEntity,
+        orderId: String,
+    ) {
         val scheduledService = scheduleService.findByIdOrThrow(orderId)
 
         if (guest.id!! != scheduledService.guestId) {
@@ -33,7 +35,10 @@ class OrderService(
         userService.save(guest)
     }
 
-    fun order(guest: UserEntity, scheduleId: String) {
+    fun order(
+        guest: UserEntity,
+        scheduleId: String,
+    ) {
         val schedule = scheduleService.findByIdOrThrow(scheduleId)
         val service = serviceService.findByIdOrThrow(schedule.serviceId)
         val currentPrice = service.price

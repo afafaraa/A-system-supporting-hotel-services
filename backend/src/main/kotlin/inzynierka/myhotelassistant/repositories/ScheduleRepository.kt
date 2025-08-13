@@ -28,6 +28,6 @@ interface ScheduleRepository : MongoRepository<ScheduleEntity, String> {
 
     fun findByGuestIdAndStatusIn(
         guestId: String,
-        statuses: List<OrderStatus>
+        statuses: List<OrderStatus>,
     ): List<ScheduleEntity>
 }
