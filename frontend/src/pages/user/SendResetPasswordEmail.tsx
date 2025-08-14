@@ -1,7 +1,6 @@
 import {FormEvent, useEffect, useState} from 'react';
 import axiosApi from '../../middleware/axiosApi';
 import {Alert, Button, FormControl, Link, TextField, Typography} from "@mui/material";
-import {mainActionButtonSx} from "../../theme/theme.ts";
 import {useTranslation} from "react-i18next";
 import {isAxiosError} from "axios";
 
@@ -52,7 +51,7 @@ function SendResetPasswordEmail(){
           id="email"
           placeholder={tc("email")}
         />
-        <Button onClick={sendEmail} type="submit" loading={loading} sx={mainActionButtonSx}>{tc("sendButton")}</Button>
+        <Button onClick={sendEmail} type="submit" loading={loading}>{tc("sendButton")}</Button>
         {info && <Alert severity="info" sx={{mt: 2}}>{info}</Alert>}
         {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
         <Link href="/login" align="center" fontSize={14} mt={3} color="textPrimary" sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"} }}>

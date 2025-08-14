@@ -5,7 +5,6 @@ import {Button, FormControl, TextField, Typography, InputAdornment, IconButton, 
 import {useDispatch} from "react-redux";
 import {setUserData} from "../../components/auth/auth.tsx";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
-import {mainActionButtonSx} from "../../theme/theme.ts";
 import PersonIcon from "@mui/icons-material/Person";
 import KeyIcon from '@mui/icons-material/Key';
 import Link from "@mui/material/Link";
@@ -113,7 +112,7 @@ function RegisterPage(){
           },
         }}
       />
-      <Button onClick={register} type='submit' loading={loading} sx={mainActionButtonSx}>{tc("registerButton")}</Button>
+      <Button onClick={register} type='submit' loading={loading}>{tc("registerButton")}</Button>
       {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
       <Link href="/login" align="center" fontSize={14} mt={3} color="textPrimary" sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"} }}>
         {tc("goBack")}
