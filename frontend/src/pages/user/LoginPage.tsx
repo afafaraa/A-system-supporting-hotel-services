@@ -99,7 +99,7 @@ function LoginPage(){
           marginTop: '15px'
         }}>{tc("title")}</Typography>
         <Typography variant="h2" fontWeight="medium" align="center" sx={{
-          color: theme.palette.custom2.primary,
+          color: theme.palette.text.secondary,
           fontSize: fontSizes.xs,
           marginBottom: '20px'
         }}>{tc("subtitle")}</Typography>

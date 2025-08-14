@@ -6,19 +6,11 @@ export const darkPalette: PaletteOptions = {
     light: '#9375f3',         // custom3.secondary
     main: '#7545FB',          // custom3.main
     dark: '#4E378F',          // custom3.primary
-    contrastText: '#E6DBF5',  // custom3.contrastText
+    contrastText: '#F5EEFE',  // custom3.contrastText
   },
-  custom1: {
-    main: '#FAF9FB',
-    primary: '#FFFFFF',
-    secondary: '#F5EEFE',
-    contrastText: '',
-  },
-  custom2: {
-    main: '#000000',
-    primary: '#766F84',
-    secondary: '#FFFFFF',
-    contrastText: '',
+  background: {
+    default: '#FAF9FB',
+    paper: '#FFFFFF',
   },
   calendar: {
     AVAILABLE: {primary: "hsl(200 60% 70%)", background: "hsl(200 60% 95%)"},
