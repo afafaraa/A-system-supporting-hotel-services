@@ -2,6 +2,10 @@ import '@mui/material/styles';
 
 declare module '@mui/material/styles' {
 
+  interface TypeBackground {
+    shadow: string;
+  }
+
   type CalendarColors = {primary: string, background: string};
 
   interface Palette {

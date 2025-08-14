@@ -11,6 +11,7 @@ export const lightPalette: PaletteOptions = {
   background: {
     default: '#FAF9FB',
     paper: '#FFFFFF',
+    shadow: '#E6DBF5',
   },
   calendar: {
     AVAILABLE: {primary: "hsl(200 60% 70%)", background: "hsl(200 60% 95%)"},
