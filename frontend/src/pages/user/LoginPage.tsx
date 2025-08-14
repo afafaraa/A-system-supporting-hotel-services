@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import {
   Alert,
   Box,
-  FormControl,
+  FormControl, IconButton, InputAdornment,
   Typography, useTheme
 } from "@mui/material";
 import Link from '@mui/material/Link';
@@ -18,6 +18,7 @@ import Logo from "../../assets/hotel.svg?react";
 import {fontSizes} from "../../theme/fontSizes.ts";
 import {LogInWrapper} from "../../theme/styled-components/LogInWrapper.ts";
 import {LogInInput} from "../../theme/styled-components/LogInInput.ts";
+import {Visibility, VisibilityOff} from "@mui/icons-material";
 
 function LoginPage(){
   const user = useSelector(selectUser);
@@ -114,7 +115,22 @@ function LoginPage(){
           <label style={{fontWeight: '500', fontSize: '14px'}} htmlFor="username">Username</label>
           <LogInInput type="email" onChange={(e) => setUsername(e.target.value)} id="username" placeholder="jan.kowalski@gmail.com"/>
           <label style={{fontWeight: '500', fontSize: '14px'}} htmlFor="password">Password</label>
-          <LogInInput type={showPassword ? "text" : "password"} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="************" />
+          <LogInInput slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    edge="end"
+                    size="small"
+                  >
+                    {showPassword ? <VisibilityOff fontSize="inherit" /> : <Visibility fontSize="inherit" />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }
+          }}
+            type={showPassword ? "text" : "password"} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="************"/>
         </div>
         <Link href="/reset-password-email" align="right" fontSize={14} color="textSecondary"
               sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"}}}>{tc("resetPassword")}</Link>

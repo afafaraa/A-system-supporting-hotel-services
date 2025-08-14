@@ -1,14 +1,15 @@
 import { styled } from '@mui/material/styles';
+import {TextField} from "@mui/material";
 
-export const LogInInput = styled('input')(
+export const LogInInput = styled(TextField)(
   ({ theme }) => ({
-    border: 'none',
+    size: 'small',
+    borderRadius: 5,
     backgroundColor: theme.palette.custom1.secondary,
-    padding: '8px 13px',
-    borderRadius: '5px',
-    fontSize: '12px',
-    "&:focus": {
-      outline: `2px solid ${theme.palette.primary.main}`,
+    '& .MuiInputBase-input': {fontSize: '12px', padding: "8px 12px 8px 12px"},
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {border: 'none'},
+      '&.Mui-focused fieldset': {border: `2px solid ${theme.palette.custom3.main}`, borderRadius: 5},
     },
   })
-);
+)
