@@ -5,13 +5,13 @@ import {Provider, useSelector} from 'react-redux';
 import {store} from './redux/store.ts';
 import App from './App.tsx';
 import {ThemeProvider} from "@mui/material";
-import {lightTheme} from './theme/light/theme.ts';
 import './locales/i18n';
 import {selectTheme} from "./redux/slices/themeSlice.ts";
+import {getTheme} from "./theme/theme.ts";
 
 function ThemedApp() {
   const mode = useSelector(selectTheme);
-  const theme = mode.theme === 'light' ? lightTheme : lightTheme;
+  const theme = getTheme(mode.theme);
   return (
     <ThemeProvider theme={theme}>
       <App />

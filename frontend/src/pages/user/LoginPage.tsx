@@ -97,7 +97,7 @@ function LoginPage(){
           fontSize: fontSizes.md,
           marginTop: '15px'
         }}>{tc("title")}</Typography>
-        <Typography variant="h2" frontWeight="medium" align="center" sx={{
+        <Typography variant="h2" fontWeight="medium" align="center" sx={{
           color: theme.palette.custom2.primary,
           fontSize: fontSizes.xs,
           marginBottom: '20px'
