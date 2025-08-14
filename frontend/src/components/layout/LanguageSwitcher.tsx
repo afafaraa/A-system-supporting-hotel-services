@@ -19,7 +19,7 @@ const LanguageSwitcher: React.FC = () => {
   }
 
   return (
-    <FormControl sx={{m: 1.5, maxWidth: '215px', borderRadius: 2, boxShadow: theme => `0px 0px 15px -1px ${theme.palette.custom3.contrastText}`}}
+    <FormControl sx={{m: 1.5, maxWidth: '215px', borderRadius: 2, boxShadow: theme => `0px 0px 15px -1px ${theme.palette.primary.contrastText}`}}
                  size="small" fullWidth={true}>
       <Select sx={{'& .MuiOutlinedInput-notchedOutline': {border: 0, borderRadius: 2}}}
         id="demo-simple-select"

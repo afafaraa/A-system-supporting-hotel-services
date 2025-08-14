@@ -4,19 +4,16 @@ const components: Components<Omit<Theme, "components">>  = {
   MuiContainer: {
     styleOverrides: {
       root: ({ theme }) => ({
-        backgroundColor: theme.palette.custom1.main,
+        backgroundColor: theme.palette.background.default,
       }),
     }
   },
   MuiButton: {
     styleOverrides: {
-      root: ({ theme }) => ({
-        backgroundColor: theme.palette.custom3.main,
-        color: theme.palette.custom3.secondary,
+      root: {
         fontWeight: "bold",
         textTransform: "none",
-        "&:hover": { backgroundColor: theme.palette.primary.light }
-      }),
+      },
     }
   },
   MuiTooltip: {

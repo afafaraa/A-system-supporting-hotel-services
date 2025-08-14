@@ -9,7 +9,7 @@ export const LogInInput = styled(TextField)(
     '& .MuiInputBase-input': {fontSize: '12px', padding: "8px 12px 8px 12px"},
     '& .MuiOutlinedInput-root': {
       '& fieldset': {border: 'none'},
-      '&.Mui-focused fieldset': {border: `2px solid ${theme.palette.custom3.main}`, borderRadius: 5},
+      '&.Mui-focused fieldset': {border: `2px solid ${theme.palette.primary.main}`, borderRadius: 5},
     },
   })
 )

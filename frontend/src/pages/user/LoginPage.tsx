@@ -88,13 +88,13 @@ function LoginPage(){
     <LogInWrapper>
       <FormControl sx={{display: 'flex', alignItems: 'center'}} component="form" onSubmit={login}>
         <Logo style={{
-          background: theme.palette.custom3.main,
+          background: theme.palette.primary.main,
           padding: '5px 10px',
-          color: theme.palette.custom3.secondary,
+          color: "#fff",
           borderRadius: '10%'
         }} width={70} height={70}/>
         <Typography variant="h1" fontWeight="regular" align="center" sx={{
-          color: theme.palette.custom3.main,
+          color: theme.palette.primary.main,
           fontSize: fontSizes.md,
           marginTop: '15px'
         }}>{tc("title")}</Typography>
