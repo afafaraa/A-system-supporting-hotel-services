@@ -14,7 +14,7 @@ import {selectUser} from "../../redux/slices/userSlice.ts";
 import {setUserData} from "../../components/auth/auth.tsx";
 import {useTranslation} from "react-i18next";
 import {isAxiosError} from "axios";
-import Logo from "../../../public/hotel.svg?react";
+import Logo from "../../assets/hotel.svg?react";
 import {fontSizes} from "../../theme/fontSizes.ts";
 import {LogInWrapper} from "../../theme/styled-components/LogInWrapper.ts";
 import {LogInInput} from "../../theme/styled-components/LogInInput.ts";
