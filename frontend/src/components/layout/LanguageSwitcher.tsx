@@ -19,9 +19,9 @@ const LanguageSwitcher: React.FC = () => {
   }
 
   return (
-    <FormControl sx={{m: 1.5, maxWidth: '215px', borderRadius: 2, boxShadow: theme => `0px 0px 15px -1px ${theme.palette.background.shadow}`}}
+    <FormControl sx={{m: 1.5, maxWidth: '215px', borderRadius: 2, boxShadow: theme => `0px 0px 20px 2px ${theme.palette.background.shadow}`}}
                  size="small" fullWidth={true}>
-      <Select sx={{'& .MuiOutlinedInput-notchedOutline': {border: 0, borderRadius: 2}}}
+      <Select sx={{'& .MuiOutlinedInput-notchedOutline': {border: theme => `1px solid ${theme.palette.background.shadow}`, borderRadius: 2}}}
         id="demo-simple-select"
         value={i18n.language}
         onChange={handleChange}

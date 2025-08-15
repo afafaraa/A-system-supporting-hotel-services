@@ -5,6 +5,7 @@ export const LogInWrapper = styled('div')(
     backgroundColor: theme.palette.background.paper,
     padding: '40px 30px',
     borderRadius: '15px',
-    boxShadow: `0px 0px 15px -1px ${theme.palette.background.shadow}`,
+    boxShadow: `0px 0px 20px 2px ${theme.palette.background.shadow}`,
+    border: `1px solid ${theme.palette.background.shadow}`
   })
 );

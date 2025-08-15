@@ -11,5 +11,6 @@ export const LogInInput = styled(TextField)(
       '& fieldset': {border: 'none'},
       '&.Mui-focused fieldset': {border: `2px solid ${theme.palette.primary.main}`, borderRadius: 5},
     },
+    '& .MuiInputBase-input::placeholder': {opacity: 0.7}
   })
 )
