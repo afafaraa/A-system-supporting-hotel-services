@@ -3,6 +3,8 @@ package inzynierka.myhotelassistant.services
 import inzynierka.myhotelassistant.dto.ScheduleDTO
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
+import inzynierka.myhotelassistant.models.schedule.CancellationReason
+import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.utils.SchedulesToDTOConverter
@@ -20,18 +22,10 @@ class ScheduleService(
     private val scheduleDateConverter: SchedulesToDTOConverter,
     private val employeeService: EmployeeService,
 ) {
-    fun findAll(): List<ScheduleEntity> = scheduleRepository.findAll()
-
     fun findByIdOrThrow(id: String): ScheduleEntity =
         scheduleRepository
             .findById(id)
             .orElseThrow { EntityNotFoundException("Schedule not found") }
-
-    fun findById(id: String): ScheduleEntity? {
-        val it = scheduleRepository.findById(id)
-        if (it.isPresent) return it.get()
-        return null
-    }
 
     fun save(schedule: ScheduleEntity): ScheduleEntity = scheduleRepository.save(schedule)
 
@@ -88,9 +82,24 @@ class ScheduleService(
                 startDate = monday.atStartOfDay(),
                 endDate = sunday.atTime(LocalTime.MAX),
             )
-        if (foundSchedules.isEmpty()) {
-            throw EntityNotFoundException("No available schedules found in the specified week")
-        }
-        return scheduleDateConverter.convert(foundSchedules)
+        if (foundSchedules.isEmpty()) return emptyList()
+        return scheduleDateConverter.convertList(foundSchedules)
     }
+
+    fun changeScheduleStatus(
+        scheduleId: String,
+        newScheduleStatus: OrderStatus,
+        reason: String? = null,
+    ): ScheduleDTO {
+        val schedule = findByIdOrThrow(scheduleId)
+        reason?.let { schedule.cancellationReason = CancellationReason.fromString(it) }
+        schedule.status = newScheduleStatus
+        save(schedule)
+        return scheduleDateConverter.convert(schedule)
+    }
+
+    fun findByGuestIdAndStatusIn(
+        guestId: String,
+        statuses: List<OrderStatus>,
+    ): List<ScheduleEntity> = scheduleRepository.findByGuestIdAndStatusIn(guestId, statuses)
 }

@@ -57,10 +57,8 @@ class ServiceController(
         @RequestBody req: RateServiceRequestBody,
     ) {
         val guest = userService.findByUsernameOrThrow(req.username)
-        println(guest)
         val serviceId = scheduleService.findByIdOrThrow(req.scheduleId).serviceId
         val service = serviceService.findByIdOrThrow(serviceId)
-        println(service)
         service.rating.add(Rating(guest.name + " " + guest.surname, req.rating, req.comment))
         serviceService.save(service)
     }

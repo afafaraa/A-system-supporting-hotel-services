@@ -1,5 +1,6 @@
 package inzynierka.myhotelassistant.repositories
 
+import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
@@ -26,4 +27,9 @@ interface ScheduleRepository : MongoRepository<ScheduleEntity, String> {
     ): ScheduleEntity?
 
     fun findAllByServiceId(serviceId: String): List<ScheduleEntity>
+
+    fun findByGuestIdAndStatusIn(
+        guestId: String,
+        statuses: List<OrderStatus>,
+    ): List<ScheduleEntity>
 }
