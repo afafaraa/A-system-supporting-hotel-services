@@ -7,7 +7,5 @@ data class WeekdayHour(
     var startHour: Int,
     var endHour: Int,
 ) {
-    fun toWeekdayHour(): WeekdayHour {
-        return WeekdayHour(day, startHour, endHour)
-    }
+    fun toWeekdayHour(): WeekdayHour = WeekdayHour(day, startHour, endHour)
 }

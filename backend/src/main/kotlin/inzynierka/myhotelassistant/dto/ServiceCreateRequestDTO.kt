@@ -5,7 +5,6 @@ import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.models.service.ServiceType
 import inzynierka.myhotelassistant.models.service.WeekdayHour
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 
 data class ServiceCreateRequestDTO(
     var name: String,
@@ -33,8 +32,7 @@ data class ServiceCreateRequestDTO(
             image = image,
         )
 
-    fun getDurationFromMinutes(): Duration? = duration?.let { Duration.parse("${it}m")}
+    fun getDurationFromMinutes(): Duration? = duration?.let { Duration.parse("${it}m") }
 
-    fun getWeekdayHours(): MutableList<WeekdayHour>? =
-        weekday?.map { it.toWeekdayHour() }?.toMutableList()
+    fun getWeekdayHours(): MutableList<WeekdayHour>? = weekday?.map { it.toWeekdayHour() }?.toMutableList()
 }
