@@ -15,7 +15,7 @@ import java.util.UUID
 
 @Service
 class FileStorageService(
-    @Value("\${app.upload.dir:uploads}") uploadDir: String,
+    @Value("\${app.upload.dir:./uploads}") uploadDir: String,
 ) {
     private val fileStorageLocation: Path = Paths.get(uploadDir).toAbsolutePath().normalize()
 
@@ -47,19 +47,16 @@ class FileStorageService(
         }
     }
 
-    fun loadFileAsResource(fileName: String): Resource =
-        try {
-            val filePath = this.fileStorageLocation.resolve(fileName).normalize()
-            val resource = UrlResource(filePath.toUri())
+    fun loadFileAsResource(fileName: String): Resource {
+        val filePath = this.fileStorageLocation.resolve(fileName).normalize()
+        val resource = UrlResource(filePath.toUri())
 
-            if (resource.exists()) {
-                resource
-            } else {
-                throw RuntimeException("File not found")
-            }
-        } catch (e: Exception) {
-            throw RuntimeException("File not found")
+        if (resource.exists()) {
+            return resource
+        } else {
+            throw RuntimeException("File not found: $fileName")
         }
+    }
 
     fun deleteFile(fileName: String): Boolean =
         try {

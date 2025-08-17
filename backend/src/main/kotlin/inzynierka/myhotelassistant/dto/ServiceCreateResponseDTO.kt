@@ -28,7 +28,7 @@ data class ServiceCreateResponseDTO(
                 type = entity.type,
                 disabled = entity.disabled,
                 rating = entity.rating,
-                duration = entity.duration.inWholeSeconds,
+                duration = entity.duration.inWholeMinutes,
                 maxAvailable = entity.maxAvailable,
                 weekday = entity.weekday,
                 image = entity.image,

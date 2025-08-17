@@ -69,6 +69,8 @@ class SecurityConfig {
                 auth
                     .requestMatchers("/open/**")
                     .permitAll()
+                    .requestMatchers("/uploads/files/**")
+                    .permitAll()
                     .requestMatchers(
                         "/swagger-ui.html",
                         "/swagger-ui/**",

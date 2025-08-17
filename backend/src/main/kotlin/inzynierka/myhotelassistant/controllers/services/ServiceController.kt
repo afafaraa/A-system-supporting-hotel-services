@@ -10,16 +10,7 @@ import inzynierka.myhotelassistant.services.UserService
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/services")
@@ -40,9 +31,10 @@ class ServiceController(
     fun getAvailableServices(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-    ): List<ServiceEntity> {
+    ): List<ServiceCreateResponseDTO> {
         val pageable = PageRequest.of(page, size)
-        return serviceService.getAllAvailable(pageable)
+        val entities = serviceService.getAllAvailable(pageable)
+        return entities.map { ServiceCreateResponseDTO.from(it) }
     }
 
     @GetMapping("/one/{id}")
@@ -73,28 +65,33 @@ class ServiceController(
         return ServiceCreateResponseDTO.from(savedEntity)
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun updateService(
         @PathVariable id: String,
         @RequestBody request: ServiceCreateRequestDTO,
-    ): ServiceEntity {
-        val updated = request.toEntity().copy(id = id)
+    ): ResponseEntity<ServiceEntity> = try {
         val existing = serviceService.findByIdOrThrow(id)
-        val merged =
-            existing.copy(
-                name = updated.name,
-                description = updated.description,
-                price = updated.price,
-                type = updated.type,
-                disabled = updated.disabled,
-                duration = updated.duration,
-                maxAvailable = updated.maxAvailable,
-                weekday = updated.weekday,
-                image = updated.image,
-            )
 
-        return serviceService.save(merged)
+        val mergedService = existing.copy(
+            name = request.name ?: existing.name,
+            description = request.description ?: existing.description,
+            price = request.price ?: existing.price,
+            type = request.type ?: existing.type,
+            disabled = request.disabled ?: existing.disabled,
+            duration = request.getDurationFromMinutes() ?: existing.duration,
+            maxAvailable = request.maxAvailable ?: existing.maxAvailable,
+            weekday = request.getWeekdayHours() ?: existing.weekday,
+            image = request.image ?: existing.image
+        )
+
+        val savedService = serviceService.save(mergedService)
+        ResponseEntity.ok(savedService)
+
+    } catch (e: NoSuchElementException) {
+        ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+    } catch (e: Exception) {
+        ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
     }
 
     @DeleteMapping("/{id}")

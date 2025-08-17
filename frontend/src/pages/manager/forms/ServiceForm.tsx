@@ -151,19 +151,19 @@ function ServiceForm({ open, initial, onClose, onSaved, onDeleted }: Props) {
     formData.append("file", file);
 
     try {
-      const response = await axiosAuthApi.post<{ imageUrl: string }>(
+      const response = await axiosAuthApi.post<{ downloadUri: string }>(
           "/uploads/image",
           formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
       );
 
-      const imageUrl = response.data.imageUrl;
+      const imageUrl = response.data.downloadUri;
+      console.log("Upload response:", response.data);
+      console.log("Image URL:", imageUrl);
+      const fullImageUrl = imageUrl.startsWith('http')
+        ? imageUrl
+        : `${window.location.origin}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
       handleChange("image", imageUrl);
-      setPreviewUrl(imageUrl);
+      setPreviewUrl(fullImageUrl);
       setUploadState('success');
 
       setTimeout(() => {
@@ -172,9 +172,13 @@ function ServiceForm({ open, initial, onClose, onSaved, onDeleted }: Props) {
         }
       }, 2000);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Upload error:", error);
-      const errorMessage = error.response?.data?.error || "Błąd podczas uploadu";
+      let errorMessage = "Błąd podczas uploadu";
+      if (typeof error === "object" && error !== null && "response" in error) {
+        const err = error as { response?: { data?: { error?: string } } };
+        errorMessage = err.response?.data?.error || errorMessage;
+      }
       setUploadError(errorMessage);
       setUploadState('error');
     }
@@ -238,7 +242,7 @@ function ServiceForm({ open, initial, onClose, onSaved, onDeleted }: Props) {
     setSaving(true);
     try {
       const url = isEdit ? `/services/${initial?.id}` : "/services";
-      const method = isEdit ? "put" : "post";
+      const method = isEdit ? "patch" : "post";
       const payload = {
         ...form,
         rating: isEdit ? form.rating ?? [] : [],
@@ -300,7 +304,6 @@ function ServiceForm({ open, initial, onClose, onSaved, onDeleted }: Props) {
                 gap={3}
                 mt={2}
             >
-              {/* Basic Information */}
               <Box display="grid" gridTemplateColumns="1fr 1fr" gap={2}>
                 <TextField
                     label="Nazwa"
@@ -385,13 +388,11 @@ function ServiceForm({ open, initial, onClose, onSaved, onDeleted }: Props) {
                   }
               />
 
-              {/* Image Upload Section */}
               <Box>
                 <Typography variant="h6" gutterBottom>
                   Zdjęcie Usługi
                 </Typography>
 
-                {/* Image Preview */}
                 {previewUrl && (
                     <Card sx={{ mb: 2, position: "relative", maxWidth: 400 }}>
                       <CardMedia

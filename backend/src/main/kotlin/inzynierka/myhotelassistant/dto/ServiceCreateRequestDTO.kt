@@ -1,8 +1,10 @@
 package inzynierka.myhotelassistant.dto
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.models.service.ServiceType
 import inzynierka.myhotelassistant.models.service.WeekdayHour
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 data class ServiceCreateRequestDTO(
@@ -11,9 +13,10 @@ data class ServiceCreateRequestDTO(
     var price: Double,
     var type: ServiceType,
     var disabled: Boolean = false,
-    var duration: Long,
+    @JsonProperty("duration")
+    var duration: Long? = null,
     var maxAvailable: Int? = null,
-    var weekday: List<WeekdayHour> = emptyList(),
+    var weekday: List<WeekdayHour>? = emptyList(),
     var image: String? = null,
 ) {
     fun toEntity(): ServiceEntity =
@@ -24,9 +27,14 @@ data class ServiceCreateRequestDTO(
             type = type,
             disabled = disabled,
             rating = mutableListOf(),
-            duration = duration.seconds,
+            duration = getDurationFromMinutes() ?: Duration.ZERO,
             maxAvailable = maxAvailable,
-            weekday = weekday.toMutableList(),
+            weekday = weekday?.toMutableList() ?: mutableListOf(),
             image = image,
         )
+
+    fun getDurationFromMinutes(): Duration? = duration?.let { Duration.parse("${it}m")}
+
+    fun getWeekdayHours(): MutableList<WeekdayHour>? =
+        weekday?.map { it.toWeekdayHour() }?.toMutableList()
 }

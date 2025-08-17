@@ -35,8 +35,8 @@ app:
       days: 30
   schedules-generator:
     days-ahead: 21
-  file:
-    upload-dir: uploads
+  upload:
+    dir: /var/myhotelassistant/uploads
     max-file-size: 10MB
     allowed-image-types:
       - image/jpeg
