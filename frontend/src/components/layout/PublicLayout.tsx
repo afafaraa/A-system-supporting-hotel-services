@@ -2,6 +2,7 @@ import {Outlet} from "react-router-dom";
 import {Container} from "@mui/material";
 import {Box} from "@mui/system";
 import LanguageSwitcher from "./LanguageSwitcher.tsx";
+import ThemeSwitcher from "./ThemeSwitcher.tsx";
 
 function PublicLayout() {
 
@@ -9,6 +10,7 @@ function PublicLayout() {
     <Container disableGutters maxWidth={false} sx={{height:"100vh"}}>
       <Box position="fixed">
         <LanguageSwitcher/>
+        <ThemeSwitcher/>
       </Box>
       <Box height="inherit" px="10px" display="flex" justifyContent="center" alignItems="center">
         <Outlet />

@@ -140,9 +140,10 @@ function Navbar(props: Props) {
           {drawer}
           <Box sx={{marginTop: 'auto'}}><LanguageSwitcher /></Box>
         </Drawer>
-        <Drawer
+        <Drawer elevation={0}
           variant="permanent"
           sx={{
+            backgroundColor: '#fff',
             display: { xs: 'none', sm: 'block' },
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, top: drawerHeight+8, height: `calc(100% - ${drawerHeight+8}px)` },
           }}

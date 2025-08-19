@@ -43,7 +43,7 @@ function HomePage() {
     <PageContainer title={tc("title")}>
 
       { loggedUser &&
-        <Card sx={{p: 2, mb: 2}}>
+        <Card sx={{p: 2, mb: 2}} elevation={1}>
           <Typography variant='h5' mb={1}>{tc("loggedUser")}</Typography>
           <Typography>{tc("username")}: {loggedUser.username}</Typography>
           <Typography>{tc("role")}: {loggedUser.role.split("_")[1].toLowerCase()}</Typography>

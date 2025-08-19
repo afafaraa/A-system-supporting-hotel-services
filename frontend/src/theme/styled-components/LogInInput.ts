@@ -6,7 +6,7 @@ export const LogInInput = styled(TextField)(
     size: 'small',
     borderRadius: 5,
     color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.primary.contrastText,
+    backgroundColor: theme.palette.primary.light,
     '& .MuiInputBase-input': {fontSize: '12px', padding: "8px 12px 8px 12px"},
     '& .MuiOutlinedInput-root': {
       '& fieldset': {border: 'none'},

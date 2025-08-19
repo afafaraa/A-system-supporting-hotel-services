@@ -59,7 +59,7 @@ function HotelAppBar() {
             {user.username}
           </Typography>
           <Typography color="textSecondary" fontWeight="bold" fontSize="0.8rem">
-            nr. pokoju
+            {user.role.split("_")[1].toLowerCase()}
           </Typography>
         </Stack>
       </Stack>
@@ -68,7 +68,7 @@ function HotelAppBar() {
 
   return (
     <>
-      <AppBar position="fixed" color="default" sx={{height: drawerHeight, py: 2, px: {xs: 2, sm: 2, md: 7, lg: 12, xl: 12}}}>
+      <AppBar elevation={1} position="fixed" color="default" sx={{height: drawerHeight, py: 2, px: {xs: 2, sm: 2, md: 7, lg: 12, xl: 12}}}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
 
           <AppLogo/>

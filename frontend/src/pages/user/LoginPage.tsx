@@ -19,7 +19,7 @@ import Logo from "../../assets/hotel.svg?react";
 import {fontSizes} from "../../theme/fontSizes.ts";
 import {LogInWrapper} from "../../theme/styled-components/LogInWrapper.ts";
 import {LogInInput} from "../../theme/styled-components/LogInInput.ts";
-import {Visibility, VisibilityOff} from "@mui/icons-material";
+import {VisibilityOutlined, VisibilityOffOutlined} from "@mui/icons-material";
 
 function LoginPage(){
   const user = useSelector(selectUser);
@@ -91,7 +91,7 @@ function LoginPage(){
         <Logo style={{
           background: theme.palette.primary.main,
           padding: '5px 10px',
-          color: "#fff",
+          color: theme.palette.background.default,
           borderRadius: '10%'
         }} width={70} height={70}/>
         <Typography variant="h1" fontWeight="regular" align="center" sx={{
@@ -99,10 +99,9 @@ function LoginPage(){
           fontSize: fontSizes.md,
           marginTop: '15px'
         }}>{tc("title")}</Typography>
-        <Typography variant="h2" fontWeight="medium" align="center" sx={{
+        <Typography variant="subtitle2" fontWeight="medium" align="center" sx={{
           color: theme.palette.text.secondary,
-          fontSize: fontSizes.xs,
-          marginBottom: '20px'
+          mb: '20px', mt: 0.5
         }}>{tc("subtitle")}</Typography>
         <div
           style={{
@@ -124,8 +123,10 @@ function LoginPage(){
                     onClick={() => setShowPassword((prev) => !prev)}
                     edge="end"
                     size="small"
+                    sx={{color: "text.secondary", p: 0}}
+                    disableRipple
                   >
-                    {showPassword ? <VisibilityOff fontSize="inherit" /> : <Visibility fontSize="inherit" />}
+                    {showPassword ? <VisibilityOffOutlined fontSize="inherit" /> : <VisibilityOutlined fontSize="inherit" />}
                   </IconButton>
                 </InputAdornment>
               )
@@ -133,7 +134,7 @@ function LoginPage(){
           }}
             type={showPassword ? "text" : "password"} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="************"/>
         </div>
-        <Link component={RouterLink} to="/reset-password-email" align="right" fontSize={14} color="textSecondary"
+        <Link component={RouterLink} to="/reset-password-email" align="right" fontSize={14} color="textSecondary" mt={1}
               sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"}}}>{tc("resetPassword")}</Link>
         <Link component={RouterLink} to="/register" align="center" fontSize={14} color="textPrimary"
               sx={{textDecoration: "none", marginBottom: '15px', "&:hover": {textDecoration: "underline"}}}>{tc("registerWithCode")}</Link>
@@ -143,7 +144,7 @@ function LoginPage(){
         {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
       </FormControl>
 
-      <Box position="fixed" my="auto" left={4} display={{xs: "none", md: "flex"}} flexDirection="column" gap={0.8}>
+      <Box position="fixed" bottom={4} left={4} display={{xs: "none", md: "flex"}} flexDirection="column" gap={0.8}>
         <p>Quick log-in:</p>
         <button onClick={() => {
           setUsername("user"); setPassword("password"); login();

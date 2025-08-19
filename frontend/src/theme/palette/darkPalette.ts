@@ -3,18 +3,21 @@ import {PaletteOptions} from "@mui/material";
 export const darkPalette: PaletteOptions = {
   mode: 'dark',
   primary: {
-    light: '#9375f3',         // custom3.secondary
-    main: '#7545FB',          // custom3.main
-    dark: '#4E378F',          // custom3.primary
-    contrastText: '#090113',  // custom3.contrastText
+    light: 'hsl(256 20% 20%)',
+    main: 'hsl(256 80% 60%)',
+    dark: 'hsl(256 70% 50%)',
+    contrastText: 'hsl(256, 95%, 95%)',
   },
   background: {
-    default: '#1a1a1e',
-    paper: '#121214',
-    shadow: '#150a24',
+    default: 'hsl(256, 10%, 8%)',
+    paper: 'hsl(256, 10%, 10%)',
+    shadow: 'hsl(256 20% 20%)',
+  },
+  text: {
+    primary: 'hsl(0, 0%, 95%)',
   },
   action: {
-    active: '#eee',
+    active: 'hsl(0, 0%, 95%)',
   },
   calendar: {
     AVAILABLE: {primary: "hsl(200 60% 70%)", background: "hsl(200 60% 95%)"},
