@@ -25,6 +25,7 @@ import BuildIcon from '@mui/icons-material/Build';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LanguageSwitcher from "./LanguageSwitcher.tsx";
 import {useTranslation} from "react-i18next";
+import {drawerHeight} from "./AppBar.tsx";
 
 const drawerWidth = 240;
 
@@ -112,7 +113,7 @@ function Navbar(props: Props) {
           aria-label="open drawer"
           edge="start"
           onClick={handleDrawerToggle}
-          sx={{ color: 'white', backgroundColor: 'primary.main', display: { sm: 'none' }, position: 'fixed', top: 0, left: 0, zIndex: 1000, m: 1 }}
+          sx={{ color: 'white', backgroundColor: 'primary.main', display: { sm: 'none' }, position: 'fixed', top: drawerHeight, left: 0, zIndex: 1000, m: 1 }}
         >
           <MenuIcon/>
         </IconButton>
@@ -143,7 +144,7 @@ function Navbar(props: Props) {
           variant="permanent"
           sx={{
             display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, top: drawerHeight+8, height: `calc(100% - ${drawerHeight+8}px)` },
           }}
           open
         >

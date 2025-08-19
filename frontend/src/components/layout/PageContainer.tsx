@@ -9,12 +9,11 @@ interface PageContainerProps {
 function PageContainer({ children, title }: PropsWithChildren<PageContainerProps>) {
 
   return (
-    <Box width='100%' height='100%' mx={{xs: 0, sm: '1%', md: '1%', lg: '2%', xl: '2%'}} my='2rem'
-         sx={{border: '0px dashed grey', transition: 'margin 0.3s ease-in-out'}}>
+    <Box width='100%' height='100%' my={3}>
       <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4}}>
-        <Typography variant="h4" fontWeight="bold">{title}</Typography>
+        <Typography variant="h4" fontWeight="bold" color="textPrimary">{title}</Typography>
         <Stack direction="row" spacing={2}>
-          <Typography variant="h5" fontWeight="bold">MyHotelAssistant</Typography>
+          <Typography variant="h5" fontWeight="bold" color="textPrimary">MyHotelAssistant</Typography>
           <img alt="icon" src="/logo.png" width={32}/>
         </Stack>
       </Box>

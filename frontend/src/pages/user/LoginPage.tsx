@@ -112,9 +112,9 @@ function LoginPage(){
             marginBottom: '10px',
           }}
         >
-          <label style={{fontWeight: '500', fontSize: '14px'}} htmlFor="username">Username</label>
+          <label style={{fontWeight: '500', fontSize: '14px', color: theme.palette.text.primary}} htmlFor="username">Username</label>
           <LogInInput type="email" onChange={(e) => setUsername(e.target.value)} id="username" placeholder="jan.kowalski@gmail.com"/>
-          <label style={{fontWeight: '500', fontSize: '14px'}} htmlFor="password">Password</label>
+          <label style={{fontWeight: '500', fontSize: '14px', color: theme.palette.text.primary}} htmlFor="password">Password</label>
           <LogInInput slotProps={{
             input: {
               endAdornment: (

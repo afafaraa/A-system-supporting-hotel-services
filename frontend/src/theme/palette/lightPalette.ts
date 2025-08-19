@@ -13,6 +13,9 @@ export const lightPalette: PaletteOptions = {
     paper: '#FFFFFF',
     shadow: '#e8d9fb',
   },
+  action: {
+    active: 'rgba(0, 0, 0, 0.70)',
+  },
   calendar: {
     AVAILABLE: {primary: "hsl(200 60% 70%)", background: "hsl(200 60% 95%)"},
     REQUESTED: {primary: "hsl(268 80% 70%)", background: "hsl(268 80% 93%)"},
