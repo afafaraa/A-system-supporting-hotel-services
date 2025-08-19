@@ -9,6 +9,7 @@ import {
   Typography, useTheme
 } from "@mui/material";
 import Link from '@mui/material/Link';
+import {Link as RouterLink} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
 import {setUserData} from "../../components/auth/auth.tsx";
@@ -132,9 +133,9 @@ function LoginPage(){
           }}
             type={showPassword ? "text" : "password"} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="************"/>
         </div>
-        <Link href="/reset-password-email" align="right" fontSize={14} color="textSecondary"
+        <Link component={RouterLink} to="/reset-password-email" align="right" fontSize={14} color="textSecondary"
               sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"}}}>{tc("resetPassword")}</Link>
-        <Link href="/register" align="center" fontSize={14} color="textPrimary"
+        <Link component={RouterLink} to="/register" align="center" fontSize={14} color="textPrimary"
               sx={{textDecoration: "none", marginBottom: '15px', "&:hover": {textDecoration: "underline"}}}>{tc("registerWithCode")}</Link>
         <Button sx={{width: '100%'}} variant="contained" onClick={login} type="submit" loading={loading}>
           {tc("loginButton")}
