@@ -45,7 +45,7 @@ function HotelAppBar() {
   )
 
   const UserCard = () => (
-    <Link to="/home" style={{textDecoration: "none"}}>
+    <Link to="/profile" style={{textDecoration: "none"}}>
       <Stack direction="row" spacing={2} alignItems="center" px={1}>
         <Box bgcolor="primary.main"  fontWeight="bold" width={48} height={48} borderRadius="50%" display="flex"
              alignItems="center"
@@ -81,9 +81,11 @@ function HotelAppBar() {
               <NotificationsOutlinedIcon />
             </IconButton>
 
-            <IconButton onClick={() => navigate("/services/shopping-cart")}>
-              <ShoppingCartOutlinedIcon />
-            </IconButton>
+            {user.role === "ROLE_GUEST" &&
+              <IconButton onClick={() => navigate("/services/shopping-cart")}>
+                <ShoppingCartOutlinedIcon />
+              </IconButton>
+            }
 
             <UserCard/>
 

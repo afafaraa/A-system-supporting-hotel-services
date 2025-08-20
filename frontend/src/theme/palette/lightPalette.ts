@@ -5,7 +5,7 @@ export const lightPalette: PaletteOptions = {
   primary: {
     light: 'hsl(256 90% 96%)',
     main: 'hsl(256 80% 60%)',
-    dark: 'hsl(256 70% 50%)',
+    dark: 'hsl(256 50% 40%)',
     contrastText: 'hsl(0, 0%, 95%)',
   },
   background: {

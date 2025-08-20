@@ -1,5 +1,5 @@
 import {Card, Typography} from "@mui/material";
-import PageContainer from "../../components/layout/PageContainer.tsx";
+import AuthenticatedHeader from "../../components/layout/AuthenticatedHeader.tsx";
 import {useEffect, useState} from "react";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {useSelector} from "react-redux";
@@ -40,7 +40,8 @@ function HomePage() {
   }, []);
 
   return (
-    <PageContainer title={tc("title")}>
+    <>
+      <AuthenticatedHeader title={tc("title")} />
 
       { loggedUser &&
         <Card sx={{p: 2, mb: 2}} elevation={1}>
@@ -70,7 +71,7 @@ function HomePage() {
           </>
         )}
       </Card>
-    </PageContainer>
+    </>
   )
 }
 

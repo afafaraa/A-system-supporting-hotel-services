@@ -7,18 +7,14 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import {Outlet, useLocation} from "react-router-dom";
+import {useLocation} from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/slices/userSlice";
 import {useNavigate} from "react-router-dom";
-import HomeIcon from '@mui/icons-material/Home';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import HistoryIcon from '@mui/icons-material/History';
 import EventNoteIcon from '@mui/icons-material/EventNote';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import GroupIcon from '@mui/icons-material/Group';
 import BuildIcon from '@mui/icons-material/Build';
@@ -35,7 +31,7 @@ interface Props {
 }
 
 function Navbar(props: Props) {
-  const { window } = props;
+  const { window, children } = props;
   const user = useSelector(selectUser);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -60,17 +56,13 @@ function Navbar(props: Props) {
   };
 
   const nav = [
-    {text: tc("home"), icon: HomeIcon, navTo: '/home', roles: null},
     {text: tc("availableServices"), icon: DesignServicesIcon, navTo: '/services/available' , roles: ['ROLE_GUEST']},
-    {text: tc("shoppingCart"), icon: ShoppingCartIcon, navTo: '/services/shopping-cart', roles: ['ROLE_GUEST']},
     {text: tc("requestedServices"), icon: AssignmentTurnedInIcon, navTo: '/services/requested', roles: ['ROLE_GUEST']},
     {text: tc("pastServices"), icon: HistoryIcon, navTo: '/services/history', roles: ['ROLE_GUEST']},
     {text: tc("mySchedule"), icon: EventNoteIcon, navTo: '/employee/schedule', roles: ['ROLE_EMPLOYEE', 'ROLE_RECEPTIONIST', 'ROLE_MANAGER', 'ROLE_ADMIN']},
-    {text: tc("notifications"), icon: NotificationsIcon, navTo: '/notifications', roles: null},
     {text: tc("personnel"), icon: GroupIcon, navTo: '/employees', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
     {text: tc("services"), icon: BuildIcon, navTo: '/management/services', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
     {text: tc("stats"), icon: BarChartIcon, navTo: '/management/statistics', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
-    {text: tc("logout"), icon: LogoutIcon, navTo: '/logout', roles: null}
   ]
 
   const isSelected = (navTo: string): boolean => {
@@ -113,7 +105,7 @@ function Navbar(props: Props) {
           aria-label="open drawer"
           edge="start"
           onClick={handleDrawerToggle}
-          sx={{ color: 'white', backgroundColor: 'primary.main', display: { sm: 'none' }, position: 'fixed', top: drawerHeight, left: 0, zIndex: 1000, m: 1 }}
+          sx={{ color: 'white', backgroundColor: 'primary.main', display: { sm: 'none' }, position: 'fixed', bottom: 0, left: 0, zIndex: 1000, m: 1 }}
         >
           <MenuIcon/>
         </IconButton>
@@ -153,7 +145,7 @@ function Navbar(props: Props) {
           <Box sx={{marginTop: 'auto'}}><LanguageSwitcher /></Box>
         </Drawer>
       </Box>
-      <Outlet />
+      {children}
     </Box>
   );
 }

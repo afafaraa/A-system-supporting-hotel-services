@@ -32,6 +32,13 @@ const components: Components<Omit<Theme, "components">>  = {
       },
     },
   },
+  MuiPaper: {
+    styleOverrides: {
+      root: {
+        backgroundImage: "none",
+      },
+    },
+  },
 }
 
 export default components;
