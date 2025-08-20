@@ -14,7 +14,7 @@ export const lightPalette: PaletteOptions = {
     shadow: 'hsl(256 80% 92%)',
   },
   action: {
-    active: 'rgba(0, 0, 0, 0.95)',
+    active: 'rgba(0, 0, 0, 0.75)',
   },
   calendar: {
     AVAILABLE: {primary: "hsl(200 60% 70%)", background: "hsl(200 60% 95%)"},

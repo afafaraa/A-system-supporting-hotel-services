@@ -8,7 +8,7 @@ function PublicLayout() {
 
   return (
     <Container disableGutters maxWidth={false} sx={{height:"100vh"}}>
-      <Box position="fixed">
+      <Box position="fixed" m={1.5} display="flex" gap={1}>
         <LanguageSwitcher/>
         <ThemeSwitcher/>
       </Box>
