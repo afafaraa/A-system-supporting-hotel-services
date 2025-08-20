@@ -1,17 +1,17 @@
-import {CircularProgress, Typography} from "@mui/material";
+import {Box, CircularProgress, Typography} from "@mui/material";
 
 function LoadingPage() {
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh" }}>
+    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh" bgcolor="background.default">
       <CircularProgress />
-      <Typography variant="h6" style={{ marginTop: "1rem", textAlign: "center" }}>
+      <Typography variant="h6" mt="1rem" color="text.primary">
         Proszę czekać,
       </Typography>
-      <Typography variant="body2" style={{ marginTop: "0.5rem", textAlign: "center" }}>
+      <Typography variant="body2" mt="0.5rem" color="text.secondary">
         trwa przygotowanie sesji użytkownika
       </Typography>
-    </div>
+    </Box>
   )
 }
 

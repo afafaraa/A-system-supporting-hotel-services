@@ -95,7 +95,7 @@ function AppInitializer({ children }: PropsWithChildren) {
 
   if (!isInitialized) return <LoadingPage/>;
 
-  return <>{children}</>;
+  return children;
 }
 
 export default App;

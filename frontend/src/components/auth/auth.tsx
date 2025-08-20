@@ -2,7 +2,6 @@ import {clearUser, setUser, UserData} from "../../redux/slices/userSlice";
 import axiosApi from "../../middleware/axiosApi";
 import { jwtDecode } from "jwt-decode";
 import {AppDispatch} from "../../redux/store.ts";
-import {setTheme} from "../../redux/slices/themeSlice.ts";
 
 interface CustomJwtPayload {
     iat: number,
@@ -18,8 +17,6 @@ function removeTokensFromLocalStorage() {
 }
 
 export async function initializeUserFromLocalStorage(dispatch: AppDispatch) {
-    const theme = localStorage.getItem('THEME');
-    if (theme) dispatch(setTheme(theme))
     const accessToken = localStorage.getItem('ACCESS_TOKEN');
     const refreshToken = localStorage.getItem('REFRESH_TOKEN');
     if (!accessToken || !refreshToken) {
