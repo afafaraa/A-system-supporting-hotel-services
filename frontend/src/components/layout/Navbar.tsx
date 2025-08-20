@@ -11,7 +11,7 @@ import {Box} from "@mui/system";
 import {Link, useNavigate} from "react-router-dom";
 import ThemeSwitcher from "./ThemeSwitcher.tsx";
 
-export const drawerHeight = 64;
+const drawerHeight = 64;
 
 function Navbar() {
   const user = useSelector(selectUser);
@@ -37,7 +37,7 @@ function Navbar() {
           color: theme.palette.background.default,
           borderRadius: '20%'
         }} width={40} height={40}/>
-        <Typography variant="h5" fontWeight="bold" color="primary" display={{xs: "none", md: "inherit"}}>
+        <Typography fontSize="1.4rem" fontWeight="bold" color="primary" display={{xs: "none", md: "inherit"}}>
           {tc("title")}
         </Typography>
       </Stack>
@@ -68,7 +68,7 @@ function Navbar() {
 
   return (
     <>
-      <AppBar elevation={1} position="fixed" color="default" sx={{justifyContent: "center", height: drawerHeight, py: 2, px: {xs: 2, sm: 2, md: 7, lg: 12, xl: 12}}}>
+      <AppBar elevation={2} position="fixed" color="default" sx={{justifyContent: "center", height: drawerHeight, py: 2, px: {xs: 2, sm: 2, md: 7, lg: 12, xl: 12}}}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
 
           <AppLogo/>

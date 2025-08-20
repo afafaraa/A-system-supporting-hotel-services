@@ -49,17 +49,15 @@ function TemporaryMenu() {
   if (user === null) return null;
 
   const drawer = (
-    <>
-      {nav.map((item) =>
+      nav.map((item, index) =>
         (item.roles === null || item.roles.includes(user.role)) &&
-          <MenuItem onClick={() => navigate(item.navTo)}
+          <MenuItem key={`menu_${index}`} onClick={() => navigate(item.navTo)}
                     sx={{p: 1.5, gap: 2, backgroundColor: isSelected(item.navTo) ? 'primary.main' : 'inherit',
                       '&:hover': {backgroundColor: isSelected(item.navTo) ? 'primary.dark' : 'action.hover'}}}>
             {item.icon && <item.icon sx={{ color: isSelected(item.navTo) ? 'white' : 'primary.main' }}/>}
             <Typography sx={{ color: isSelected(item.navTo) ? 'white' : 'text.primary' }}>{item.text}</Typography>
           </MenuItem>
-      )}
-    </>
+      )
   );
 
   return (
