@@ -7,6 +7,7 @@ import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -56,7 +57,7 @@ class ScheduleController(
                 val empId = schedule.employeeId
                 val emp = employeeService.findByIdOrThrow(empId)
                 ScheduleForWeekResponse(
-                    schedule.id ?: "",
+                    schedule.id!!,
                     "${emp.name} ${emp.surname}",
                     schedule.serviceDate,
                     schedule.weekday,
@@ -69,15 +70,10 @@ class ScheduleController(
     @ResponseStatus(HttpStatus.OK)
     fun getScheduleForCartById(
         @PathVariable id: String,
-    ): ScheduleForCartResponse? {
-        val scheduleItem = scheduleService.findById(id)
-        if (scheduleItem?.employeeId == null) return null
+    ): ScheduleForCartResponse {
+        val scheduleItem = scheduleService.findByIdOrThrow(id)
         val assignedEmployee = employeeService.findByIdOrThrow(scheduleItem.employeeId)
-        val serviceOpt = serviceService.findById(scheduleItem.serviceId)
-        if (!serviceOpt.isPresent) {
-            return null
-        }
-        val service = serviceOpt.get()
+        val service = serviceService.findByIdOrThrow(scheduleItem.serviceId)
         return ScheduleForCartResponse(
             id,
             service.name,
@@ -102,4 +98,30 @@ class ScheduleController(
             throw InvalidArgumentException("Invalid date format. Expected format is ISO_ZONED_DATE_TIME.")
         }
     }
+
+    @PatchMapping("/{scheduleId}/confirm")
+    @ResponseStatus(HttpStatus.OK)
+    fun confirmRequestedSchedule(
+        @PathVariable scheduleId: String,
+    ): ScheduleDTO = scheduleService.changeScheduleStatus(scheduleId, OrderStatus.ACTIVE)
+
+    @PatchMapping("/{scheduleId}/reject")
+    @ResponseStatus(HttpStatus.OK)
+    fun rejectRequestedSchedule(
+        @PathVariable scheduleId: String,
+        @RequestParam reason: String,
+    ): ScheduleDTO = scheduleService.changeScheduleStatus(scheduleId, OrderStatus.CANCELED, reason)
+
+    @PatchMapping("/{scheduleId}/complete")
+    @ResponseStatus(HttpStatus.OK)
+    fun completeActiveSchedule(
+        @PathVariable scheduleId: String,
+    ): ScheduleDTO = scheduleService.changeScheduleStatus(scheduleId, OrderStatus.COMPLETED)
+
+    @PatchMapping("/{scheduleId}/cancel")
+    @ResponseStatus(HttpStatus.OK)
+    fun cancelActiveSchedule(
+        @PathVariable scheduleId: String,
+        @RequestParam reason: String,
+    ): ScheduleDTO = scheduleService.changeScheduleStatus(scheduleId, OrderStatus.CANCELED, reason)
 }

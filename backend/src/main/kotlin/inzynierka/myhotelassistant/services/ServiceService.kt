@@ -16,8 +16,6 @@ class ServiceService(
             .findAllByDisabledFalse(pageable)
             .content
 
-    fun findAll(): List<ServiceEntity> = serviceRepository.findAll()
-
     fun findById(id: String): Optional<ServiceEntity> = serviceRepository.findById(id)
 
     fun findByIdOrThrow(id: String): ServiceEntity =

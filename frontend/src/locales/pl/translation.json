@@ -86,7 +86,11 @@
         "unknownService": "Nieznana usługa",
         "status": "Status",
         "orderTime": "Data zamówienia",
-        "durationUnknown": "Czas nieokreślony"
+        "durationUnknown": "Czas nieokreślony",
+        "confirm": "Zatwierdź usługę",
+        "reject": "Odrzuć usługę",
+        "complete": "Oznacz usługę jako zakończoną",
+        "cancel": "Anuluj usługę"
       }
     },
     "available_services": {
@@ -196,5 +200,21 @@
     "ACTIVE": "AKTYWNY",
     "COMPLETED": "UKOŃCZONY",
     "CANCELED": "ANULOWANY"
+  },
+  "confirmation_dialog": {
+    "title": "Potwierdzenie akcji",
+    "confirm": "Potwierdź",
+    "cancel": "Anuluj",
+    "description": {
+      "cancel": "Czy na pewno chcesz anulować tę usługę?",
+      "reject": "Czy na pewno chcesz odrzucić tę usługę?"
+    },
+    "select_reason": "Wybierz powód"
+  },
+  "cancellation_reasons": {
+    "overlapping_terms": "Nakładające się terminy",
+    "personal_reasons": "Powód osobisty",
+    "illness": "Choroba",
+    "other": "Inny powód"
   }
 }
