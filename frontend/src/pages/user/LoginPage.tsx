@@ -84,7 +84,6 @@ function LoginPage(){
       .finally(() => setLoading(false));
   }
 
-  console.log(error)
   return (
     <LogInWrapper>
       <FormControl sx={{display: 'flex', alignItems: 'center'}} component="form" onSubmit={login}>
@@ -112,9 +111,9 @@ function LoginPage(){
             marginBottom: '10px',
           }}
         >
-          <label style={{fontWeight: '500', fontSize: '14px', color: theme.palette.text.primary}} htmlFor="username">Username</label>
+          <label style={{fontWeight: '500', fontSize: '14px', color: theme.palette.text.primary}} htmlFor="username">{tc("username")}</label>
           <LogInInput type="email" onChange={(e) => setUsername(e.target.value)} id="username" placeholder="jan.kowalski@gmail.com"/>
-          <label style={{fontWeight: '500', fontSize: '14px', color: theme.palette.text.primary}} htmlFor="password">Password</label>
+          <label style={{fontWeight: '500', fontSize: '14px', color: theme.palette.text.primary}} htmlFor="password">{tc("password")}</label>
           <LogInInput slotProps={{
             input: {
               endAdornment: (

@@ -24,8 +24,8 @@ function Navbar() {
   if (!user) return null;
 
   const getUserInitials = (username: string) => {
-    const names = username
-    return names[0].charAt(0).toUpperCase() + names[1].charAt(0).toUpperCase();
+    if (username.length < 2) return username.toUpperCase();
+    return username.charAt(0).toUpperCase() + username.charAt(1).toUpperCase();
   }
 
   const AppLogo = () => (

@@ -3,7 +3,6 @@ import {TextField} from "@mui/material";
 
 export const LogInInput = styled(TextField)(
   ({ theme }) => ({
-    size: 'small',
     borderRadius: 5,
     color: theme.palette.text.secondary,
     backgroundColor: theme.palette.primary.light,

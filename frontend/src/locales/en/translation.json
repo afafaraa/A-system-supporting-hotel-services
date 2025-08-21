@@ -22,6 +22,10 @@
     "nextWeek": "Next week"
   },
   "pages": {
+    "loading": {
+      "wait": "Please wait,",
+      "preparing": "user session is being prepared"
+    },
     "login": {
       "title": "My Hotel Assistant",
       "subtitle": "Access your hotel services and reservations",
