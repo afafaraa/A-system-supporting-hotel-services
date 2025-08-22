@@ -1,15 +1,20 @@
 package inzynierka.myhotelassistant.services
 
+import inzynierka.myhotelassistant.dto.ServiceCreateRequestDTO
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
+import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.service.ServiceEntity
+import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.repositories.ServiceRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import java.lang.IllegalArgumentException
 import java.util.Optional
 
 @Service
 class ServiceService(
     private val serviceRepository: ServiceRepository,
+    private val scheduleRepository: ScheduleRepository,
 ) {
     fun getAllAvailable(pageable: Pageable): List<ServiceEntity> =
         serviceRepository
@@ -32,5 +37,53 @@ class ServiceService(
     fun getSchedulesByIds(ids: List<String>): Map<String, ServiceEntity> {
         if (ids.isEmpty()) return emptyMap()
         return serviceRepository.findAllById(ids).associateBy { it.id!! }
+    }
+
+    fun deleteService(
+        serviceId: String,
+        deleteOption: Int,
+    ) {
+        val service =
+            serviceRepository.findById(serviceId).orElseThrow {
+                IllegalArgumentException("Could not find service with given 'id':$serviceId")
+            }
+
+        val relatedOrders = scheduleRepository.findAllByServiceId(serviceId)
+
+        when (deleteOption) {
+            1 -> {
+                val toDelete =
+                    relatedOrders.filter {
+                        it.status == OrderStatus.AVAILABLE || it.status == OrderStatus.REQUESTED
+                    }
+                scheduleRepository.deleteAll(toDelete)
+            }
+            2 -> {
+                val toDelete = relatedOrders.filter { it.status == OrderStatus.AVAILABLE }
+                scheduleRepository.deleteAll(toDelete)
+            }
+            else -> throw IllegalArgumentException("Incorrect delete option")
+        }
+        serviceRepository.delete(service)
+    }
+
+    fun update(
+        id: String,
+        request: ServiceCreateRequestDTO,
+    ): ServiceEntity {
+        val existing = findByIdOrThrow(id)
+        val merged =
+            existing.copy(
+                name = request.name,
+                description = request.description ?: existing.description,
+                price = request.price,
+                type = request.type,
+                duration = request.getDurationFromMinutes() ?: existing.duration,
+                maxAvailable = request.maxAvailable ?: existing.maxAvailable,
+                weekday = request.getWeekdayHours() ?: existing.weekday,
+                image = request.image ?: existing.image,
+                disabled = request.disabled,
+            )
+        return save(merged)
     }
 }

@@ -17,7 +17,7 @@ import {
     Select,
     MenuItem
 } from '@mui/material';
-import ServiceForm from './ServiceForm';
+import ServiceForm from './forms/ServiceForm';
 import { Service } from '../../types';
 import { useTranslation } from "react-i18next";
 
@@ -137,7 +137,9 @@ function ServicesListPage() {
                             <TableRow key={s.id} hover>
                                 <TableCell>{s.name}</TableCell>
                                 <TableCell>{s.description}</TableCell>
-                                <TableCell>{s.price}</TableCell>
+                                <TableCell>
+                                    {new Intl.NumberFormat(undefined, { style: 'currency', currency: 'PLN' }).format(s.price)}
+                                </TableCell>
                                 <TableCell>{s.type}</TableCell>
                                 <TableCell>{s.disabled ? 'Unavailable' : 'Available'}</TableCell>
                                 <TableCell>
@@ -179,6 +181,10 @@ function ServicesListPage() {
                     }
                     return [svc, ...prev];
                 });
+                }}
+                onDeleted={() => {
+                    setModalOpen(false);
+                    setAllServices(prev => prev.filter(s => s.id !== editing?.id));
                 }}
             />
         </Box>

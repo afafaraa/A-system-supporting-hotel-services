@@ -1,5 +1,7 @@
 package inzynierka.myhotelassistant.controllers.services
 
+import inzynierka.myhotelassistant.dto.ServiceCreateRequestDTO
+import inzynierka.myhotelassistant.dto.ServiceCreateResponseDTO
 import inzynierka.myhotelassistant.models.service.Rating
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.services.ScheduleService
@@ -7,7 +9,10 @@ import inzynierka.myhotelassistant.services.ServiceService
 import inzynierka.myhotelassistant.services.UserService
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -35,9 +40,10 @@ class ServiceController(
     fun getAvailableServices(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-    ): List<ServiceEntity> {
+    ): List<ServiceCreateResponseDTO> {
         val pageable = PageRequest.of(page, size)
-        return serviceService.getAllAvailable(pageable)
+        val entities = serviceService.getAllAvailable(pageable)
+        return entities.map { ServiceCreateResponseDTO.from(it) }
     }
 
     @GetMapping("/one/{id}")
@@ -57,4 +63,39 @@ class ServiceController(
         service.rating.add(Rating(guest.name + " " + guest.surname, req.rating, req.comment))
         serviceService.save(service)
     }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createService(
+        @RequestBody request: ServiceCreateRequestDTO,
+    ): ServiceCreateResponseDTO {
+        val entity = request.toEntity()
+        val savedEntity = serviceService.save(entity)
+        return ServiceCreateResponseDTO.from(savedEntity)
+    }
+
+    @PatchMapping("/{id}")
+    fun updateService(
+        @PathVariable id: String,
+        @RequestBody request: ServiceCreateRequestDTO,
+    ): ResponseEntity<ServiceEntity> {
+        val updated = serviceService.update(id, request)
+        return ResponseEntity.ok(updated)
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteServiceWithOption(
+        @PathVariable id: String,
+        @RequestParam(required = true) deleteOption: Int,
+    ): ResponseEntity<String> =
+        try {
+            serviceService.deleteService(id, deleteOption)
+            ResponseEntity.ok("Service deleted")
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message ?: "Invalid request")
+        } catch (e: NoSuchElementException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.message ?: "Service not found")
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error")
+        }
 }

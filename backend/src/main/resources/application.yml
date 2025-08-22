@@ -19,6 +19,13 @@ spring:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
       mail.smtp.starttls.required: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+      location: /tmp
+      resolve-lazily: false
 logging:
   level:
     inzynierka.myhotelassistant: DEBUG
@@ -28,3 +35,11 @@ app:
       days: 30
   schedules-generator:
     days-ahead: 21
+  upload:
+    dir: ${java.io.tmpdir}/uploads
+    max-file-size: 10MB
+    allowed-image-types:
+      - image/jpeg
+      - image/jpg
+      - image/png
+      - image/webp

@@ -4,6 +4,12 @@ export type WeekdayHour = {
     endHour: number;
 }
 
+export type Rating = {
+    author: string;
+    rating: number;
+    comment: string;
+};
+
 export type Service = {
     id?: string;
     name: string;
@@ -11,6 +17,8 @@ export type Service = {
     price: number;
     type: "GENERAL_SERVICE" | "PLACE_RESERVATION";
     disabled: boolean;
+    rating?: Rating[];
+    duration: number;
     maxAvailable?: number;
     weekday: WeekdayHour[];
     image?: string;
