@@ -1,4 +1,4 @@
-import {AppBar, Badge, IconButton, Stack, Typography, useTheme, Box} from "@mui/material";
+import {AppBar, Badge, IconButton, Stack, Typography, useTheme} from "@mui/material";
 import {alpha} from '@mui/material/styles';
 import Logo from "../../assets/hotel.svg?react";
 import {useTranslation} from "react-i18next";
@@ -9,12 +9,10 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
 import {Link, useNavigate} from "react-router-dom";
-import ThemeSwitcher from "../ui/ThemeSwitcher.tsx";
-import {useEffect} from "react";
-import {axiosAuthApi} from "../../middleware/axiosApi.ts";
+import ThemeSwitcher from "./ThemeSwitcher.tsx";
 import {selectUserDetails, setUserDetails, UserDetails} from "../../redux/slices/userDetailsSlice.ts";
-import {selectShoppingCartCount} from "../../redux/slices/shoppingCartSlice.ts";
-import {setNotificationsCount, selectNotificationsCount} from "../../redux/slices/notificationsCount.ts";
+import {useEffect, useState} from "react";
+import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 
 const drawerHeight = 64;
 
