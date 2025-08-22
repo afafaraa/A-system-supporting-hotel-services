@@ -26,6 +26,9 @@ class NotificationController(
         authentication: Authentication,
     ): List<NotificationDTO> = notificationService.getNotificationsOfGivenUser(username, authentication)
 
+    @GetMapping("/unread-count")
+    fun getUnreadNotificationsCount(principal: Principal): Long = notificationService.getUnreadNotificationsCount(principal.name)
+
     @PatchMapping("/mark-read")
     fun markAsRead(
         @RequestBody notificationIds: List<String>,

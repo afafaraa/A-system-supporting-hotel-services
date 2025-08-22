@@ -15,4 +15,6 @@ interface NotificationRepository : MongoRepository<NotificationEntity, String> {
         userId: String,
         ids: List<String>,
     ): Int
+
+    fun countByUserIdAndIsReadFalse(userId: String): Long
 }

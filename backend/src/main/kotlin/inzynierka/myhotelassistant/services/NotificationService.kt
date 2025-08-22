@@ -87,4 +87,9 @@ class NotificationService(
             )
         notificationRepository.save(notification)
     }
+
+    fun getUnreadNotificationsCount(username: String): Long {
+        val userId: String = userService.findByUsernameOrThrow(username).id!!
+        return notificationRepository.countByUserIdAndIsReadFalse(userId)
+    }
 }

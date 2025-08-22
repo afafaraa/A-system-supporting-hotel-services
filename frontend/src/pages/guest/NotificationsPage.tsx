@@ -4,16 +4,12 @@ import {useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
 import {
   Box, Checkbox, IconButton, Stack, Typography,
-  List, Tooltip, Alert, Divider, ListSubheader, CircularProgress
+  Tooltip, Alert, Divider, CircularProgress, Paper, Card
 } from "@mui/material";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import { useTranslation } from 'react-i18next';
-import AuthenticatedHeader from "../../components/layout/AuthenticatedHeader.tsx";
+import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 
 interface Notification {
   id: string,
@@ -103,11 +99,6 @@ function NotificationsPage() {
     return time.replace(/\s?AM/i, ' am').replace(/\s?PM/i, ' pm');
   }
 
-  const getCardColor = (id: string, isRead: boolean): string => {
-    if (selected.has(id)) return 'background.primaryLight'
-    else return isRead ? 'background.default' : 'background.paper'
-  }
-
   const handleToggle = (id: string) => () => {
     if (!selected.has(id)) setSelected(new Set([...selected, id]));
     else setSelected(prev => {
@@ -122,83 +113,74 @@ function NotificationsPage() {
     else setSelected(new Set());
   }
 
+  const countUnread = notifications.reduce((count, n) => n.isRead ? count : count + 1, 0);
+
   return (
-    <>
-      <AuthenticatedHeader title={tc("title")} />
-      {error &&
-          <Alert severity="error" sx={{mb: 3, border: '1px solid red'}}>{error}.</Alert>
-      }
-      <List sx={{boxShadow: 4, borderRadius: 2, overflow: 'hidden'}} disablePadding>
-        <ListSubheader sx={{display: 'flex', p: 0.5,
-          backgroundColor: 'background.default', alignItems: 'center', '& svg': {m: 1,}}}>
-          <Tooltip title={tc("tooltip.selectAll")} arrow>
-            <Checkbox checked={selected.size === notifications.length}
-                      indeterminate={selected.size > 0 && selected.size < notifications.length}
-                      onChange={handleAllToggle}
-            />
-          </Tooltip>
-          <Divider orientation="vertical" flexItem sx={{mx: 1}}/>
-          <Tooltip title={tc("tooltip.markAsRead")} arrow>
-            <span><IconButton aria-label="mark as read" disabled={selected.size === 0} onClick={markAsRead}>
-              <MarkEmailReadIcon/>
-            </IconButton></span>
-          </Tooltip>
-          <Tooltip title={tc("tooltip.delete")} arrow>
-            <span><IconButton aria-label="delete" color='error' disabled={selected.size === 0} onClick={deleteSelected}>
-              <DeleteForeverIcon/>
-            </IconButton></span>
-          </Tooltip>
-        </ListSubheader>
-        { isLoading ?
-          <>
-            <Divider key={`divider_loading`} component="li"/>
-            <Box sx={{p: 4, backgroundColor: "background.paper"}} textAlign="center"><CircularProgress /></Box>
-          </>
-          :
-          <>
-          {notifications.length === 0 ?
-            <>
-              <Divider key={`divider_empty`} component="li"/>
-              <Box sx={{p: 4, backgroundColor: "background.paper"}}>
-                <Typography variant="body1" align="center">{tc("empty")}</Typography>
-              </Box>
-            </>
-            :
-            <>
-              {notifications.map((n) => ([
-                <Divider key={`divider_${n.id}`} component="li"/>,
-                <ListItem key={n.id} sx={{
-                  backgroundColor: getCardColor(n.id, n.isRead),
-                  color: n.isRead ? 'text.disabled' : 'text.primary'
-                }} disablePadding>
-                  <ListItemButton onClick={handleToggle(n.id)} sx={{px: 3, py: 1.5}} disableRipple>
-                    <ListItemIcon>
-                      <Checkbox edge="start" checked={selected.has(n.id)} tabIndex={-1} disableRipple/>
-                    </ListItemIcon>
-                    <ListItemText disableTypography
-                                  primary={
-                                    <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
-                                      <Stack direction="column">
-                                        <Typography variant="h6"
-                                                    fontWeight={n.isRead ? 'normal' : 'bold'}>{n.title}</Typography>
-                                        <Typography variant="body2"
-                                                    fontWeight={n.isRead ? 'normal' : 'bold'}>{n.message}</Typography>
-                                      </Stack>
-                                      <Stack direction="column" alignItems='flex-end' sx={{textAlign: 'right', minWidth: 'fit-content'}}>
-                                        <Typography variant="body2" color="text.secondary">{getDay(n.timestamp)}</Typography>
-                                        <Typography variant="body1" color="text.primary">{getTime(n.timestamp)}</Typography>
-                                      </Stack>
-                                    </Stack>
-                                  }/>
-                  </ListItemButton>
-                </ListItem>
-              ]))}
-            </>
-          }
-          </>
+    <Paper variant="outlined" sx={{px: {xs: 2, sm: 5}, py: {xs: 3, sm: 5}, borderRadius: 5, mb: 5}}>
+      <Box mb={3}>
+        <Stack direction="row" alignItems="center" fontSize="1.8rem" spacing={1}>
+          <NotificationsOutlinedIcon fontSize="inherit"/>
+          <Typography fontSize="inherit" lineHeight="2rem">
+            {tc("title")}
+          </Typography>
+        </Stack>
+        {countUnread !== 0 &&
+          <Typography color="text.secondary" mt={1}>
+            {countUnread} {tc("unread")}
+          </Typography>
         }
-      </List>
-    </>
+      </Box>
+
+      {error && <Alert severity="error" sx={{mb: 3}}>{error}</Alert>}
+
+      <Card variant="outlined" sx={{display: "flex", p: 2, gap: 2, borderRadius: "inherit", backgroundColor: "primary.light"}}>
+        <Tooltip title={tc("tooltip.selectAll")} arrow>
+          <Checkbox checked={selected.size === notifications.length}
+                    indeterminate={selected.size > 0 && selected.size < notifications.length}
+                    onChange={handleAllToggle}
+          />
+        </Tooltip>
+        <Divider orientation="vertical" flexItem />
+        <Tooltip title={tc("tooltip.markAsRead")} arrow>
+          <IconButton aria-label="mark as read" disabled={selected.size === 0} onClick={markAsRead}>
+            <MarkEmailReadIcon/>
+          </IconButton>
+        </Tooltip>
+        <Tooltip title={tc("tooltip.delete")} arrow>
+          <IconButton aria-label="delete" color='error' disabled={selected.size === 0} onClick={deleteSelected}>
+            <DeleteForeverIcon/>
+          </IconButton>
+        </Tooltip>
+      </Card>
+
+      {isLoading ?
+        <Box textAlign="center" mt={4}><CircularProgress /></Box>
+        :
+        notifications.length === 0 ?
+          <Typography align="center" mt={4}>{tc("empty")}</Typography>
+          :
+          notifications.map(n => (
+            <Card variant="outlined" onClick={handleToggle(n.id)}
+                  sx={{mt: 2, p: 2, borderRadius: "inherit", color: n.isRead ? "text.disabled" : "text.primary", display: "flex",
+                  backgroundColor: selected.has(n.id) ? "primary.light" : "inherit", cursor: "pointer"}}>
+              <Checkbox edge="start" checked={selected.has(n.id)} tabIndex={-1} disableRipple sx={{px: 2.5, display: {xs: "none", sm: "inherit"}}}/>
+              <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
+                <Stack direction="column">
+                  <Typography fontSize="1.1rem">{n.title}</Typography>
+                  <Typography fontSize="0.8rem">{n.message}</Typography>
+                  <Typography fontSize="0.8rem" display={{xs: "inherit", sm: "none"}} mt={1}>
+                    {getDay(n.timestamp)}, {getTime(n.timestamp)}
+                  </Typography>
+                </Stack>
+                <Stack display={{xs: "none", sm: "inherit"}} direction="column" alignItems='flex-end' sx={{textAlign: 'right', minWidth: 'fit-content'}}>
+                  <Typography variant="body2">{getDay(n.timestamp)}</Typography>
+                  <Typography variant="body1">{getTime(n.timestamp)}</Typography>
+                </Stack>
+              </Stack>
+            </Card>
+          ))
+      }
+    </Paper>
   )
 }
 

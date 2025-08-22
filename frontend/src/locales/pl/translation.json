@@ -61,6 +61,7 @@
     },
     "notifications": {
       "title": "Powiadomienia",
+      "unread": "nieprzeczytanych powiadomień",
       "tooltip": {
         "selectAll": "Wybierz wszystkie",
         "markAsRead": "Oznacz jako przeczytane",

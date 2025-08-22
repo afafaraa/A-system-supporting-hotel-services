@@ -65,6 +65,7 @@
     },
     "notifications": {
       "title": "Notifications",
+      "unread": "unread notifications",
       "tooltip": {
         "selectAll": "Select all",
         "markAsRead": "Mark as read",

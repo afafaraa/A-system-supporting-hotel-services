@@ -1,4 +1,4 @@
-import {AppBar, IconButton, Stack, Typography, useTheme} from "@mui/material";
+import {AppBar, Badge, IconButton, Stack, Typography, useTheme} from "@mui/material";
 import Logo from "../../assets/hotel.svg?react";
 import {useTranslation} from "react-i18next";
 
@@ -10,16 +10,25 @@ import {selectUser} from "../../redux/slices/userSlice.ts";
 import {Box} from "@mui/system";
 import {Link, useNavigate} from "react-router-dom";
 import ThemeSwitcher from "./ThemeSwitcher.tsx";
+import {useEffect, useState} from "react";
+import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 
 const drawerHeight = 64;
 
 function Navbar() {
   const user = useSelector(selectUser);
   const navigate = useNavigate();
-
+  const [notificationsCount, setNotificationsCount] = useState<number>(0);
   const theme = useTheme();
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.login.${key}`);
+
+  useEffect(() => {
+    axiosAuthApi.get<number>('/user/notifications/unread-count')
+      .then(res => {
+        if (res.data > 0) setNotificationsCount(res.data);
+      });
+  }, []);
 
   if (!user) return null;
 
@@ -55,10 +64,10 @@ function Navbar() {
           </Typography>
         </Box>
         <Stack direction="column" alignItems="center" display={{xs: "none", md: "inherit"}}>
-          <Typography color="textPrimary" fontWeight="bold">
+          <Typography color="textPrimary" fontWeight="bold" lineHeight={1.3}>
             {user.username}
           </Typography>
-          <Typography color="textSecondary" fontWeight="bold" fontSize="0.8rem">
+          <Typography color="textSecondary" fontWeight="bold" fontSize="0.8rem" lineHeight={1.3}>
             {user.role.split("_")[1].toLowerCase()}
           </Typography>
         </Stack>
@@ -78,7 +87,9 @@ function Navbar() {
             <ThemeSwitcher />
 
             <IconButton onClick={() => navigate("/notifications")}>
-              <NotificationsOutlinedIcon />
+              <Badge badgeContent={notificationsCount} color="primary">
+                <NotificationsOutlinedIcon />
+              </Badge>
             </IconButton>
 
             {user.role === "ROLE_GUEST" &&
