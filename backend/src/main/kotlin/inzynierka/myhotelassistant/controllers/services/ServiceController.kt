@@ -75,30 +75,13 @@ class ServiceController(
     }
 
     @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     fun updateService(
         @PathVariable id: String,
         @RequestBody request: ServiceCreateRequestDTO,
-    ): ResponseEntity<ServiceEntity> =
-        try {
-            val existing = serviceService.findByIdOrThrow(id)
-
-            val mergedService =
-                existing.copy(
-                    description = request.description ?: existing.description,
-                    duration = request.getDurationFromMinutes() ?: existing.duration,
-                    maxAvailable = request.maxAvailable ?: existing.maxAvailable,
-                    weekday = request.getWeekdayHours() ?: existing.weekday,
-                    image = request.image ?: existing.image,
-                )
-
-            val savedService = serviceService.save(mergedService)
-            ResponseEntity.ok(savedService)
-        } catch (e: NoSuchElementException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-        } catch (e: Exception) {
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
-        }
+    ): ResponseEntity<ServiceEntity> {
+        val updated = serviceService.update(id, request)
+        return ResponseEntity.ok(updated)
+    }
 
     @DeleteMapping("/{id}")
     fun deleteServiceWithOption(

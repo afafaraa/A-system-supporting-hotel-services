@@ -34,5 +34,5 @@ data class ServiceCreateRequestDTO(
 
     fun getDurationFromMinutes(): Duration? = duration?.let { Duration.parse("${it}m") }
 
-    fun getWeekdayHours(): MutableList<WeekdayHour>? = weekday?.map { it.toWeekdayHour() }?.toMutableList()
+    fun getWeekdayHours(): MutableList<WeekdayHour>? = weekday?.toMutableList()
 }

@@ -138,7 +138,7 @@ function ServicesListPage() {
                                 <TableCell>{s.name}</TableCell>
                                 <TableCell>{s.description}</TableCell>
                                 <TableCell>
-                                    {new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(s.price)}
+                                    {new Intl.NumberFormat(undefined, { style: 'currency', currency: 'PLN' }).format(s.price)}
                                 </TableCell>
                                 <TableCell>{s.type}</TableCell>
                                 <TableCell>{s.disabled ? 'Unavailable' : 'Available'}</TableCell>

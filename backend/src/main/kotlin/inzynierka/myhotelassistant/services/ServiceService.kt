@@ -1,5 +1,6 @@
 package inzynierka.myhotelassistant.services
 
+import inzynierka.myhotelassistant.dto.ServiceCreateRequestDTO
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.service.ServiceEntity
@@ -64,5 +65,25 @@ class ServiceService(
             else -> throw IllegalArgumentException("Incorrect delete option")
         }
         serviceRepository.delete(service)
+    }
+
+    fun update(
+        id: String,
+        request: ServiceCreateRequestDTO,
+    ): ServiceEntity {
+        val existing = findByIdOrThrow(id)
+        val merged =
+            existing.copy(
+                name = request.name,
+                description = request.description ?: existing.description,
+                price = request.price,
+                type = request.type,
+                duration = request.getDurationFromMinutes() ?: existing.duration,
+                maxAvailable = request.maxAvailable ?: existing.maxAvailable,
+                weekday = request.getWeekdayHours() ?: existing.weekday,
+                image = request.image ?: existing.image,
+                disabled = request.disabled,
+            )
+        return save(merged)
     }
 }
