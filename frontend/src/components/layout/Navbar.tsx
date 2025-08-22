@@ -1,159 +1,105 @@
-import {ReactNode, useState} from "react";
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import {Outlet, useLocation} from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../redux/slices/userSlice";
-import {useNavigate} from "react-router-dom";
-import HomeIcon from '@mui/icons-material/Home';
-import DesignServicesIcon from '@mui/icons-material/DesignServices';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
-import HistoryIcon from '@mui/icons-material/History';
-import EventNoteIcon from '@mui/icons-material/EventNote';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import LogoutIcon from '@mui/icons-material/Logout';
-import MenuIcon from '@mui/icons-material/Menu';
-import GroupIcon from '@mui/icons-material/Group';
-import BuildIcon from '@mui/icons-material/Build';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import LanguageSwitcher from "./LanguageSwitcher.tsx";
+import {AppBar, IconButton, Stack, Typography, useTheme} from "@mui/material";
+import Logo from "../../assets/hotel.svg?react";
 import {useTranslation} from "react-i18next";
 
-const drawerWidth = 240;
+import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import {useSelector} from "react-redux";
+import {selectUser} from "../../redux/slices/userSlice.ts";
+import {Box} from "@mui/system";
+import {Link, useNavigate} from "react-router-dom";
+import ThemeSwitcher from "./ThemeSwitcher.tsx";
 
-interface Props {
-  window?: () => Window;
-  children?: ReactNode
-}
+const drawerHeight = 64;
 
-function Navbar(props: Props) {
-  const { window } = props;
+function Navbar() {
   const user = useSelector(selectUser);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
+
+  const theme = useTheme();
   const { t } = useTranslation();
-  const tc = (key: string) => t(`navbar.${key}`);
+  const tc = (key: string) => t(`pages.login.${key}`);
 
-  const handleDrawerClose = () => {
-    setIsClosing(true);
-    setMobileOpen(false);
-  };
+  if (!user) return null;
 
-  const handleDrawerTransitionEnd = () => {
-    setIsClosing(false);
-  };
-
-  const handleDrawerToggle = () => {
-    if (!isClosing) {
-      setMobileOpen(!mobileOpen);
-    }
-  };
-
-  const nav = [
-    {text: tc("home"), icon: HomeIcon, navTo: '/home', roles: null},
-    {text: tc("availableServices"), icon: DesignServicesIcon, navTo: '/services/available' , roles: ['ROLE_GUEST']},
-    {text: tc("shoppingCart"), icon: ShoppingCartIcon, navTo: '/services/shopping-cart', roles: ['ROLE_GUEST']},
-    {text: tc("requestedServices"), icon: AssignmentTurnedInIcon, navTo: '/services/requested', roles: ['ROLE_GUEST']},
-    {text: tc("pastServices"), icon: HistoryIcon, navTo: '/services/history', roles: ['ROLE_GUEST']},
-    {text: tc("mySchedule"), icon: EventNoteIcon, navTo: '/employee/schedule', roles: ['ROLE_EMPLOYEE', 'ROLE_RECEPTIONIST', 'ROLE_MANAGER', 'ROLE_ADMIN']},
-    {text: tc("notifications"), icon: NotificationsIcon, navTo: '/notifications', roles: null},
-    {text: tc("personnel"), icon: GroupIcon, navTo: '/employees', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
-    {text: tc("services"), icon: BuildIcon, navTo: '/management/services', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
-    {text: tc("stats"), icon: BarChartIcon, navTo: '/management/statistics', roles: ['ROLE_MANAGER', 'ROLE_ADMIN']},
-    {text: tc("logout"), icon: LogoutIcon, navTo: '/logout', roles: null}
-  ]
-
-  const isSelected = (navTo: string): boolean => {
-    return location.pathname.startsWith(navTo)
+  const getUserInitials = (username: string) => {
+    if (username.length < 2) return username.toUpperCase();
+    return username.charAt(0).toUpperCase() + username.charAt(1).toUpperCase();
   }
 
-  if (user === null) return null;
+  const AppLogo = () => (
+    <Link to="/home" style={{textDecoration: "none"}}>
+      <Stack direction="row" spacing={2} alignItems="center">
+        <Logo style={{
+          backgroundColor: theme.palette.primary.main,
+          padding: 8,
+          color: theme.palette.background.default,
+          borderRadius: '20%'
+        }} width={40} height={40}/>
+        <Typography fontSize="1.4rem" fontWeight="bold" color="primary" display={{xs: "none", md: "inherit"}}>
+          {tc("title")}
+        </Typography>
+      </Stack>
+    </Link>
+  )
 
-  const drawer = (
-    <List>
-      {nav.map((item, index) =>
-        (item.roles === null || item.roles.includes(user.role)) &&
-          <ListItem key={index} disablePadding>
-              <ListItemButton disableRipple
-                  onClick={() => navigate(item.navTo)}
-                  sx={{
-                    gap: 2, backgroundColor: isSelected(item.navTo) ? 'primary.main' : 'inherit',
-                    '&:hover': {
-                      backgroundColor: isSelected(item.navTo) ? 'primary.dark' : 'action.hover'
-                    } }}
-              >
-                {item.icon &&
-                    <ListItemIcon sx={{ minWidth: 'unset' }}>
-                        <item.icon sx={{ color: isSelected(item.navTo) ? 'white' : 'primary.main' }} />
-                    </ListItemIcon>
-                }
-                  <ListItemText primary={item.text} sx={{color: isSelected(item.navTo) ? 'white' : 'text.primary'}}/>
-              </ListItemButton>
-          </ListItem>
-      )}
-    </List>
-  );
-
-  // Remove this const when copying and pasting into your project.
-  const container = window !== undefined ? () => window().document.body : undefined;
+  const UserCard = () => (
+    <Link to="/profile" style={{textDecoration: "none"}}>
+      <Stack direction="row" spacing={2} alignItems="center" px={1}>
+        <Box bgcolor="primary.main"  fontWeight="bold" width={40} height={40} borderRadius="50%" display="flex"
+             alignItems="center"
+             justifyContent="center">
+          <Typography color="primary.contrastText" fontWeight="bold" lineHeight={1} fontSize="0.9rem">
+            {getUserInitials(user.username)}
+          </Typography>
+        </Box>
+        <Stack direction="column" alignItems="center" display={{xs: "none", md: "inherit"}}>
+          <Typography color="textPrimary" fontWeight="bold">
+            {user.username}
+          </Typography>
+          <Typography color="textSecondary" fontWeight="bold" fontSize="0.8rem">
+            {user.role.split("_")[1].toLowerCase()}
+          </Typography>
+        </Stack>
+      </Stack>
+    </Link>
+  )
 
   return (
-    <Box sx={{ display: 'flex' }}>
-        <IconButton
-          aria-label="open drawer"
-          edge="start"
-          onClick={handleDrawerToggle}
-          sx={{ color: 'white', backgroundColor: 'primary.main', display: { sm: 'none' }, position: 'fixed', top: 0, left: 0, zIndex: 1000, m: 1 }}
-        >
-          <MenuIcon/>
-        </IconButton>
-      <Box
-        component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-      >
-        <Drawer
-          container={container}
-          variant="temporary"
-          open={mobileOpen}
-          onTransitionEnd={handleDrawerTransitionEnd}
-          onClose={handleDrawerClose}
-          sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-          }}
-          slotProps={{
-            root: {
-              keepMounted: true, // Better open performance on mobile.
-            },
-          }}
-        >
-          {drawer}
-          <Box sx={{marginTop: 'auto'}}><LanguageSwitcher /></Box>
-        </Drawer>
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-          }}
-          open
-        >
-          {drawer}
-          <Box sx={{marginTop: 'auto'}}><LanguageSwitcher /></Box>
-        </Drawer>
-      </Box>
-      <Outlet />
-    </Box>
-  );
+    <>
+      <AppBar elevation={2} position="fixed" color="default" sx={{justifyContent: "center", height: drawerHeight, py: 2, px: {xs: 2, sm: 2, md: 7, lg: 12, xl: 12}}}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+
+          <AppLogo/>
+
+          <Stack direction="row" spacing={{xs: 0.5, sm: 3}} alignItems="center">
+
+            <ThemeSwitcher />
+
+            <IconButton onClick={() => navigate("/notifications")}>
+              <NotificationsOutlinedIcon />
+            </IconButton>
+
+            {user.role === "ROLE_GUEST" &&
+              <IconButton onClick={() => navigate("/services/shopping-cart")}>
+                <ShoppingCartOutlinedIcon />
+              </IconButton>
+            }
+
+            <UserCard/>
+
+            <IconButton onClick={() => navigate("/logout")}>
+              <LogoutOutlinedIcon />
+            </IconButton>
+
+          </Stack>
+        </Stack>
+      </AppBar>
+      <Box sx={{ height: drawerHeight }} />
+    </>
+  )
 }
+
 
 export default Navbar;

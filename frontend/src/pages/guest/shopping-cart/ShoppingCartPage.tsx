@@ -90,7 +90,6 @@ function ShoppingCartPage() {
       <main style={{
         width: '100%',
         borderRadius: '10px',
-        marginTop: '20px',
       }}>
         <Grid sx={{gap: 2,}} container spacing={{xs: 2, md: 3}} columns={{xs: 1, md: 2}}>
           <Grid sx={{backgroundColor: 'white', padding: {xs: '15px', sm: '30px 25px'}}} size={1}>

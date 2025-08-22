@@ -12,8 +12,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import PageContainer from "../../components/layout/PageContainer.tsx";
 import { useTranslation } from 'react-i18next';
+import AuthenticatedHeader from "../../components/layout/AuthenticatedHeader.tsx";
 
 interface Notification {
   id: string,
@@ -123,7 +123,8 @@ function NotificationsPage() {
   }
 
   return (
-    <PageContainer title={tc("title")}>
+    <>
+      <AuthenticatedHeader title={tc("title")} />
       {error &&
           <Alert severity="error" sx={{mb: 3, border: '1px solid red'}}>{error}.</Alert>
       }
@@ -197,7 +198,7 @@ function NotificationsPage() {
           </>
         }
       </List>
-    </PageContainer>
+    </>
   )
 }
 

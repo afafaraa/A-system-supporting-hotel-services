@@ -5,7 +5,6 @@ import {FormControl, InputAdornment, IconButton, TextField, Typography, Alert} f
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
-import {mainActionButtonSx} from "../../theme.ts";
 import {useTranslation} from "react-i18next";
 import {isAxiosError} from "axios";
 
@@ -97,7 +96,7 @@ function ResetPasswordPage() {
           id="repeatPassword"
           placeholder={tc("repeatPassword")}
         />
-        <Button variant="contained" onClick={resetPassword} type="submit" loading={loading} sx={mainActionButtonSx}>
+        <Button variant="contained" onClick={resetPassword} type="submit" loading={loading} >
           {tc("resetPasswordButton")}
         </Button>
         {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}

@@ -1,17 +1,19 @@
-import {CircularProgress, Typography} from "@mui/material";
+import {Box, CircularProgress, Typography} from "@mui/material";
+import {useTranslation} from "react-i18next";
 
 function LoadingPage() {
+  const { t } = useTranslation();
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh" }}>
+    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh" bgcolor="background.default">
       <CircularProgress />
-      <Typography variant="h6" style={{ marginTop: "1rem", textAlign: "center" }}>
-        Proszę czekać,
+      <Typography variant="h6" mt="1rem" color="text.primary">
+        {t("pages.loading.wait")}
       </Typography>
-      <Typography variant="body2" style={{ marginTop: "0.5rem", textAlign: "center" }}>
-        trwa przygotowanie sesji użytkownika
+      <Typography variant="body2" mt="0.5rem" color="text.secondary">
+        {t("pages.loading.preparing")}
       </Typography>
-    </div>
+    </Box>
   )
 }
 

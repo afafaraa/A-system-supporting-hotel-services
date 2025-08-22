@@ -1,5 +1,5 @@
 import {useEffect, useMemo, useState} from "react";
-import PageContainer from "../../components/layout/PageContainer.tsx";
+import AuthenticatedHeader from "../../components/layout/AuthenticatedHeader.tsx";
 import {Alert, Tab, Tabs, Typography} from "@mui/material";
 import {addDays, addMinutes, addWeeks, format, startOfWeek, subWeeks} from "date-fns";
 import {ScheduleCard, ScheduleTable} from "../../components/layout/ScheduleTable.tsx";
@@ -117,7 +117,8 @@ function EmployeeSchedulePage() {
   }
 
   return (
-    <PageContainer title={tc("title")}>
+    <>
+      <AuthenticatedHeader title={tc("title")} />
       <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 2 }}>
         <Tab label={tc("confirmed")} />
         <Tab label={tc("unconfirmed")} />
@@ -142,7 +143,7 @@ function EmployeeSchedulePage() {
                          onScheduleUpdated={onScheduleUpdated}
         />
       )}
-    </PageContainer>
+    </>
   );
 }
 

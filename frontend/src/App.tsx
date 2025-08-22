@@ -1,6 +1,7 @@
 import {BrowserRouter, Navigate, Route, Routes, useNavigate} from 'react-router-dom';
 import LoginPage from './pages/user/LoginPage.tsx';
 import HomePage from './pages/home/HomePage.tsx';
+import ProfilePage from "./pages/home/ProfilePage.tsx";
 import ProtectedRoute from './router/protectedRoute.tsx';
 import SendResetPasswordEmail from './pages/user/SendResetPasswordEmail.tsx';
 import ResetPasswordPage from './pages/user/ResetPasswordPage.tsx';
@@ -35,6 +36,7 @@ function App(){
 
           <Route element={<AuthenticatedLayout />}>
             <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path="/add-reservation" element={<ProtectedRoute><AddReservationPage /></ProtectedRoute>} />
             <Route path="/employees" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />
             <Route path="/employee/schedule" element={<ProtectedRoute><EmployeeSchedulePage /></ProtectedRoute>} />
@@ -93,7 +95,7 @@ function AppInitializer({ children }: PropsWithChildren) {
 
   if (!isInitialized) return <LoadingPage/>;
 
-  return <>{children}</>;
+  return children;
 }
 
 export default App;

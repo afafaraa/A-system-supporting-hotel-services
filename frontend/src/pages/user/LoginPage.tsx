@@ -2,16 +2,24 @@ import axiosApi from "../../middleware/axiosApi";
 import {FormEvent, useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import Button from '@mui/material/Button';
-import {Alert, Box, FormControl, IconButton, InputAdornment, TextField, Typography} from "@mui/material";
+import {
+  Alert,
+  Box,
+  FormControl, IconButton, InputAdornment,
+  Typography, useTheme
+} from "@mui/material";
 import Link from '@mui/material/Link';
-import {Visibility, VisibilityOff} from "@mui/icons-material";
-import PersonIcon from '@mui/icons-material/Person';
+import {Link as RouterLink} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
 import {setUserData} from "../../components/auth/auth.tsx";
 import {useTranslation} from "react-i18next";
 import {isAxiosError} from "axios";
-import {mainActionButtonSx} from "../../theme.ts";
+import Logo from "../../assets/hotel.svg?react";
+import {fontSizes} from "../../theme/fontSizes.ts";
+import {LogInWrapper} from "../../theme/styled-components/LogInWrapper.ts";
+import {LogInInput} from "../../theme/styled-components/LogInInput.ts";
+import {VisibilityOutlined, VisibilityOffOutlined} from "@mui/icons-material";
 
 function LoginPage(){
   const user = useSelector(selectUser);
@@ -21,12 +29,13 @@ function LoginPage(){
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [isPasswordEmpty, setIsPasswordEmpty] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.login.${key}`);
+  const theme = useTheme();
 
   useEffect(() => {
     if (user !== null) navigate('/home')
@@ -76,42 +85,36 @@ function LoginPage(){
   }
 
   return (
-    <>
-      <FormControl component="form" onSubmit={login}
-                   sx={{px: 3, py: 8, '@media (min-width:420px)': {px: 6},
-                     borderRadius: 6, boxShadow: 10, backgroundColor: "background.paper"}}>
-        <Typography variant="h4" fontWeight="bold" align="center" mb={4}>{tc("title")}</Typography>
-        <TextField sx={{mb: 2}}
-          error={!!usernameError}
-          label={tc("username")}
-          autoComplete="username"
-          onChange={(e) => setUsername(e.target.value)}
-          type="text"
-          name="username"
-          id="username"
-          placeholder={tc("username")}
-          helperText={usernameError}
-          slotProps={{
-            input: {
-              endAdornment: (
-                <InputAdornment position="end">
-                  <PersonIcon sx={{mx: "2px"}}/>
-                </InputAdornment>
-              ),
-            },
+    <LogInWrapper>
+      <FormControl sx={{display: 'flex', alignItems: 'center'}} component="form" onSubmit={login}>
+        <Logo style={{
+          background: theme.palette.primary.main,
+          padding: '5px 10px',
+          color: theme.palette.background.default,
+          borderRadius: '10%'
+        }} width={70} height={70}/>
+        <Typography variant="h1" fontWeight="regular" align="center" sx={{
+          color: theme.palette.primary.main,
+          fontSize: fontSizes.md,
+          marginTop: '15px'
+        }}>{tc("title")}</Typography>
+        <Typography variant="subtitle2" fontWeight="medium" align="center" sx={{
+          color: theme.palette.text.secondary,
+          mb: '20px', mt: 0.5
+        }}>{tc("subtitle")}</Typography>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            gap: '5px',
+            marginBottom: '10px',
           }}
-        />
-        <TextField
-          error={!!passwordError}
-          label={tc("password")}
-          autoComplete="current-password"
-          onChange={(e) => setPassword(e.target.value)}
-          type={showPassword ? "text" : "password"}
-          name="password"
-          id="password"
-          placeholder={tc("password")}
-          helperText={passwordError}
-          slotProps={{
+        >
+          <label style={{fontWeight: '500', fontSize: '14px', color: theme.palette.text.primary}} htmlFor="username">{tc("username")}</label>
+          <LogInInput type="email" onChange={(e) => setUsername(e.target.value)} id="username" placeholder="jan.kowalski@gmail.com"/>
+          <label style={{fontWeight: '500', fontSize: '14px', color: theme.palette.text.primary}} htmlFor="password">{tc("password")}</label>
+          <LogInInput slotProps={{
             input: {
               endAdornment: (
                 <InputAdornment position="end">
@@ -119,27 +122,31 @@ function LoginPage(){
                     onClick={() => setShowPassword((prev) => !prev)}
                     edge="end"
                     size="small"
+                    sx={{color: "text.secondary", p: 0}}
+                    disableRipple
                   >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                    {showPassword ? <VisibilityOffOutlined fontSize="inherit" /> : <VisibilityOutlined fontSize="inherit" />}
                   </IconButton>
                 </InputAdornment>
-              ),
-            },
+              )
+            }
           }}
-        />
-        <Link href="/reset-password-email" align="right" fontSize={14} mt={1} mb={4} color="textSecondary" sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"} }}>{tc("resetPassword")}</Link>
-
-        <Button variant="contained" onClick={login} type="submit" loading={loading} sx={mainActionButtonSx}>
+            type={showPassword ? "text" : "password"} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="************"/>
+        </div>
+        <Link component={RouterLink} to="/reset-password-email" align="right" fontSize={14} color="textSecondary" mt={1}
+              sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"}}}>{tc("resetPassword")}</Link>
+        <Link component={RouterLink} to="/register" align="center" fontSize={14} color="textPrimary"
+              sx={{textDecoration: "none", marginBottom: '15px', "&:hover": {textDecoration: "underline"}}}>{tc("registerWithCode")}</Link>
+        <Button sx={{width: '100%'}} variant="contained" onClick={login} type="submit" loading={loading}>
           {tc("loginButton")}
         </Button>
         {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
-        <Link href="/register" align="center" fontSize={14} mt={3} color="textPrimary" sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"} }}>{tc("registerWithCode")}</Link>
       </FormControl>
 
-      <Box position="fixed" my="auto" left={4} display={{xs: "none", md: "flex"}} flexDirection="column" gap={0.8}>
+      <Box position="fixed" bottom={4} left={4} display={{xs: "none", md: "flex"}} flexDirection="column" gap={0.8}>
         <p>Quick log-in:</p>
-         <button onClick={() => {
-           setUsername("user"); setPassword("password"); login();
+        <button onClick={() => {
+          setUsername("user"); setPassword("password"); login();
          }}>Log as user</button>
         <button onClick={() => {
           setUsername("admin"); setPassword("password"); login();
@@ -157,7 +164,7 @@ function LoginPage(){
           setUsername("manager"); setPassword("password"); login();
         }}>Log as manager</button>
       </Box>
-    </>
+    </LogInWrapper>
   );
 }
 
