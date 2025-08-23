@@ -16,6 +16,7 @@ export const lightPalette: PaletteOptions = {
   background: {
     default: 'hsl(256, 20%, 95%)',
     paper: 'hsl(256, 20%, 98%)',
+    shadow: 'hsl(256, 80%, 92%)',
   },
   text: {
     primary: 'rgba(0, 0, 0, 0.87)',
