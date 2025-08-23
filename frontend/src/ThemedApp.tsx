@@ -4,20 +4,18 @@ import {PaletteMode, ThemeProvider} from "@mui/material";
 import App from "./App.tsx";
 import {PaletteContext} from "./context/PaletteContext.ts";
 
-function safeGetInitialMode(): PaletteMode {
-  const saved = localStorage.getItem("THEME") as PaletteMode | null;
-  if (saved !== null) return saved;
-  if (typeof window !== "undefined" && window.matchMedia)
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  return "light";
+function getInitialMode(): PaletteMode {
+  return (document.documentElement.getAttribute("data-theme") ||
+    localStorage.getItem("THEME") || "light") as PaletteMode;
 }
 
 function ThemedApp() {
-  const [paletteMode, setPaletteMode] = useState<PaletteMode>(() => safeGetInitialMode());
+  const [paletteMode, setPaletteMode] = useState<PaletteMode>(() => getInitialMode());
   const theme = getTheme(paletteMode);
 
   useEffect(() => {
     localStorage.setItem('THEME', paletteMode);
+    document.documentElement.setAttribute('data-theme', paletteMode);
   }, [paletteMode]);
 
   return (
