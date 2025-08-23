@@ -10,6 +10,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import { useTranslation } from 'react-i18next';
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
 
 interface Notification {
   id: string,
@@ -142,14 +143,14 @@ function NotificationsPage() {
         </Tooltip>
         <Divider orientation="vertical" flexItem />
         <Tooltip title={tc("tooltip.markAsRead")} arrow>
-          <IconButton aria-label="mark as read" disabled={selected.size === 0} onClick={markAsRead}>
+          <span><IconButton aria-label="mark as read" disabled={selected.size === 0} onClick={markAsRead}>
             <MarkEmailReadIcon/>
-          </IconButton>
+          </IconButton></span>
         </Tooltip>
         <Tooltip title={tc("tooltip.delete")} arrow>
-          <IconButton aria-label="delete" color='error' disabled={selected.size === 0} onClick={deleteSelected}>
+          <span><IconButton aria-label="delete" color='error' disabled={selected.size === 0} onClick={deleteSelected}>
             <DeleteForeverIcon/>
-          </IconButton>
+          </IconButton></span>
         </Tooltip>
       </Card>
 
@@ -160,13 +161,16 @@ function NotificationsPage() {
           <Typography align="center" mt={4}>{tc("empty")}</Typography>
           :
           notifications.map(n => (
-            <Card variant="outlined" onClick={handleToggle(n.id)}
+            <Card key={n.id} variant="outlined" onClick={handleToggle(n.id)}
                   sx={{mt: 2, p: 2, borderRadius: "inherit", color: n.isRead ? "text.disabled" : "text.primary", display: "flex",
                   backgroundColor: selected.has(n.id) ? "primary.light" : "inherit", cursor: "pointer"}}>
               <Checkbox edge="start" checked={selected.has(n.id)} tabIndex={-1} disableRipple sx={{px: 2.5, display: {xs: "none", sm: "inherit"}}}/>
               <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
                 <Stack direction="column">
-                  <Typography fontSize="1.1rem">{n.title}</Typography>
+                  <Typography fontSize="1.1rem" sx={{display: "flex", alignItems: "center", gap: 1}}>
+                    <TaskAltIcon fontSize="inherit" color={n.isRead ? "inherit" : "success"} />
+                    {n.title}
+                  </Typography>
                   <Typography fontSize="0.8rem">{n.message}</Typography>
                   <Typography fontSize="0.8rem" display={{xs: "inherit", sm: "none"}} mt={1}>
                     {getDay(n.timestamp)}, {getTime(n.timestamp)}
