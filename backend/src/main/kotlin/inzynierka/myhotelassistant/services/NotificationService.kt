@@ -3,6 +3,7 @@ package inzynierka.myhotelassistant.services
 import inzynierka.myhotelassistant.exceptions.HttpException.NoPermissionException
 import inzynierka.myhotelassistant.models.notification.NotificationDTO
 import inzynierka.myhotelassistant.models.notification.NotificationEntity
+import inzynierka.myhotelassistant.models.notification.NotificationVariant
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.repositories.NotificationRepository
 import org.springframework.security.core.Authentication
@@ -69,6 +70,7 @@ class NotificationService(
         NotificationDTO(
             id = notification.id!!,
             title = notification.title,
+            variant = notification.variant,
             message = notification.message,
             timestamp = notification.createdAt,
             isRead = notification.isRead,
@@ -77,12 +79,14 @@ class NotificationService(
     fun addNotificationToUser(
         userId: String,
         title: String,
+        variant: NotificationVariant,
         message: String,
     ) {
         val notification =
             NotificationEntity(
                 userId = userId,
                 title = title,
+                variant = variant,
                 message = message,
             )
         notificationRepository.save(notification)

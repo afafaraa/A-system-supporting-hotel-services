@@ -10,6 +10,7 @@ data class NotificationEntity(
     @Id val id: String? = null,
     val userId: String,
     val title: String,
+    val variant: NotificationVariant,
     val message: String,
     val createdAt: LocalDateTime = LocalDateTime.now(),
     var isRead: Boolean = false,

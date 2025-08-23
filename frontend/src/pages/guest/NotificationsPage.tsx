@@ -10,14 +10,12 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import { useTranslation } from 'react-i18next';
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
-import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
+import {NotificationVariant, NotificationVariantKey} from "../../types/notification.ts";
 
 interface Notification {
   id: string,
-  title: string
+  title: string,
+  variant: NotificationVariantKey,
   message: string,
   timestamp: string,
   isRead: boolean,
@@ -163,29 +161,32 @@ function NotificationsPage() {
         notifications.length === 0 ?
           <Typography align="center" mt={4}>{tc("empty")}</Typography>
           :
-          notifications.map(n => (
-            <Card key={n.id} variant="outlined" onClick={handleToggle(n.id)}
-                  sx={{mt: 2, p: 2, borderRadius: "inherit", color: n.isRead ? "text.disabled" : "text.primary", display: "flex",
-                  backgroundColor: selected.has(n.id) ? "primary.light" : "inherit", cursor: "pointer"}}>
-              <Checkbox edge="start" checked={selected.has(n.id)} tabIndex={-1} disableRipple sx={{px: 2.5, display: {xs: "none", sm: "inherit"}}}/>
-              <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
-                <Stack direction="column">
-                  <Typography fontSize="1.1rem" sx={{display: "flex", alignItems: "center", gap: 1}}>
-                    <TaskAltIcon fontSize="inherit" color={n.isRead ? "inherit" : "success"} />
-                    {n.title}
-                  </Typography>
-                  <Typography fontSize="0.8rem">{n.message}</Typography>
-                  <Typography fontSize="0.8rem" display={{xs: "inherit", sm: "none"}} mt={1}>
-                    {getDay(n.timestamp)}, {getTime(n.timestamp)}
-                  </Typography>
+          notifications.map(n => {
+            const { icon: Icon, color } = NotificationVariant[n.variant];
+            return (
+              <Card key={n.id} variant="outlined" onClick={handleToggle(n.id)}
+                    sx={{mt: 2, p: 2, borderRadius: "inherit", color: n.isRead ? "text.disabled" : "text.primary", display: "flex",
+                      backgroundColor: selected.has(n.id) ? "primary.light" : "inherit", cursor: "pointer"}}>
+                <Checkbox edge="start" checked={selected.has(n.id)} tabIndex={-1} disableRipple sx={{px: 2.5, display: {xs: "none", sm: "inherit"}}}/>
+                <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
+                  <Stack direction="column">
+                    <Typography fontSize="1.1rem" sx={{display: "flex", alignItems: "center", gap: 1}}>
+                      <Icon sx={{fontSize: "1.3rem"}} color={n.isRead ? "inherit" : color} />
+                      {n.title}
+                    </Typography>
+                    <Typography fontSize="0.8rem">{n.message}</Typography>
+                    <Typography fontSize="0.8rem" display={{xs: "inherit", sm: "none"}} mt={1}>
+                      {getDay(n.timestamp)}, {getTime(n.timestamp)}
+                    </Typography>
+                  </Stack>
+                  <Stack display={{xs: "none", sm: "inherit"}} direction="column" alignItems='flex-end' sx={{textAlign: 'right', minWidth: 'fit-content'}}>
+                    <Typography variant="body2">{getDay(n.timestamp)}</Typography>
+                    <Typography variant="body1">{getTime(n.timestamp)}</Typography>
+                  </Stack>
                 </Stack>
-                <Stack display={{xs: "none", sm: "inherit"}} direction="column" alignItems='flex-end' sx={{textAlign: 'right', minWidth: 'fit-content'}}>
-                  <Typography variant="body2">{getDay(n.timestamp)}</Typography>
-                  <Typography variant="body1">{getTime(n.timestamp)}</Typography>
-                </Stack>
-              </Stack>
-            </Card>
-          ))
+              </Card>
+            )
+          })
       }
     </Paper>
   )
