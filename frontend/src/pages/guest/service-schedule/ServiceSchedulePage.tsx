@@ -61,7 +61,7 @@ function ServiceSchedulePage (){
               <div>{it.fullName}</div>
               <StarRating rating={[it]}/>
             </div>
-            {it.comment === null || it.comment.length > 0 ? (<div>({it.fullName} left no comment)</div>) : (
+            {it.comment === null || it.comment.length === 0 ? (<div>({it.fullName} left no comment)</div>) : (
               <div>{it.comment}</div>
             )}
           </Box>
