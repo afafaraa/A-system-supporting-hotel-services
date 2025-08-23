@@ -10,16 +10,8 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import { useTranslation } from 'react-i18next';
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import {NotificationVariant, NotificationVariantKey} from "../../types/notification.ts";
-
-interface Notification {
-  id: string,
-  title: string,
-  variant: NotificationVariantKey,
-  message: string,
-  timestamp: string,
-  isRead: boolean,
-}
+import {Notification, NotificationVariant} from "../../types/notification.ts";
+import {getDay, getTime} from "../../utils/utils.ts";
 
 function NotificationsPage() {
   const [isLoading, setLoading] = useState<boolean>(true)
@@ -86,21 +78,6 @@ function NotificationsPage() {
       });
   }
 
-  const getDay = (timestamp: string): string => {
-    const date = new Date(timestamp);
-    const shortWeekdays = t("date.shortWeekdays", { returnObjects: true }) as string[];
-    const dayOfWeek = shortWeekdays[(date.getDay() + 6) % 7]; // Adjust for Monday as first day of week
-    const dateStr = date.toLocaleDateString(t('date.locale'), {day: 'numeric', month: 'long'});
-    const sep = t('date.separator');
-    return `${dayOfWeek}${sep} ${dateStr}`
-  }
-
-  const getTime = (timestamp: string): string => {
-    const date = new Date(timestamp);
-    const time = date.toLocaleTimeString(t('date.locale'), {hour: '2-digit', minute: '2-digit'});
-    return time.replace(/\s?AM/i, ' am').replace(/\s?PM/i, ' pm');
-  }
-
   const handleToggle = (id: string) => () => {
     if (!selected.has(id)) setSelected(new Set([...selected, id]));
     else setSelected(prev => {
@@ -118,7 +95,7 @@ function NotificationsPage() {
   const countUnread = notifications.reduce((count, n) => n.isRead ? count : count + 1, 0);
 
   return (
-    <Paper variant="outlined" sx={{px: {xs: 2, sm: 5}, py: {xs: 3, sm: 5}, borderRadius: 5, mb: 5}}>
+    <Paper variant="outlined" sx={{px: {xs: 2, sm: 5}, py: {xs: 3, sm: 5}, borderRadius: 5}}>
       <Box mb={3}>
         <Stack direction="row" alignItems="center" fontSize="1.8rem" spacing={1}>
           <NotificationsOutlinedIcon fontSize="inherit"/>

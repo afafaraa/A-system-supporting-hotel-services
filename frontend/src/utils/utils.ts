@@ -1,5 +1,6 @@
 import {getISOWeek} from "date-fns";
 import {Schedule} from "../types/schedule.ts"
+import {t} from "i18next";
 
 export function getYearWeek(date: Date): number {
   const year = date.getFullYear();
@@ -43,4 +44,19 @@ export const getEndTime = (schedules: Schedule[] | undefined): Date => {
     })
   );
   return DateWithHour(Math.ceil(maxMinutes / 60));
+}
+
+export const getDay = (timestamp: string): string => {
+  const date = new Date(timestamp);
+  const shortWeekdays = t("date.shortWeekdays", { returnObjects: true }) as string[];
+  const dayOfWeek = shortWeekdays[(date.getDay() + 6) % 7]; // Adjust for Monday as first day of week
+  const dateStr = date.toLocaleDateString(t('date.locale'), {day: 'numeric', month: 'long'});
+  const sep = t('date.separator');
+  return `${dayOfWeek}${sep} ${dateStr}`
+}
+
+export const getTime = (timestamp: string): string => {
+  const date = new Date(timestamp);
+  const time = date.toLocaleTimeString(t('date.locale'), {hour: '2-digit', minute: '2-digit'});
+  return time.replace(/\s?AM/i, ' am').replace(/\s?PM/i, ' pm');
 }

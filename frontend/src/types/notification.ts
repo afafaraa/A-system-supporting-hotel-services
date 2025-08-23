@@ -6,6 +6,15 @@ import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import {OverridableComponent} from "@mui/material/OverridableComponent";
 import {SvgIconTypeMap} from "@mui/material";
 
+interface Notification {
+  id: string,
+  title: string,
+  variant: NotificationVariantKey,
+  message: string,
+  timestamp: string,
+  isRead: boolean,
+}
+
 type IconColorType = "info" | "success" | "warning" | "error" | "primary" | "inherit" | "disabled" | "secondary" | "action" | undefined
 
 type NotificationConfig = {
@@ -23,4 +32,4 @@ const NotificationVariant: Record<string, NotificationConfig> = {
 
 type NotificationVariantKey = keyof typeof NotificationVariant;
 
-export {NotificationVariant, type NotificationVariantKey};
+export {type Notification, NotificationVariant};

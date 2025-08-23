@@ -9,7 +9,7 @@ function AuthenticatedLayout() {
     <Container disableGutters maxWidth={false}
     sx={{minHeight: "100vh", height: "100%", backgroundColor: "background.default"}}>
       <Navbar />
-      <Box width="100%" height="100%" my={3} px={{xs: 1, sm: 2.5, md: 10, lg: 16}}>
+      <Box width="100%" height="100%" my={{xs: 3, md: 5}} px={{xs: 1, sm: 2.5, md: 10, lg: 16}}>
         <Outlet />
       </Box>
       <TemporaryMenu />

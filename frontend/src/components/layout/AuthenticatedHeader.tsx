@@ -2,7 +2,7 @@ import {Typography} from "@mui/material";
 
 function AuthenticatedHeader({title}: {title: string}) {
   return (
-    <Typography fontSize="2rem" component="h1" fontWeight="bold" color="text.primary" mb={2.5}>
+    <Typography fontSize="2rem" component="h1" fontWeight="bold" color="text.primary" mb={2.5} lineHeight={1}>
       {title}
     </Typography>
   )
