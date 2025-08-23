@@ -42,8 +42,8 @@ function Navbar() {
     <Link to="/home" style={{textDecoration: "none"}}>
       <Stack direction="row" spacing={2} alignItems="center">
         <Logo style={{
-          backgroundColor: theme.palette.primary.main,
-          padding: 8,
+          background: `linear-gradient(135deg,${theme.palette.primary.main} 10%, ${theme.palette.primary.dark} 90%)`,
+          padding: 6,
           color: theme.palette.background.default,
           borderRadius: '20%'
         }} width={40} height={40}/>
@@ -57,9 +57,10 @@ function Navbar() {
   const UserCard = () => (
     <Link to="/profile" style={{textDecoration: "none"}}>
       <Stack direction="row" spacing={2} alignItems="center" px={1}>
-        <Box bgcolor="primary.main"  fontWeight="bold" width={40} height={40} borderRadius="50%" display="flex"
+        <Box fontWeight="bold" width={40} height={40} borderRadius="50%" display="flex"
              alignItems="center"
-             justifyContent="center">
+             justifyContent="center"
+             sx={{background: `linear-gradient(315deg,${theme.palette.primary.main} 10%, ${theme.palette.primary.dark} 90%)`}}>
           <Typography color="primary.contrastText" fontWeight="bold" lineHeight={1} fontSize="0.9rem">
             {getUserInitials(user.username)}
           </Typography>
