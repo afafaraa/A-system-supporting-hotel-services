@@ -132,9 +132,9 @@ function NotificationsPage() {
           </IconButton></span>
         </Tooltip>
         <Tooltip title={tc("tooltip.delete")} arrow>
-          <span><IconButton aria-label="delete" color='error' disabled={selected.size === 0} onClick={deleteSelected}>
+          <IconButton aria-label="delete" color='error' disabled={selected.size === 0} onClick={deleteSelected}>
             <DeleteForeverIcon/>
-          </IconButton></span>
+          </IconButton>
         </Tooltip>
       </Card>
 
