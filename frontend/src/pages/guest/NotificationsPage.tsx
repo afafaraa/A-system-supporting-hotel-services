@@ -11,6 +11,9 @@ import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import { useTranslation } from 'react-i18next';
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
+import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
 
 interface Notification {
   id: string,

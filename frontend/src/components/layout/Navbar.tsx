@@ -1,4 +1,5 @@
 import {AppBar, Badge, IconButton, Stack, Typography, useTheme} from "@mui/material";
+import {alpha} from '@mui/material/styles';
 import Logo from "../../assets/hotel.svg?react";
 import {useTranslation} from "react-i18next";
 
@@ -77,7 +78,7 @@ function Navbar() {
 
   return (
     <>
-      <AppBar elevation={2} position="fixed" color="default" sx={{justifyContent: "center", height: drawerHeight, py: 2, px: {xs: 2, sm: 2, md: 7, lg: 12, xl: 12}}}>
+      <AppBar elevation={2} position="fixed" color="transparent" sx={{bgcolor: theme => alpha(theme.palette.background.paper, 0.4), backdropFilter: "blur(10px)", justifyContent: "center", height: drawerHeight, py: 2, px: {xs: 2, sm: 2, md: 7, lg: 12, xl: 12}}}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
 
           <AppLogo/>
