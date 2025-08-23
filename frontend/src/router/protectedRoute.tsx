@@ -1,13 +1,13 @@
-import {useEffect, PropsWithChildren} from "react";
-import { useNavigate } from "react-router-dom";
+import {useEffect} from "react";
+import {Outlet, useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {selectUser} from "../redux/slices/userSlice.ts";
 
-interface ProtectedRouteProps extends PropsWithChildren {
+interface ProtectedRouteProps {
     allowedRoles?: string[];
 }
 
-function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
+function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
 
     const navigate = useNavigate();
     const user = useSelector(selectUser);
@@ -22,7 +22,7 @@ function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
     if (!user) return null;
     if (allowedRoles && !allowedRoles.includes(user.role)) return null;
 
-    return children;
+    return <Outlet />;
 }
 
 export default ProtectedRoute;

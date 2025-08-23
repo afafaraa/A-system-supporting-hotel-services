@@ -24,11 +24,12 @@ function Navbar() {
   const tc = (key: string) => t(`pages.login.${key}`);
 
   useEffect(() => {
+    if (!user) return;
     axiosAuthApi.get<number>('/user/notifications/unread-count')
       .then(res => {
         if (res.data > 0) setNotificationsCount(res.data);
       });
-  }, []);
+  }, [user]);
 
   if (!user) return null;
 
