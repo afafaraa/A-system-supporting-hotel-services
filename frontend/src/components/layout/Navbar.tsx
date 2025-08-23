@@ -1,4 +1,4 @@
-import {AppBar, Badge, IconButton, Stack, Typography, useTheme} from "@mui/material";
+import {AppBar, Badge, IconButton, Stack, Typography, useTheme, Box} from "@mui/material";
 import {alpha} from '@mui/material/styles';
 import Logo from "../../assets/hotel.svg?react";
 import {useTranslation} from "react-i18next";
@@ -8,7 +8,6 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import {useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
-import {Box} from "@mui/system";
 import {Link, useNavigate} from "react-router-dom";
 import ThemeSwitcher from "./ThemeSwitcher.tsx";
 import {useEffect, useState} from "react";
@@ -57,9 +56,8 @@ function Navbar() {
   const UserCard = () => (
     <Link to="/profile" style={{textDecoration: "none"}}>
       <Stack direction="row" spacing={2} alignItems="center" px={1}>
-        <Box fontWeight="bold" width={40} height={40} borderRadius="50%" display="flex"
-             alignItems="center"
-             justifyContent="center"
+        <Box fontWeight="bold" width={40} height={40} borderRadius="50%"
+             display="flex" alignItems="center" justifyContent="center"
              sx={{background: `linear-gradient(315deg,${theme.palette.primary.main} 10%, ${theme.palette.primary.dark} 90%)`}}>
           <Typography color="primary.contrastText" fontWeight="bold" lineHeight={1} fontSize="0.9rem">
             {getUserInitials(user.username)}
