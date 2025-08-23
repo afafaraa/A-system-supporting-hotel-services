@@ -1,4 +1,4 @@
-import {AppBar, Badge, IconButton, Stack, Typography, useTheme} from "@mui/material";
+import {AppBar, Badge, IconButton, Stack, Typography, useTheme, Box} from "@mui/material";
 import {alpha} from '@mui/material/styles';
 import Logo from "../../assets/hotel.svg?react";
 import {useTranslation} from "react-i18next";
