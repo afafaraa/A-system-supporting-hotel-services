@@ -7,18 +7,18 @@ function GuestNavbar({
                        currentPage,
                        subpages,
                      }: {
-  setCurrentPage: Function;
+  setCurrentPage: (x: string) => void;
   currentPage: string;
   subpages: string[];
 }) {
   const theme = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [indicatorStyle, setIndicatorStyle] = useState<{
-    left: number;
-    width: number;
-  }>({ left: 0, width: 0 });
+  const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({
+    left: 0,
+    width: 0,
+  });
 
-  useEffect(() => {
+  const updateIndicator = () => {
     if (!containerRef.current) return;
     const children = containerRef.current.querySelectorAll<HTMLSpanElement>('span');
     const idx = subpages.indexOf(currentPage);
@@ -26,6 +26,17 @@ function GuestNavbar({
       const el = children[idx];
       setIndicatorStyle({ left: el.offsetLeft, width: el.offsetWidth });
     }
+  };
+
+  // Update when page changes
+  useEffect(() => {
+    updateIndicator();
+  }, [currentPage, subpages]);
+
+  // Update on window resize (responsive)
+  useEffect(() => {
+    window.addEventListener('resize', updateIndicator);
+    return () => window.removeEventListener('resize', updateIndicator);
   }, [currentPage, subpages]);
 
   return (
@@ -37,6 +48,7 @@ function GuestNavbar({
         padding: '4px',
         display: 'flex',
         gap: '1rem',
+        overflow: 'hidden',
       }}
     >
       <div
@@ -59,15 +71,23 @@ function GuestNavbar({
           role="button"
           style={{
             flexGrow: 1,
-            padding: '2px',
+            minWidth: 0,
+            padding: '5px',
             textAlign: 'center',
             fontWeight: 600,
             cursor: 'pointer',
             position: 'relative',
             zIndex: 1,
-            color: item === currentPage ? theme.palette.primary.contrastText : theme.palette.text.primary,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            color:
+              item === currentPage
+                ? theme.palette.primary.contrastText
+                : theme.palette.text.primary,
           }}
           onClick={() => setCurrentPage(item)}
+          title={item}
         >
           {item}
         </span>
