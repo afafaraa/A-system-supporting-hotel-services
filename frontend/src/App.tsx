@@ -26,10 +26,9 @@ import EmployeeDetailsPage from "./pages/manager/EmployeeDetailsPage.tsx";
 import ServicesListPage from "./pages/manager/ServicesListPage.tsx";
 import StatsPage from "./pages/manager/StatsPage.tsx";
 import AddNewEmployeePage from './pages/manager/forms/AddNewEmployeePage.tsx';
-import GuestLayout from "./pages/guest/layout/GuestLayout.tsx";
+import GuestMainPage from "./pages/guest/layout/GuestMainPage.tsx";
 
 function App(){
-
   return (
     <BrowserRouter>
       <AppInitializer>
@@ -40,14 +39,13 @@ function App(){
             <Route element={<ProtectedRoute />}>
               <Route path="/home" element={<HomePage />} />
               <Route path="/profile" element={<ProfilePage />} />
-              <Route element={<GuestLayout />}>
-                <Route path="/notifications" element={<NotificationsPage />} />
-                <Route path="/services/available" element={<AvailableServicesPage />} />
-                <Route path="/services/requested" element={<RequestedServicesPage />}/>
-                <Route path="/services/history" element={<PastServicesPage />} />
-                <Route path="/services/shopping-cart" element={<ShoppingCartPage />} />
-                <Route path="/service-schedule/:id" element={<ServiceSchedulePage />} />
-              </Route>
+              <Route path="/guest" element={<GuestMainPage />} />
+              <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/services/available" element={<AvailableServicesPage />} />
+              <Route path="/services/requested" element={<RequestedServicesPage />}/>
+              <Route path="/services/history" element={<PastServicesPage />} />
+              <Route path="/services/shopping-cart" element={<ShoppingCartPage />} />
+              <Route path="/service-schedule/:id" element={<ServiceSchedulePage />} />
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_EMPLOYEE", "ROLE_RECEPTIONIST", "ROLE_MANAGER", "ROLE_ADMIN"]} />}>
               <Route path="/employee/schedule" element={<EmployeeSchedulePage />} />

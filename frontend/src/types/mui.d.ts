@@ -18,5 +18,6 @@ declare module '@mui/material/styles' {
 
   interface SimplePaletteColorOptions {
     medium?: string
+    border?: string;
   }
 }
