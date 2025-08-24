@@ -1,6 +1,7 @@
 package inzynierka.myhotelassistant.utils
 
 import inzynierka.myhotelassistant.models.notification.NotificationEntity
+import inzynierka.myhotelassistant.models.notification.NotificationVariant
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.service.Rating
@@ -338,20 +339,23 @@ class DatabaseSeeder(
                 listOf(
                     NotificationEntity(
                         userId = userId,
-                        title = "Test Notification",
+                        title = "Test Alert Notification",
+                        variant = NotificationVariant.ALERT,
                         message = "This is a test notification.",
                         isRead = true,
                         createdAt = LocalDateTime.of(2025, 4, 21, 14, 23, 21),
                     ),
                     NotificationEntity(
                         userId = userId,
-                        title = "Another Test Notification",
+                        title = "Another Test Failure Notification",
+                        variant = NotificationVariant.FAILURE,
                         message = "This is another test notification.",
                         createdAt = LocalDateTime.of(2025, 5, 4, 10, 9, 11),
                     ),
                     NotificationEntity(
                         userId = userId,
                         title = "Reminder",
+                        variant = NotificationVariant.NOTICE,
                         message = "Don't forget to check out tomorrow!",
                         isRead = true,
                         createdAt = LocalDateTime.of(2024, 8, 30, 7, 30, 49),
@@ -359,12 +363,14 @@ class DatabaseSeeder(
                     NotificationEntity(
                         userId = userId,
                         title = "Service Update",
+                        variant = NotificationVariant.CONFIRMATION,
                         message = "Your room cleaning service has been scheduled.",
                         createdAt = LocalDateTime.of(2025, 1, 7, 21, 37, 6),
                     ),
                     NotificationEntity(
                         userId = userId,
                         title = "Special Offer",
+                        variant = NotificationVariant.ADVERTISEMENT,
                         message = "Enjoy a 20% discount on your next spa session!",
                         createdAt = LocalDateTime.of(2025, 12, 17, 17, 13, 57),
                     ),

@@ -3,15 +3,15 @@ import {PaletteOptions} from "@mui/material";
 export const lightPalette: PaletteOptions = {
   mode: 'light',
   primary: {
-    light: 'hsl(256 90% 96%)',
-    main: 'hsl(256 80% 60%)',
-    dark: 'hsl(256 50% 40%)',
+    light: 'hsl(256, 90%, 96%)',
+    main: 'hsl(256, 80%, 60%)',
+    dark: 'hsl(256, 50%, 40%)',
     contrastText: 'hsl(0, 0%, 95%)',
   },
   background: {
-    default: 'hsl(256 20% 95%)',
-    paper: 'hsl(256 20% 98%)',
-    shadow: 'hsl(256 80% 92%)',
+    default: 'hsl(256, 20%, 95%)',
+    paper: 'hsl(256, 20%, 98%)',
+    shadow: 'hsl(256, 80%, 92%)',
   },
   action: {
     active: 'rgba(0, 0, 0, 0.75)',

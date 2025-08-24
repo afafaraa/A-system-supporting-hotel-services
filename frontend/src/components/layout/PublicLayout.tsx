@@ -1,6 +1,5 @@
 import {Outlet} from "react-router-dom";
-import {Container} from "@mui/material";
-import {Box} from "@mui/system";
+import {Container, Box} from "@mui/material";
 import LanguageSwitcher from "./LanguageSwitcher.tsx";
 import ThemeSwitcher from "./ThemeSwitcher.tsx";
 

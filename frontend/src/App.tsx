@@ -33,25 +33,32 @@ function App(){
     <BrowserRouter>
       <AppInitializer>
         <Routes>
+          <Route path="/services" element={<Navigate to={"/services/available"} replace />} />
 
           <Route element={<AuthenticatedLayout />}>
-            <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-            <Route path="/add-reservation" element={<ProtectedRoute><AddReservationPage /></ProtectedRoute>} />
-            <Route path="/employees" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />
-            <Route path="/employee/schedule" element={<ProtectedRoute><EmployeeSchedulePage /></ProtectedRoute>} />
-            <Route path="/employees" element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]}><EmployeeListPage /></ProtectedRoute>} />
-            <Route path="/employees/:username" element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]}><EmployeeDetailsPage /></ProtectedRoute>}/>
-            <Route path="/employees/new" element={<ProtectedRoute><AddNewEmployeePage /></ProtectedRoute>}/>
-            <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>}/>
-            <Route path="/services" element={<Navigate to={"/services/available"} replace />} />
-            <Route path="/services/available" element={<ProtectedRoute><AvailableServicesPage /></ProtectedRoute>} />
-            <Route path="/services/requested" element={<ProtectedRoute><RequestedServicesPage /></ProtectedRoute>}/>
-            <Route path="/services/history" element={<ProtectedRoute><PastServicesPage /></ProtectedRoute>}/>
-            <Route path="/services/shopping-cart" element={<ProtectedRoute><ShoppingCartPage /></ProtectedRoute>}/>
-            <Route path="/service-schedule/:id" element={<ProtectedRoute><ServiceSchedulePage /></ProtectedRoute>}/>
-            <Route path="/management/services" element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]}><ServicesListPage /></ProtectedRoute>} />
-            <Route path="/management/statistics" element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]}><StatsPage /></ProtectedRoute>} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/home" element={<HomePage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/services/available" element={<AvailableServicesPage />} />
+              <Route path="/services/requested" element={<RequestedServicesPage />}/>
+              <Route path="/services/history" element={<PastServicesPage />} />
+              <Route path="/services/shopping-cart" element={<ShoppingCartPage />} />
+              <Route path="/service-schedule/:id" element={<ServiceSchedulePage />} />
+            </Route>
+            <Route element={<ProtectedRoute allowedRoles={["ROLE_EMPLOYEE", "ROLE_RECEPTIONIST", "ROLE_MANAGER", "ROLE_ADMIN"]} />}>
+              <Route path="/employee/schedule" element={<EmployeeSchedulePage />} />
+            </Route>
+            <Route element={<ProtectedRoute allowedRoles={["ROLE_RECEPTIONIST", "ROLE_MANAGER", "ROLE_ADMIN"]} />}>
+              <Route path="/add-reservation" element={<AddReservationPage />} />
+            </Route>
+            <Route element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]} />}>
+              <Route path="/employees" element={<EmployeeListPage />} />
+              <Route path="/employees/new" element={<AddNewEmployeePage />} />
+              <Route path="/employees/:username" element={<EmployeeDetailsPage />} />
+              <Route path="/management/services" element={<ServicesListPage />} />
+              <Route path="/management/statistics" element={<StatsPage />} />
+            </Route>
           </Route>
 
           <Route element={<PublicLayout />}>
@@ -82,18 +89,24 @@ const isPublicPath = (path: string) =>
 function AppInitializer({ children }: PropsWithChildren) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [isInitialized, setIsInitialized] = useState(false);
+  const pathIsPublic = isPublicPath(location.pathname);
+  const [showLoader, setShowLoader] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(pathIsPublic);
 
   useEffect(() => {
+      const timer = setTimeout(() => setShowLoader(true), 300);
       initializeUserFromLocalStorage(dispatch)
         .then(isSuccessful => {
-          if (!isSuccessful && !isPublicPath(location.pathname)) navigate("/login");
+          if (!isSuccessful && !pathIsPublic) navigate("/login");
         })
-        .finally(() => setIsInitialized(true));
-    }, [dispatch, navigate]
+        .finally(() => {
+          clearTimeout(timer);
+          setIsInitialized(true)
+        });
+    }, [dispatch, navigate, pathIsPublic]
   );
 
-  if (!isInitialized) return <LoadingPage/>;
+  if (!isInitialized) return (showLoader ? <LoadingPage/> : null);
 
   return children;
 }

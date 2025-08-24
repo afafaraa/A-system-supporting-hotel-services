@@ -1,4 +1,5 @@
-import {AppBar, IconButton, Stack, Typography, useTheme} from "@mui/material";
+import {AppBar, Badge, IconButton, Stack, Typography, useTheme, Box} from "@mui/material";
+import {alpha} from '@mui/material/styles';
 import Logo from "../../assets/hotel.svg?react";
 import {useTranslation} from "react-i18next";
 
@@ -7,19 +8,28 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import {useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
-import {Box} from "@mui/system";
 import {Link, useNavigate} from "react-router-dom";
 import ThemeSwitcher from "./ThemeSwitcher.tsx";
+import {useEffect, useState} from "react";
+import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 
 const drawerHeight = 64;
 
 function Navbar() {
   const user = useSelector(selectUser);
   const navigate = useNavigate();
-
+  const [notificationsCount, setNotificationsCount] = useState<number>(0);
   const theme = useTheme();
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.login.${key}`);
+
+  useEffect(() => {
+    if (!user) return;
+    axiosAuthApi.get<number>('/user/notifications/unread-count')
+      .then(res => {
+        if (res.data > 0) setNotificationsCount(res.data);
+      });
+  }, [user]);
 
   if (!user) return null;
 
@@ -32,8 +42,8 @@ function Navbar() {
     <Link to="/home" style={{textDecoration: "none"}}>
       <Stack direction="row" spacing={2} alignItems="center">
         <Logo style={{
-          backgroundColor: theme.palette.primary.main,
-          padding: 8,
+          background: theme.palette.primary.main,
+          padding: 6,
           color: theme.palette.background.default,
           borderRadius: '20%'
         }} width={40} height={40}/>
@@ -47,18 +57,18 @@ function Navbar() {
   const UserCard = () => (
     <Link to="/profile" style={{textDecoration: "none"}}>
       <Stack direction="row" spacing={2} alignItems="center" px={1}>
-        <Box bgcolor="primary.main"  fontWeight="bold" width={40} height={40} borderRadius="50%" display="flex"
-             alignItems="center"
-             justifyContent="center">
+        <Box fontWeight="bold" width={40} height={40} borderRadius="50%"
+             display="flex" alignItems="center" justifyContent="center"
+             sx={{background: `linear-gradient(315deg,${theme.palette.primary.main} 10%, ${theme.palette.primary.dark} 90%)`}}>
           <Typography color="primary.contrastText" fontWeight="bold" lineHeight={1} fontSize="0.9rem">
             {getUserInitials(user.username)}
           </Typography>
         </Box>
         <Stack direction="column" alignItems="center" display={{xs: "none", md: "inherit"}}>
-          <Typography color="textPrimary" fontWeight="bold">
+          <Typography color="textPrimary" fontWeight="bold" lineHeight={1.3}>
             {user.username}
           </Typography>
-          <Typography color="textSecondary" fontWeight="bold" fontSize="0.8rem">
+          <Typography color="textSecondary" fontWeight="bold" fontSize="0.8rem" lineHeight={1.3}>
             {user.role.split("_")[1].toLowerCase()}
           </Typography>
         </Stack>
@@ -68,7 +78,7 @@ function Navbar() {
 
   return (
     <>
-      <AppBar elevation={2} position="fixed" color="default" sx={{justifyContent: "center", height: drawerHeight, py: 2, px: {xs: 2, sm: 2, md: 7, lg: 12, xl: 12}}}>
+      <AppBar elevation={2} position="fixed" color="transparent" sx={{bgcolor: theme => alpha(theme.palette.background.paper, 0.4), backdropFilter: "blur(10px)", justifyContent: "center", height: drawerHeight, py: 2, px: {xs: 2, sm: 2, md: 7, lg: 12, xl: 12}}}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
 
           <AppLogo/>
@@ -78,7 +88,9 @@ function Navbar() {
             <ThemeSwitcher />
 
             <IconButton onClick={() => navigate("/notifications")}>
-              <NotificationsOutlinedIcon />
+              <Badge badgeContent={notificationsCount} color="primary">
+                <NotificationsOutlinedIcon />
+              </Badge>
             </IconButton>
 
             {user.role === "ROLE_GUEST" &&
