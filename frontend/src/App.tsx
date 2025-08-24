@@ -33,6 +33,7 @@ import RequestedSchedulesPage from "./pages/employee/RequestedSchedulesPage.tsx"
 import EmployeeReservationsPage from "./pages/employee/ReservationsPage.tsx";
 import EmployeeReviewsPage from "./pages/employee/ReviewsPage.tsx";
 import FallbackPage from "./pages/user/FallbackPage.tsx";
+import GuestLayout from "./pages/guest/layout/GuestLayout.tsx";
 
 function App(){
 
@@ -46,6 +47,14 @@ function App(){
             <Route element={<ProtectedRoute />}>
               <Route path="/home" element={<HomePage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route element={<GuestLayout />}>
+                <Route path="/notifications" element={<NotificationsPage />} />
+                <Route path="/services/available" element={<AvailableServicesPage />} />
+                <Route path="/services/requested" element={<RequestedServicesPage />}/>
+                <Route path="/services/history" element={<PastServicesPage />} />
+                <Route path="/services/shopping-cart" element={<ShoppingCartPage />} />
+                <Route path="/service-schedule/:id" element={<ServiceSchedulePage />} />
+              </Route>
               <Route path="/guest" element={<GuestMainPage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/services/available" element={<AvailableServicesPage />} />
