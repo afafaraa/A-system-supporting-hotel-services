@@ -1,6 +1,5 @@
 import axiosApi from "../../middleware/axiosApi";
 import {FormEvent, useEffect, useState} from 'react';
-import {useNavigate} from "react-router-dom";
 import {Button, FormControl, TextField, Typography, InputAdornment, IconButton, Alert,} from "@mui/material";
 import {useDispatch} from "react-redux";
 import {setUserData} from "../../components/auth/auth.tsx";
@@ -18,7 +17,6 @@ function RegisterPage(){
   const [showPassword, setShowPassword] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.register.${key}`);
@@ -41,7 +39,6 @@ function RegisterPage(){
       const res = await axiosApi.post('/open/register', { code, username, password });
       if (res.data.accessToken && res.data.refreshToken) {
         setUserData(res.data.accessToken, res.data.refreshToken, dispatch)
-        navigate('/home');
       }
     } catch (err) {
       if (isAxiosError(err) && err.response && err.response.status === 400) setError(tc("invalidCodeError"));

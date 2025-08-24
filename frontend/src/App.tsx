@@ -34,9 +34,9 @@ import EmployeeReservationsPage from "./pages/employee/ReservationsPage.tsx";
 import EmployeeReviewsPage from "./pages/employee/ReviewsPage.tsx";
 import FallbackPage from "./pages/user/FallbackPage.tsx";
 import GuestLayout from "./pages/guest/layout/GuestLayout.tsx";
+import GuestMainPage from "./pages/guest/layout/GuestMainPage.tsx";
 
 function App(){
-
   return (
     <BrowserRouter>
       <AppInitializer>

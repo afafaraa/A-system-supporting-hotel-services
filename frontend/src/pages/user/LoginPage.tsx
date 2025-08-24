@@ -36,11 +36,11 @@ function LoginPage(){
   const navigateBasedOnUserRole = () => {
     if (user) {
       if (user.role === 'ROLE_GUEST') {
-        navigate('/services/available');
+        navigate('/guest');
       } else if (user.role === 'EMPLOYEE') {
 
       } else {
-        navigate('/home')
+        navigate('/login')
       }
     }
   }
@@ -66,6 +66,7 @@ function LoginPage(){
         if (res.data.accessToken && res.data.refreshToken) {
           setUserData(res.data.accessToken, res.data.refreshToken, dispatch)
         }
+        navigateBasedOnUserRole();
       })
       .catch(e => {
         if (!isAxiosError(e) || (!e.response && e.code !== "ERR_NETWORK")) { setError("error.unknownError"); return; }
