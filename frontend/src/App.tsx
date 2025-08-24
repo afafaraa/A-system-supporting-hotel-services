@@ -90,18 +90,23 @@ function AppInitializer({ children }: PropsWithChildren) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const pathIsPublic = isPublicPath(location.pathname);
+  const [showLoader, setShowLoader] = useState(false);
   const [isInitialized, setIsInitialized] = useState(pathIsPublic);
 
   useEffect(() => {
+      const timer = setTimeout(() => setShowLoader(true), 300);
       initializeUserFromLocalStorage(dispatch)
         .then(isSuccessful => {
           if (!isSuccessful && !pathIsPublic) navigate("/login");
         })
-        .finally(() => setIsInitialized(true));
+        .finally(() => {
+          clearTimeout(timer);
+          setIsInitialized(true)
+        });
     }, [dispatch, navigate, pathIsPublic]
   );
 
-  if (!isInitialized) return <LoadingPage/>;
+  if (!isInitialized) return (showLoader ? <LoadingPage/> : null);
 
   return children;
 }

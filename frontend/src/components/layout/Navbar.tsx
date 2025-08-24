@@ -42,7 +42,7 @@ function Navbar() {
     <Link to="/home" style={{textDecoration: "none"}}>
       <Stack direction="row" spacing={2} alignItems="center">
         <Logo style={{
-          background: `linear-gradient(135deg,${theme.palette.primary.main} 10%, ${theme.palette.primary.dark} 90%)`,
+          background: theme.palette.primary.main,
           padding: 6,
           color: theme.palette.background.default,
           borderRadius: '20%'
