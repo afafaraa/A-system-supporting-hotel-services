@@ -6,13 +6,13 @@ import NotificationsContainer from '../../../components/layout/NotificationsCont
 function GuestLayout() {
   return (
     <div style={{display: 'flex', gap: '1rem'}}>
-      <div style={{width: '70%'}}>
+      <Box sx={{width: { xs: '100%', md: '70%' }}}>
         <GuestNavbar />
         <Outlet />
-      </div>
-      <div style={{width:'30%'}}>
+      </Box>
+      <Box display={{ xs: "none", md: "block" }} style={{width:'30%'}}>
         <NotificationsContainer />
-      </div>
+      </Box>
     </div>
   )
 }
