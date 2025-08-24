@@ -32,8 +32,20 @@ function LoginPage(){
   const tc = (key: string) => t(`pages.login.${key}`);
   const theme = useTheme();
 
+  const navigateBasedOnUserRole = () => {
+    if (user) {
+      if (user.role === 'ROLE_GUEST') {
+        navigate('/services/available');
+      } else if (user.role === 'EMPLOYEE') {
+
+      } else {
+        navigate('/home')
+      }
+    }
+  }
+
   useEffect(() => {
-    if (user !== null) navigate('/home')
+    navigateBasedOnUserRole();
   }, [user, navigate]);
 
   useEffect(() => {
