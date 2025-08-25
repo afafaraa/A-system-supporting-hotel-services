@@ -5,6 +5,7 @@ const components: Components<Omit<Theme, "components">>  = {
     styleOverrides: {
       root: ({ theme }) => ({
         backgroundColor: theme.palette.background.default,
+        color: theme.palette.text.primary,
       }),
     }
   },

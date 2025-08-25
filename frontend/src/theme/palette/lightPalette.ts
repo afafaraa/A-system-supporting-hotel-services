@@ -8,6 +8,9 @@ export const lightPalette: PaletteOptions = {
     dark: 'hsl(256, 50%, 40%)',
     contrastText: 'hsl(0, 0%, 95%)',
   },
+  secondary: {
+    main: '#FFE921'
+  },
   background: {
     default: 'hsl(256, 20%, 95%)',
     paper: 'hsl(256, 20%, 98%)',
