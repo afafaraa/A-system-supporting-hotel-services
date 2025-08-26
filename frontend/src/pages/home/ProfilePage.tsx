@@ -127,10 +127,10 @@ function ProfilePage() {
     <SectionCard>
       <Title title={<><SettingsOutlinedIcon color="primary"/> Page settings</>} />
       <Stack gap={2}>
-        <Typography display="flex" alignItems="center" gap={3}>
+        <Typography component="div" display="flex" alignItems="center" gap={3}>
           Page language: <LanguageSwitcher />
         </Typography>
-        <Typography display="flex" alignItems="center" gap={3}>
+        <Typography component="div" display="flex" alignItems="center" gap={3}>
           Page theme: <ThemeSwitcher />
         </Typography>
       </Stack>

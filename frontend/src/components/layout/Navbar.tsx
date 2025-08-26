@@ -38,13 +38,9 @@ function Navbar() {
     if (userDetails !== null) return
     axiosAuthApi.get<UserDetails>('/user')
       .then(res => {
-        console.log("Response:", res);
         dispatch(setUserDetails(res.data))
-        console.log(res.data)
       })
-      .catch(err => {
-        console.log(err)
-      })
+      .catch(() => null);
   }, [dispatch, userDetails]);
 
   if (!user) return null;
