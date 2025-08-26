@@ -1,5 +1,7 @@
 import {Box, Card} from "@mui/material";
 import NotificationsContainer from "../../components/layout/NotificationsContainer.tsx";
+import {Link as RouterLink} from "react-router";
+import Link from "@mui/material/Link";
 
 function HomePage() {
 
@@ -8,7 +10,7 @@ function HomePage() {
 
       <Box flex={1}>
         <Card sx={{p: 3}} variant="outlined">
-          Przeniesione do /profile
+          Przeniesione do  <Link component={RouterLink} to="/profile">/profile</Link>
         </Card>
       </Box>
 
