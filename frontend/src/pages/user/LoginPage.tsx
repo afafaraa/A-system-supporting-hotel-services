@@ -57,7 +57,7 @@ function LoginPage(){
       })
       .catch(e => {
         if (!isAxiosError(e) || (!e.response && e.code !== "ERR_NETWORK")) { setError("error.unknownError"); return; }
-        if (e.code === "ERR_NETWORK") { setError("error.networkError"); return; }
+        if (!e.response) { setError(e.code === "ERR_NETWORK" ? "error.networkError" : "error.unknownError"); return; }
         if (e.response.status === 401) setError("error.invalidCredentials");
         else if (e.response.status >= 500) setError("error.serverError");
         else setError("error.unknownError");
@@ -110,7 +110,7 @@ function LoginPage(){
         <Button fullWidth variant="contained" onClick={login} type="submit" loading={loading}>
           {tc("loginButton")}
         </Button>
-        <Typography variant="caption" color="error" mt={2}>{t(error)}</Typography>
+        {error && <Typography variant="caption" color="error" mt={2}>{t(error)}</Typography>}
       </LogInWrapper>
 
       <Box position="fixed" my="auto" left={4} display={{xs: "none", md: "flex"}} flexDirection="column" gap={0.8}>
