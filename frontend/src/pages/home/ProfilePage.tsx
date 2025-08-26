@@ -48,7 +48,7 @@ function ProfilePage() {
             {userDetails && `${userDetails.name} ${userDetails.surname}`}
           </Typography>
           <Typography fontWeight="bold" fontSize="0.8rem" color="black" bgcolor="secondary.main" px={1.5} py={0.2} borderRadius={2} width="fit-content">
-            Hotel {user && user.role.split("_")[1].toLowerCase()}
+            Hotel {user.role.split("_")[1].toLowerCase()}
           </Typography>
           <Box display="flex" flexDirection="row" gap={6} mt={1}>
             <Typography color="background.default" fontSize="0.8rem" display="flex" alignItems="center" gap={0.5}>
@@ -119,7 +119,32 @@ function ProfilePage() {
     <SectionCard>
       <Title title={<><BadgeOutlinedIcon color="primary"/> Employee Card</>}
              subtitle={"Employee specific data card (e.g., position, department, hire date)"} />
-      123
+      <Stack direction="row" gap={4}>
+        <Stack direction="column" gap={2} fontWeight="bold">
+          <span>Position</span>
+          <span>Occupation</span>
+        </Stack>
+        <Stack direction="column" gap={2}>
+          <span>{user.role.split("_")[1].toLowerCase()}</span>
+          <span>{userDetails?.employeeData?.occupation ?? "—"}</span>
+        </Stack>
+      </Stack>
+    </SectionCard>
+  )
+
+  const AccountBalance = () => (
+    <SectionCard>
+      <Title title={"Account Balance"}
+             subtitle={"Manage your hotel account balance and room tab"}/>
+      <SectionCard sx={{backgroundColor: "primary.main"}} textAlign="center">
+        <Typography color="background.default">Current bill</Typography>
+        <Typography fontWeight="bold" color="background.default" fontSize="2.5rem">{userDetails?.guestData?.bill.toFixed(2)} PLN</Typography>
+      </SectionCard>
+      <Typography mt={3}>Services history:</Typography>
+      {[1, 2, 3].map(item => (
+        <SectionCard sx={{p: 3, borderRadius: 3, mt: 2}}>Placeholder {item}</SectionCard>
+      ))}
+
     </SectionCard>
   )
 
@@ -173,6 +198,7 @@ function ProfilePage() {
           {user.role === "ROLE_GUEST" ? <StayInformation /> : <EmployeeCard />}
         </Grid>
       </Grid>
+      {user.role === "ROLE_GUEST" && <AccountBalance />}
       <PageSettings />
       <AccountInformation />
     </Stack>

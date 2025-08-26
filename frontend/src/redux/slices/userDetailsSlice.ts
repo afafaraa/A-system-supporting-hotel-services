@@ -3,17 +3,21 @@ import {RootState} from "../store.ts";
 
 export interface UserDetails {
   email: string,
-  employeeData: object,
+  employeeData: EmployeeData | null,
   guestData: GuestData | null,
   name: string,
   surname: string,
+}
+
+interface EmployeeData {
+  occupation: string
 }
 
 interface GuestData {
   roomNumber: string,
   checkInDate: string,
   checkOutDate: string,
-  orders: object[],
+  bill: number,
 }
 
 const initialState: {userDetails: UserDetails | null} = {
