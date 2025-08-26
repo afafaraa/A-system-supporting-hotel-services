@@ -1,12 +1,12 @@
 import { styled } from '@mui/material/styles';
-import {Paper} from "@mui/material";
+import Box from "@mui/system/Box";
 
-export const LogInWrapper = styled(Paper)(
+export const LogInWrapper = styled(Box)(
   ({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
     padding: '40px 30px',
     borderRadius: '15px',
-    boxShadow: `0px 0px 20px 2px ${theme.palette.background.shadow}`,
-    border: `2px solid ${theme.palette.background.shadow}`
+    boxShadow: `0px 0px 20px 2px ${theme.palette.primary.medium}`,
+    border: `2px solid ${theme.palette.primary.medium}`
   })
 );

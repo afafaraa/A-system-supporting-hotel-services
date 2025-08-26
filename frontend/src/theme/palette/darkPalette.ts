@@ -4,6 +4,7 @@ export const darkPalette: PaletteOptions = {
   mode: 'dark',
   primary: {
     light: 'hsl(256, 20%, 20%)',
+    medium: 'hsl(256, 30%, 24%)',
     main: 'hsl(256, 80%, 60%)',
     dark: 'hsl(256, 50%, 40%)',
     contrastText: 'hsl(256, 95%, 95%)',
@@ -14,7 +15,6 @@ export const darkPalette: PaletteOptions = {
   background: {
     default: 'hsl(256, 8%, 10%)',
     paper: 'hsl(256, 8%, 14%)',
-    shadow: 'hsl(256, 20%, 20%)',
   },
   text: {
     primary: 'hsl(0, 0%, 95%)',

@@ -17,4 +17,12 @@ declare module '@mui/material/styles' {
     //custom1?: Partial<SimplePaletteColorOptions>;
     calendar?: Palette["calendar"];
   }
+
+  interface PaletteColor {
+    medium: string,
+  }
+
+  interface SimplePaletteColorOptions {
+    medium?: string
+  }
 }

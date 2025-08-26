@@ -112,7 +112,7 @@ function NotificationsPage() {
 
       {error && <Alert severity="error" sx={{mb: 3}}>{error}</Alert>}
 
-      <Card variant="outlined" sx={{display: "flex", p: 2, gap: 2, borderRadius: "inherit", backgroundColor: "primary.light"}}>
+      <Card variant="outlined" sx={{display: "flex", p: 2, gap: 2, borderRadius: "inherit", backgroundColor: "primary.medium"}}>
         <Tooltip title={tc("tooltip.selectAll")} arrow>
           <Checkbox checked={selected.size === notifications.length}
                     indeterminate={selected.size > 0 && selected.size < notifications.length}

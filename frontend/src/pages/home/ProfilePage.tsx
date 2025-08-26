@@ -36,7 +36,7 @@ function ProfilePage() {
   const UserProfile = () => (
     <SectionCard sx={{backgroundColor: "primary.main"}}>
       <Stack direction="row">
-        <Box fontWeight="bold" width={100} height={100} borderRadius="50%" mr={4}
+        <Box fontWeight="bold" minWidth={100} width={100} height={100} borderRadius="50%" mr={4}
              display="flex" alignItems="center" justifyContent="center" bgcolor="#A85AFB" border='2px solid #cb9cfd'>
           <Typography fontWeight="bold" lineHeight={1} fontSize="2.5rem" color="background.default">
             {userDetails && getUserInitials(userDetails.name, userDetails.surname)}
@@ -55,7 +55,7 @@ function ProfilePage() {
               <EmailOutlinedIcon fontSize="small"/> {userDetails && userDetails.email}
             </Typography>
             {userDetails && userDetails.guestData &&
-                <Typography color="background.default" fontSize="0.8rem" display="flex" alignItems="center" gap={0.5}>
+                <Typography color="background.default" fontSize="0.8rem" display={{xs: "none", sm: "flex"}} alignItems="center" gap={0.5}>
                     <PlaceOutlinedIcon fontSize="small"/> Room {userDetails && userDetails.guestData.roomNumber}
                 </Typography>
             }

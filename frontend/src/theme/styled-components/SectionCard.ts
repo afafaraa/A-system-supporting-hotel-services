@@ -7,6 +7,6 @@ export const SectionCard = styled(Box)(
     borderRadius: `${theme.shape.borderRadius * 4}px`,
     border: `1px solid ${theme.palette.divider}`,
     backgroundColor: theme.palette.background.paper,
-    fontSize: "0.875rem",
+    fontSize: "14px",
   })
 );
