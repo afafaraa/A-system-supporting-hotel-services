@@ -1,12 +1,12 @@
 import React from "react";
 import { useTranslation } from 'react-i18next';
-import {FormControl, MenuItem, Select, SelectChangeEvent, Stack} from "@mui/material";
+import {MenuItem, Select, SelectChangeEvent, Stack} from "@mui/material";
 
 const LanguageSwitcher: React.FC = () => {
   const { i18n } = useTranslation();
 
   const handleChange = (event: SelectChangeEvent) => {
-    i18n.changeLanguage(event.target.value);
+    i18n.changeLanguage(event.target.value).then(() => null);
   };
 
   const languageBox = (language: string, code: string) => {
@@ -19,17 +19,14 @@ const LanguageSwitcher: React.FC = () => {
   }
 
   return (
-    <FormControl sx={{maxWidth: '215px', borderRadius: 2, boxShadow: theme => `0px 0px 20px 2px ${theme.palette.background.shadow}`}}
-                 size="small" fullWidth={true}>
-      <Select sx={{'& .MuiOutlinedInput-notchedOutline': {border: theme => `1px solid ${theme.palette.background.shadow}`, borderRadius: 2}}}
-        id="demo-simple-select"
-        value={i18n.language}
-        onChange={handleChange}
-      >
-        <MenuItem value={"en"}>{languageBox("English", "gb")}</MenuItem>
-        <MenuItem value={"pl"}>{languageBox("Polski", "pl")}</MenuItem>
-      </Select>
-    </FormControl>
+    <Select sx={{minWidth: '170px', maxWidth: '215px', borderRadius: 2, flexGrow: 1, height: "2.5rem", bgcolor: "background.paper"}}
+            id="demo-simple-select"
+            value={i18n.language}
+            onChange={handleChange}
+    >
+      <MenuItem value={"en"}>{languageBox("English", "gb")}</MenuItem>
+      <MenuItem value={"pl"}>{languageBox("Polski", "pl")}</MenuItem>
+    </Select>
   );
 };
 

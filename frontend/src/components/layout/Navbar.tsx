@@ -6,18 +6,21 @@ import {useTranslation} from "react-i18next";
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
 import {Link, useNavigate} from "react-router-dom";
 import ThemeSwitcher from "./ThemeSwitcher.tsx";
 import {useEffect, useState} from "react";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
+import {selectUserDetails, setUserDetails, UserDetails} from "../../redux/slices/userDetailsSlice.ts";
 
 const drawerHeight = 64;
 
 function Navbar() {
   const user = useSelector(selectUser);
+  const userDetails = useSelector(selectUserDetails);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [notificationsCount, setNotificationsCount] = useState<number>(0);
   const theme = useTheme();
   const { t } = useTranslation();
@@ -31,11 +34,20 @@ function Navbar() {
       });
   }, [user]);
 
+  useEffect(() => {
+    if (userDetails !== null) return
+    axiosAuthApi.get<UserDetails>('/user')
+      .then(res => {
+        dispatch(setUserDetails(res.data))
+        console.log("Navbar - fetched user details:", res.data);
+      })
+      .catch(() => null);
+  }, [dispatch, userDetails]);
+
   if (!user) return null;
 
-  const getUserInitials = (username: string) => {
-    if (username.length < 2) return username.toUpperCase();
-    return username.charAt(0).toUpperCase() + username.charAt(1).toUpperCase();
+  const getUserInitials = (name: string, surname: string) => {
+    return name.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
   }
 
   const AppLogo = () => (
@@ -61,15 +73,18 @@ function Navbar() {
              display="flex" alignItems="center" justifyContent="center"
              sx={{background: `linear-gradient(315deg,${theme.palette.primary.main} 10%, ${theme.palette.primary.dark} 90%)`}}>
           <Typography color="primary.contrastText" fontWeight="bold" lineHeight={1} fontSize="0.9rem">
-            {getUserInitials(user.username)}
+              {userDetails && getUserInitials(userDetails.name, userDetails.surname)}
           </Typography>
         </Box>
         <Stack direction="column" alignItems="center" display={{xs: "none", md: "inherit"}}>
           <Typography color="textPrimary" fontWeight="bold" lineHeight={1.3}>
-            {user.username}
+            {userDetails ? `${userDetails.name} ${userDetails.surname}` : user.username}
           </Typography>
           <Typography color="textSecondary" fontWeight="bold" fontSize="0.8rem" lineHeight={1.3}>
-            {user.role.split("_")[1].toLowerCase()}
+            {user.role === "ROLE_GUEST" && userDetails ?
+              `Room ${userDetails.guestData?.roomNumber}` :
+              user.role.split("_")[1].toLowerCase()
+            }
           </Typography>
         </Stack>
       </Stack>

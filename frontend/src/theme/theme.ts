@@ -8,5 +8,8 @@ export const getTheme = (mode: PaletteMode): Theme => {
   return createTheme({
     palette: mode === 'light' ? lightPalette : darkPalette,
     components: components,
+    typography: {
+      fontFamily: 'Inter, Roboto, Helvetica, Arial, sans-serif',
+    },
   });
 }

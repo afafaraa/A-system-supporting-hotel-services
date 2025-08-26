@@ -33,8 +33,7 @@
       "password": "Hasło",
       "loginButton": "Zaloguj się",
       "resetPassword": "Nie pamiętasz hasła? Zresetuj hasło.",
-      "registerWithCode": "Nie masz konta? Zarejestruj się za pomocą kodu.",
-      "invalidCredentials": "Nieprawidłowe dane logowania."
+      "registerWithCode": "Nie masz konta? Zarejestruj się za pomocą kodu."
     },
     "register": {
       "title": "Rejestracja",
@@ -197,7 +196,8 @@
     "networkError": "Błąd połączenia z serwerem.",
     "serverError": "Błąd serwera. Spróbuj ponownie później.",
     "unknownError": "Wystąpił nieznany błąd.",
-    "emptyFields": "Wszystkie pola muszą być wypełnione."
+    "emptyFields": "Wszystkie pola muszą być wypełnione.",
+    "invalidCredentials": "Nieprawidłowe dane logowania."
   },
   "order_status": {
     "AVAILABLE": "DOSTĘPNY",

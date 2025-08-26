@@ -33,8 +33,7 @@
       "password": "Password",
       "loginButton": "Login",
       "resetPassword": "Forgot your password? Reset password.",
-      "registerWithCode": "Don't have an account? Register with a code.",
-      "invalidCredentials": "Invalid login credentials."
+      "registerWithCode": "Don't have an account? Register with a code."
     },
     "register": {
       "title": "Register",
@@ -201,7 +200,8 @@
     "networkError": "Server connection error.",
     "serverError": "Server error. Please try again later.",
     "unknownError": "Unknown error occurred.",
-    "emptyFields": "All fields must be filled."
+    "emptyFields": "All fields must be filled.",
+    "invalidCredentials": "Invalid login credentials."
   },
   "order_status": {
     "AVAILABLE": "AVAILABLE",

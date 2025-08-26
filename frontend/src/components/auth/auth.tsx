@@ -2,6 +2,7 @@ import {clearUser, setUser, UserData} from "../../redux/slices/userSlice";
 import axiosApi from "../../middleware/axiosApi";
 import { jwtDecode } from "jwt-decode";
 import {AppDispatch} from "../../redux/store.ts";
+import {clearUserDetails} from "../../redux/slices/userDetailsSlice.ts";
 
 interface CustomJwtPayload {
     iat: number,
@@ -114,4 +115,5 @@ export function setUserData(accessToken: string, refreshToken: string, dispatch:
 export function logoutUser(dispatch: AppDispatch) {
     removeTokensFromLocalStorage();
     dispatch(clearUser());
+    dispatch(clearUserDetails())
 }
