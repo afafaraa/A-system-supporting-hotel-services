@@ -39,6 +39,7 @@ function Navbar() {
     axiosAuthApi.get<UserDetails>('/user')
       .then(res => {
         dispatch(setUserDetails(res.data))
+        console.log("Navbar - fetched user details:", res.data);
       })
       .catch(() => null);
   }, [dispatch, userDetails]);

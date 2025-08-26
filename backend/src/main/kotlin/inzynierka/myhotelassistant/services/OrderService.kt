@@ -43,6 +43,7 @@ class OrderService(
         val service = serviceService.findByIdOrThrow(schedule.serviceId)
         val currentPrice = service.price
         schedule.guestId = guest.id
+        schedule.orderTime = LocalDateTime.now()
         schedule.status = OrderStatus.REQUESTED
         schedule.price = currentPrice
         guest.guestData?.let { data ->
