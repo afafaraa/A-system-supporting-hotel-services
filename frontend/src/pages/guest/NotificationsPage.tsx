@@ -1,6 +1,6 @@
 import {ChangeEvent, useEffect, useState} from "react";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
 import {
   Box, Checkbox, IconButton, Stack, Typography,
@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import {Notification, NotificationVariant} from "../../types/notification.ts";
 import {getDay, getTime} from "../../utils/utils.ts";
+import {setNotificationsCount} from "../../redux/slices/notificationsCount.ts";
 
 function NotificationsPage() {
   const [isLoading, setLoading] = useState<boolean>(true)
@@ -19,6 +20,7 @@ function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.notifications.${key}`);
 
@@ -93,6 +95,10 @@ function NotificationsPage() {
   }
 
   const countUnread = notifications.reduce((count, n) => n.isRead ? count : count + 1, 0);
+
+  useEffect(() => {
+    dispatch(setNotificationsCount(countUnread));
+  }, [dispatch, countUnread]);
 
   return (
     <Paper variant="outlined" sx={{px: {xs: 2, sm: 5}, py: {xs: 3, sm: 5}, borderRadius: 5}}>

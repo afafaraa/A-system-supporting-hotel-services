@@ -10,20 +10,21 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
 import {Link, useNavigate} from "react-router-dom";
 import ThemeSwitcher from "./ThemeSwitcher.tsx";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {selectUserDetails, setUserDetails, UserDetails} from "../../redux/slices/userDetailsSlice.ts";
 import {selectShoppingCartCount} from "../../redux/slices/shoppingCartSlice.ts";
+import {setNotificationsCount} from "../../redux/slices/notificationsCount.ts";
 
 const drawerHeight = 64;
 
 function Navbar() {
   const user = useSelector(selectUser);
   const userDetails = useSelector(selectUserDetails);
+  const notificationsCount = useSelector(state => state.notificationsCount.count);
   const shoppingCartCount = useSelector(selectShoppingCartCount);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [notificationsCount, setNotificationsCount] = useState<number>(0);
   const theme = useTheme();
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.login.${key}`);
@@ -32,9 +33,9 @@ function Navbar() {
     if (!user) return;
     axiosAuthApi.get<number>('/user/notifications/unread-count')
       .then(res => {
-        if (res.data > 0) setNotificationsCount(res.data);
+        if (res.data > 0) dispatch(setNotificationsCount(res.data));
       });
-  }, [user]);
+  }, [dispatch, user]);
 
   useEffect(() => {
     if (userDetails !== null) return
