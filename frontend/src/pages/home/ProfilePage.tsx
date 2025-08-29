@@ -142,7 +142,7 @@ function ProfilePage() {
       </SectionCard>
       <Typography mt={3}>Services history:</Typography>
       {[1, 2, 3].map(item => (
-        <SectionCard sx={{p: 3, borderRadius: 3, mt: 2}}>Placeholder {item}</SectionCard>
+        <SectionCard key={item} sx={{p: 3, borderRadius: 3, mt: 2}}>Placeholder {item}</SectionCard>
       ))}
 
     </SectionCard>
