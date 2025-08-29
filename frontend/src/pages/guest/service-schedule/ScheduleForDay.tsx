@@ -4,6 +4,8 @@ import { Button, Typography, Box } from "@mui/material";
 import { ServiceProps } from "../available-services/AvailableServiceCard.tsx";
 import {useTranslation} from "react-i18next";
 import {OrderStatus} from "../../../types/schedule.ts";
+import {useDispatch, useSelector} from "react-redux";
+import {addItem, removeItem, selectShoppingCart} from "../../../redux/slices/shoppingCartSlice.ts";
 
 type ScheduleProps = {
   id: string;
@@ -49,6 +51,8 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
     monday.setDate(now.getDate() + diff);
     return monday;
   });
+  const shoppingCart = useSelector(selectShoppingCart);
+  const dispatch = useDispatch();
   const {t} = useTranslation();
 
   useEffect(() => {
@@ -56,35 +60,14 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
   }, [service.id, weekMonday]);
 
   const addToCart = async (item: ScheduleProps) => {
-    let cartItemIdList: string[];
-
-    const stringifiedItems = localStorage.getItem("CART");
-    if( stringifiedItems ) {
-      const parsedItemIds: string[] = JSON.parse(stringifiedItems);
-      if ( parsedItemIds.indexOf(item.id) === -1 ) {
-        cartItemIdList = [...JSON.parse(stringifiedItems), item.id];
-        localStorage.setItem("CART", JSON.stringify(cartItemIdList));
-      }
-    } else {
-      cartItemIdList = [item.id];
-      localStorage.setItem("CART", JSON.stringify(cartItemIdList));
-    }
+    dispatch(addItem(item.id))
     setSchedule(schedule.map(s =>
       s.id === item.id ? { ...item, inCart: true } : s
     ));
   };
 
   const removeFromCart = async (item: ScheduleProps) => {
-    const stringifiedItems = localStorage.getItem("CART");
-    if( stringifiedItems ) {
-      let parsedItemIds: string[] = JSON.parse(stringifiedItems);
-      if ( parsedItemIds.indexOf(item.id) !== -1 ) {
-        parsedItemIds = parsedItemIds.filter((e: string) => {
-          return e !== item.id
-        });
-        localStorage.setItem("CART", JSON.stringify(parsedItemIds));
-      }
-    }
+    dispatch(removeItem(item.id))
     setSchedule(schedule.map(s =>
       s.id === item.id ? { ...item, inCart: false } : s
     ));
@@ -96,13 +79,8 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
       const response = await axiosAuthApi(`/schedule/get/week/id/${service.id}`, {
         params: { date: weekMonday.toISOString().split("T")[0] },
       });
-      const stringifiedItems = localStorage.getItem("CART");
-      let parsedItemIds: string[] = [];
-      if( stringifiedItems ) {
-        parsedItemIds = JSON.parse(stringifiedItems);
-      }
       const scheduleItems = response.data.map((s: ScheduleProps) => {
-        return {...s, inCart: parsedItemIds.includes(s.id) };
+        return {...s, inCart: shoppingCart.includes(s.id) };
       });
       setSchedule(scheduleItems);
     } catch (e) {

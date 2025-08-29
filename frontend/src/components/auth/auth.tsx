@@ -3,6 +3,7 @@ import axiosApi from "../../middleware/axiosApi";
 import { jwtDecode } from "jwt-decode";
 import {AppDispatch} from "../../redux/store.ts";
 import {clearUserDetails} from "../../redux/slices/userDetailsSlice.ts";
+import {setItems} from "../../redux/slices/shoppingCartSlice.ts";
 
 interface CustomJwtPayload {
     iat: number,
@@ -17,9 +18,22 @@ function removeTokensFromLocalStorage() {
     localStorage.removeItem('REFRESH_TOKEN');
 }
 
+function initializeShoppingCartFromLocalStorage(dispatch: AppDispatch) {
+    const cart = localStorage.getItem('SHOPPING_CART');
+    if (!cart) return;
+    try {
+        const parsedCart: string[] = JSON.parse(cart);
+        dispatch(setItems(parsedCart));
+    } catch (error) {
+        console.log("Error parsing shopping cart from localStorage:", error);
+        localStorage.removeItem('SHOPPING_CART');
+    }
+}
+
 export async function initializeUserFromLocalStorage(dispatch: AppDispatch) {
     const accessToken = localStorage.getItem('ACCESS_TOKEN');
     const refreshToken = localStorage.getItem('REFRESH_TOKEN');
+    initializeShoppingCartFromLocalStorage(dispatch);
     if (!accessToken || !refreshToken) {
         console.log("No tokens found");
         removeTokensFromLocalStorage();

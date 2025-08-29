@@ -13,12 +13,14 @@ import ThemeSwitcher from "./ThemeSwitcher.tsx";
 import {useEffect, useState} from "react";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {selectUserDetails, setUserDetails, UserDetails} from "../../redux/slices/userDetailsSlice.ts";
+import {selectShoppingCartCount} from "../../redux/slices/shoppingCartSlice.ts";
 
 const drawerHeight = 64;
 
 function Navbar() {
   const user = useSelector(selectUser);
   const userDetails = useSelector(selectUserDetails);
+  const shoppingCartCount = useSelector(selectShoppingCartCount);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [notificationsCount, setNotificationsCount] = useState<number>(0);
@@ -110,7 +112,9 @@ function Navbar() {
 
             {user.role === "ROLE_GUEST" &&
               <IconButton onClick={() => navigate("/services/shopping-cart")}>
-                <ShoppingCartOutlinedIcon />
+                <Badge badgeContent={shoppingCartCount} color="secondary">
+                  <ShoppingCartOutlinedIcon />
+                </Badge>
               </IconButton>
             }
 
