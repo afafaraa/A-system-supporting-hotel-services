@@ -17,6 +17,11 @@ i18n
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
+      convertDetectedLanguage: (lng) => {
+        if (lng.startsWith("en-")) return "en";
+        else if (lng.startsWith("pl-")) return "pl";
+        else return lng;
+      },
     },
     interpolation: {
       escapeValue: false,
