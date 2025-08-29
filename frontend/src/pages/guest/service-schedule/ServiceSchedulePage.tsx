@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {useParams, useLocation} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import AuthenticatedHeader from "../../../components/layout/AuthenticatedHeader.tsx";
@@ -10,26 +10,20 @@ import {useTranslation} from "react-i18next";
 
 function ServiceSchedulePage (){
   const params = useParams();
-  const [service, setService] = useState<ServiceProps>();
+  const location = useLocation();
+  const serviceFromState = location.state as ServiceProps | undefined;
+  const [service, setService] = useState<ServiceProps>(serviceFromState);
   const [loading, setLoading] = useState(false);
   const {t} = useTranslation();
 
   useEffect(()=>{
-    fetchServiceData();
-  }, [])
-
-  const fetchServiceData = async () => {
+    if (serviceFromState) return;
     setLoading(true);
-    try {
-      const response = await axiosAuthApi.get(`/services/one/${params.id}`);
-      setService(response.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-
-  }
+    axiosAuthApi.get(`/services/one/${params.id}`)
+      .then(response => setService(response.data))
+      .catch(error => console.log(error))
+      .finally(() => setLoading(false));
+  }, [params.id, serviceFromState])
 
   if(loading || service == null){
     return <p>Loading...</p>;
