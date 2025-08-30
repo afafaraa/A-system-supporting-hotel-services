@@ -35,21 +35,20 @@ function ShoppingCartPage() {
   },[])
 
   const fetchCartData = async () => {
-    try {
-      const cartList : CartProps[] = [];
-      if (shoppingCart) {
-        for (const id of shoppingCart) {
+    const cartList : CartProps[] = [];
+    if (shoppingCart) {
+      for (const id of shoppingCart) {
+        try {
           const response = await axiosAuthApi.get(`/schedule/get/cart/id/${id}`)
           const cartItem: CartProps = response.data;
-          if (cartItem) {
-            cartList.push(cartItem);
-          }
+          if (cartItem) cartList.push(cartItem);
+        } catch (e) {
+          dispatch(removeItem(id));
+          console.error(e);
         }
       }
-      setCart(cartList);
-    } catch (e) {
-      console.error(e);
     }
+    setCart(cartList);
   }
 
   const fetchCurrentBill = async () => {
