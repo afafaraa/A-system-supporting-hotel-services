@@ -12,7 +12,7 @@ function ServiceSchedulePage (){
   const params = useParams();
   const location = useLocation();
   const serviceFromState = location.state as ServiceProps | undefined;
-  const [service, setService] = useState<ServiceProps>(serviceFromState);
+  const [service, setService] = useState<ServiceProps | undefined>(serviceFromState);
   const [loading, setLoading] = useState(false);
   const {t} = useTranslation();
 
