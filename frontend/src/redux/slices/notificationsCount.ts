@@ -1,4 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
+import {RootState} from "../store.ts";
 
 const notificationsCount = createSlice({
   name: "notificationsCount",
@@ -11,4 +12,5 @@ const notificationsCount = createSlice({
 });
 
 export const { setNotificationsCount } = notificationsCount.actions;
+export const selectNotificationsCount = (state: RootState) => state.notificationsCount.count;
 export default notificationsCount.reducer;

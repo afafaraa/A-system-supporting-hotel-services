@@ -14,14 +14,14 @@ import {useEffect} from "react";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {selectUserDetails, setUserDetails, UserDetails} from "../../redux/slices/userDetailsSlice.ts";
 import {selectShoppingCartCount} from "../../redux/slices/shoppingCartSlice.ts";
-import {setNotificationsCount} from "../../redux/slices/notificationsCount.ts";
+import {setNotificationsCount, selectNotificationsCount} from "../../redux/slices/notificationsCount.ts";
 
 const drawerHeight = 64;
 
 function Navbar() {
   const user = useSelector(selectUser);
   const userDetails = useSelector(selectUserDetails);
-  const notificationsCount = useSelector(state => state.notificationsCount.count);
+  const notificationsCount = useSelector(selectNotificationsCount);
   const shoppingCartCount = useSelector(selectShoppingCartCount);
   const navigate = useNavigate();
   const dispatch = useDispatch();
