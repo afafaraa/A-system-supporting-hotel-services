@@ -110,7 +110,7 @@ class TokenService(
             } catch (
                 e: JwtException,
             ) {
-                throw BadCredentialsException("Invalid refresh token: ${e.message}")
+                throw BadCredentialsException("Invalid reset password token: ${e.message}")
             }
 
         if (jwt.expiresAt?.isBefore(Instant.now()) ?: true) {

@@ -10,7 +10,7 @@ const StarRating = ({ rating }: {rating: RatingType[]}) => {
     return total / rating.length;
   }
 
-  return <Rating readOnly defaultValue={calcRating()} precision={0.5} sx={{fontSize: '150%'}} />
+  return <Rating readOnly value={calcRating()} precision={0.5} sx={{fontSize: '150%'}} />
 };
 
 export default StarRating;
