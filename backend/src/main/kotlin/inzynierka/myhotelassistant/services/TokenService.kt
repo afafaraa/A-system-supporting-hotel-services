@@ -68,8 +68,14 @@ class TokenService(
     }
 
     fun refreshToken(refreshToken: String): String {
-        val jwt = try { decoder.decode(refreshToken) }
-        catch (e: JwtException) { throw BadCredentialsException("Invalid refresh token: ${e.message}") }
+        val jwt =
+            try {
+                decoder.decode(refreshToken)
+            } catch (
+                e: JwtException,
+            ) {
+                throw BadCredentialsException("Invalid refresh token: ${e.message}")
+            }
         val type = jwt.getClaimAsString("type")
         if (type != JWTType.REFRESH.name) {
             throw BadCredentialsException("Invalid token type: expected REFRESH, got $type")
@@ -98,8 +104,14 @@ class TokenService(
     }
 
     fun validateResetPasswordToken(token: String): String {
-        val jwt = try { decoder.decode(token) }
-        catch (e: JwtException) { throw BadCredentialsException("Invalid refresh token: ${e.message}") }
+        val jwt =
+            try {
+                decoder.decode(token)
+            } catch (
+                e: JwtException,
+            ) {
+                throw BadCredentialsException("Invalid refresh token: ${e.message}")
+            }
 
         if (jwt.expiresAt?.isBefore(Instant.now()) ?: true) {
             throw ResetTokenValidationException("Token expired")
