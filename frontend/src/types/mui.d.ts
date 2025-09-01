@@ -13,12 +13,12 @@ declare module '@mui/material/styles' {
   }
 
   interface PaletteColor {
-    medium: string,
-    border: string,
+    medium: string;
+    border: string;
   }
 
   interface SimplePaletteColorOptions {
-    medium?: string
+    medium?: string;
     border?: string;
   }
 }

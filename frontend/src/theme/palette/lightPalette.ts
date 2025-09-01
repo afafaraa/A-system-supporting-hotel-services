@@ -8,14 +8,14 @@ export const lightPalette: PaletteOptions = {
     main: 'hsl(256, 80%, 60%)',
     dark: 'hsl(256, 50%, 40%)',
     contrastText: 'hsl(0, 0%, 95%)',
-    border: 'rgba(0,0,0,0.25)'
+    border: 'rgba(0, 0, 0, 0.25)'
   },
   secondary: {
     main: '#FFE921'
   },
   text: {
-    primary: 'rgba(0,0,0,1)',
-    secondary: 'rgba(118,111,132,1)',
+    primary: 'rgba(0, 0, 0, 0.87)',
+    secondary: 'rgba(118, 111, 132, 1)',
   },
   background: {
     default: 'hsl(256, 20%, 95%)',

@@ -8,7 +8,7 @@ export const darkPalette: PaletteOptions = {
     main: 'hsl(256, 80%, 60%)',
     dark: 'hsl(256, 50%, 40%)',
     contrastText: 'hsl(256, 95%, 95%)',
-    border: 'rgba(146,146,146,0.25)',
+    border: 'rgba(146, 146, 146, 0.25)',
   },
   secondary: {
     main: '#FFE921'

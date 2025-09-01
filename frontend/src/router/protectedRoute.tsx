@@ -15,7 +15,7 @@ function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
     useEffect(() => {
         if (user === null) navigate("/login");
         else if (allowedRoles && !allowedRoles.includes(user.role)) {
-          navigate("/home");
+            navigate("/home");
         }
     }, [navigate, user, allowedRoles]);
 
