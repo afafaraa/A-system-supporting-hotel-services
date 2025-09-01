@@ -41,11 +41,13 @@ function App(){
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/guest" element={<GuestMainPage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
-              <Route path="/services/available" element={<AvailableServicesPage />} />
-              <Route path="/services/requested" element={<RequestedServicesPage />}/>
-              <Route path="/services/history" element={<PastServicesPage />} />
               <Route path="/services/shopping-cart" element={<ShoppingCartPage />} />
               <Route path="/service-schedule/:id" element={<ServiceSchedulePage />} />
+              <Route element={<GuestMainPage />}>
+                <Route path="/services/available" element={<AvailableServicesPage />} />
+                <Route path="/services/requested" element={<RequestedServicesPage />}/>
+                <Route path="/services/history" element={<PastServicesPage />} />
+              </Route>
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_EMPLOYEE", "ROLE_RECEPTIONIST", "ROLE_MANAGER", "ROLE_ADMIN"]} />}>
               <Route path="/employee/schedule" element={<EmployeeSchedulePage />} />
