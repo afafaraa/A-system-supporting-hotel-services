@@ -96,12 +96,12 @@ function Navbar() {
 
   return (
     <>
-      <AppBar elevation={2} position="fixed" color="transparent" sx={{bgcolor: theme => alpha(theme.palette.background.paper, 0.4), backdropFilter: "blur(10px)", justifyContent: "center", height: drawerHeight, py: 2, px: {xs: 2, sm: 2, md: 7, lg: 12, xl: 12}}}>
+      <AppBar variant="outlined" position="fixed" color="transparent" sx={{borderWidth: '2px', bgcolor: theme => alpha(theme.palette.background.paper, 0.4), backdropFilter: "blur(10px)", justifyContent: "center", height: drawerHeight, py: 2, px: {xs: 2, sm: 2, md: 7, lg: 12, xl: 12}}}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
 
           <AppLogo/>
 
-          <Stack direction="row" spacing={{xs: 0.5, sm: 3}} alignItems="center">
+          <Stack direction="row" spacing={{xs: 1.6, sm: 3}} alignItems="center">
 
             <ThemeSwitcher />
 
