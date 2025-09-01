@@ -29,6 +29,7 @@ import AddNewEmployeePage from './pages/manager/forms/AddNewEmployeePage.tsx';
 import GuestMainPage from "./pages/guest/layout/GuestMainPage.tsx";
 
 function App(){
+
   return (
     <BrowserRouter>
       <AppInitializer>
@@ -39,7 +40,6 @@ function App(){
             <Route element={<ProtectedRoute />}>
               <Route path="/home" element={<HomePage />} />
               <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/guest" element={<GuestMainPage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/services/shopping-cart" element={<ShoppingCartPage />} />
               <Route path="/service-schedule/:id" element={<ServiceSchedulePage />} />

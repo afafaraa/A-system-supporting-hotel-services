@@ -1,98 +1,92 @@
-import { useTheme } from '@mui/material';
-import { SectionWrapper } from '../../../theme/styled-components/SectionWrapper.ts';
-import { useRef, useState, useEffect } from 'react';
+import {styled, Tab, Tabs} from "@mui/material";
+import {SyntheticEvent, useMemo} from "react";
+import {matchPath, useLocation, useNavigate} from "react-router-dom";
 
-function GuestNavbar({
-                       setCurrentPage,
-                       currentPage,
-                       subpages,
-                     }: {
-  setCurrentPage: (x: string) => void;
-  currentPage: string;
-  subpages: string[];
-}) {
-  const theme = useTheme();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({
-    left: 0,
-    width: 0,
+const PillTabs = styled(Tabs)(({ theme }) => {
+  return ({
+    positon: "relative",
+    borderRadius: "9999px",
+    border: `1px solid ${theme.palette.divider}`,
+    backgroundColor: theme.palette.background.paper,
+    padding: "4px",
+    minHeight: "unset",
+    height: "40px",
+    "& .MuiTabs-flexContainer": {
+      position: "relative",
+      zIndex: 1,
+      height: "100%",
+    },
+    "& .MuiTabs-indicator": {
+      zIndex: 0,
+      pointerEvents: 'none',
+      display: "flex",
+      justifyContent: "center",
+      backgroundColor: "transparent",
+      top: 0,
+      bottom: 0,
+      height: "auto",
+    },
+    "& .MuiTabs-indicatorSpan": {
+      borderRadius: "9999px",
+      width: "100%",
+      backgroundColor: theme.palette.primary.main,
+      boxShadow: theme.shadows[1],
+    },
   });
+});
 
-  const updateIndicator = () => {
-    if (!containerRef.current) return;
-    const children = containerRef.current.querySelectorAll<HTMLSpanElement>('span');
-    const idx = subpages.indexOf(currentPage);
-    if (idx !== -1 && children[idx]) {
-      const el = children[idx];
-      setIndicatorStyle({ left: el.offsetLeft, width: el.offsetWidth });
-    }
+const PillTab = styled(Tab)(({ theme }) => ({
+  position: "relative",
+  zIndex: 1,
+  textTransform: "none",
+  fontSize: "16px",
+  fontWeight: 600,
+  flexGrow: 1,
+  borderRadius: "9999px",
+  minHeight: "100%",
+  height: "100%",
+  minWidth: 0,
+  padding: 0,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: theme.palette.text.primary,
+  "&.Mui-selected": {
+    color: theme.palette.primary.contrastText,
+  },
+}));
+
+const tabs = [
+  {name: "Available Services", link: "/services/available"},
+  {name: "Booked Services", link: "/services/requested"},
+  {name: "Historical Services", link: "/services/history"},
+];
+
+function GuestNavbar() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const activeLink = useMemo(() => {
+    const match = tabs.find(t =>
+      matchPath({ path: `${t.link}/*`, end: false }, location.pathname));
+    return match?.link ?? tabs[0].link;
+  }, [location.pathname]);
+
+  const handleChange = (_e: SyntheticEvent, newValue: string) => {
+    if (newValue !== activeLink) navigate(newValue);
   };
 
-  // Update when page changes
-  useEffect(() => {
-    updateIndicator();
-  }, [currentPage, subpages]);
-
-  // Update on window resize (responsive)
-  useEffect(() => {
-    window.addEventListener('resize', updateIndicator);
-    return () => window.removeEventListener('resize', updateIndicator);
-  }, [currentPage, subpages]);
-
   return (
-    <SectionWrapper
-      ref={containerRef}
-      style={{
-        position: 'relative',
-        width: '100%',
-        padding: '4px',
-        display: 'flex',
-        gap: '1rem',
-        overflow: 'hidden',
-      }}
+    <PillTabs
+      id="pill-tabs-container"
+      value={activeLink}
+      onChange={handleChange}
+      slotProps={{ indicator: {children: <span className="MuiTabs-indicatorSpan" />} }}
+      sx={{mb: 2}}
     >
-      <div
-        style={{
-          position: 'absolute',
-          top: '3px',
-          bottom: '3px',
-          left: indicatorStyle.left,
-          width: indicatorStyle.width,
-          borderRadius: '20px',
-          backgroundColor: theme.palette.primary.main,
-          transition: 'all 0.3s ease-in-out',
-          zIndex: 0,
-        }}
-      />
-
-      {subpages.map((item) => (
-        <span
-          key={item}
-          role="button"
-          style={{
-            flexGrow: 1,
-            minWidth: 0,
-            padding: '5px',
-            textAlign: 'center',
-            fontWeight: 600,
-            cursor: 'pointer',
-            position: 'relative',
-            zIndex: 1,
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            color:
-              item === currentPage
-                ? theme.palette.primary.contrastText
-                : theme.palette.text.primary,
-          }}
-          onClick={() => setCurrentPage(item)}
-          title={item}
-        >
-          {item}
-        </span>
-      ))}
-    </SectionWrapper>
+      {tabs.map((tab, index) =>
+        <PillTab key={index} value={tab.link} label={tab.name} disableRipple />)}
+    </PillTabs>
   );
 }
 

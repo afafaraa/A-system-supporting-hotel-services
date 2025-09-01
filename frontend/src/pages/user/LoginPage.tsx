@@ -18,6 +18,7 @@ import {fontSizes} from "../../theme/fontSizes.ts";
 import {LogInWrapper} from "../../theme/styled-components/LogInWrapper.ts";
 import {LogInInput} from "../../theme/styled-components/LogInInput.ts";
 import {VisibilityOutlined, VisibilityOffOutlined} from "@mui/icons-material";
+import {navigateToDashboard} from "../../utils/utils.ts";
 
 function LoginPage(){
   const user = useSelector(selectUser);
@@ -32,20 +33,8 @@ function LoginPage(){
   const tc = (key: string) => t(`pages.login.${key}`);
   const theme = useTheme();
 
-  const navigateBasedOnUserRole = () => {
-    if (user) {
-      if (user.role === 'ROLE_GUEST') {
-        navigate('/guest');
-      } else if (user.role === 'EMPLOYEE') {
-
-      } else {
-        navigate('/login')
-      }
-    }
-  }
-
   useEffect(() => {
-    navigateBasedOnUserRole();
+    if (user !== null) navigateToDashboard(user.role, navigate);
   }, [user, navigate]);
 
   useEffect(() => {
@@ -64,9 +53,7 @@ function LoginPage(){
       .then(res => {
         if (res.data.accessToken && res.data.refreshToken) {
           setUserData(res.data.accessToken, res.data.refreshToken, dispatch)
-          navigate('/home')
         }
-        navigateBasedOnUserRole();
       })
       .catch(e => {
         if (!isAxiosError(e) || (!e.response && e.code !== "ERR_NETWORK")) { setError("error.unknownError"); return; }
