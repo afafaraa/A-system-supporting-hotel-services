@@ -6,7 +6,7 @@ const PillTabs = styled(Tabs)(({ theme }) => {
   return ({
     positon: "relative",
     borderRadius: "9999px",
-    border: `1px solid ${theme.palette.divider}`,
+    border: `1px solid ${theme.palette.primary.border}`,
     backgroundColor: theme.palette.background.paper,
     padding: "4px",
     minHeight: "unset",
@@ -25,6 +25,7 @@ const PillTabs = styled(Tabs)(({ theme }) => {
       top: 0,
       bottom: 0,
       height: "auto",
+      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0ms',
     },
     "& .MuiTabs-indicatorSpan": {
       borderRadius: "9999px",
@@ -39,7 +40,8 @@ const PillTab = styled(Tab)(({ theme }) => ({
   position: "relative",
   zIndex: 1,
   textTransform: "none",
-  fontSize: "16px",
+  fontSize: "14px",
+  [theme.breakpoints.up("sm")]: {fontSize: "16px",},
   fontWeight: 600,
   flexGrow: 1,
   borderRadius: "9999px",
@@ -51,6 +53,7 @@ const PillTab = styled(Tab)(({ theme }) => ({
   alignItems: "center",
   justifyContent: "center",
   color: theme.palette.text.primary,
+  transition: "color 0.4s ease",
   "&.Mui-selected": {
     color: theme.palette.primary.contrastText,
   },
@@ -80,6 +83,7 @@ function GuestNavbar() {
     <PillTabs
       id="pill-tabs-container"
       value={activeLink}
+      variant="fullWidth"
       onChange={handleChange}
       slotProps={{ indicator: {children: <span className="MuiTabs-indicatorSpan" />} }}
       sx={{mb: 2}}
