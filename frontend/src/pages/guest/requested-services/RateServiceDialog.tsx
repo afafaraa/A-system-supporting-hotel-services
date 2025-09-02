@@ -1,11 +1,10 @@
-import {Dialog, Button, TextField, IconButton} from "@mui/material";
+import {Dialog, Button, TextField} from "@mui/material";
 import {useState} from "react";
-import StarIcon from '@mui/icons-material/Star';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import {useSelector} from "react-redux";
 import {selectUser} from "../../../redux/slices/userSlice.ts";
 import {useTranslation} from "react-i18next";
+import Rating from "@mui/material/Rating";
 
 function RateServiceDialog({open, setOpen, scheduleId, fetchData}: {open: boolean, setOpen: (b: boolean) => void, scheduleId: string, fetchData: () => void}) {
   const [commentOpen, setCommentOpen] = useState<boolean>(false);
@@ -13,10 +12,6 @@ function RateServiceDialog({open, setOpen, scheduleId, fetchData}: {open: boolea
   const [comment, setComment] = useState<string>("");
   const user = useSelector(selectUser);
   const  {t} = useTranslation();
-
-  const handleStarClick = (selectedRating: number) => {
-    setRating(selectedRating);
-  };
 
   const handleSubmit = async () => {
     try {
@@ -49,13 +44,10 @@ function RateServiceDialog({open, setOpen, scheduleId, fetchData}: {open: boolea
       <div style={{padding: '20px'}}>
         <p style={{marginBottom: '15px', fontSize: '1.2em', fontWeight: 'bold'}}>{t('pages.past_services.rateServiceDialog')}</p>
 
-        <div style={{marginBottom: '20px'}}>
-          {[1, 2, 3, 4, 5].map((star) => (
-            <IconButton key={star} onClick={() => handleStarClick(star)} color={rating >= star ? "warning" : "inherit"}>
-              {rating >= star ? <StarIcon /> : <StarBorderIcon />}
-            </IconButton>
-          ))}
-        </div>
+        <Rating size="large" value={rating}
+                onChange={(_event, newValue) => {if (newValue) setRating(newValue);}}
+                sx={{gap: 1.2, mb: 2.5}}
+        />
 
         <div>
           {!commentOpen && (

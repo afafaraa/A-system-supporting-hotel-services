@@ -10,18 +10,21 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
 import {Link, useNavigate} from "react-router-dom";
 import ThemeSwitcher from "./ThemeSwitcher.tsx";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {selectUserDetails, setUserDetails, UserDetails} from "../../redux/slices/userDetailsSlice.ts";
+import {selectShoppingCartCount} from "../../redux/slices/shoppingCartSlice.ts";
+import {setNotificationsCount, selectNotificationsCount} from "../../redux/slices/notificationsCount.ts";
 
 const drawerHeight = 64;
 
 function Navbar() {
   const user = useSelector(selectUser);
   const userDetails = useSelector(selectUserDetails);
+  const notificationsCount = useSelector(selectNotificationsCount);
+  const shoppingCartCount = useSelector(selectShoppingCartCount);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [notificationsCount, setNotificationsCount] = useState<number>(0);
   const theme = useTheme();
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.login.${key}`);
@@ -30,9 +33,9 @@ function Navbar() {
     if (!user) return;
     axiosAuthApi.get<number>('/user/notifications/unread-count')
       .then(res => {
-        if (res.data > 0) setNotificationsCount(res.data);
+        if (res.data > 0) dispatch(setNotificationsCount(res.data));
       });
-  }, [user]);
+  }, [dispatch, user]);
 
   useEffect(() => {
     if (userDetails !== null) return
@@ -93,12 +96,12 @@ function Navbar() {
 
   return (
     <>
-      <AppBar elevation={2} position="fixed" color="transparent" sx={{bgcolor: theme => alpha(theme.palette.background.paper, 0.4), backdropFilter: "blur(10px)", justifyContent: "center", height: drawerHeight, py: 2, px: {xs: 2, sm: 2, md: 7, lg: 12, xl: 12}}}>
+      <AppBar elevation={1} position="fixed" color="transparent" sx={{bgcolor: theme => alpha(theme.palette.background.paper, 0.4), backdropFilter: "blur(10px)", justifyContent: "center", height: drawerHeight, py: 2, px: {xs: 2, sm: 2, md: 7, lg: 12, xl: 12}}}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
 
           <AppLogo/>
 
-          <Stack direction="row" spacing={{xs: 0.5, sm: 3}} alignItems="center">
+          <Stack direction="row" spacing={{xs: 1.6, sm: 3}} alignItems="center">
 
             <ThemeSwitcher />
 
@@ -110,7 +113,9 @@ function Navbar() {
 
             {user.role === "ROLE_GUEST" &&
               <IconButton onClick={() => navigate("/services/shopping-cart")}>
-                <ShoppingCartOutlinedIcon />
+                <Badge badgeContent={shoppingCartCount} color="secondary">
+                  <ShoppingCartOutlinedIcon />
+                </Badge>
               </IconButton>
             }
 

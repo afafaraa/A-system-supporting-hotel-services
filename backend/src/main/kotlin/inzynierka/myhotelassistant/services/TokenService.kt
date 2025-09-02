@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.jwt.JwtEncoder
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters
+import org.springframework.security.oauth2.jwt.JwtException
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -67,10 +68,17 @@ class TokenService(
     }
 
     fun refreshToken(refreshToken: String): String {
-        val jwt = decoder.decode(refreshToken)
+        val jwt =
+            try {
+                decoder.decode(refreshToken)
+            } catch (
+                e: JwtException,
+            ) {
+                throw BadCredentialsException("Invalid refresh token: ${e.message}")
+            }
         val type = jwt.getClaimAsString("type")
         if (type != JWTType.REFRESH.name) {
-            throw BadCredentialsException("Invalid token type: expected ACCESS, got $type")
+            throw BadCredentialsException("Invalid token type: expected REFRESH, got $type")
         }
         return generateAccessToken(
             UserDetails(
@@ -96,7 +104,14 @@ class TokenService(
     }
 
     fun validateResetPasswordToken(token: String): String {
-        val jwt = decoder.decode(token)
+        val jwt =
+            try {
+                decoder.decode(token)
+            } catch (
+                e: JwtException,
+            ) {
+                throw BadCredentialsException("Invalid reset password token: ${e.message}")
+            }
 
         if (jwt.expiresAt?.isBefore(Instant.now()) ?: true) {
             throw ResetTokenValidationException("Token expired")

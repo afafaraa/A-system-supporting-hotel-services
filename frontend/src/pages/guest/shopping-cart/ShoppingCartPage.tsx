@@ -4,9 +4,10 @@ import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import ShoppingCartItem from "./ShoppingCartItem.tsx";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../../redux/slices/userSlice.ts";
 import {useTranslation} from "react-i18next";
+import {clearCart, removeItem, selectShoppingCart} from "../../../redux/slices/shoppingCartSlice.ts";
 
 export type CartProps = {
   id: string;
@@ -23,6 +24,8 @@ function ShoppingCartPage() {
   const [cart, setCart] = useState<CartProps[]>([]);
   const [bill, setBill] = useState<number>(0);
   const user = useSelector(selectUser);
+  const shoppingCart = useSelector(selectShoppingCart);
+  const dispatch = useDispatch();
   const {t} = useTranslation();
 
   useEffect(() => {
@@ -32,23 +35,20 @@ function ShoppingCartPage() {
   },[])
 
   const fetchCartData = async () => {
-    try {
-      const cartList : CartProps[] = [];
-      const items = localStorage.getItem("CART");
-      if (items) {
-        const parsedItems = JSON.parse(items);
-        for (const id of parsedItems) {
+    const cartList : CartProps[] = [];
+    if (shoppingCart) {
+      for (const id of shoppingCart) {
+        try {
           const response = await axiosAuthApi.get(`/schedule/get/cart/id/${id}`)
           const cartItem: CartProps = response.data;
-          if (cartItem) {
-            cartList.push(cartItem);
-          }
+          if (cartItem) cartList.push(cartItem);
+        } catch (e) {
+          dispatch(removeItem(id));
+          console.error(e);
         }
       }
-      setCart(cartList);
-    } catch (e) {
-      console.error(e);
     }
+    setCart(cartList);
   }
 
   const fetchCurrentBill = async () => {
@@ -60,13 +60,13 @@ function ShoppingCartPage() {
     }
   }
 
-  const clearCart = () => {
+  const clearShoppingCart = () => {
     setCart([]);
-    localStorage.setItem("CART", JSON.stringify([]));
+    dispatch(clearCart());
   }
 
   const orderServices = async () => {
-    clearCart();
+    clearShoppingCart();
     fetchCartData();
     try {
       for (const item of cart) {
@@ -84,6 +84,11 @@ function ShoppingCartPage() {
     }
   }
 
+  const removeShoppingCartItem = (itemId: string) => {
+    dispatch(removeItem(itemId));
+    setCart(cart.filter(item => item.id !== itemId));
+  }
+
   return (
     <div style={{width: '100%'}}>
       <AuthenticatedHeader title={"Koszyk"}/>
@@ -93,9 +98,9 @@ function ShoppingCartPage() {
       }}>
         <Grid sx={{gap: 2,}} container spacing={{xs: 2, md: 3}} columns={{xs: 1, md: 2}}>
           <Grid sx={{backgroundColor: 'white', padding: {xs: '15px', sm: '30px 25px'}}} size={1}>
-            <Button variant="contained" sx={{mb: '5px'}} onClick={clearCart}>{t('buttons.deleteAll')}</Button>
+            <Button variant="contained" sx={{mb: '5px'}} onClick={clearShoppingCart}>{t('buttons.deleteAll')}</Button>
             {cart.length > 0 ? cart.map((item, index) => (
-              <ShoppingCartItem key={index} index={index} item={item} fetchCartData={fetchCartData}/>
+              <ShoppingCartItem key={index} index={index} item={item} removeItself={() => removeShoppingCartItem(item.id)}/>
             )) : <p>{t('pages.shopping_cart.noItems')}</p>}
           </Grid>
           <Grid sx={{display: 'flex', flexDirection: 'column', gap: '15px', }} size={1}>
