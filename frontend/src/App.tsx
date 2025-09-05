@@ -27,6 +27,15 @@ import ServicesListPage from "./pages/manager/ServicesListPage.tsx";
 import StatsPage from "./pages/manager/StatsPage.tsx";
 import AddNewEmployeePage from './pages/manager/forms/AddNewEmployeePage.tsx';
 import GuestMainPage from "./pages/guest/layout/GuestMainPage.tsx";
+import EmployeeMainPage from "./components/layout/EmployeeMainPage.tsx";
+import TodaySchedulesPage from "./pages/employee/TodaySchedulesPage.tsx";
+import RequestedSchedulesPage from "./pages/employee/RequestedSchedulesPage.tsx";
+import EmployeeReservationsPage from "./pages/employee/ReservationsPage.tsx";
+import EmployeeReviewsPage from "./pages/employee/ReviewsPage.tsx";
+import ManagerMainPage from "./components/layout/ManagerMainPage.tsx";
+import GuestsPage from "./pages/manager/GuestsPage.tsx";
+import AdminMainPage from "./components/layout/AdminMainPage.tsx";
+import FallbackPage from "./pages/user/FallbackPage.tsx";
 
 function App(){
 
@@ -50,17 +59,30 @@ function App(){
               </Route>
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_EMPLOYEE", "ROLE_RECEPTIONIST", "ROLE_MANAGER", "ROLE_ADMIN"]} />}>
-              <Route path="/employee/schedule" element={<EmployeeSchedulePage />} />
+              <Route element={<EmployeeMainPage />}>
+                <Route path="/employee/today-schedules" element={<TodaySchedulesPage />} />
+                <Route path="/employee/requested-schedules" element={<RequestedSchedulesPage />} />
+                <Route path="/employee/calendar" element={<EmployeeSchedulePage />} />
+                <Route path="/employee/reservations" element={<EmployeeReservationsPage />} />
+                <Route path="/employee/reviews" element={<EmployeeReviewsPage />} />
+              </Route>
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_RECEPTIONIST", "ROLE_MANAGER", "ROLE_ADMIN"]} />}>
               <Route path="/add-reservation" element={<AddReservationPage />} />
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]} />}>
-              <Route path="/employees" element={<EmployeeListPage />} />
-              <Route path="/employees/new" element={<AddNewEmployeePage />} />
-              <Route path="/employees/:username" element={<EmployeeDetailsPage />} />
-              <Route path="/management/services" element={<ServicesListPage />} />
-              <Route path="/management/statistics" element={<StatsPage />} />
+              <Route element={<ManagerMainPage />}>
+                <Route path="/employees" element={<EmployeeListPage />} />
+                <Route path="/employees/new" element={<AddNewEmployeePage />} />
+                <Route path="/employees/:username" element={<EmployeeDetailsPage />} />
+                <Route path="/management/guests" element={<GuestsPage />} />
+                <Route path="/management/services" element={<ServicesListPage />} />
+                <Route path="/management/statistics" element={<StatsPage />} />
+                <Route path="/management/calendar" element={<EmployeeSchedulePage />} />
+              </Route>
+            </Route>
+            <Route element={<ProtectedRoute allowedRoles={["ROLE_ADMIN"]} />}>
+              <Route path="/admin/dashboard" element={<AdminMainPage />} />
             </Route>
           </Route>
 
@@ -71,6 +93,7 @@ function App(){
             <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="*" element={<Navigate to="/login" replace />} />
+            <Route path="/fallback" element={<FallbackPage />} />
           </Route>
 
         </Routes>

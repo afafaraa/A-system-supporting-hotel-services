@@ -1,7 +1,7 @@
 import {Outlet} from "react-router-dom";
 import {Box, Container} from "@mui/material";
-import TemporaryMenu from "./TemporaryMenu.tsx";
-import Navbar from "./Navbar.tsx";
+import TemporaryMenu from "../navigation/TemporaryMenu.tsx";
+import Navbar from "../navigation/Navbar.tsx";
 
 function AuthenticatedLayout() {
 

@@ -2,7 +2,7 @@ import {Grid} from "@mui/material";
 import AvailableServiceCard, {ServiceProps} from "./AvailableServiceCard.tsx";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import {useEffect, useState} from "react";
-import AuthenticatedHeader from "../../../components/layout/AuthenticatedHeader.tsx";
+import AuthenticatedHeader from "../../../components/ui/AuthenticatedHeader.tsx";
 import {useTranslation} from "react-i18next";
 
 function AvailableServicesPage() {

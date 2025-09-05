@@ -11,10 +11,10 @@ import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import {t} from "i18next";
-import LanguageSwitcher from "../../components/layout/LanguageSwitcher.tsx";
+import LanguageSwitcher from "../../components/ui/LanguageSwitcher.tsx";
 import React from "react";
 import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
-import ThemeSwitcher from "../../components/layout/ThemeSwitcher.tsx";
+import ThemeSwitcher from "../../components/ui/ThemeSwitcher.tsx";
 
 function ProfilePage() {
   const user = useSelector(selectUser);

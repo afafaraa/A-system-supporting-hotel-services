@@ -11,7 +11,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {useState} from "react";
-import ConfirmationWithReasonDialog from "../../components/layout/ConfirmationWithReasonDialog.tsx"
+import ConfirmationWithReasonDialog from "../../components/ui/ConfirmationWithReasonDialog.tsx"
 import {CancellationReason} from "../../types/cancellation_reasons.ts";
 
 type Props = {

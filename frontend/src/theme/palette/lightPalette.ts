@@ -13,13 +13,13 @@ export const lightPalette: PaletteOptions = {
   secondary: {
     main: '#FFE921'
   },
-  text: {
-    primary: 'rgba(0, 0, 0, 0.87)',
-    secondary: 'rgba(118, 111, 132, 1)',
-  },
   background: {
     default: 'hsl(256, 20%, 95%)',
     paper: 'hsl(256, 20%, 98%)',
+  },
+  text: {
+    primary: 'rgba(0, 0, 0, 0.87)',
+    secondary: 'rgba(118, 111, 132, 1)',
   },
   action: {
     active: 'rgba(0, 0, 0, 0.75)',

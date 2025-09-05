@@ -2,11 +2,11 @@ import {styled, Tab, Tabs} from "@mui/material";
 import {SyntheticEvent, useMemo} from "react";
 import {matchPath, useLocation, useNavigate} from "react-router-dom";
 
-const PillTabs = styled(Tabs)(({ theme }) => {
+const PillTabs = styled(Tabs)(({theme}) => {
   return ({
     positon: "relative",
     borderRadius: "9999px",
-    border: `1px solid ${theme.palette.primary.border}`,
+    border: `1px solid ${theme.palette.divider}`,
     backgroundColor: theme.palette.background.paper,
     padding: "4px",
     minHeight: "unset",
@@ -36,7 +36,7 @@ const PillTabs = styled(Tabs)(({ theme }) => {
   });
 });
 
-const PillTab = styled(Tab)(({ theme }) => ({
+const PillTab = styled(Tab)(({theme}) => ({
   position: "relative",
   zIndex: 1,
   textTransform: "none",
@@ -59,21 +59,19 @@ const PillTab = styled(Tab)(({ theme }) => ({
   },
 }));
 
-const tabs = [
-  {name: "Available Services", link: "/services/available"},
-  {name: "Booked Services", link: "/services/requested"},
-  {name: "Historical Services", link: "/services/history"},
-];
+interface DashboardNavbarProps {
+  tabs: ReadonlyArray<{ name: string; link: string }>;
+}
 
-function GuestNavbar() {
+function DashboardNavbar({ tabs }: DashboardNavbarProps) {
   const navigate = useNavigate();
   const location = useLocation();
 
   const activeLink = useMemo(() => {
     const match = tabs.find(t =>
-      matchPath({ path: `${t.link}/*`, end: false }, location.pathname));
+      matchPath({path: `${t.link}/*`, end: false}, location.pathname));
     return match?.link ?? tabs[0].link;
-  }, [location.pathname]);
+  }, [location.pathname, tabs]);
 
   const handleChange = (_e: SyntheticEvent, newValue: string) => {
     if (newValue !== activeLink) navigate(newValue);
@@ -85,13 +83,13 @@ function GuestNavbar() {
       value={activeLink}
       variant="fullWidth"
       onChange={handleChange}
-      slotProps={{ indicator: {children: <span className="MuiTabs-indicatorSpan" />} }}
+      slotProps={{indicator: {children: <span className="MuiTabs-indicatorSpan"/>}}}
       sx={{mb: 2}}
     >
       {tabs.map((tab, index) =>
-        <PillTab key={index} value={tab.link} label={tab.name} disableRipple />)}
+        <PillTab key={index} value={tab.link} label={tab.name} disableRipple/>)}
     </PillTabs>
   );
 }
 
-export default GuestNavbar;
+export default DashboardNavbar;

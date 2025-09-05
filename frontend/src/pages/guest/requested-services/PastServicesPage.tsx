@@ -2,7 +2,7 @@ import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import {useSelector} from "react-redux";
 import {selectUser} from "../../../redux/slices/userSlice.ts";
 import {useEffect, useState} from "react";
-import AuthenticatedHeader from "../../../components/layout/AuthenticatedHeader.tsx";
+import AuthenticatedHeader from "../../../components/ui/AuthenticatedHeader.tsx";
 import ServiceItem from "./ServiceItem.tsx";
 import {useTranslation} from "react-i18next";
 

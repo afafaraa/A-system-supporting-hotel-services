@@ -1,7 +1,7 @@
 import {useParams, useLocation} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
-import AuthenticatedHeader from "../../../components/layout/AuthenticatedHeader.tsx";
+import AuthenticatedHeader from "../../../components/ui/AuthenticatedHeader.tsx";
 import {Grid, Box} from "@mui/material";
 import {ServiceProps} from "../available-services/AvailableServiceCard.tsx";
 import ScheduleForDate from "./ScheduleForDay.tsx";

@@ -4,7 +4,7 @@ import { axiosAuthApi } from "../../middleware/axiosApi";
 import { Box, CircularProgress, Paper, Tab, Tabs, Typography } from "@mui/material";
 import { Employee } from "../../types";
 import {startOfWeek, addWeeks, subWeeks, format, addMinutes, addDays} from "date-fns";
-import { ScheduleCard, ScheduleTable} from "../../components/layout/ScheduleTable.tsx";
+import { ScheduleCard, ScheduleTable} from "../../components/ui/ScheduleTable.tsx";
 import {getEndTime, getStartTime, getYearWeek} from "../../utils/utils.ts";
 import { useTranslation } from "react-i18next";
 import {Schedule} from "../../types/schedule.ts";

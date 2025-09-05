@@ -1,8 +1,8 @@
 import {useEffect, useMemo, useState} from "react";
-import AuthenticatedHeader from "../../components/layout/AuthenticatedHeader.tsx";
+import AuthenticatedHeader from "../../components/ui/AuthenticatedHeader.tsx";
 import {Alert, Tab, Tabs, Typography} from "@mui/material";
 import {addDays, addMinutes, addWeeks, format, startOfWeek, subWeeks} from "date-fns";
-import {ScheduleCard, ScheduleTable} from "../../components/layout/ScheduleTable.tsx";
+import {ScheduleCard, ScheduleTable} from "../../components/ui/ScheduleTable.tsx";
 import {Schedule, OrderStatus} from "../../types/schedule.ts";
 import {useTranslation} from "react-i18next";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";

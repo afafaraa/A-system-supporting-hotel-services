@@ -1,7 +1,7 @@
 import {Outlet} from "react-router-dom";
 import {Container, Box} from "@mui/material";
-import LanguageSwitcher from "./LanguageSwitcher.tsx";
-import ThemeSwitcher from "./ThemeSwitcher.tsx";
+import LanguageSwitcher from "../ui/LanguageSwitcher.tsx";
+import ThemeSwitcher from "../ui/ThemeSwitcher.tsx";
 
 function PublicLayout() {
 

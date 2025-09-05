@@ -2,7 +2,7 @@ import {MouseEvent, useState} from "react";
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import { useSelector } from "react-redux";
-import { selectUser } from "../../redux/slices/userSlice";
+import { selectUser } from "../../redux/slices/userSlice.ts";
 import {useNavigate} from "react-router-dom";
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
@@ -12,7 +12,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import GroupIcon from '@mui/icons-material/Group';
 import BuildIcon from '@mui/icons-material/Build';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import LanguageSwitcher from "./LanguageSwitcher.tsx";
+import LanguageSwitcher from "../ui/LanguageSwitcher.tsx";
 import {useTranslation} from "react-i18next";
 import {Menu, MenuItem, Typography} from "@mui/material";
 
