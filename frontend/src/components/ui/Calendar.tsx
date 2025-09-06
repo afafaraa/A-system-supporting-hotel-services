@@ -109,7 +109,7 @@ function Calendar() {
   const CalendarGrid = () => {
     const shortWeekdays: string[] = t("date.shortWeekdays", { returnObjects: true }) as string[];
     const schedulesForWeek: Schedule[] = schedules.get(yearWeek) || [];
-    const schedulesOnDay: Record<number, Schedule[]> = Object.groupBy(schedulesForWeek, (s: Schedule) => numberToWeekday[s.weekday]);
+    const schedulesOnDay: Partial<Record<number, Schedule[]>> = Object.groupBy(schedulesForWeek, (s: Schedule) => numberToWeekday[s.weekday]);
 
     return (
       <Stack direction="row" spacing={2} sx={{
