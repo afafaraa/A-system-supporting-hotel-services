@@ -1,14 +1,10 @@
 import { useParams } from "react-router-dom";
-import {useEffect, useState, useCallback, useMemo} from "react";
+import {useEffect, useState, useCallback} from "react";
 import { axiosAuthApi } from "../../middleware/axiosApi";
 import { Box, CircularProgress, Paper, Tab, Tabs, Typography } from "@mui/material";
 import { Employee } from "../../types";
-import {startOfWeek, addWeeks, subWeeks, format, addMinutes, addDays} from "date-fns";
-import { ScheduleCard, ScheduleTable} from "../../components/ui/ScheduleTable.tsx";
-import {getEndTime, getStartTime, getYearWeek} from "../../utils/utils.ts";
 import { useTranslation } from "react-i18next";
-import {Schedule} from "../../types/schedule.ts";
-import {isAxiosError} from "axios";
+import Calendar from "../../components/ui/Calendar.tsx";
 
 function EmployeeDetailsPage() {
   const { username } = useParams<{ username: string }>();
@@ -16,26 +12,8 @@ function EmployeeDetailsPage() {
   const [detail, setDetail] = useState<Employee | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentWeekStart, setCurrentWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
-  const [schedules, setSchedules] = useState<Map<number, Schedule[]>>(new Map());
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.personnelDetails.${key}`);
-
-  const fetchShifts = useCallback(async () => {
-    const yearWeek = getYearWeek(currentWeekStart);
-    if (schedules.has(yearWeek)) return;
-    axiosAuthApi.get<Schedule[]>(`/management/employees/username/${username}/schedule?date=` + addDays(currentWeekStart, 1).toISOString())
-      .then(res => {
-        const updatedMap = new Map(schedules);
-        updatedMap.set(yearWeek, res.data);
-        setSchedules(updatedMap);
-      })
-      .catch(err => {
-        if (isAxiosError(err)) {
-          if (err.response?.status !== 404) setError("Unable to fetch schedules: " + err.message);
-        } else { setError("An unexpected error occurred while fetching schedules"); }
-      });
-  }, [currentWeekStart, schedules, username]);
 
   const fetchDetails = useCallback(async () => {
     setLoading(true);
@@ -53,38 +31,8 @@ function EmployeeDetailsPage() {
   }, [username]);
 
   useEffect(() => {
-    fetchShifts();
     fetchDetails();
-  }, [fetchDetails, fetchShifts]);
-
-  const handlePrevWeek = () => {
-    setCurrentWeekStart(prev => subWeeks(prev, 1));
-  };
-
-  const handleNextWeek = () => {
-    setCurrentWeekStart(prev => addWeeks(prev, 1));
-  };
-
-  const startDate = useMemo(() =>
-    getStartTime(schedules.get(getYearWeek(currentWeekStart))), [schedules, currentWeekStart]);
-
-  const endDate = useMemo(() =>
-    getEndTime(schedules.get(getYearWeek(currentWeekStart))), [schedules, currentWeekStart]);
-
-  const renderShiftCard = (schedule: Schedule) => {
-    return (
-      <ScheduleCard key={schedule.id} schedule={schedule} startDate={startDate}
-                    statusName={t(`order_status.${schedule.status}`)} onClick={() => console.log("TO DO")}>
-        <Typography fontWeight="bold" noWrap>{schedule.title}</Typography>
-        <Typography color="text.secondary">
-          {schedule.duration ?
-            `${format(schedule.date, "HH:mm")} - ${format(addMinutes(schedule.date, schedule.duration), "HH:mm")}`
-            : format(schedule.date, "HH:mm")
-          }
-        </Typography>
-      </ScheduleCard>
-    );
-  }
+  }, [fetchDetails]);
 
   if (loading) {
     return (
@@ -114,15 +62,7 @@ function EmployeeDetailsPage() {
         </Tabs>
       </Box>
       {tab === 0 && (
-        <ScheduleTable
-          currentWeekStart={currentWeekStart}
-          handlePrevWeek={handlePrevWeek}
-          handleNextWeek={handleNextWeek}
-          startDate={startDate}
-          endDate={endDate}
-        >
-          {schedules.get(getYearWeek(currentWeekStart))?.map(renderShiftCard)}
-        </ScheduleTable>
+        <Calendar />
       )}
 
       {tab === 1 && detail && (

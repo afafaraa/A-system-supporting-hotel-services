@@ -20,7 +20,7 @@ import {PropsWithChildren, useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {initializeUserFromLocalStorage} from "./components/auth/auth.tsx";
 import ServiceSchedulePage from "./pages/guest/service-schedule/ServiceSchedulePage.tsx";
-import EmployeeSchedulePage from "./pages/employee/EmployeeSchedulePage.tsx";
+import Calendar from "./components/ui/Calendar.tsx";
 import LoadingPage from "./pages/user/LoadingPage.tsx";
 import EmployeeDetailsPage from "./pages/manager/EmployeeDetailsPage.tsx";
 import ServicesListPage from "./pages/manager/ServicesListPage.tsx";
@@ -62,7 +62,7 @@ function App(){
               <Route element={<EmployeeMainPage />}>
                 <Route path="/employee/today-schedules" element={<TodaySchedulesPage />} />
                 <Route path="/employee/requested-schedules" element={<RequestedSchedulesPage />} />
-                <Route path="/employee/calendar" element={<EmployeeSchedulePage />} />
+                <Route path="/employee/calendar" element={<Calendar />} />
                 <Route path="/employee/reservations" element={<EmployeeReservationsPage />} />
                 <Route path="/employee/reviews" element={<EmployeeReviewsPage />} />
               </Route>
@@ -78,7 +78,7 @@ function App(){
                 <Route path="/management/guests" element={<GuestsPage />} />
                 <Route path="/management/services" element={<ServicesListPage />} />
                 <Route path="/management/statistics" element={<StatsPage />} />
-                <Route path="/management/calendar" element={<EmployeeSchedulePage />} />
+                <Route path="/management/calendar" element={<Calendar />} />
               </Route>
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_ADMIN"]} />}>

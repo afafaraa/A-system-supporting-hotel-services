@@ -65,7 +65,7 @@ export const getTime = (timestamp: string): string => {
 export const navigateToDashboard = (role: string, navigate: NavigateFunction) => {
   if (role === 'ROLE_GUEST') navigate('/services/available');
   else if (role === 'ROLE_EMPLOYEE' || role === "ROLE_RECEPTIONIST") navigate('/employee/today-schedules');
-  else if (role === 'ROLE_MANAGER') navigate('/employee/today-schedules')
-  else if (role === 'ROLE_ADMIN') navigate('/admin/dashboard')
-  else navigate('/fallback')
+  else if (role === 'ROLE_MANAGER') navigate('/management/guests');
+  else if (role === 'ROLE_ADMIN') navigate('/admin/dashboard');
+  else navigate('/fallback');
 }

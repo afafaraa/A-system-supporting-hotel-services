@@ -15,6 +15,7 @@ import LanguageSwitcher from "../../components/ui/LanguageSwitcher.tsx";
 import React from "react";
 import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
 import ThemeSwitcher from "../../components/ui/ThemeSwitcher.tsx";
+import Title from "../../components/ui/Title.tsx";
 
 function ProfilePage() {
   const user = useSelector(selectUser);
@@ -25,13 +26,6 @@ function ProfilePage() {
   const getUserInitials = (name: string, surname: string) => {
     return name.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
   }
-
-  const Title: React.FC<{ title: React.ReactNode; subtitle?: React.ReactNode }> = ({ title, subtitle }) => (
-    <Box mb={3}>
-      <Typography fontSize="1.2rem" display="flex" alignItems="center" gap={1}>{title}</Typography>
-      <Typography fontSize="inherit" color="text.secondary">{subtitle}</Typography>
-    </Box>
-  )
 
   const UserProfile = () => (
     <SectionCard sx={{backgroundColor: "primary.main"}}>

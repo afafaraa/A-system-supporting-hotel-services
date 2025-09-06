@@ -1,63 +1,6 @@
-import {styled, Tab, Tabs} from "@mui/material";
-import {SyntheticEvent, useMemo} from "react";
+import {Box, Stack} from "@mui/material";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {matchPath, useLocation, useNavigate} from "react-router-dom";
-
-const PillTabs = styled(Tabs)(({theme}) => {
-  return ({
-    positon: "relative",
-    borderRadius: "9999px",
-    border: `1px solid ${theme.palette.divider}`,
-    backgroundColor: theme.palette.background.paper,
-    padding: "4px",
-    minHeight: "unset",
-    height: "40px",
-    "& .MuiTabs-flexContainer": {
-      position: "relative",
-      zIndex: 1,
-      height: "100%",
-    },
-    "& .MuiTabs-indicator": {
-      zIndex: 0,
-      pointerEvents: 'none',
-      display: "flex",
-      justifyContent: "center",
-      backgroundColor: "transparent",
-      top: 0,
-      bottom: 0,
-      height: "auto",
-      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-    },
-    "& .MuiTabs-indicatorSpan": {
-      borderRadius: "9999px",
-      width: "100%",
-      backgroundColor: theme.palette.primary.main,
-      boxShadow: theme.shadows[1],
-    },
-  });
-});
-
-const PillTab = styled(Tab)(({theme}) => ({
-  position: "relative",
-  zIndex: 1,
-  textTransform: "none",
-  fontSize: "14px",
-  [theme.breakpoints.up("sm")]: {fontSize: "16px",},
-  fontWeight: 600,
-  flexGrow: 1,
-  borderRadius: "9999px",
-  minHeight: "100%",
-  height: "100%",
-  minWidth: 0,
-  padding: 0,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: theme.palette.text.primary,
-  transition: "color 0.4s ease",
-  "&.Mui-selected": {
-    color: theme.palette.primary.contrastText,
-  },
-}));
 
 interface DashboardNavbarProps {
   tabs: ReadonlyArray<{ name: string; link: string }>;
@@ -66,6 +9,8 @@ interface DashboardNavbarProps {
 function DashboardNavbar({ tabs }: DashboardNavbarProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
 
   const activeLink = useMemo(() => {
     const match = tabs.find(t =>
@@ -73,22 +18,52 @@ function DashboardNavbar({ tabs }: DashboardNavbarProps) {
     return match?.link ?? tabs[0].link;
   }, [location.pathname, tabs]);
 
-  const handleChange = (_e: SyntheticEvent, newValue: string) => {
-    if (newValue !== activeLink) navigate(newValue);
-  };
+  useEffect(() => {
+    function updateIndicator() {
+      if (!containerRef.current) return;
+      const idx = tabs.findIndex(t => t.link === activeLink);
+      const tabEl = containerRef.current.children[idx+1] as HTMLElement;
+      if (tabEl) {
+        setIndicatorStyle({left: tabEl.offsetLeft, width: tabEl.offsetWidth});
+        if (window.innerWidth < 600) {
+          const container = containerRef.current;
+          const containerWidth = container.offsetWidth;
+          const tabCenter = tabEl.offsetLeft + tabEl.offsetWidth / 2;
+          const scrollTo = tabCenter - containerWidth / 2;
+          container.scrollTo({
+            left: scrollTo,
+            behavior: "smooth",
+          });
+        }
+      }
+    }
+    updateIndicator();
+    window.addEventListener("resize", updateIndicator);
+    return () => window.removeEventListener("resize", updateIndicator);
+  }, [activeLink, tabs]);
 
   return (
-    <PillTabs
-      id="pill-tabs-container"
-      value={activeLink}
-      variant="fullWidth"
-      onChange={handleChange}
-      slotProps={{indicator: {children: <span className="MuiTabs-indicatorSpan"/>}}}
-      sx={{mb: 2}}
+    <Stack ref={containerRef} direction="row" position="relative" overflow="hidden" alignItems="center" mb={2}
+           height={40} p={0.5} borderRadius="99px" bgcolor="background.paper"
+           border={theme => `1px solid ${theme.palette.divider}`}
+           sx={{ overflowX: 'auto', whiteSpace: 'nowrap', scrollbarWidth: "none", "::-webkit-scrollbar": {display: "none"} }}
     >
-      {tabs.map((tab, index) =>
-        <PillTab key={index} value={tab.link} label={tab.name} disableRipple/>)}
-    </PillTabs>
+
+      <Box position="absolute" top={4} bottom={4} borderRadius="99px" bgcolor="primary.main"
+           sx={{transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0ms"}}
+           style={indicatorStyle}
+      />
+
+      {tabs.map((tab) => (
+        <Box key={tab.link} display="flex" flex="1 0 0" px={3} justifyContent="center" alignItems="center" zIndex={1}
+             fontWeight={600} fontSize="14px" color={activeLink === tab.link ? "primary.contrastText" : "text.primary"}
+             sx={{cursor: "pointer", userSelect: "none"}}
+             onClick={() => navigate(tab.link)}
+        >
+          {tab.name}
+        </Box>
+      ))}
+    </Stack>
   );
 }
 
