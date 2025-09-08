@@ -1,24 +1,28 @@
-import {Box, GlobalStyles} from '@mui/material';
+import GuestNavbar from "./GuestNavbar.tsx";
+import { Box } from '@mui/material';
 import NotificationsContainer from '../../../components/ui/NotificationsContainer.tsx';
-import { Outlet } from "react-router-dom";
-import DashboardNavbar from "../../../components/navigation/DashboardNavbar.tsx";
+import { useState } from 'react';
+import AvailableServicesPage from '../available-services/AvailableServicesPage.tsx';
 
-const guestTabs = [
-  {name: "Available Services", link: "/services/available"},
-  {name: "Booked Services", link: "/services/requested"},
-  {name: "Historical Services", link: "/services/history"},
-] as const;
+const subpages = ["Available Services", "Booked Services", "Book Hotel Room"];
 
 function GuestMainPage() {
-
+  const [currentPage, setCurrentPage] = useState<"Available Services" | "Booked Services" | "Book Hotel Room">("Available Services");
   return (
     <div style={{display: 'flex', gap: '1rem'}}>
-      <GlobalStyles styles={{ html: { overflowY: 'scroll' } }} />
-      <Box width={{xs: '100%', lg: '70%'}}>
-        <DashboardNavbar tabs={guestTabs} />
-        <Outlet />
+      <Box sx={{width: { xs: '100%', md: '70%' }}}>
+        <GuestNavbar currentPage={currentPage} setCurrentPage={setCurrentPage} subpages={subpages}/>
+        {currentPage === "Available Services" && (
+          <AvailableServicesPage />
+        )}
+        {currentPage === "Booked Services" && (
+          <AvailableServicesPage />
+        )}
+        {currentPage === "Book Hotel Room" && (
+          <AvailableServicesPage />
+        )}
       </Box>
-      <Box width='30%' display={{ xs: "none", lg: "block" }}>
+      <Box display={{ xs: "none", md: "block" }} style={{width:'30%'}}>
         <NotificationsContainer />
       </Box>
     </div>

@@ -2,10 +2,8 @@ import '@mui/material/styles';
 
 declare module '@mui/material/styles' {
 
-  type CalendarColors = {primary: string, background: string};
-
   interface Palette {
-    calendar: Record<OrderStatus, CalendarColors>;
+    calendar: Record<OrderStatus, string> & {text: string};
   }
 
   interface PaletteOptions {

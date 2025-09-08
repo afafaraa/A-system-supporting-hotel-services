@@ -115,17 +115,22 @@ function Calendar() {
       <Stack direction="row" spacing={2} sx={{
         overflowX: "auto",
         transform: "scaleY(-1)", "& > div": {transform: "scaleY(-1)"}, // for scroll to be on top
-        //scrollbarWidth: "none", "&::-webkit-scrollbar": { display: "none" },
-        "&::-webkit-scrollbar": { height: 8, borderRadius: "99px" },
-        "&::-webkit-scrollbar-track": { bgcolor: "primary.light", borderRadius: "99px" },
-        "&::-webkit-scrollbar-thumb": { background: theme => `linear-gradient(90deg,${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`, borderRadius: "99px" }
+        scrollbarColor: theme => `${theme.palette.primary.main} ${theme.palette.primary.light}`,
+        scrollbarWidth: "thin",
+        scrollbarGutter: "stable",
+        "@supports (-moz-appearance: none)": {scrollbarWidth: "auto"},
+        "@supports not (scrollbar-color: red blue)": {
+          "&::-webkit-scrollbar": { height: 8, borderRadius: "99px" },
+          "&::-webkit-scrollbar-track": { bgcolor: "primary.light", borderRadius: "99px" },
+          "&::-webkit-scrollbar-thumb": { background: "primary.main", borderRadius: "99px" },
+        }
       }}>
         {shortWeekdays.map((dayOfWeek, index) => {
 
           const currentDay = addDays(currentWeekStart, index);
           const isToday = isSameDay(currentDay, today);
           return (
-            <Box key={index} textAlign="center" alignItems="center" justifyContent="center" minWidth={140} width="100%" pt={2}>
+            <Box key={index} textAlign="center" alignItems="center" justifyContent="center" minWidth={140} width="100%" sx={{paddingTop: 2}}>
               <SectionCard size={1.5} sx={{fontWeight: "bold", bgcolor: isToday ? "primary.light" : "background.main"}}>
                 <Typography mb={2} fontSize="inherit" fontWeight="inherit" lineHeight="inherit">
                   {dayOfWeek}<br/>{ currentDay.toLocaleDateString(t('date.locale'), {day: 'numeric', month: 'numeric'}) } {isToday && "(Today)"}
@@ -160,7 +165,7 @@ function Calendar() {
         }
       </Typography>
       <Box px={0.8} py={0.4} position="absolute" bottom={0} right={0} fontSize={11} fontWeight="bold"
-           color={`calendar.${schedule.status}.background`} bgcolor={`calendar.${schedule.status}.primary`}
+           color={`calendar.text`} bgcolor={`calendar.${schedule.status}`}
            sx={{borderTopLeftRadius: 10}}>
         {t(`order_status.${schedule.status}`)}
       </Box>

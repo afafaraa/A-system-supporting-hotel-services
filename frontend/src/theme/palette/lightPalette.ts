@@ -25,10 +25,11 @@ export const lightPalette: PaletteOptions = {
     active: 'rgba(0, 0, 0, 0.75)',
   },
   calendar: {
-    AVAILABLE: {primary: "hsl(200 60% 60%)", background: "#fff"},
-    REQUESTED: {primary: "hsl(270 60% 60%)", background: "#fff"},
-    ACTIVE:    {primary: "hsl(40  60% 60%)", background: "#fff"},
-    COMPLETED: {primary: "hsl(120 60% 60%)", background: "#fff"},
-    CANCELED:  {primary: "hsl(0    0% 40%)", background: "#fff"},
+    AVAILABLE: "hsl(200 60% 60%)",
+    REQUESTED: "hsl(270 60% 60%)",
+    ACTIVE:    "hsl(40  60% 60%)",
+    COMPLETED: "hsl(120 60% 60%)",
+    CANCELED:  "hsl(0    0% 40%)",
+    text: "#fff",
   },
 };

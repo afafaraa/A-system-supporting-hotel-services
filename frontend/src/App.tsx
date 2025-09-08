@@ -32,8 +32,6 @@ import TodaySchedulesPage from "./pages/employee/TodaySchedulesPage.tsx";
 import RequestedSchedulesPage from "./pages/employee/RequestedSchedulesPage.tsx";
 import EmployeeReservationsPage from "./pages/employee/ReservationsPage.tsx";
 import EmployeeReviewsPage from "./pages/employee/ReviewsPage.tsx";
-import ManagerMainPage from "./components/layout/ManagerMainPage.tsx";
-import GuestsPage from "./pages/manager/GuestsPage.tsx";
 import AdminMainPage from "./components/layout/AdminMainPage.tsx";
 import FallbackPage from "./pages/user/FallbackPage.tsx";
 
@@ -49,14 +47,13 @@ function App(){
             <Route element={<ProtectedRoute />}>
               <Route path="/home" element={<HomePage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/guest" element={<GuestMainPage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/services/available" element={<AvailableServicesPage />} />
+              <Route path="/services/requested" element={<RequestedServicesPage />}/>
+              <Route path="/services/history" element={<PastServicesPage />} />
               <Route path="/services/shopping-cart" element={<ShoppingCartPage />} />
               <Route path="/service-schedule/:id" element={<ServiceSchedulePage />} />
-              <Route element={<GuestMainPage />}>
-                <Route path="/services/available" element={<AvailableServicesPage />} />
-                <Route path="/services/requested" element={<RequestedServicesPage />}/>
-                <Route path="/services/history" element={<PastServicesPage />} />
-              </Route>
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_EMPLOYEE", "ROLE_RECEPTIONIST", "ROLE_MANAGER", "ROLE_ADMIN"]} />}>
               <Route element={<EmployeeMainPage />}>
@@ -71,15 +68,11 @@ function App(){
               <Route path="/add-reservation" element={<AddReservationPage />} />
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]} />}>
-              <Route element={<ManagerMainPage />}>
-                <Route path="/employees" element={<EmployeeListPage />} />
-                <Route path="/employees/new" element={<AddNewEmployeePage />} />
-                <Route path="/employees/:username" element={<EmployeeDetailsPage />} />
-                <Route path="/management/guests" element={<GuestsPage />} />
-                <Route path="/management/services" element={<ServicesListPage />} />
-                <Route path="/management/statistics" element={<StatsPage />} />
-                <Route path="/management/calendar" element={<Calendar />} />
-              </Route>
+              <Route path="/employees" element={<EmployeeListPage />} />
+              <Route path="/employees/new" element={<AddNewEmployeePage />} />
+              <Route path="/employees/:username" element={<EmployeeDetailsPage />} />
+              <Route path="/management/services" element={<ServicesListPage />} />
+              <Route path="/management/statistics" element={<StatsPage />} />
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_ADMIN"]} />}>
               <Route path="/admin/dashboard" element={<AdminMainPage />} />

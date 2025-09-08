@@ -154,8 +154,8 @@ function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
           <Box sx={{ mt: 2 }}>
             <Typography fontSize="0.9rem" fontWeight="bold">
               {tc("status")}:
-              <Box component="span" sx={{ml: 1, px: 1.2, py: 0.4, borderRadius: 1, color: `calendar.${schedule.status}.background`,
-                backgroundColor: `calendar.${schedule.status}.primary`, display: 'inline-block'}}>
+              <Box component="span" sx={{ml: 1, px: 1.2, py: 0.4, borderRadius: 1, color: `calendar.text`,
+                backgroundColor: `calendar.${schedule.status}`, display: 'inline-block'}}>
                 {t(`order_status.${schedule.status}`)}
               </Box>
             </Typography>
