@@ -12,7 +12,7 @@ import {Schedule} from "../../types/schedule.ts";
 import {getYearWeek} from "../../utils/utils.ts";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {isAxiosError} from "axios";
-import ScheduleDetails from "../../pages/employee/ScheduleDetails.tsx";
+import ScheduleDetailsDialog from "../../pages/employee/ScheduleDetailsDialog.tsx";
 
 function Calendar() {
   const { t } = useTranslation();
@@ -179,8 +179,8 @@ function Calendar() {
       <CalendarGrid />
 
       {selectedSchedule && (
-        <ScheduleDetails open={true} onClose={() => setSelectedSchedule(null)}
-                         schedule={selectedSchedule} onScheduleUpdated={onScheduleUpdated} />
+        <ScheduleDetailsDialog open={true} onClose={() => setSelectedSchedule(null)}
+                               schedule={selectedSchedule} onScheduleUpdated={onScheduleUpdated} />
       )}
     </SectionCard>
   )

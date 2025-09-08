@@ -23,78 +23,29 @@ type Props = {
   onScheduleUpdated: (oldSchedule: Schedule, newSchedule: Schedule) => void;
 }
 
-function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
+function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [actionToConfirm, setActionToConfirm] = useState<"reject" | "cancel" | null>(null);
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.my_schedule.details.${key}`);
 
-  const handleConfirmSchedule = () => {
-    setLoading(true);
+  const handleScheduleAction = (
+    action: "confirm" | "complete" | "cancel" | "reject",
+    reason?: CancellationReason,
+  ) => {
     setError(null);
-    axiosAuthApi.patch(`/schedule/${schedule.id}/confirm`)
-      .then(res => {
-        onScheduleUpdated(schedule, res.data)
-      })
-      .catch(err => {
-        setError(err.message);
-      })
+    setLoading(true);
+    const apiPath = `/schedule/${schedule.id}/${action}` + (reason ? `?reason=${reason}` : "");
+    axiosAuthApi.patch(apiPath)
+      .then(res => onScheduleUpdated(schedule, res.data))
+      .catch(err => setError(err.message))
       .finally(() => setLoading(false));
   }
-
-  const handleRejectSchedule = (reason: CancellationReason) => {
-    setLoading(true);
-    setError(null);
-    axiosAuthApi.patch(`/schedule/${schedule.id}/reject?reason=${reason}`)
-      .then(res => {
-        onScheduleUpdated(schedule, res.data)
-      })
-      .catch(err => {
-        setError(err.message);
-      })
-      .finally(() => setLoading(false));
-  }
-
-  const handleCompleteSchedule = () => {
-    setLoading(true);
-    setError(null);
-    axiosAuthApi.patch(`/schedule/${schedule.id}/complete`)
-      .then(res => {
-        onScheduleUpdated(schedule, res.data)
-      })
-      .catch(err => {
-        setError(err.message);
-      })
-      .finally(() => setLoading(false));
-  }
-
-  const handleCancelSchedule = (reason: CancellationReason) => {
-    setLoading(true);
-    setError(null);
-    axiosAuthApi.patch(`/schedule/${schedule.id}/cancel?reason=${reason}`)
-      .then(res => {
-        onScheduleUpdated(schedule, res.data)
-      })
-      .catch(err => {
-        setError(err.message);
-      })
-      .finally(() => setLoading(false));
-  }
-
-  const confirmAction = (action: "reject" | "cancel") => {
-    setActionToConfirm(action);
-    setConfirmationOpen(true);
-  };
 
   const handleConfirmedAction = (reason: CancellationReason) => {
-    if (actionToConfirm === "reject") {
-      handleRejectSchedule(reason);
-    } else if (actionToConfirm === "cancel") {
-      handleCancelSchedule(reason);
-    }
-    setConfirmationOpen(false);
+    if (!actionToConfirm) return;
+    handleScheduleAction(actionToConfirm, reason);
     setActionToConfirm(null);
   };
 
@@ -166,18 +117,18 @@ function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
 
         {schedule.status === OrderStatus.requested &&
           <Box display="flex" gap={1} mt={elementsSpacing}>
-            <Button variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={loading} onClick={handleConfirmSchedule}
+            <Button variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={loading} onClick={() => handleScheduleAction("confirm")}
                     sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none"}}>{tc("confirm")}</Button>
-            <Button color="error" variant="outlined" startIcon={<CancelOutlinedIcon/>} loading={loading} onClick={() => confirmAction("reject")}
+            <Button color="error" variant="outlined" startIcon={<CancelOutlinedIcon/>} loading={loading} onClick={() => setActionToConfirm("reject")}
                     sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none"}}>{tc("reject")}</Button>
           </Box>
         }
 
         {schedule.status === OrderStatus.active &&
           <Box display="flex" gap={1} mt={elementsSpacing}>
-            <Button color="success" variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={loading} onClick={handleCompleteSchedule}
+            <Button color="success" variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={loading} onClick={() => handleScheduleAction("complete")}
                     sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none"}}>{tc("complete")}</Button>
-            <Button color="error" variant="outlined" startIcon={<CancelOutlinedIcon/>} loading={loading} onClick={() => confirmAction("cancel")}
+            <Button color="error" variant="outlined" startIcon={<CancelOutlinedIcon/>} loading={loading} onClick={() => setActionToConfirm("cancel")}
                     sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none"}}>{tc("cancel")}</Button>
           </Box>
         }
@@ -186,22 +137,14 @@ function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
 
       </DialogContent>
 
-      <ConfirmationWithReasonDialog
-        open={confirmationOpen}
-        title={t("confirmation_dialog.title")}
-        description={
-          actionToConfirm === "reject"
-            ? t("confirmation_dialog.description.reject")
-            : t("confirmation_dialog.description.cancel")
-        }
-        onCancel={() => setConfirmationOpen(false)}
-        onConfirm={handleConfirmedAction}
-        confirmText={t("confirmation_dialog.confirm")}
-        cancelText={t("confirmation_dialog.cancel")}
-      />
-
+      {actionToConfirm !== null &&
+        <ConfirmationWithReasonDialog
+          onCancel={() => setActionToConfirm(null)}
+          onConfirm={handleConfirmedAction}
+        />
+      }
     </Dialog>
   );
 }
 
-export default ScheduleDetails;
+export default ScheduleDetailsDialog;

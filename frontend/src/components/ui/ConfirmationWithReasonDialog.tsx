@@ -1,19 +1,26 @@
-import {Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, FormControl, Select, InputLabel, MenuItem, SelectChangeEvent} from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  FormControl,
+  Select,
+  InputLabel,
+  MenuItem,
+  SelectChangeEvent,
+  Typography
+} from "@mui/material";
 import {useState} from "react";
 import {CancellationReason} from "../../types/cancellation_reasons.ts";
 import {useTranslation} from "react-i18next";
 
 type Props = {
-  open: boolean;
-  title: string;
-  description: string;
   onCancel: () => void;
   onConfirm: (reason: CancellationReason) => void;
-  confirmText: string;
-  cancelText: string;
 };
 
-function ConfirmationWithReasonDialog({open, title, description, onCancel, onConfirm, confirmText, cancelText}: Props) {
+function ConfirmationWithReasonDialog({onCancel, onConfirm}: Props) {
   const [reason, setReason] = useState<CancellationReason | "">("");
   const [error, setError] = useState<boolean>(false);
   const { t } = useTranslation();
@@ -34,11 +41,11 @@ function ConfirmationWithReasonDialog({open, title, description, onCancel, onCon
 
 
   return (
-    <Dialog open={open} onClose={onCancel}>
-      <DialogTitle>{title}</DialogTitle>
+    <Dialog open={true} onClose={onCancel} sx={{"&	.MuiDialog-paper": {p: 2, borderRadius: 3}}}>
+      <DialogTitle textAlign="center">{t("confirmation_dialog.title")}</DialogTitle>
       <DialogContent>
-        <DialogContentText gutterBottom>{description}</DialogContentText>
-        <DialogContentText gutterBottom>{t("confirmation_dialog.select_reason")}:</DialogContentText>
+        <Typography fontSize={14} mb={2}>Are you sure you want to cancel / reject this service? </Typography>
+        <Typography fontSize={14} mb={1}>{t("confirmation_dialog.select_reason")}:</Typography>
         <FormControl fullWidth>
           <InputLabel id="reason-label">Reason</InputLabel>
           <Select
@@ -58,10 +65,8 @@ function ConfirmationWithReasonDialog({open, title, description, onCancel, onCon
         </FormControl>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCancel} sx={{color: "darkslategray"}}>{cancelText}</Button>
-        <Button onClick={handleConfirm} color="error" variant="contained">
-          {confirmText}
-        </Button>
+        <Button onClick={onCancel} sx={{color: "text.disabled"}}>{t("confirmation_dialog.cancel")}</Button>
+        <Button onClick={handleConfirm} color="error" variant="contained">{t("confirmation_dialog.confirm")}</Button>
       </DialogActions>
     </Dialog>
   );

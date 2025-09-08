@@ -20,6 +20,11 @@ interface ScheduleRepository : MongoRepository<ScheduleEntity, String> {
         endDate: LocalDateTime,
     ): List<ScheduleEntity>
 
+    fun findByEmployeeIdAndStatusInOrderByServiceDate(
+        employeeId: String,
+        statuses: List<OrderStatus>,
+    ): List<ScheduleEntity>
+
     fun findFirstByServiceIdAndServiceDateBetweenOrderByServiceDateDesc(
         serviceId: String,
         startDate: LocalDateTime,

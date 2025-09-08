@@ -8,7 +8,7 @@ import {Schedule} from "../../types/schedule.ts";
 import {Stack, Typography} from "@mui/material";
 import Box from "@mui/system/Box";
 import {useTranslation} from "react-i18next";
-import ScheduleDetails from "./ScheduleDetails.tsx";
+import ScheduleDetailsDialog from "./ScheduleDetailsDialog.tsx";
 import {getScheduleTimeSpan} from "../../utils/utils.ts";
 
 function TodaySchedulesPage() {
@@ -25,43 +25,36 @@ function TodaySchedulesPage() {
   }, []);
 
   const onScheduleUpdated = (oldSchedule: Schedule, newSchedule: Schedule) => {
-    setSelectedSchedule(newSchedule);
-    setSchedules(prev => {
-      const filtered = prev.filter(s => s.id !== oldSchedule.id);
-      return [...filtered, newSchedule].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    });
+    if (selectedSchedule) setSelectedSchedule(newSchedule);
+    setSchedules(prev => prev.map(s => s.id === oldSchedule.id ? newSchedule : s));
   }
 
   return (
     <SectionCard>
       <Title title={<><ScheduleOutlinedIcon /> Today's Services</>}
              subtitle={`${schedules.length} services scheduled for today`} />
-      <Stack gap={2}>
-        {schedules.map(schedule => (
-          <SectionCard size={2} sx={{px: 4, cursor: "pointer"}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
-                       onClick={() => setSelectedSchedule(schedule)} >
-            <Stack direction="row" alignItems="center" gap={3}>
-              <Box bgcolor="primary.medium" p={1} borderRadius={1} display="flex" alignItems="center" justifyContent="center">
-                <AirportShuttleOutlinedIcon color="primary" fontSize="large" />
-              </Box>
-              <Box>
-                <Typography fontWeight="bold">{schedule.title}</Typography>
-                <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? "Guest unknown"} | Room {schedule.room ?? "unknown"}</Typography>
-                <Typography fontSize="13px" sx={{mt: 1}}>{getScheduleTimeSpan(new Date(schedule.date), schedule.duration, t('date.locale'))}</Typography>
-              </Box>
-            </Stack>
-            <Box>
-              <Typography fontSize="12px" fontWeight="bold" px={2} py={0.5} borderRadius={1}
-                          color="calendar.text" bgcolor={"calendar." + schedule.status}>
-                {t(`order_status.${schedule.status}`)}
-              </Typography>
+      {schedules.map(schedule => (
+        <SectionCard size={2} sx={{mt: 2, px: 4, cursor: "pointer"}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
+                     onClick={() => setSelectedSchedule(schedule)} >
+          <Stack direction="row" alignItems="center" gap={3}>
+            <Box bgcolor="primary.medium" p={1} borderRadius={1} display="flex" alignItems="center" justifyContent="center">
+              <AirportShuttleOutlinedIcon color="primary" fontSize="large" />
             </Box>
-          </SectionCard>
-        ))}
-      </Stack>
+            <Box>
+              <Typography fontWeight="bold">{schedule.title}</Typography>
+              <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? "Guest unknown"} | Room {schedule.room ?? "unknown"}</Typography>
+              <Typography fontSize="13px" sx={{mt: 1}}>{getScheduleTimeSpan(new Date(schedule.date), schedule.duration, t('date.locale'))}</Typography>
+            </Box>
+          </Stack>
+          <Typography fontSize="12px" fontWeight="bold" px={2} py={0.5} borderRadius={1}
+                      color="calendar.text" bgcolor={"calendar." + schedule.status}>
+            {t(`order_status.${schedule.status}`)}
+          </Typography>
+        </SectionCard>
+      ))}
 
       {selectedSchedule && (
-        <ScheduleDetails open={true} onClose={() => setSelectedSchedule(null)} schedule={selectedSchedule} onScheduleUpdated={onScheduleUpdated} />
+        <ScheduleDetailsDialog open={true} onClose={() => setSelectedSchedule(null)} schedule={selectedSchedule} onScheduleUpdated={onScheduleUpdated} />
       )}
     </SectionCard>
   );

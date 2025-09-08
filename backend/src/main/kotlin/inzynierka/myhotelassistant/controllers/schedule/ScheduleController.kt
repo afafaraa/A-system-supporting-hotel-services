@@ -103,6 +103,10 @@ class ScheduleController(
     @ResponseStatus(HttpStatus.OK)
     fun getTodaySchedule(principal: Principal): List<ScheduleDTO> = scheduleService.getMyTodaySchedule(principal.name)
 
+    @GetMapping("/pending")
+    @ResponseStatus(HttpStatus.OK)
+    fun getPendingSchedules(principal: Principal): List<ScheduleDTO> = scheduleService.getMyPendingSchedules(principal.name)
+
     @PatchMapping("/{scheduleId}/confirm")
     @ResponseStatus(HttpStatus.OK)
     fun confirmRequestedSchedule(

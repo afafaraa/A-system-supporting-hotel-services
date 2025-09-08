@@ -75,6 +75,16 @@ class ScheduleService(
         return scheduleDateConverter.convertList(foundSchedules)
     }
 
+    fun getMyPendingSchedules(username: String): List<ScheduleDTO> {
+        val employeeId = employeeService.findByUsernameOrThrow(username).id!!
+        val foundSchedules =
+            scheduleRepository.findByEmployeeIdAndStatusInOrderByServiceDate(
+                employeeId,
+                statuses = listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE)
+            )
+        return scheduleDateConverter.convertList(foundSchedules)
+    }
+
     fun getEmployeeWeekScheduleByUsername(
         username: String,
         date: LocalDate,
