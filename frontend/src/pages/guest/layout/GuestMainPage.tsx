@@ -4,10 +4,12 @@ import NotificationsContainer from '../../../components/ui/NotificationsContaine
 import { useState } from 'react';
 import AvailableServicesPage from '../available-services/AvailableServicesPage.tsx';
 
-const subpages = ["Available Services", "Booked Services", "Book Hotel Room"];
+export type PageState = "Available Services" | "Booked Services" | "Book Hotel Room";
+
+const subpages: PageState[] = ["Available Services", "Booked Services", "Book Hotel Room"];
 
 function GuestMainPage() {
-  const [currentPage, setCurrentPage] = useState<"Available Services" | "Booked Services" | "Book Hotel Room">("Available Services");
+  const [currentPage, setCurrentPage] = useState<PageState>("Available Services");
   return (
     <div style={{display: 'flex', gap: '1rem'}}>
       <Box sx={{width: { xs: '100%', md: '70%' }}}>

@@ -1,15 +1,16 @@
 import { useTheme } from '@mui/material';
 import { SectionWrapper } from '../../../theme/styled-components/SectionWrapper.ts';
 import { useRef, useState, useEffect } from 'react';
+import {PageState} from "./GuestMainPage.tsx";
 
 function GuestNavbar({
                        setCurrentPage,
                        currentPage,
                        subpages,
                      }: {
-  setCurrentPage: (x: string) => void;
-  currentPage: string;
-  subpages: string[];
+  setCurrentPage: (x: "Available Services" | "Booked Services" | "Book Hotel Room") => void;
+  currentPage: PageState;
+  subpages: PageState[];
 }) {
   const theme = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
