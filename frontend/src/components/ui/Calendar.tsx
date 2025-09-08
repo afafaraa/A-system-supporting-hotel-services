@@ -1,13 +1,12 @@
 import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
-import {Alert, Button, Stack} from "@mui/material";
+import {Alert, Box, Button, Stack, Typography} from "@mui/material";
 import Title from "./Title.tsx";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import {useTranslation} from "react-i18next";
-import {useEffect, useState} from "react";
+import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {startOfWeek, addDays, isSameDay, isSameWeek, format, addMinutes} from "date-fns";
-import {Typography, Box} from "@mui/material";
 import {Schedule} from "../../types/schedule.ts";
 import {getYearWeek} from "../../utils/utils.ts";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
@@ -22,6 +21,8 @@ function Calendar() {
   const [schedules, setSchedules] = useState<Map<number, Schedule[]>>(new Map());
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [savedScrollLeft, setSavedScrollLeft] = useState<number>(0);
 
   useEffect(() => {
     setError(null);
@@ -41,10 +42,25 @@ function Calendar() {
         } else { setError("An unexpected error occurred while fetching schedules"); }
       });
   }, [currentWeekStart, schedules, yearWeek]);
+
+  useLayoutEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollLeft = Math.max(0, Math.min(savedScrollLeft, el.scrollWidth - el.clientWidth));
+  }, [yearWeek, schedules, savedScrollLeft]);
   
-  const handleTodayButtonClick = () => setCurrentWeekStart(startOfWeek(today, { weekStartsOn: 1 }));
-  const handlePrevWeekButtonClick = () => setCurrentWeekStart(prev => addDays(prev, -7));
-  const handleNextWeekButtonClick = () => setCurrentWeekStart(prev => addDays(prev, 7));
+  const handleTodayButtonClick = () => {
+    setSavedScrollLeft(scrollRef.current?.scrollLeft ?? 0);
+    setCurrentWeekStart(startOfWeek(today, { weekStartsOn: 1 }));
+  }
+  const handlePrevWeekButtonClick = () => {
+    setSavedScrollLeft(scrollRef.current?.scrollLeft ?? 0);
+    setCurrentWeekStart(prev => addDays(prev, -7));
+  }
+  const handleNextWeekButtonClick = () => {
+    setSavedScrollLeft(scrollRef.current?.scrollLeft ?? 0);
+    setCurrentWeekStart(prev => addDays(prev, 7));
+  }
 
   const onScheduleUpdated = (oldSchedule: Schedule, newSchedule: Schedule) => {
     setSelectedSchedule(newSchedule);
@@ -112,7 +128,7 @@ function Calendar() {
     const schedulesOnDay: Partial<Record<number, Schedule[]>> = Object.groupBy(schedulesForWeek, (s: Schedule) => numberToWeekday[s.weekday]);
 
     return (
-      <Stack direction="row" spacing={2} sx={{
+      <Stack direction="row" spacing={2} ref={scrollRef} sx={{
         overflowX: "auto",
         transform: "scaleY(-1)", "& > div": {transform: "scaleY(-1)"}, // for scroll to be on top
         scrollbarColor: theme => `${theme.palette.primary.main} ${theme.palette.primary.light}`,

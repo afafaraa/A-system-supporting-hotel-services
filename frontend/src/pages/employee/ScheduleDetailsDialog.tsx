@@ -56,7 +56,7 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
     </Box>
   )
 
-  const elementsSpacing = 3 as const;
+  const elementsSpacing = {xs: 2, sm: 3} as const;
 
   return (
     <Dialog open={open} onClose={onClose} sx={{"&	.MuiDialog-paper": {p: {xs: 0, sm: 2}, borderRadius: 3}}}>
@@ -118,18 +118,18 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
         {schedule.status === OrderStatus.requested &&
           <Box display="flex" gap={1} mt={elementsSpacing}>
             <Button variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={loading} onClick={() => handleScheduleAction("confirm")}
-                    sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none"}}>{tc("confirm")}</Button>
+                    sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none", fontSize: {xs: "12px", sm: "inherit"}, lineHeight: 1.3}}>{tc("confirm")}</Button>
             <Button color="error" variant="outlined" startIcon={<CancelOutlinedIcon/>} loading={loading} onClick={() => setActionToConfirm("reject")}
-                    sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none"}}>{tc("reject")}</Button>
+                    sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none", fontSize: {xs: "12px", sm: "inherit"}, lineHeight: 1.3}}>{tc("reject")}</Button>
           </Box>
         }
 
         {schedule.status === OrderStatus.active &&
           <Box display="flex" gap={1} mt={elementsSpacing}>
             <Button color="success" variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={loading} onClick={() => handleScheduleAction("complete")}
-                    sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none"}}>{tc("complete")}</Button>
+                    sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none", fontSize: {xs: "12px", sm: "inherit"}, lineHeight: 1.3}}>{tc("complete")}</Button>
             <Button color="error" variant="outlined" startIcon={<CancelOutlinedIcon/>} loading={loading} onClick={() => setActionToConfirm("cancel")}
-                    sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none"}}>{tc("cancel")}</Button>
+                    sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none", fontSize: {xs: "12px", sm: "inherit"}, lineHeight: 1.3}}>{tc("cancel")}</Button>
           </Box>
         }
 
