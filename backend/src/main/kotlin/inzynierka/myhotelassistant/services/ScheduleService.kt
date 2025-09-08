@@ -80,7 +80,7 @@ class ScheduleService(
         val foundSchedules =
             scheduleRepository.findByEmployeeIdAndStatusInOrderByServiceDate(
                 employeeId,
-                statuses = listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE)
+                statuses = listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE),
             )
         return scheduleDateConverter.convertList(foundSchedules)
     }

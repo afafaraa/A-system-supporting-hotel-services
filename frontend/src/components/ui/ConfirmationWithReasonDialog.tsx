@@ -41,7 +41,7 @@ function ConfirmationWithReasonDialog({onCancel, onConfirm}: Props) {
 
 
   return (
-    <Dialog open={true} onClose={onCancel} sx={{"&	.MuiDialog-paper": {p: 2, borderRadius: 3}}}>
+    <Dialog open={true} onClose={onCancel} sx={{"&	.MuiDialog-paper": {p: {xs: 1, sm: 2}, borderRadius: 3}}}>
       <DialogTitle textAlign="center">{t("confirmation_dialog.title")}</DialogTitle>
       <DialogContent>
         <Typography fontSize={14} mb={2}>Are you sure you want to cancel / reject this service? </Typography>

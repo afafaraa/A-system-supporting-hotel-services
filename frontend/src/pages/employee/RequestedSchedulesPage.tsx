@@ -69,30 +69,33 @@ function RequestedSchedulesPage() {
     setActionToConfirm(null);
   };
 
-  const StyledButton = styled(Button)({fontWeight: "bold", textTransform: "none"})
+  const StyledButton = styled(Button)(({theme}) => ({
+    fontWeight: "bold", textTransform: "none", height: 40, minWidth: 40,
+    [theme.breakpoints.down('md')]: {width: 40, "& .MuiButton-startIcon": {margin: 0}},
+  }));
 
   function renderActions(schedule: Schedule) {
     switch (schedule.status) {
       case OrderStatus.requested:
         return <>
-          <StyledButton onClick={(e) => handleScheduleAction(schedule, "confirm", e)}
-                        variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={loading} sx={{mr: 2}}>
-            {t("pages.my_schedule.details.confirm")}
+          <StyledButton onClick={(e) => handleScheduleAction(schedule, "confirm", e)}  // "& .MuiButton-startIcon": {p: {xs: 1, sm: "initial"}, m: {xs: 0, sm: undefined}}
+                        variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={loading} sx={{mr: {xs: 1, md: 2}}}>
+            <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.my_schedule.details.confirm")}</Box>
           </StyledButton>
           <StyledButton onClick={(e) => confirmAction(schedule, "reject", e)}
                         variant="outlined" color="error" startIcon={<CancelOutlinedIcon/>} loading={loading}>
-            {t("pages.my_schedule.details.reject")}
+            <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.my_schedule.details.reject")}</Box>
           </StyledButton>
         </>;
       case OrderStatus.active:
         return <>
           <StyledButton onClick={(e) => handleScheduleAction(schedule, "complete", e)}
-                        variant="contained" color="success" startIcon={<TaskAltOutlinedIcon/>} loading={loading} sx={{mr: 2}}>
-            {t("pages.my_schedule.details.complete")}
+                        variant="contained" color="success" startIcon={<TaskAltOutlinedIcon/>} loading={loading} sx={{mr: {xs: 1, md: 2}}}>
+            <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.my_schedule.details.complete")}</Box>
           </StyledButton>
           <StyledButton onClick={(e) => confirmAction(schedule, "cancel", e)}
                         variant="outlined" color="error" startIcon={<CancelOutlinedIcon/>} loading={loading}>
-            {t("pages.my_schedule.details.cancel")}
+            <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.my_schedule.details.cancel")}</Box>
           </StyledButton>
         </>;
       default:
@@ -110,21 +113,23 @@ function RequestedSchedulesPage() {
       <Title title={<><ScheduleOutlinedIcon /> Pending Service Requests</>}
              subtitle={`${schedules.length} services waiting for approval`} />
       {schedules.map(schedule => (
-        <SectionCard size={2} sx={{mt: 2, px: 4, cursor: "pointer"}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
+        <SectionCard size={2} sx={{mt: 2, px: {xs: 1.5, sm: 4}, cursor: "pointer"}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
                      onClick={() => setSelectedSchedule(schedule)} >
-          <Stack direction="row" alignItems="center" gap={3}>
+          <Stack direction="row" alignItems="center" gap={{xs: 1.5, sm: 3}}>
             <Box bgcolor="primary.medium" p={1} borderRadius={1} display="flex" alignItems="center" justifyContent="center">
               <AirportShuttleOutlinedIcon color="primary" fontSize="large" />
             </Box>
             <Box>
               <Typography fontWeight="bold">{schedule.title}</Typography>
               <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? "Guest unknown"} | Room {schedule.room ?? "unknown"}</Typography>
-              <Typography fontSize="13px" sx={{mt: 1}}>{new Date(schedule.date).toLocaleDateString(t('date.locale'))} | {getScheduleTimeSpan(new Date(schedule.date), schedule.duration, t('date.locale'))}</Typography>
+              <Box mt={1} fontSize={{xs: 11, sm: 13}}>
+                {new Date(schedule.date).toLocaleDateString(t('date.locale'))} | {getScheduleTimeSpan(new Date(schedule.date), schedule.duration, t('date.locale'))}
+              </Box>
             </Box>
           </Stack>
-          <div>
+          <Stack direction="row">
             {renderActions(schedule)}
-          </div>
+          </Stack>
         </SectionCard>
       ))}
 

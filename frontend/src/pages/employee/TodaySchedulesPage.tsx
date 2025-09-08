@@ -34,9 +34,9 @@ function TodaySchedulesPage() {
       <Title title={<><ScheduleOutlinedIcon /> Today's Services</>}
              subtitle={`${schedules.length} services scheduled for today`} />
       {schedules.map(schedule => (
-        <SectionCard size={2} sx={{mt: 2, px: 4, cursor: "pointer"}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
+        <SectionCard size={2} sx={{mt: 2, px: {xs: 1.5, sm: 4}, cursor: "pointer"}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
                      onClick={() => setSelectedSchedule(schedule)} >
-          <Stack direction="row" alignItems="center" gap={3}>
+          <Stack direction="row" alignItems="center" gap={{xs: 1.5, sm: 3}}>
             <Box bgcolor="primary.medium" p={1} borderRadius={1} display="flex" alignItems="center" justifyContent="center">
               <AirportShuttleOutlinedIcon color="primary" fontSize="large" />
             </Box>
@@ -46,7 +46,7 @@ function TodaySchedulesPage() {
               <Typography fontSize="13px" sx={{mt: 1}}>{getScheduleTimeSpan(new Date(schedule.date), schedule.duration, t('date.locale'))}</Typography>
             </Box>
           </Stack>
-          <Typography fontSize="12px" fontWeight="bold" px={2} py={0.5} borderRadius={1}
+          <Typography fontSize="12px" fontWeight="bold" px={{xs: 1, sm: 2}} py={0.5} borderRadius={1}
                       color="calendar.text" bgcolor={"calendar." + schedule.status}>
             {t(`order_status.${schedule.status}`)}
           </Typography>
