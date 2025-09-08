@@ -2,13 +2,11 @@ import {Grid} from "@mui/material";
 import AvailableServiceCard, {ServiceProps} from "./AvailableServiceCard.tsx";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import {useEffect, useState} from "react";
-import {useTranslation} from "react-i18next";
 
 function AvailableServicesPage() {
   const [availableServices, setAvailableServices] = useState<ServiceProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [page] = useState(0);
-  const { t } = useTranslation();
 
   const pageSize = 100; // temporary until pagination
 

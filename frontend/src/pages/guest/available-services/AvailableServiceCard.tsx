@@ -124,7 +124,7 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
             </Box>
           </Box>
 
-          <Button fullWidth sx={{ padding: '2px', marginTop: 2 }}>
+          <Button onClick={() => navigate(`/service-schedule/${service.id}`)} fullWidth sx={{ padding: '2px', marginTop: 2 }}>
             Book now
           </Button>
         </Box>
