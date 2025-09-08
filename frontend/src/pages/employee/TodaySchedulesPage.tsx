@@ -1,7 +1,70 @@
+import {useEffect, useState} from "react";
+import {axiosAuthApi} from "../../middleware/axiosApi.ts";
+import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
+import Title from "../../components/ui/Title.tsx";
+import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
+import AirportShuttleOutlinedIcon from '@mui/icons-material/AirportShuttleOutlined';
+import {Schedule} from "../../types/schedule.ts";
+import {Stack, Typography} from "@mui/material";
+import Box from "@mui/system/Box";
+import {useTranslation} from "react-i18next";
+import ScheduleDetails from "./ScheduleDetails.tsx";
+import {getScheduleTimeSpan} from "../../utils/utils.ts";
 
 function TodaySchedulesPage() {
+  const {t} = useTranslation();
+  const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
 
-  return <div>TodayServices</div>;
+  useEffect(() => {
+    axiosAuthApi.get<Schedule[]>("/schedule/today")
+      .then(res => {
+        setSchedules(res.data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()));
+      })
+      .catch(err => console.error(err));
+  }, []);
+
+  const onScheduleUpdated = (oldSchedule: Schedule, newSchedule: Schedule) => {
+    setSelectedSchedule(newSchedule);
+    setSchedules(prev => {
+      const filtered = prev.filter(s => s.id !== oldSchedule.id);
+      return [...filtered, newSchedule].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    });
+  }
+
+  return (
+    <SectionCard>
+      <Title title={<><ScheduleOutlinedIcon /> Today's Services</>}
+             subtitle={`${schedules.length} services scheduled for today`} />
+      <Stack gap={2}>
+        {schedules.map(schedule => (
+          <SectionCard size={2} sx={{px: 4, cursor: "pointer"}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
+                       onClick={() => setSelectedSchedule(schedule)} >
+            <Stack direction="row" alignItems="center" gap={3}>
+              <Box bgcolor="primary.medium" p={1} borderRadius={1} display="flex" alignItems="center" justifyContent="center">
+                <AirportShuttleOutlinedIcon color="primary" fontSize="large" />
+              </Box>
+              <Box>
+                <Typography fontWeight="bold">{schedule.title}</Typography>
+                <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? "Guest unknown"} | Room {schedule.room ?? "unknown"}</Typography>
+                <Typography fontSize="13px" sx={{mt: 1}}>{getScheduleTimeSpan(new Date(schedule.date), schedule.duration, t('date.locale'))}</Typography>
+              </Box>
+            </Stack>
+            <Box>
+              <Typography fontSize="12px" fontWeight="bold" px={2} py={0.5} borderRadius={1}
+                          color="calendar.text" bgcolor={"calendar." + schedule.status}>
+                {t(`order_status.${schedule.status}`)}
+              </Typography>
+            </Box>
+          </SectionCard>
+        ))}
+      </Stack>
+
+      {selectedSchedule && (
+        <ScheduleDetails open={true} onClose={() => setSelectedSchedule(null)} schedule={selectedSchedule} onScheduleUpdated={onScheduleUpdated} />
+      )}
+    </SectionCard>
+  );
 }
 
 export default TodaySchedulesPage;

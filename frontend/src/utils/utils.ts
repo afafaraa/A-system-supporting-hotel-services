@@ -1,4 +1,4 @@
-import {getISOWeek} from "date-fns";
+import {addMinutes, getISOWeek} from "date-fns";
 import {t} from "i18next";
 import {NavigateFunction} from "react-router-dom";
 
@@ -29,4 +29,14 @@ export const navigateToDashboard = (role: string, navigate: NavigateFunction) =>
   else if (role === 'ROLE_MANAGER') navigate('/employee/today-schedules');
   else if (role === 'ROLE_ADMIN') navigate('/admin/dashboard');
   else navigate('/fallback');
+}
+
+const hourFormat = { hour: '2-digit', minute: '2-digit' } as const;
+
+export const getScheduleTimeSpan = (date: Date, duration: number | undefined, locale: string): string => {
+  const startTime = date.toLocaleTimeString(locale, hourFormat);
+  const endTime = duration
+    ? addMinutes(date, duration).toLocaleTimeString(locale, hourFormat)
+    : null;
+  return endTime ? `${startTime} - ${endTime}` : startTime;
 }

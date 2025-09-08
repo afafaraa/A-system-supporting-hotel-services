@@ -1,18 +1,20 @@
-import {Dialog, DialogContent, IconButton, Stack, Typography, Box, Divider, Button} from "@mui/material";
+import {Dialog, DialogContent, IconButton, Stack, Typography, Box, Button, DialogTitle} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import PersonIcon from '@mui/icons-material/Person';
-import RoomIcon from '@mui/icons-material/Room';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
 import EventIcon from '@mui/icons-material/Event';
-import { format, addMinutes } from 'date-fns';
+import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
+import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import { useTranslation } from "react-i18next";
 import {Schedule, OrderStatus} from "../../types/schedule.ts";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
+import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
-import {useState} from "react";
+import {ReactElement, ReactNode, useState} from "react";
 import ConfirmationWithReasonDialog from "../../components/ui/ConfirmationWithReasonDialog.tsx"
 import {CancellationReason} from "../../types/cancellation_reasons.ts";
+import AirportShuttleOutlinedIcon from "@mui/icons-material/AirportShuttleOutlined";
+import {getScheduleTimeSpan} from "../../utils/utils.ts";
 
 type Props = {
   open: boolean;
@@ -28,14 +30,6 @@ function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
   const [actionToConfirm, setActionToConfirm] = useState<"reject" | "cancel" | null>(null);
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.my_schedule.details.${key}`);
-
-  function getDay(date: Date) {
-    const shortWeekdays = t("date.shortWeekdays", { returnObjects: true }) as string[];
-    const dayOfWeek = shortWeekdays[(date.getDay() + 6) % 7];
-    const dateStr = date.toLocaleDateString(t('date.locale'), {day: 'numeric', month: 'long', year: 'numeric'});
-    const sep = t('date.separator');
-    return `${dayOfWeek}${sep} ${dateStr}`
-  }
 
   const handleConfirmSchedule = () => {
     setLoading(true);
@@ -104,90 +98,92 @@ function ScheduleDetails({open, onClose, schedule, onScheduleUpdated}: Props) {
     setActionToConfirm(null);
   };
 
+  const DialogSection = ({title, children}: {title: ReactElement | string, children: ReactNode}) => (
+    <Box fontSize="14px" width="100%">
+      <Box display="flex" alignItems="center" gap={1} fontWeight="bold">{title}</Box>
+      <Box color="text.secondary" fontSize="12px" mt={0.5} lineHeight={1.4}>{children}</Box>
+    </Box>
+  )
+
+  const elementsSpacing = 3 as const;
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <IconButton onClick={onClose} sx={{position: 'absolute', right: 8, top: 8}}>
-        <CloseIcon />
-      </IconButton>
+    <Dialog open={open} onClose={onClose} sx={{"&	.MuiDialog-paper": {p: 2, borderRadius: 3}}}>
+      <IconButton onClick={onClose} sx={{position: 'absolute', right: 16, top: 16}}><CloseIcon /></IconButton>
+      <Box width="50vw"></Box>
+      <DialogTitle>
+        <Stack direction="row" alignItems="center" gap={2} mb={1}>
+          <Box bgcolor="primary.medium" p={1} borderRadius={1} display="flex" alignItems="center" justifyContent="center">
+            <AirportShuttleOutlinedIcon color="primary" fontSize="large" />
+          </Box>
+          <Typography fontWeight="bold" fontSize="21px">{schedule.title || tc("unknownService")}</Typography>
+        </Stack>
+        <Typography fontSize="14px" color="text.secondary">Service request details and client information</Typography>
+      </DialogTitle>
 
       <DialogContent>
-        <Stack spacing={2}>
-          <Typography variant="h5" fontWeight="bold" pt={1} pb={0.5}>
-            {schedule.title || tc("unknownService")}
-          </Typography>
 
-          <Divider />
-
-          <Box display="flex" alignItems="center" gap={2}>
-            <EventIcon color="action" />
-            <Typography>
-              {getDay(new Date(schedule.date))}
-            </Typography>
-          </Box>
-
-          <Box display="flex" alignItems="center" gap={2}>
-            <AccessTimeIcon color="action" />
-            <Typography>
-              {schedule.duration ?
-                `${format(schedule.date, "HH:mm")} - ${format(addMinutes(schedule.date, schedule.duration), "HH:mm")}`
-                : format(schedule.date, "HH:mm")
-              }
-            </Typography>
-          </Box>
-
-          {schedule.status !== OrderStatus.available &&
-            <>
-              <Box display="flex" alignItems="center" gap={2}>
-                <PersonIcon color="action" />
-                <Typography>{schedule.guestName || "Unknown guest"}</Typography>
-              </Box>
-
-              <Box display="flex" alignItems="center" gap={2}>
-                <RoomIcon color="action" />
-                <Typography>{schedule.room || "No room assigned"}</Typography>
-              </Box>
-            </>
-          }
-
-          <Divider />
-
-          <Box sx={{ mt: 2 }}>
-            <Typography fontSize="0.9rem" fontWeight="bold">
-              {tc("status")}:
-              <Box component="span" sx={{ml: 1, px: 1.2, py: 0.4, borderRadius: 1, color: `calendar.text`,
-                backgroundColor: `calendar.${schedule.status}`, display: 'inline-block'}}>
-                {t(`order_status.${schedule.status}`)}
-              </Box>
-            </Typography>
-          </Box>
-
-          {schedule.orderTime &&
-            <Typography color="text.secondary" fontSize="0.9rem">
-              {tc("orderTime")}: {new Date(schedule.orderTime).toLocaleString(t("date.locale"))}
-            </Typography>
-          }
-
-          {schedule.status === OrderStatus.requested &&
-            <>
-              <Button variant="contained" startIcon={<CheckCircleIcon/>} loading={loading} onClick={handleConfirmSchedule}
-                      sx={{fontWeight: "bold", textTransform: "none"}}>{tc("confirm")}</Button>
-              <Button color="error" variant="contained" startIcon={<CancelIcon/>} loading={loading} onClick={() => confirmAction("reject")}
-                      sx={{fontWeight: "bold", textTransform: "none"}}>{tc("reject")}</Button>
-            </>
-          }
-
-          {schedule.status === OrderStatus.active &&
-            <>
-              <Button color="success" variant="contained" startIcon={<CheckCircleIcon/>} loading={loading} onClick={handleCompleteSchedule}
-                      sx={{fontWeight: "bold", textTransform: "none"}}>{tc("complete")}</Button>
-              <Button color="error" variant="contained" startIcon={<CancelIcon/>} loading={loading} onClick={() => confirmAction("cancel")}
-                      sx={{fontWeight: "bold", textTransform: "none"}}>{tc("cancel")}</Button>
-            </>
-          }
-
-          {error && <Typography color="error" variant="body2">{error}</Typography>}
-
+        <Stack direction="row" spacing={elementsSpacing} mb={elementsSpacing}>
+          <DialogSection title={<><EventIcon fontSize="small"/> Date & time</>} >
+            <p>{new Date(schedule.date).toLocaleDateString(t('date.locale'))}</p>
+            <p>{getScheduleTimeSpan(new Date(schedule.date), schedule.duration, t('date.locale'))}</p>
+          </DialogSection>
+          <DialogSection title={tc("status")}>
+            <Box display="inline-block" px={1.5} py={0.2} my={0.2} borderRadius={1} color="calendar.text" bgcolor={`calendar.${schedule.status}`} fontWeight="bold">
+              {t(`order_status.${schedule.status}`)}
+            </Box>
+          </DialogSection>
         </Stack>
+
+        {schedule.status !== OrderStatus.available && <>
+          <Stack direction="row" spacing={elementsSpacing} mb={elementsSpacing}>
+            <DialogSection title={<><PersonOutlineOutlinedIcon fontSize="small" /> Guest name</>}>
+              {schedule.guestName || "Unknown guest"}
+            </DialogSection>
+            <DialogSection title={<><RoomOutlinedIcon fontSize="small" /> Room number</>}>
+              {"Room " + schedule.room || "No room assigned"}
+            </DialogSection>
+          </Stack>
+
+          <Stack direction="row" spacing={elementsSpacing} mb={elementsSpacing}>
+            {schedule.orderTime &&
+              <DialogSection title={<><ScheduleOutlinedIcon fontSize="small" /> {tc("orderTime")}</>}>
+                {new Date(schedule.orderTime).toLocaleString(t("date.locale"))}
+              </DialogSection>
+            }
+            <DialogSection title={<><CommentOutlinedIcon fontSize="small" /> Special requests</>}>
+                Nothing to show, not implemented yet.
+            </DialogSection>
+          </Stack>
+        </>}
+
+        <Box>
+          <DialogSection title={"Service description"}>
+            <p>Some description for that particular service</p>
+            <p>Duration: {schedule.duration ? schedule.duration + " minutes" : "..."} • Price: {schedule.price ?? "unset"}</p>
+          </DialogSection>
+        </Box>
+
+        {schedule.status === OrderStatus.requested &&
+          <Box display="flex" gap={1} mt={elementsSpacing}>
+            <Button variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={loading} onClick={handleConfirmSchedule}
+                    sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none"}}>{tc("confirm")}</Button>
+            <Button color="error" variant="outlined" startIcon={<CancelOutlinedIcon/>} loading={loading} onClick={() => confirmAction("reject")}
+                    sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none"}}>{tc("reject")}</Button>
+          </Box>
+        }
+
+        {schedule.status === OrderStatus.active &&
+          <Box display="flex" gap={1} mt={elementsSpacing}>
+            <Button color="success" variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={loading} onClick={handleCompleteSchedule}
+                    sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none"}}>{tc("complete")}</Button>
+            <Button color="error" variant="outlined" startIcon={<CancelOutlinedIcon/>} loading={loading} onClick={() => confirmAction("cancel")}
+                    sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none"}}>{tc("cancel")}</Button>
+          </Box>
+        }
+
+        {error && <Typography color="error" variant="body2">{error}</Typography>}
+
       </DialogContent>
 
       <ConfirmationWithReasonDialog

@@ -8,6 +8,7 @@ export interface Schedule {
   guestName: string | undefined,
   room: string | undefined,
   orderTime: string | undefined,
+  price: number | undefined,
   status: OrderStatus,
 }
 

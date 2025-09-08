@@ -63,6 +63,18 @@ class ScheduleService(
         return getEmployeeWeekSchedule(employeeId, date)
     }
 
+    fun getMyTodaySchedule(username: String): List<ScheduleDTO> {
+        val employeeId = employeeService.findByUsernameOrThrow(username).id!!
+        val today = LocalDate.now()
+        val foundSchedules =
+            scheduleRepository.findByEmployeeIdAndServiceDateBetween(
+                employeeId,
+                startDate = today.atStartOfDay(),
+                endDate = today.atTime(LocalTime.MAX),
+            )
+        return scheduleDateConverter.convertList(foundSchedules)
+    }
+
     fun getEmployeeWeekScheduleByUsername(
         username: String,
         date: LocalDate,
@@ -82,7 +94,6 @@ class ScheduleService(
                 startDate = monday.atStartOfDay(),
                 endDate = sunday.atTime(LocalTime.MAX),
             )
-        if (foundSchedules.isEmpty()) return emptyList()
         return scheduleDateConverter.convertList(foundSchedules)
     }
 

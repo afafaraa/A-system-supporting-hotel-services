@@ -99,6 +99,10 @@ class ScheduleController(
         }
     }
 
+    @GetMapping("/today")
+    @ResponseStatus(HttpStatus.OK)
+    fun getTodaySchedule(principal: Principal): List<ScheduleDTO> = scheduleService.getMyTodaySchedule(principal.name)
+
     @PatchMapping("/{scheduleId}/confirm")
     @ResponseStatus(HttpStatus.OK)
     fun confirmRequestedSchedule(

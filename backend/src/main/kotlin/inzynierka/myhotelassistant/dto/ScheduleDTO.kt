@@ -15,6 +15,7 @@ data class ScheduleDTO(
     val guestName: String?,
     val room: String?,
     val orderTime: String?,
+    val price: Double? = null,
     val status: String,
 ) {
     companion object {
@@ -32,6 +33,7 @@ data class ScheduleDTO(
             guestName = guest?.let { "${it.name} ${it.surname}" },
             room = guest?.guestData?.roomNumber,
             orderTime = schedule.orderTime?.toString(),
+            price = schedule.price,
             status = schedule.status.name,
         )
     }

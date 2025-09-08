@@ -25,11 +25,11 @@ export const darkPalette: PaletteOptions = {
     active: 'hsl(0, 0%, 95%)',
   },
   calendar: {
-    AVAILABLE: "hsl(200 60% 40%)",
-    REQUESTED: "hsl(270 60% 40%)",
-    ACTIVE:    "hsl(40  60% 40%)",
-    COMPLETED: "hsl(120 60% 40%)",
-    CANCELED:  "hsl(0    0% 30%)",
+    AVAILABLE: "hsl(200 60% 50%)",
+    REQUESTED: "hsl(270 60% 50%)",
+    ACTIVE:    "hsl(40  60% 50%)",
+    COMPLETED: "hsl(120 60% 50%)",
+    CANCELED:  "hsl(0    0% 40%)",
     text: "#000",
   },
 };
