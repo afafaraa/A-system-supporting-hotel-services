@@ -1,12 +1,17 @@
-import {useParams, useLocation} from "react-router-dom";
-import {useEffect, useState} from "react";
-import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
-import AuthenticatedHeader from "../../../components/ui/AuthenticatedHeader.tsx";
-import {Grid, Box} from "@mui/material";
-import {ServiceProps} from "../available-services/AvailableServiceCard.tsx";
-import ScheduleForDate from "./ScheduleForDay.tsx";
-import StarRating from "../available-services/StarRating.tsx";
-import {useTranslation} from "react-i18next";
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { axiosAuthApi } from '../../../middleware/axiosApi.ts';
+import {
+  Box,
+  Typography,
+  Button,
+  TextField,
+  Card,
+  CardContent, useTheme,
+} from '@mui/material';
+import { ServiceProps } from '../available-services/AvailableServiceCard.tsx';
+import { useTranslation } from 'react-i18next';
+import Grid from '@mui/material/Grid';
 
 function ServiceSchedulePage (){
   const params = useParams();
@@ -14,7 +19,8 @@ function ServiceSchedulePage (){
   const serviceFromState = location.state as ServiceProps | undefined;
   const [service, setService] = useState<ServiceProps | undefined>(serviceFromState);
   const [loading, setLoading] = useState(false);
-  const {t} = useTranslation();
+  const { t } = useTranslation();
+  const theme = useTheme();
 
   useEffect(()=>{
     if (serviceFromState) return;
@@ -29,41 +35,173 @@ function ServiceSchedulePage (){
     return <p>Loading...</p>;
   }
   return (
-    <div style={{width:'100%'}}>
-      <AuthenticatedHeader title={service.name} />
-      <Box sx={{width: '100%', backgroundColor: 'white', borderRadius: '10px', padding: {xs: '20px', sm: '30px', md: '60px'}}}>
-        <Grid  sx={{gap: 2}} container spacing={{xs: 2, md: 3}} columns={{ xs: 1, sm: 2}}>
-          <Grid order={{xs: 2, sm: 1}} size={1}>
-            <h4 style={{fontSize: '1.5em', marginBottom: '5px'}}>{t('pages.service_schedule.nextAvailableServices')}</h4>
-            <ScheduleForDate service={service}/>
-          </Grid>
-          <Grid order={{xs: 1, sm: 2}} sx={{display: 'flex', flexDirection: 'column', gap: '10px'}} size={1}>
-            <img style={{maxHeight: '70%', aspectRatio: '1 / 1', objectFit: 'cover', display: 'block'}} src={service.image} alt="Alt"/>
-            <div >{service.description}</div>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-              {service.rating && <StarRating rating={service.rating}/>}
-              <div style={{fontWeight: 'bold'}}>{service.price}$</div>
-            </div>
-          </Grid>
-        </Grid>
-      </Box>
-      <div style={{padding: '10px'}}>
-        <p style={{fontSize: '24px', fontWeight:'bold'}}>Guest Reviews</p>
-        {service.rating.map((it, index) => (
-          <Box key={index} sx={{width: {xs:'100%', sm: '60%'}, background: 'white', padding: '15px 20px', marginTop: '8px'}}>
-            <div style={{display: 'flex', justifyContent: 'space-between'}}>
-              <div>{it.fullName}</div>
-              <StarRating rating={[it]}/>
-            </div>
-            {it.comment === null || it.comment.length === 0 ? (<div>({it.fullName} left no comment)</div>) : (
-              <div>{it.comment}</div>
-            )}
-          </Box>
-        ))}
-      </div>
+    <main style={{ width: '100%' }}>
+      <Grid component='div' container spacing={3}>
+        <Grid component='div' item xs={12} md={12} sx={{flexGrow: 1}}>
+          <Card
+            elevation={0}
+            sx={{
+              borderRadius: 2,
+              border: `1px solid ${theme.palette.primary.border}`,
+            }}
+          >
+            <CardContent>
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: '600', mb: 1, display: 'flex', gap: 1 }}
+              >
+                {service.name}
+                <Box
+                  sx={{
+                    fontSize: '0.8em',
+                    fontWeight: 500,
+                    px: 1,
+                    py: 0.3,
+                    borderRadius: 1,
+                    backgroundColor: service.disabled ? 'error.main' : 'success.main',
+                    color: 'white',
+                  }}
+                >
+                  {service.disabled ? 'Unavailable' : 'Available'}
+                </Box>
+              </Typography>
 
-    </div>
-  )
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                {service.description}
+              </Typography>
+
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  p: 2,
+                  border: `1px solid ${theme.palette.primary.border}`,
+                  borderRadius: 2,
+                  mb: 2,
+                }}
+              >
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    Price
+                  </Typography>
+                  <Typography sx={{ fontWeight: 'bold' }}>
+                    {service.price}$
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    Duration
+                  </Typography>
+                  <Typography sx={{ fontWeight: 'bold' }}>
+                    {service.duration} min
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{
+                  borderRadius: 2,
+                  py: 1.2,
+                  fontWeight: '600',
+                  textTransform: 'none',
+                }}
+              >
+                {t('pages.service_schedule.addToCart') || 'Add to Cart'}
+              </Button>
+
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ display: 'block', textAlign: 'center', mt: 1 }}
+              >
+                1 item in basket
+              </Typography>
+            </CardContent>
+          </Card>
+
+          {/* Included section */}
+          <Card Card
+                elevation={0}
+                sx={{
+                  borderRadius: 2,
+                  border: `1px solid ${theme.palette.primary.border}`,
+                }}>
+            <CardContent>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                What's included?
+              </Typography>
+              <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                <li>Fresh, high-quality ingredients</li>
+                <li>Delivered directly to your room</li>
+                <li>Complimentary setup and cleanup</li>
+              </ul>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Right column */}
+        <Grid component='div' item xs={12} md={12} sx={{flexGrow: 1}}>
+          <Card Card
+                elevation={0}
+                sx={{
+                  borderRadius: 2,
+                  border: `1px solid ${theme.palette.primary.border}`,
+                }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Book your service
+              </Typography>
+
+              {/* Select Date */}
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                Select date
+              </Typography>
+              <Box
+                sx={{
+                  border: '1px solid #eee',
+                  borderRadius: 2,
+                  height: 200,
+                  mb: 2,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  color: 'text.secondary',
+                }}
+              >
+                July 2025
+              </Box>
+
+              {/* Select time */}
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                Select time
+              </Typography>
+              <TextField
+                select
+                fullWidth
+                size="small"
+                placeholder="Choose a time slot"
+                sx={{ mb: 2 }}
+              />
+
+              {/* Special requests */}
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                Special requests
+              </Typography>
+              <TextField
+                fullWidth
+                multiline
+                minRows={3}
+                placeholder="Any special requirements or preferences..."
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+    </main>
+  );
 }
 
 export default ServiceSchedulePage;
