@@ -56,8 +56,8 @@ function ConfirmationWithReasonDialog({onCancel, onConfirm}: Props) {
             onChange={handleChange}
             error={error}
           >
-            {reasonOptions.map(reason =>
-              <MenuItem value={reason}>
+            {reasonOptions.map((reason, index) =>
+              <MenuItem key={index} value={reason}>
                 {t(`cancellation_reasons.${reason}`)}
               </MenuItem>
             )}

@@ -4,7 +4,7 @@ import ScheduleOutlinedIcon from "@mui/icons-material/ScheduleOutlined";
 import React, {useEffect, useState} from "react";
 import {OrderStatus, Schedule} from "../../types/schedule.ts";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
-import {Button, Stack, Typography} from "@mui/material";
+import {Alert, Button, Stack, Typography, Snackbar} from "@mui/material";
 import Box from "@mui/system/Box";
 import AirportShuttleOutlinedIcon from "@mui/icons-material/AirportShuttleOutlined";
 import {getScheduleTimeSpan} from "../../utils/utils.ts";
@@ -25,16 +25,20 @@ function RequestedSchedulesPage() {
   const {t} = useTranslation();
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [actionToConfirm, setActionToConfirm] = useState<ConfirmationProps>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(10);
+
+  const showMore = () => setVisibleCount(prev => prev + 20);
 
   useEffect(() => {
     axiosAuthApi.get<Schedule[]>("/schedule/pending")
-      .then(res => {
-        setSchedules(res.data);
-      })
-      .catch(err => console.error(err));
+      .then(res => setSchedules(res.data))
+      .catch(err => setError(err.message))
+      .finally(() => setPageLoading(false));
   }, []);
 
   const onScheduleUpdated = (oldSchedule: Schedule, newSchedule: Schedule) => {
@@ -49,13 +53,13 @@ function RequestedSchedulesPage() {
     reason?: CancellationReason,
   ) => {
     e?.stopPropagation();
-    setLoading(true);
+    setActionLoading(true);
     setError(null);
     const apiPath = `/schedule/${schedule.id}/${action}` + (reason ? `?reason=${reason}` : "");
     axiosAuthApi.patch(apiPath)
       .then(res => onScheduleUpdated(schedule, res.data))
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false));
+      .catch(err => setActionError(err?.response.data?.message ?? err.message))
+      .finally(() => setActionLoading(false));
   }
 
   const confirmAction = (schedule: Schedule, action: "cancel" | "reject", e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -78,23 +82,23 @@ function RequestedSchedulesPage() {
     switch (schedule.status) {
       case OrderStatus.requested:
         return <>
-          <StyledButton onClick={(e) => handleScheduleAction(schedule, "confirm", e)}  // "& .MuiButton-startIcon": {p: {xs: 1, sm: "initial"}, m: {xs: 0, sm: undefined}}
-                        variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={loading} sx={{mr: {xs: 1, md: 2}}}>
+          <StyledButton onClick={(e) => handleScheduleAction(schedule, "confirm", e)}
+                        variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={actionLoading} sx={{mr: {xs: 1, md: 2}}}>
             <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.my_schedule.details.confirm")}</Box>
           </StyledButton>
           <StyledButton onClick={(e) => confirmAction(schedule, "reject", e)}
-                        variant="outlined" color="error" startIcon={<CancelOutlinedIcon/>} loading={loading}>
+                        variant="outlined" color="error" startIcon={<CancelOutlinedIcon/>} loading={actionLoading}>
             <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.my_schedule.details.reject")}</Box>
           </StyledButton>
         </>;
       case OrderStatus.active:
         return <>
           <StyledButton onClick={(e) => handleScheduleAction(schedule, "complete", e)}
-                        variant="contained" color="success" startIcon={<TaskAltOutlinedIcon/>} loading={loading} sx={{mr: {xs: 1, md: 2}}}>
+                        variant="contained" color="success" startIcon={<TaskAltOutlinedIcon/>} loading={actionLoading} sx={{mr: {xs: 1, md: 2}}}>
             <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.my_schedule.details.complete")}</Box>
           </StyledButton>
           <StyledButton onClick={(e) => confirmAction(schedule, "cancel", e)}
-                        variant="outlined" color="error" startIcon={<CancelOutlinedIcon/>} loading={loading}>
+                        variant="outlined" color="error" startIcon={<CancelOutlinedIcon/>} loading={actionLoading}>
             <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.my_schedule.details.cancel")}</Box>
           </StyledButton>
         </>;
@@ -112,7 +116,13 @@ function RequestedSchedulesPage() {
     <SectionCard>
       <Title title={<><ScheduleOutlinedIcon /> Pending Service Requests</>}
              subtitle={`${schedules.length} services waiting for approval`} />
-      {schedules.map(schedule => (
+      {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
+      {pageLoading ? <></> : schedules.length === 0 ?
+        <SectionCard size={4}>
+          No requested schedules found.
+        </SectionCard>
+        :
+        schedules.slice(0, visibleCount).map(schedule => (
         <SectionCard size={2} sx={{mt: 2, px: {xs: 1.5, sm: 4}, cursor: "pointer"}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
                      onClick={() => setSelectedSchedule(schedule)} >
           <Stack direction="row" alignItems="center" gap={{xs: 1.5, sm: 3}}>
@@ -133,11 +143,15 @@ function RequestedSchedulesPage() {
         </SectionCard>
       ))}
 
+      {visibleCount < schedules.length &&
+        <Box display="flex" justifyContent="center" mt={3}>
+          <Button variant="outlined" onClick={showMore} sx={{width: "300px"}}>Show more ↓</Button>
+        </Box>
+      }
+
       {selectedSchedule && (
         <ScheduleDetailsDialog open={true} onClose={() => setSelectedSchedule(null)} schedule={selectedSchedule} onScheduleUpdated={onScheduleUpdated} />
       )}
-
-      {error && <Typography color="error" sx={{mt: 2}}>{error}</Typography>}
 
       {actionToConfirm &&
         <ConfirmationWithReasonDialog
@@ -145,6 +159,17 @@ function RequestedSchedulesPage() {
           onConfirm={handleConfirmedAction}
         />
       }
+
+      <Snackbar
+        open={!!actionError}
+        autoHideDuration={6000}
+        onClose={() => setActionError(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={() => setActionError(null)} severity="error" sx={{ width: "100%" }}>
+          {actionError}
+        </Alert>
+      </Snackbar>
     </SectionCard>
   );
 }

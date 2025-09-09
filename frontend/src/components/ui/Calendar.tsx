@@ -33,7 +33,7 @@ function Calendar() {
     axiosAuthApi.get<Schedule[]>('/schedule?date=' + addDays(currentWeekStart, 1).toISOString())
       .then(res => {
         const updated = new Map(schedules);
-        updated.set(yearWeek, res.data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()));
+        updated.set(yearWeek, res.data);
         setSchedules(updated);
       })
       .catch(err => {
@@ -73,9 +73,10 @@ function Calendar() {
 
     // add the new schedule
     const newScheduleYearWeek = getYearWeek(new Date(newSchedule.date));
-    const newSchedules: Schedule[] = updated.get(newScheduleYearWeek) || [];
-    newSchedules.push(newSchedule);
-    newSchedules.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const newSchedules: Schedule[] = updated.get(newScheduleYearWeek) ? [...updated.get(newScheduleYearWeek)!] : [];
+    const insertIndex = newSchedules.findIndex(s => new Date(s.date).getTime() > new Date(newSchedule.date).getTime());
+    if (insertIndex === -1) newSchedules.push(newSchedule);
+    else newSchedules.splice(insertIndex, 0, newSchedule);
     updated.set(newScheduleYearWeek, newSchedules);
 
     setSchedules(updated);
@@ -152,8 +153,8 @@ function Calendar() {
                   {dayOfWeek}<br/>{ currentDay.toLocaleDateString(t('date.locale'), {day: 'numeric', month: 'numeric'}) } {isToday && "(Today)"}
                 </Typography>
                 {schedulesOnDay[index]?.map((schedule: Schedule) => (
-                  <SectionCard size={1.5} sx={{...scheduleCardStyle, bgcolor: "transparent"}} onClick={() => setSelectedSchedule(schedule)}>
-                    <ScheduleCard key={schedule.id} schedule={schedule}/>
+                  <SectionCard key={schedule.id} size={1.5} sx={{...scheduleCardStyle, bgcolor: "transparent"}} onClick={() => setSelectedSchedule(schedule)}>
+                    <ScheduleCard schedule={schedule}/>
                   </SectionCard>
                 ))}
               </SectionCard>
@@ -174,15 +175,15 @@ function Calendar() {
   const ScheduleCard = ({schedule}: {schedule: Schedule}) => (
     <>
       <Typography fontSize="inherit" fontWeight="bold">{schedule.title}</Typography>
-      <Typography fontSize="inherit" color="text.secondary" mb={1.5}>
+      <Typography fontSize="smaller" color="text.secondary" mb={1.5}>
         {schedule.duration ?
           `${format(schedule.date, "HH:mm")} - ${format(addMinutes(schedule.date, schedule.duration), "HH:mm")}`
           : format(schedule.date, "HH:mm")
         }
       </Typography>
-      <Box px={0.8} py={0.4} position="absolute" bottom={0} right={0} fontSize={11} fontWeight="bold"
+      <Box px={0.8} py={0.4} position="absolute" bottom={4} right={4} fontSize={11} fontWeight="bold"
            color={`calendar.text`} bgcolor={`calendar.${schedule.status}`}
-           sx={{borderTopLeftRadius: 10}}>
+           sx={{borderRadius: 1.5}}>
         {t(`order_status.${schedule.status}`)}
       </Box>
     </>

@@ -14,7 +14,7 @@ interface ScheduleRepository : MongoRepository<ScheduleEntity, String> {
         endDate: LocalDateTime,
     ): List<ScheduleEntity>
 
-    fun findByEmployeeIdAndServiceDateBetween(
+    fun findByEmployeeIdAndServiceDateBetweenOrderByServiceDate(
         employeeId: String,
         startDate: LocalDateTime,
         endDate: LocalDateTime,

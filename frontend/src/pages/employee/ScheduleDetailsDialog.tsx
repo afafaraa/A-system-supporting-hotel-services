@@ -2,7 +2,7 @@ import {Dialog, DialogContent, IconButton, Stack, Typography, Box, Button, Dialo
 import CloseIcon from '@mui/icons-material/Close';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
-import EventIcon from '@mui/icons-material/Event';
+import EventOutlinedIcon from '@mui/icons-material/EventOutlined';
 import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import { useTranslation } from "react-i18next";
@@ -75,7 +75,7 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
       <DialogContent>
 
         <Stack direction="row" spacing={elementsSpacing} mb={elementsSpacing}>
-          <DialogSection title={<><EventIcon fontSize="small"/> Date & time</>} >
+          <DialogSection title={<><EventOutlinedIcon fontSize="small"/> Date & time</>} >
             <p>{new Date(schedule.date).toLocaleDateString(t('date.locale'))}</p>
             <p>{getScheduleTimeSpan(new Date(schedule.date), schedule.duration, t('date.locale'))}</p>
           </DialogSection>

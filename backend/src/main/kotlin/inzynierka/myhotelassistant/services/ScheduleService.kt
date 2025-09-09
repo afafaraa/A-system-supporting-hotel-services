@@ -67,7 +67,7 @@ class ScheduleService(
         val employeeId = employeeService.findByUsernameOrThrow(username).id!!
         val today = LocalDate.now()
         val foundSchedules =
-            scheduleRepository.findByEmployeeIdAndServiceDateBetween(
+            scheduleRepository.findByEmployeeIdAndServiceDateBetweenOrderByServiceDate(
                 employeeId,
                 startDate = today.atStartOfDay(),
                 endDate = today.atTime(LocalTime.MAX),
@@ -99,7 +99,7 @@ class ScheduleService(
     ): List<ScheduleDTO> {
         val (monday, sunday) = weekBounds(date)
         val foundSchedules =
-            scheduleRepository.findByEmployeeIdAndServiceDateBetween(
+            scheduleRepository.findByEmployeeIdAndServiceDateBetweenOrderByServiceDate(
                 employeeId = employeeId,
                 startDate = monday.atStartOfDay(),
                 endDate = sunday.atTime(LocalTime.MAX),
