@@ -7,13 +7,14 @@ import {
   Button,
   TextField,
   Card,
-  CardContent, useTheme,
+  CardContent,
+  useTheme,
 } from '@mui/material';
 import { ServiceProps } from '../available-services/AvailableServiceCard.tsx';
 import { useTranslation } from 'react-i18next';
 import Grid from '@mui/material/Grid';
 
-function ServiceSchedulePage (){
+function ServiceSchedulePage() {
   const params = useParams();
   const location = useLocation();
   const serviceFromState = location.state as ServiceProps | undefined;
@@ -36,8 +37,8 @@ function ServiceSchedulePage (){
   }
   return (
     <main style={{ width: '100%' }}>
-      <Grid component='div' container spacing={3}>
-        <Grid component='div' item xs={12} md={12} sx={{flexGrow: 1}}>
+      <Grid component="div" container spacing={3}>
+        <Grid component="div" item spacing={3} sx={{ flexGrow: 1 }}>
           <Card
             elevation={0}
             sx={{
@@ -46,27 +47,44 @@ function ServiceSchedulePage (){
             }}
           >
             <CardContent>
-              <Typography
-                variant="h6"
-                sx={{ fontWeight: '600', mb: 1, display: 'flex', gap: 1 }}
-              >
-                {service.name}
-                <Box
-                  sx={{
-                    fontSize: '0.8em',
-                    fontWeight: 500,
-                    px: 1,
-                    py: 0.3,
-                    borderRadius: 1,
-                    backgroundColor: service.disabled ? 'error.main' : 'success.main',
-                    color: 'white',
+              <Box sx={{ display: 'flex', width: '100%', gap: 2 }}>
+                <img
+                  style={{
+                    width: 70,
+                    height: 70,
+                    borderRadius: 10,
+                    marginTop: 5,
+                    objectFit: 'cover',
                   }}
-                >
-                  {service.disabled ? 'Unavailable' : 'Available'}
-                </Box>
-              </Typography>
+                  src={service.image}
+                  alt={service.name}
+                />
+                <div style={{display: 'flex', flexDirection:'column', justifyContent: 'space-around' }}>
+                  <Typography
+                    variant="h1"
+                    sx={{ fontWeight: '600', fontSize: '1.5em' }}
+                  >
+                    {service.name}
+                  </Typography>
+                  <div
+                    style={{
+                      fontSize: '0.8em',
+                      fontWeight: '600',
+                      borderRadius: '4px',
+                      backgroundColor: service.disabled
+                        ? theme.palette.secondary.error
+                        : theme.palette.primary.main,
+                      color: 'white',
+                      padding: '2px 4px',
+                      width: 'fit-content',
+                    }}
+                  >
+                    {service.disabled ? 'Unavailable' : 'Available'}
+                  </div>
+                </div>
+              </Box>
 
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              <Typography variant="body2" color="text.secondary" sx={{ margin: '10px 0px', fontSize: '1em' }}>
                 {service.description}
               </Typography>
 
@@ -79,6 +97,7 @@ function ServiceSchedulePage (){
                   border: `1px solid ${theme.palette.primary.border}`,
                   borderRadius: 2,
                   mb: 2,
+                  backgroundColor: theme.palette.background.default,
                 }}
               >
                 <Box>
@@ -122,13 +141,14 @@ function ServiceSchedulePage (){
             </CardContent>
           </Card>
 
-          {/* Included section */}
-          <Card Card
-                elevation={0}
-                sx={{
-                  borderRadius: 2,
-                  border: `1px solid ${theme.palette.primary.border}`,
-                }}>
+          <Card
+            Card
+            elevation={0}
+            sx={{
+              borderRadius: 2,
+              border: `1px solid ${theme.palette.primary.border}`,
+            }}
+          >
             <CardContent>
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 What's included?
@@ -142,14 +162,15 @@ function ServiceSchedulePage (){
           </Card>
         </Grid>
 
-        {/* Right column */}
-        <Grid component='div' item xs={12} md={12} sx={{flexGrow: 1}}>
-          <Card Card
-                elevation={0}
-                sx={{
-                  borderRadius: 2,
-                  border: `1px solid ${theme.palette.primary.border}`,
-                }}>
+        <Grid component="div" item xs={12} md={12} sx={{ flexGrow: 1 }}>
+          <Card
+            Card
+            elevation={0}
+            sx={{
+              borderRadius: 2,
+              border: `1px solid ${theme.palette.primary.border}`,
+            }}
+          >
             <CardContent>
               <Typography variant="h6" sx={{ mb: 2 }}>
                 Book your service
