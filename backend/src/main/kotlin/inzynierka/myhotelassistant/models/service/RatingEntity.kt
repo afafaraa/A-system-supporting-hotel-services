@@ -14,5 +14,5 @@ data class RatingEntity(
     val fullName: String,
     val stars: Int,
     val comment: String? = null,
-    val createdAt: LocalDateTime = LocalDateTime.now()
+    val createdAt: LocalDateTime = LocalDateTime.now(),
 )

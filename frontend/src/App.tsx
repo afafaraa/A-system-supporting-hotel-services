@@ -27,12 +27,11 @@ import ServicesListPage from "./pages/manager/ServicesListPage.tsx";
 import StatsPage from "./pages/manager/StatsPage.tsx";
 import AddNewEmployeePage from './pages/manager/forms/AddNewEmployeePage.tsx';
 import GuestMainPage from "./pages/guest/layout/GuestMainPage.tsx";
-import EmployeeMainPage from "./components/layout/EmployeeMainPage.tsx";
+import EmployeeLayout from "./components/layout/EmployeeLayout.tsx";
 import TodaySchedulesPage from "./pages/employee/TodaySchedulesPage.tsx";
 import RequestedSchedulesPage from "./pages/employee/RequestedSchedulesPage.tsx";
 import EmployeeReservationsPage from "./pages/employee/ReservationsPage.tsx";
 import EmployeeReviewsPage from "./pages/employee/ReviewsPage.tsx";
-import AdminMainPage from "./components/layout/AdminMainPage.tsx";
 import FallbackPage from "./pages/user/FallbackPage.tsx";
 
 function App(){
@@ -56,7 +55,7 @@ function App(){
               <Route path="/service-schedule/:id" element={<ServiceSchedulePage />} />
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_EMPLOYEE", "ROLE_RECEPTIONIST", "ROLE_MANAGER", "ROLE_ADMIN"]} />}>
-              <Route element={<EmployeeMainPage />}>
+              <Route element={<EmployeeLayout />}>
                 <Route path="/employee/today-schedules" element={<TodaySchedulesPage />} />
                 <Route path="/employee/requested-schedules" element={<RequestedSchedulesPage />} />
                 <Route path="/employee/calendar" element={<Calendar />} />
@@ -73,9 +72,6 @@ function App(){
               <Route path="/employees/:username" element={<EmployeeDetailsPage />} />
               <Route path="/management/services" element={<ServicesListPage />} />
               <Route path="/management/statistics" element={<StatsPage />} />
-            </Route>
-            <Route element={<ProtectedRoute allowedRoles={["ROLE_ADMIN"]} />}>
-              <Route path="/admin/dashboard" element={<AdminMainPage />} />
             </Route>
           </Route>
 

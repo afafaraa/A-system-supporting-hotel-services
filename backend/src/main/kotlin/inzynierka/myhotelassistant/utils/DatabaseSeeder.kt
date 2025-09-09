@@ -257,17 +257,18 @@ class DatabaseSeeder(
                         image = serviceData.imageUrl,
                     )
                 val savedService = serviceService.save(service)
-                val ratings = List(random.nextInt(2, 5)) {
-                    RatingEntity(
-                        serviceId = savedService.id!!,
-                        scheduleId = "",
-                        employeeId = "",
-                        guestId = user[0].id!!,
-                        fullName = user[0].name + " " + user[0].surname,
-                        stars = random.nextInt(1, 5),
-                        comment = "Example comment for particular service. Rating generated randomly.",
-                    )
-                }
+                val ratings =
+                    List(random.nextInt(2, 5)) {
+                        RatingEntity(
+                            serviceId = savedService.id!!,
+                            scheduleId = "",
+                            employeeId = "",
+                            guestId = user[0].id!!,
+                            fullName = user[0].name + " " + user[0].surname,
+                            stars = random.nextInt(1, 5),
+                            comment = "Example comment for particular service. Rating generated randomly.",
+                        )
+                    }
                 ratingRepository.saveAll(ratings)
                 logger.info("Service '${serviceData.name}' added to database")
             }

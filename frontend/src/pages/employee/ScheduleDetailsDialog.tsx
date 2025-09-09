@@ -14,7 +14,7 @@ import {ReactElement, ReactNode, useState} from "react";
 import ConfirmationWithReasonDialog from "../../components/ui/ConfirmationWithReasonDialog.tsx"
 import {CancellationReason} from "../../types/cancellation_reasons.ts";
 import AirportShuttleOutlinedIcon from "@mui/icons-material/AirportShuttleOutlined";
-import {getScheduleTimeSpan} from "../../utils/utils.ts";
+import {formatTimeRange} from "../../utils/dateFormatting.ts";
 
 type Props = {
   open: boolean;
@@ -77,7 +77,7 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
         <Stack direction="row" spacing={elementsSpacing} mb={elementsSpacing}>
           <DialogSection title={<><EventOutlinedIcon fontSize="small"/> Date & time</>} >
             <p>{new Date(schedule.date).toLocaleDateString(t('date.locale'))}</p>
-            <p>{getScheduleTimeSpan(new Date(schedule.date), schedule.duration, t('date.locale'))}</p>
+            <p>{formatTimeRange(new Date(schedule.date), schedule.duration)}</p>
           </DialogSection>
           <DialogSection title={tc("status")}>
             <Box display="inline-block" px={1.5} py={0.2} my={0.2} borderRadius={1} color="calendar.text" bgcolor={`calendar.${schedule.status}`} fontWeight="bold">
@@ -86,7 +86,7 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
           </DialogSection>
         </Stack>
 
-        {schedule.status !== OrderStatus.available && <>
+        {schedule.status !== OrderStatus.AVAILABLE && <>
           <Stack direction="row" spacing={elementsSpacing} mb={elementsSpacing}>
             <DialogSection title={<><PersonOutlineOutlinedIcon fontSize="small" /> Guest name</>}>
               {schedule.guestName || "Unknown guest"}
@@ -115,7 +115,7 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
           </DialogSection>
         </Box>
 
-        {schedule.status === OrderStatus.requested &&
+        {schedule.status === OrderStatus.REQUESTED &&
           <Box display="flex" gap={1} mt={elementsSpacing}>
             <Button variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={loading} onClick={() => handleScheduleAction("confirm")}
                     sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none", fontSize: {xs: "12px", sm: "inherit"}, lineHeight: 1.3}}>{tc("confirm")}</Button>
@@ -124,7 +124,7 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
           </Box>
         }
 
-        {schedule.status === OrderStatus.active &&
+        {schedule.status === OrderStatus.ACTIVE &&
           <Box display="flex" gap={1} mt={elementsSpacing}>
             <Button color="success" variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={loading} onClick={() => handleScheduleAction("complete")}
                     sx={{flex:"1 0 0", fontWeight: "bold", textTransform: "none", fontSize: {xs: "12px", sm: "inherit"}, lineHeight: 1.3}}>{tc("complete")}</Button>

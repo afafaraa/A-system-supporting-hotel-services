@@ -18,7 +18,7 @@ import {fontSizes} from "../../theme/fontSizes.ts";
 import {LogInWrapper} from "../../theme/styled-components/LogInWrapper.ts";
 import {LogInInput} from "../../theme/styled-components/LogInInput.ts";
 import {VisibilityOutlined, VisibilityOffOutlined} from "@mui/icons-material";
-import {navigateToDashboard} from "../../utils/utils.ts";
+import navigateToDashboard from "../../utils/navigateToDashboard.ts";
 
 function LoginPage(){
   const user = useSelector(selectUser);

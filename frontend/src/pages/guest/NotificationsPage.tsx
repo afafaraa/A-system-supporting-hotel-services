@@ -11,7 +11,7 @@ import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import { useTranslation } from 'react-i18next';
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import {Notification, NotificationVariant} from "../../types/notification.ts";
-import {getDay, getTime} from "../../utils/utils.ts";
+import {formatDateFromTimestamp, formatTimeFromTimestamp} from "../../utils/dateFormatting.ts";
 import {setNotificationsCount} from "../../redux/slices/notificationsCount.ts";
 
 function NotificationsPage() {
@@ -159,12 +159,12 @@ function NotificationsPage() {
                     </Typography>
                     <Typography fontSize="0.8rem">{n.message}</Typography>
                     <Typography fontSize="0.8rem" display={{xs: "inherit", sm: "none"}} mt={1}>
-                      {getDay(n.timestamp)}, {getTime(n.timestamp)}
+                      {formatDateFromTimestamp(n.timestamp)}, {formatTimeFromTimestamp(n.timestamp)}
                     </Typography>
                   </Stack>
                   <Stack display={{xs: "none", sm: "inherit"}} direction="column" alignItems='flex-end' sx={{textAlign: 'right', minWidth: 'fit-content'}}>
-                    <Typography variant="body2">{getDay(n.timestamp)}</Typography>
-                    <Typography variant="body1">{getTime(n.timestamp)}</Typography>
+                    <Typography variant="body2">{formatDateFromTimestamp(n.timestamp)}</Typography>
+                    <Typography variant="body1">{formatTimeFromTimestamp(n.timestamp)}</Typography>
                   </Stack>
                 </Stack>
               </Card>

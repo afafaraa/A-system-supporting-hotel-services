@@ -139,7 +139,7 @@ function ScheduleForDate({ service }: { service: ServiceProps }) {
         <Typography>{t('pages.service_schedule.noServiceAvailable')}</Typography>
       ) : (
         filteredSchedule.sort((a,b) => new Date(a.serviceDate).getTime() - new Date(b.serviceDate).getTime()).map((item) => {
-          const available = new Date() > new Date(item.serviceDate) || item.status !== OrderStatus.available;
+          const available = new Date() > new Date(item.serviceDate) || item.status !== OrderStatus.AVAILABLE;
 
           return (
             <div key={item.id} style={{ display: 'flex', gap: '5px', opacity: available ? 0.5 : 1, pointerEvents: available ? 'none' : 'auto', width: '100%' }}>

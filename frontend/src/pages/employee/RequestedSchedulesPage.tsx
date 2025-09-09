@@ -7,7 +7,7 @@ import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {Alert, Button, Stack, Typography, Snackbar} from "@mui/material";
 import Box from "@mui/system/Box";
 import AirportShuttleOutlinedIcon from "@mui/icons-material/AirportShuttleOutlined";
-import {getScheduleTimeSpan} from "../../utils/utils.ts";
+import {formatTimeRange} from "../../utils/dateFormatting.ts";
 import {useTranslation} from "react-i18next";
 import ScheduleDetailsDialog from "./ScheduleDetailsDialog.tsx";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
@@ -79,8 +79,9 @@ function RequestedSchedulesPage() {
   }));
 
   function renderActions(schedule: Schedule) {
+    console.log(schedule.status, OrderStatus.REQUESTED, OrderStatus.ACTIVE)
     switch (schedule.status) {
-      case OrderStatus.requested:
+      case OrderStatus.REQUESTED:
         return <>
           <StyledButton onClick={(e) => handleScheduleAction(schedule, "confirm", e)}
                         variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={actionLoading} sx={{mr: {xs: 1, md: 2}}}>
@@ -91,7 +92,7 @@ function RequestedSchedulesPage() {
             <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.my_schedule.details.reject")}</Box>
           </StyledButton>
         </>;
-      case OrderStatus.active:
+      case OrderStatus.ACTIVE:
         return <>
           <StyledButton onClick={(e) => handleScheduleAction(schedule, "complete", e)}
                         variant="contained" color="success" startIcon={<TaskAltOutlinedIcon/>} loading={actionLoading} sx={{mr: {xs: 1, md: 2}}}>
@@ -133,7 +134,7 @@ function RequestedSchedulesPage() {
               <Typography fontWeight="bold">{schedule.title}</Typography>
               <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? "Guest unknown"} | Room {schedule.room ?? "unknown"}</Typography>
               <Box mt={1} fontSize={{xs: 11, sm: 13}}>
-                {new Date(schedule.date).toLocaleDateString(t('date.locale'))} | {getScheduleTimeSpan(new Date(schedule.date), schedule.duration, t('date.locale'))}
+                {new Date(schedule.date).toLocaleDateString(t('date.locale'))} | {formatTimeRange(new Date(schedule.date), schedule.duration)}
               </Box>
             </Box>
           </Stack>

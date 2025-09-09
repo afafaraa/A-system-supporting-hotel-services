@@ -2,7 +2,6 @@ import DashboardNavbar from "../navigation/DashboardNavbar.tsx";
 import {Outlet} from "react-router-dom";
 import {GlobalStyles} from "@mui/material";
 
-
 const employeeTabs = [
   {name : "Today", link: "/employee/today-schedules"},
   {name : "Requested", link: "/employee/requested-schedules"},
@@ -13,7 +12,7 @@ const employeeTabs = [
 
 const inputGlobalStyles = <GlobalStyles styles={{ html: { overflowY: 'scroll' } }} />
 
-function EmployeeMainPage() {
+function EmployeeLayout() {
 
   return (
     <>
@@ -24,4 +23,4 @@ function EmployeeMainPage() {
   )
 }
 
-export default EmployeeMainPage;
+export default EmployeeLayout;

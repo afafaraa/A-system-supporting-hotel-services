@@ -1,7 +1,7 @@
 import {useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
 import {useNavigate} from "react-router-dom";
-import {navigateToDashboard} from "../../utils/utils.ts";
+import navigateToDashboard from "../../utils/navigateToDashboard.ts";
 
 function HomePage() {
   const user = useSelector(selectUser);

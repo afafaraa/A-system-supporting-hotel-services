@@ -60,15 +60,16 @@ class ServiceController(
     ) {
         val guest = userService.findByUsernameOrThrow(req.username)
         val schedule = scheduleService.findByIdOrThrow(req.scheduleId)
-        val rating = RatingEntity(
-            serviceId = schedule.serviceId,
-            scheduleId = req.scheduleId,
-            employeeId = schedule.employeeId,
-            guestId = guest.id!!,
-            fullName = guest.name + " " + guest.surname,
-            stars = req.rating,
-            comment = req.comment,
-        )
+        val rating =
+            RatingEntity(
+                serviceId = schedule.serviceId,
+                scheduleId = req.scheduleId,
+                employeeId = schedule.employeeId,
+                guestId = guest.id!!,
+                fullName = guest.name + " " + guest.surname,
+                stars = req.rating,
+                comment = req.comment,
+            )
         ratingRepository.save(rating)
     }
 

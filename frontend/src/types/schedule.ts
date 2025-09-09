@@ -2,7 +2,7 @@ export interface Schedule {
   id: string,
   serviceId: string,
   title: string | undefined,
-  date: Date,
+  date: string,
   duration: number | undefined,
   weekday: string,
   guestName: string | undefined,
@@ -13,9 +13,9 @@ export interface Schedule {
 }
 
 export enum OrderStatus {
-  available = "AVAILABLE",
-  requested = "REQUESTED",
-  active = "ACTIVE",
-  completed = "COMPLETED",
-  canceled = "CANCELED",
+  AVAILABLE = "AVAILABLE",
+  REQUESTED = "REQUESTED",
+  ACTIVE = "ACTIVE",
+  COMPLETED = "COMPLETED",
+  CANCELED = "CANCELED",
 }

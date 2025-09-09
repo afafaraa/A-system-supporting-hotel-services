@@ -6,12 +6,18 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import {useTranslation} from "react-i18next";
 import {useEffect, useLayoutEffect, useRef, useState} from "react";
-import {startOfWeek, addDays, isSameDay, isSameWeek, format, addMinutes} from "date-fns";
+import {startOfWeek, addDays, isSameDay, isSameWeek, getISOWeek} from "date-fns";
 import {Schedule} from "../../types/schedule.ts";
-import {getYearWeek} from "../../utils/utils.ts";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {isAxiosError} from "axios";
 import ScheduleDetailsDialog from "../../pages/employee/ScheduleDetailsDialog.tsx";
+import {formatTimeRange, formatNumericDayMonth} from "../../utils/dateFormatting.ts";
+
+function getYearWeek(date: Date): number {
+  const year = date.getFullYear();
+  const week = getISOWeek(date);
+  return year * 100 + week;
+}
 
 function Calendar() {
   const { t } = useTranslation();
@@ -90,7 +96,10 @@ function Calendar() {
 
   const CurrentWeekInfo = () => (
     <Typography fontWeight="bold" fontSize="1.2rem">
-      {format(currentWeekStart, "dd.MM")} - {format(addDays(currentWeekStart, 6), "dd.MM")} {isSameWeek(currentWeekStart, today, {weekStartsOn: 1}) && "(Current)"}
+      {formatNumericDayMonth(currentWeekStart)}
+      {' - '}
+      {formatNumericDayMonth(addDays(currentWeekStart, 6))}
+      {' '}{isSameWeek(currentWeekStart, today, {weekStartsOn: 1}) && "(Current)"}
     </Typography>
   )
 
@@ -175,11 +184,8 @@ function Calendar() {
   const ScheduleCard = ({schedule}: {schedule: Schedule}) => (
     <>
       <Typography fontSize="inherit" fontWeight="bold">{schedule.title}</Typography>
-      <Typography fontSize="smaller" color="text.secondary" mb={1.5}>
-        {schedule.duration ?
-          `${format(schedule.date, "HH:mm")} - ${format(addMinutes(schedule.date, schedule.duration), "HH:mm")}`
-          : format(schedule.date, "HH:mm")
-        }
+      <Typography fontSize={{xs: 10, sm: 11}} color="text.secondary" mb={3}>
+        {formatTimeRange(new Date(schedule.date), schedule.duration)}
       </Typography>
       <Box px={0.8} py={0.4} position="absolute" bottom={4} right={4} fontSize={11} fontWeight="bold"
            color={`calendar.text`} bgcolor={`calendar.${schedule.status}`}

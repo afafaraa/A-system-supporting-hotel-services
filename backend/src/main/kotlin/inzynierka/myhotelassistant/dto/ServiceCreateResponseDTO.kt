@@ -20,7 +20,10 @@ data class ServiceCreateResponseDTO(
     val image: String?,
 ) {
     companion object {
-        fun from(entity: ServiceEntity, ratings: List<RatingEntity>): ServiceCreateResponseDTO {
+        fun from(
+            entity: ServiceEntity,
+            ratings: List<RatingEntity>,
+        ): ServiceCreateResponseDTO {
             println("Entity: $entity")
             println("Ratings: $ratings")
             return ServiceCreateResponseDTO(

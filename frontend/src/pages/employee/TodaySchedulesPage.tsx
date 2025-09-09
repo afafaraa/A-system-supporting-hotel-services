@@ -9,7 +9,7 @@ import {Stack, Typography, Button, Alert} from "@mui/material";
 import Box from "@mui/system/Box";
 import {useTranslation} from "react-i18next";
 import ScheduleDetailsDialog from "./ScheduleDetailsDialog.tsx";
-import {getScheduleTimeSpan} from "../../utils/utils.ts";
+import {formatTimeRange} from "../../utils/dateFormatting.ts";
 
 function TodaySchedulesPage() {
   const {t} = useTranslation();
@@ -53,7 +53,7 @@ function TodaySchedulesPage() {
             <Box>
               <Typography fontWeight="bold">{schedule.title}</Typography>
               <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? "Guest unknown"} | Room {schedule.room ?? "unknown"}</Typography>
-              <Typography fontSize="13px" sx={{mt: 1}}>{getScheduleTimeSpan(new Date(schedule.date), schedule.duration, t('date.locale'))}</Typography>
+              <Typography fontSize="13px" sx={{mt: 1}}>{formatTimeRange(new Date(schedule.date), schedule.duration)}</Typography>
             </Box>
           </Stack>
           <Typography fontSize="12px" fontWeight="bold" px={{xs: 1, sm: 2}} py={0.5} borderRadius={1}

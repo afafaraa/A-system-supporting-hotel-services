@@ -7,7 +7,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import {Notification, NotificationVariant} from "../../types/notification.ts";
-import {getDay, getTime} from "../../utils/utils.ts";
+import {formatDateFromTimestamp, formatTimeFromTimestamp} from "../../utils/dateFormatting.ts";
 
 function NotificationsContainer() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -49,7 +49,7 @@ function NotificationsContainer() {
               </Box>
               <Typography fontSize="0.8rem">{n.message}</Typography>
               <Typography fontSize="0.8rem" mt={1}>
-                {getDay(n.timestamp)}, {getTime(n.timestamp)}
+                {formatDateFromTimestamp(n.timestamp)}, {formatTimeFromTimestamp(n.timestamp)}
               </Typography>
           </Card>
         )
