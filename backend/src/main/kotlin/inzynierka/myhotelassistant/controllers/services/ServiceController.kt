@@ -2,8 +2,8 @@ package inzynierka.myhotelassistant.controllers.services
 
 import inzynierka.myhotelassistant.dto.ServiceCreateRequestDTO
 import inzynierka.myhotelassistant.dto.ServiceCreateResponseDTO
-import inzynierka.myhotelassistant.models.service.Rating
-import inzynierka.myhotelassistant.models.service.ServiceEntity
+import inzynierka.myhotelassistant.models.service.RatingEntity
+import inzynierka.myhotelassistant.repositories.RatingRepository
 import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
 import inzynierka.myhotelassistant.services.UserService
@@ -27,6 +27,7 @@ class ServiceController(
     private val serviceService: ServiceService,
     private val userService: UserService,
     private val scheduleService: ScheduleService,
+    private val ratingRepository: RatingRepository,
 ) {
     data class RateServiceRequestBody(
         val scheduleId: String,
@@ -43,14 +44,14 @@ class ServiceController(
     ): List<ServiceCreateResponseDTO> {
         val pageable = PageRequest.of(page, size)
         val entities = serviceService.getAllAvailable(pageable)
-        return entities.map { ServiceCreateResponseDTO.from(it) }
+        return entities.map { ServiceCreateResponseDTO.from(it, ratingRepository.findAllByServiceId(it.id!!)) }
     }
 
     @GetMapping("/one/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun getServiceById(
         @PathVariable id: String,
-    ) = serviceService.findByIdOrThrow(id)
+    ) = ServiceCreateResponseDTO.from(serviceService.findByIdOrThrow(id), ratingRepository.findAllByServiceId(id))
 
     @PostMapping("/rate")
     @ResponseStatus(HttpStatus.OK)
@@ -58,10 +59,17 @@ class ServiceController(
         @RequestBody req: RateServiceRequestBody,
     ) {
         val guest = userService.findByUsernameOrThrow(req.username)
-        val serviceId = scheduleService.findByIdOrThrow(req.scheduleId).serviceId
-        val service = serviceService.findByIdOrThrow(serviceId)
-        service.rating.add(Rating(guest.name + " " + guest.surname, req.rating, req.comment))
-        serviceService.save(service)
+        val schedule = scheduleService.findByIdOrThrow(req.scheduleId)
+        val rating = RatingEntity(
+            serviceId = schedule.serviceId,
+            scheduleId = req.scheduleId,
+            employeeId = schedule.employeeId,
+            guestId = guest.id!!,
+            fullName = guest.name + " " + guest.surname,
+            stars = req.rating,
+            comment = req.comment,
+        )
+        ratingRepository.save(rating)
     }
 
     @PostMapping
@@ -71,16 +79,16 @@ class ServiceController(
     ): ServiceCreateResponseDTO {
         val entity = request.toEntity()
         val savedEntity = serviceService.save(entity)
-        return ServiceCreateResponseDTO.from(savedEntity)
+        return ServiceCreateResponseDTO.from(savedEntity, emptyList())
     }
 
     @PatchMapping("/{id}")
     fun updateService(
         @PathVariable id: String,
         @RequestBody request: ServiceCreateRequestDTO,
-    ): ResponseEntity<ServiceEntity> {
+    ): ServiceCreateResponseDTO {
         val updated = serviceService.update(id, request)
-        return ResponseEntity.ok(updated)
+        return ServiceCreateResponseDTO.from(updated, ratingRepository.findAllByServiceId(id))
     }
 
     @DeleteMapping("/{id}")
@@ -95,7 +103,7 @@ class ServiceController(
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message ?: "Invalid request")
         } catch (e: NoSuchElementException) {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.message ?: "Service not found")
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error")
         }
 }

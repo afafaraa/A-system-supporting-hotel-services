@@ -4,7 +4,7 @@ import inzynierka.myhotelassistant.models.notification.NotificationEntity
 import inzynierka.myhotelassistant.models.notification.NotificationVariant
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
-import inzynierka.myhotelassistant.models.service.Rating
+import inzynierka.myhotelassistant.models.service.RatingEntity
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.models.service.ServiceType
 import inzynierka.myhotelassistant.models.service.WeekdayHour
@@ -12,6 +12,7 @@ import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.NotificationRepository
+import inzynierka.myhotelassistant.repositories.RatingRepository
 import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
@@ -45,6 +46,7 @@ class DatabaseSeeder(
     private val scheduleRepository: ScheduleRepository,
     private val userService: UserService,
     private val schedulesGenerator: SchedulesGenerator,
+    private val ratingRepository: RatingRepository,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -249,16 +251,24 @@ class DatabaseSeeder(
                         price = (5 + random.nextDouble(5.0, 50.0)).let { (it * 100).roundToInt() / 100.0 },
                         type = serviceData.serviceType,
                         disabled = false,
-                        rating =
-                            List(random.nextInt(1, 3)) {
-                                Rating(user[0].name + " " + user[0].surname, random.nextInt(1, 5), "comment")
-                            }.toMutableList(),
                         duration = duration,
                         maxAvailable = random.nextInt(1, 10),
                         weekday = weeklySchedule,
                         image = serviceData.imageUrl,
                     )
-                serviceService.save(service)
+                val savedService = serviceService.save(service)
+                val ratings = List(random.nextInt(2, 5)) {
+                    RatingEntity(
+                        serviceId = savedService.id!!,
+                        scheduleId = "",
+                        employeeId = "",
+                        guestId = user[0].id!!,
+                        fullName = user[0].name + " " + user[0].surname,
+                        stars = random.nextInt(1, 5),
+                        comment = "Example comment for particular service. Rating generated randomly.",
+                    )
+                }
+                ratingRepository.saveAll(ratings)
                 logger.info("Service '${serviceData.name}' added to database")
             }
         }
