@@ -65,7 +65,7 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
             />
             <Box>
               <Typography
-                sx={{ fontWeight: 600, fontSize: { xs: '1.9em', sm: '1.2em' } }}
+                sx={{ fontWeight: 600, fontSize: { xs: '1.5em', sm: '1.3em', lg: '1.2em' } }}
                 variant="h6"
               >
                 {service.name}
@@ -76,7 +76,7 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
 
           <Typography
             sx={{
-              fontSize: { xs: '1em', sm: '0.8em' },
+              fontSize: { xs: '1em', sm: '1em', md: '0.8em' },
               margin: '20px 0',
               color: theme.palette.text.secondary,
             }}

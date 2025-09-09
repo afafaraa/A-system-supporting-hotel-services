@@ -33,7 +33,7 @@ function AvailableServicesPage() {
   return (
     <div style={{width: '100%'}}>
       <main style={{marginTop: '40px', marginBottom: '40px'}}>
-        <Grid container spacing={{xs: 1, md: 2}} columns={{ xs: 1, sm: 2, md: 3}}>
+        <Grid container spacing={{xs: 1, md: 2}} columns={{ xs: 1, sm: 2, lg: 3}}>
           {availableServices.map((service, index) => (
             <Grid key={index} size={1}>
               <AvailableServiceCard service={service}/>
