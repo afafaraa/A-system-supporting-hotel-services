@@ -23,10 +23,8 @@ data class ServiceCreateResponseDTO(
         fun from(
             entity: ServiceEntity,
             ratings: List<RatingEntity>,
-        ): ServiceCreateResponseDTO {
-            println("Entity: $entity")
-            println("Ratings: $ratings")
-            return ServiceCreateResponseDTO(
+        ): ServiceCreateResponseDTO =
+            ServiceCreateResponseDTO(
                 id = entity.id,
                 name = entity.name,
                 description = entity.description,
@@ -39,6 +37,5 @@ data class ServiceCreateResponseDTO(
                 weekday = entity.weekday,
                 image = entity.image,
             )
-        }
     }
 }

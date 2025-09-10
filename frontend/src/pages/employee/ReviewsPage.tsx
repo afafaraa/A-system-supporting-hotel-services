@@ -49,8 +49,6 @@ function ReviewsPage() {
     </Box>
   )
 
-  console.log(ratings);
-
   return (
     <SectionCard>
       <Title title={<><StarBorderOutlinedIcon /> Service Reviews & Performance</>}

@@ -2,7 +2,7 @@ export interface Schedule {
   id: string,
   serviceId: string,
   title: string | undefined,
-  date: string,
+  date: string | Date,
   duration: number | undefined,
   weekday: string,
   guestName: string | undefined,

@@ -79,7 +79,6 @@ function RequestedSchedulesPage() {
   }));
 
   function renderActions(schedule: Schedule) {
-    console.log(schedule.status, OrderStatus.REQUESTED, OrderStatus.ACTIVE)
     switch (schedule.status) {
       case OrderStatus.REQUESTED:
         return <>

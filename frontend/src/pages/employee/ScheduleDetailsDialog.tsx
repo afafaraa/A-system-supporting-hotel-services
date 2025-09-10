@@ -59,7 +59,7 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
   const elementsSpacing = {xs: 2, sm: 3} as const;
 
   return (
-    <Dialog open={open} onClose={onClose} sx={{"&	.MuiDialog-paper": {p: {xs: 0, sm: 2}, borderRadius: 3}}}>
+    <Dialog open={open} onClose={onClose} sx={{"& .MuiDialog-paper": {p: {xs: 0, sm: 2}, borderRadius: 3}}}>
       <IconButton onClick={onClose} sx={{position: 'absolute', right: 16, top: 16}}><CloseIcon /></IconButton>
       <Box width="50vw"></Box>
       <DialogTitle mb={1}>
