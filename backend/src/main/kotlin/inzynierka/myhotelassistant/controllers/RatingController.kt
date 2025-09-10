@@ -14,11 +14,8 @@ class RatingController(
     private val employeeService: EmployeeService,
     private val ratingRepository: RatingRepository,
 ) {
-
     @GetMapping("/my-ratings")
-    fun getEmployeeRating(
-        principal: Principal,
-    ): List<RatingEntity> {
+    fun getEmployeeRating(principal: Principal): List<RatingEntity> {
         val employee = employeeService.findByUsernameOrThrow(principal.name)
         return ratingRepository.findAllByEmployeeId(employee.id!!)
     }
