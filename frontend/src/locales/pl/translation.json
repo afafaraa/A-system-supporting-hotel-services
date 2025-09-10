@@ -80,7 +80,7 @@
       "orders": "Zamówienia"
     },
     "servicesList": {
-      "title": "Lista usług",
+      "title": "Zarządzanie usługami",
       "availability": "Dostępność",
       "all": "Wszystkie",
       "unavailable": "Niedostępne",
@@ -93,7 +93,8 @@
       "description": "Opis",
       "price": "Cena",
       "actions": "Akcje",
-      "edit": "Edytuj"
+      "edit": "Edytuj",
+      "searchPlaceholder": "Szukaj Usług..."
     },
     "personnel": {
       "title": "Personel",
@@ -105,7 +106,12 @@
       "actions": "Akcje",
       "preview": "Podgląd",
       "previous": "Poprzedni",
-      "next": "Następny"
+      "next": "Następny",
+      "searchPlaceholder": "Szukaj Pracownika...",
+      "all": "Wszystkie",
+      "receptionist": "Recepcja",
+      "manager": "Manager",
+      "employee": "Jedzenie & Napoje"
     },
     "personnelDetails": {
       "edit": "Edytuj pracownika",
