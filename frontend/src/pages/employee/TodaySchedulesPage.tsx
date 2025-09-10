@@ -3,13 +3,13 @@ import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
 import Title from "../../components/ui/Title.tsx";
 import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
-import AirportShuttleOutlinedIcon from '@mui/icons-material/AirportShuttleOutlined';
 import {Schedule} from "../../types/schedule.ts";
-import {Stack, Typography, Button, Alert} from "@mui/material";
+import {Typography, Button, Alert} from "@mui/material";
 import Box from "@mui/system/Box";
 import {useTranslation} from "react-i18next";
 import ScheduleDetailsDialog from "./ScheduleDetailsDialog.tsx";
 import {formatTimeRange} from "../../utils/dateFormatting.ts";
+import ServiceIcon from "../../components/ui/ServiceIcon.tsx";
 
 function TodaySchedulesPage() {
   const {t} = useTranslation();
@@ -46,16 +46,11 @@ function TodaySchedulesPage() {
         schedules.slice(0, visibleCount).map(schedule => (
         <SectionCard size={2} sx={{mt: 2, px: {xs: 1.5, sm: 4}, cursor: "pointer"}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
                      onClick={() => setSelectedSchedule(schedule)} >
-          <Stack direction="row" alignItems="center" gap={{xs: 1.5, sm: 3}}>
-            <Box bgcolor="primary.medium" p={1} borderRadius={1} display="flex" alignItems="center" justifyContent="center">
-              <AirportShuttleOutlinedIcon color="primary" fontSize="large" />
-            </Box>
-            <Box>
-              <Typography fontWeight="bold">{schedule.title}</Typography>
-              <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? "Guest unknown"} | Room {schedule.room ?? "unknown"}</Typography>
-              <Typography fontSize="13px" sx={{mt: 1}}>{formatTimeRange(new Date(schedule.date), schedule.duration)}</Typography>
-            </Box>
-          </Stack>
+          <ServiceIcon>
+            <Typography fontWeight="bold">{schedule.title}</Typography>
+            <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? "Guest unknown"} | Room {schedule.room ?? "unknown"}</Typography>
+            <Typography fontSize="13px" sx={{mt: 1}}>{formatTimeRange(new Date(schedule.date), schedule.duration)}</Typography>
+          </ServiceIcon>
           <Typography fontSize="12px" fontWeight="bold" px={{xs: 1, sm: 2}} py={0.5} borderRadius={1}
                       color="calendar.text" bgcolor={"calendar." + schedule.status}>
             {t(`order_status.${schedule.status}`)}

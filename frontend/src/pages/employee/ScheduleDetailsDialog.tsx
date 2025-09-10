@@ -13,8 +13,8 @@ import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {ReactElement, ReactNode, useState} from "react";
 import ConfirmationWithReasonDialog from "../../components/ui/ConfirmationWithReasonDialog.tsx"
 import {CancellationReason} from "../../types/cancellation_reasons.ts";
-import AirportShuttleOutlinedIcon from "@mui/icons-material/AirportShuttleOutlined";
 import {formatTimeRange} from "../../utils/dateFormatting.ts";
+import ServiceIcon from "../../components/ui/ServiceIcon.tsx";
 
 type Props = {
   open: boolean;
@@ -62,13 +62,10 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
     <Dialog open={open} onClose={onClose} sx={{"&	.MuiDialog-paper": {p: {xs: 0, sm: 2}, borderRadius: 3}}}>
       <IconButton onClick={onClose} sx={{position: 'absolute', right: 16, top: 16}}><CloseIcon /></IconButton>
       <Box width="50vw"></Box>
-      <DialogTitle>
-        <Stack direction="row" alignItems="center" gap={2} mb={1}>
-          <Box bgcolor="primary.medium" p={1} borderRadius={1} display="flex" alignItems="center" justifyContent="center">
-            <AirportShuttleOutlinedIcon color="primary" fontSize="large" />
-          </Box>
+      <DialogTitle mb={1}>
+        <ServiceIcon mb={1}>
           <Typography fontWeight="bold" fontSize="21px">{schedule.title || tc("unknownService")}</Typography>
-        </Stack>
+        </ServiceIcon>
         <Typography fontSize="14px" color="text.secondary">Service request details and client information</Typography>
       </DialogTitle>
 

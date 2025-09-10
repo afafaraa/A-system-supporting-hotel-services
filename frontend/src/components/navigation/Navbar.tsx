@@ -62,7 +62,7 @@ function Navbar() {
           color: theme.palette.background.default,
           borderRadius: '20%'
         }} width={40} height={40}/>
-        <Typography fontSize="1.4rem" fontWeight="bold" color="primary" display={{xs: "none", md: "inherit"}}>
+        <Typography fontSize="1.4rem" fontWeight="bold" color="primary" display={{xs: "none", sm: "inherit"}}>
           {tc("title")}
         </Typography>
       </Stack>
@@ -96,7 +96,8 @@ function Navbar() {
 
   return (
     <>
-      <AppBar elevation={1} position="fixed" color="transparent" sx={{bgcolor: theme => alpha(theme.palette.background.paper, 0.4), backdropFilter: "blur(10px)", justifyContent: "center", height: drawerHeight, py: 2, px: {xs: 2, sm: 2, md: 7, lg: 12, xl: 12}}}>
+      <AppBar elevation={1} position="fixed" color="transparent" sx={{bgcolor: theme => alpha(theme.palette.background.paper, 0.4), backdropFilter: "blur(10px)", justifyContent: "center", height: drawerHeight, py: 2,
+        px: "clamp(1rem, calc(8.547vw - 35.28px), 6rem)"}}> {/* padding 16 px to 96 px (sm to xl) */}
         <Stack direction="row" justifyContent="space-between" alignItems="center">
 
           <AppLogo/>

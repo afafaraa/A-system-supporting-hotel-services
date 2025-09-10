@@ -61,6 +61,7 @@ class DatabaseSeeder(
             schedulesGenerator.createSchedules()
             addOrders()
             addManager()
+            addRatings()
             addTestNotifications()
         } catch (e: Exception) {
             logger.error(e.message, e)
@@ -228,7 +229,6 @@ class DatabaseSeeder(
     }
 
     private fun addServices() {
-        val user = userService.findByRole(Role.GUEST)
         serviceDataList.forEachIndexed { index, serviceData ->
             if (serviceService.findByName(serviceData.name) == null) {
                 val random = Random(System.currentTimeMillis() + index)
@@ -256,20 +256,7 @@ class DatabaseSeeder(
                         weekday = weeklySchedule,
                         image = serviceData.imageUrl,
                     )
-                val savedService = serviceService.save(service)
-                val ratings =
-                    List(random.nextInt(2, 5)) {
-                        RatingEntity(
-                            serviceId = savedService.id!!,
-                            scheduleId = "",
-                            employeeId = "",
-                            guestId = user[0].id!!,
-                            fullName = user[0].name + " " + user[0].surname,
-                            stars = random.nextInt(1, 5),
-                            comment = "Example comment for particular service. Rating generated randomly.",
-                        )
-                    }
-                ratingRepository.saveAll(ratings)
+                serviceService.save(service)
                 logger.info("Service '${serviceData.name}' added to database")
             }
         }
@@ -323,6 +310,31 @@ class DatabaseSeeder(
 
             userService.save(guest)
         }
+    }
+
+    private fun addRatings() {
+        val currentTime: Long = System.currentTimeMillis()
+        val random = Random(currentTime)
+        val pastStatuses = listOf(OrderStatus.COMPLETED, OrderStatus.CANCELED)
+        val schedules = scheduleRepository.findAllByStatusIn(pastStatuses)
+        val ratings = schedules
+            .filter { it.guestId != null } // for only ordered schedules (should have guestId)
+            .filter { random.nextInt(0, 5) == 0 } // 20% chance of schedule rating
+            .map { RatingEntity(
+                serviceId = it.serviceId,
+                scheduleId = it.id!!,
+                employeeId = it.employeeId,
+                guestId = it.guestId!!,
+                fullName = userService.findById(it.guestId!!)?.let { user -> user.name + " " + user.surname } ?: "Unknown",
+                stars = random.nextInt(1, 5),
+                comment = "Example comment for particular service. Rating generated randomly.",
+                createdAt = LocalDateTime.ofEpochSecond(random.nextLong(
+                    from = it.serviceDate.plusHours(1).toEpochSecond(java.time.ZoneOffset.UTC),
+                    until = currentTime / 1000
+                ), 0, java.time.ZoneOffset.UTC)
+            ) }
+        ratingRepository.saveAll(ratings)
+
     }
 
     private fun addManager() {

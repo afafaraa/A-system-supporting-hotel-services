@@ -6,7 +6,6 @@ import {OrderStatus, Schedule} from "../../types/schedule.ts";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {Alert, Button, Stack, Typography, Snackbar} from "@mui/material";
 import Box from "@mui/system/Box";
-import AirportShuttleOutlinedIcon from "@mui/icons-material/AirportShuttleOutlined";
 import {formatTimeRange} from "../../utils/dateFormatting.ts";
 import {useTranslation} from "react-i18next";
 import ScheduleDetailsDialog from "./ScheduleDetailsDialog.tsx";
@@ -15,6 +14,7 @@ import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
 import {CancellationReason} from "../../types/cancellation_reasons.ts";
 import ConfirmationWithReasonDialog from "../../components/ui/ConfirmationWithReasonDialog.tsx";
 import {styled} from "@mui/material/styles";
+import ServiceIcon from "../../components/ui/ServiceIcon.tsx";
 
 type ConfirmationProps = {
   schedule: Schedule;
@@ -126,18 +126,13 @@ function RequestedSchedulesPage() {
         schedules.slice(0, visibleCount).map(schedule => (
         <SectionCard size={2} sx={{mt: 2, px: {xs: 1.5, sm: 4}, cursor: "pointer"}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
                      onClick={() => setSelectedSchedule(schedule)} >
-          <Stack direction="row" alignItems="center" gap={{xs: 1.5, sm: 3}}>
-            <Box bgcolor="primary.medium" p={1} borderRadius={1} display="flex" alignItems="center" justifyContent="center">
-              <AirportShuttleOutlinedIcon color="primary" fontSize="large" />
+          <ServiceIcon>
+            <Typography fontWeight="bold">{schedule.title}</Typography>
+            <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? "Guest unknown"} | Room {schedule.room ?? "unknown"}</Typography>
+            <Box mt={1} fontSize={{xs: 11, sm: 13}}>
+              {new Date(schedule.date).toLocaleDateString(t('date.locale'))} | {formatTimeRange(new Date(schedule.date), schedule.duration)}
             </Box>
-            <Box>
-              <Typography fontWeight="bold">{schedule.title}</Typography>
-              <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? "Guest unknown"} | Room {schedule.room ?? "unknown"}</Typography>
-              <Box mt={1} fontSize={{xs: 11, sm: 13}}>
-                {new Date(schedule.date).toLocaleDateString(t('date.locale'))} | {formatTimeRange(new Date(schedule.date), schedule.duration)}
-              </Box>
-            </Box>
-          </Stack>
+          </ServiceIcon>
           <Stack direction="row">
             {renderActions(schedule)}
           </Stack>

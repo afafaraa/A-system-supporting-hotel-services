@@ -97,7 +97,7 @@
         "durationUnknown": "Duration unknown",
         "confirm": "Confirm service",
         "reject": "Reject service",
-        "complete": "Set service as completed",
+        "complete": "Complete service",
         "cancel": "Cancel service"
       }
     },
