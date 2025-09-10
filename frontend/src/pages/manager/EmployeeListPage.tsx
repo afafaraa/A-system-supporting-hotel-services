@@ -4,30 +4,24 @@ import {
   Box,
   Button,
   CircularProgress,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Tabs,
-  Tab,
   Typography,
   Paper,
-  Stack
+  ClickAwayListener,
+  IconButton,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Grid
 } from "@mui/material";
+import { Search, PersonOutline, Add } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { Employee } from "../../types";
 import { useTranslation } from "react-i18next";
-
-const sectors = [
-  { label: "Room service", role: "EMPLOYEE" },
-  { label: "Reception", role: "RECEPTIONIST" },
-  { label: "Gastronomy", role: "EMPLOYEE" },
-  { label: "Management", role: "MANAGER" },
-];
+import EmployeeCard from "./EmployeeCard.tsx";
 
 function EmployeeListPage() {
-  const [tab, setTab] = useState(0);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,9 +29,13 @@ function EmployeeListPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.personnel.${key}`);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  const [filterName, setFilterName] = useState('');
+  const [filterPosition, setFilterPosition] = useState<'ALL' | 'RECEPTIONIST' | 'MANAGER' | 'EMPLOYEE'>('ALL');
 
   const pageSize = 10;
-  
+
   const fetchEmployees = useCallback(async () => {
     setLoading(true);
 
@@ -59,10 +57,15 @@ function EmployeeListPage() {
     fetchEmployees();
   }, [fetchEmployees]);
 
-  const employeesForTab = useMemo(() => {
-    if (!sectors[tab]) return [];
-    return employees.filter(emp => emp.role === sectors[tab].role);
-  }, [tab, employees]);
+  const filteredEmployees = useMemo(() => {
+    return employees.filter(person => {
+      const nameMatch = filterName.trim() === '' ||
+        person.name.toLowerCase().includes(filterName.toLowerCase()) ||
+        person.surname.toLowerCase().includes(filterName.toLowerCase());
+      const positionMatch = filterPosition === 'ALL' || person.role === filterPosition;
+      return nameMatch && positionMatch;
+    });
+  }, [employees, filterName, filterPosition]);
 
   if (loading) {
     return (
@@ -81,70 +84,83 @@ function EmployeeListPage() {
   }
 
   return (
-    <Box p={2} width={"100%"} mr={10}>
-      <Typography variant="h4" gutterBottom>
-        {tc("title")}
-      </Typography>
+    <Paper sx={{ p: 3, borderRadius: 3, mt: 5 }}>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        flexWrap="wrap"
+        gap={2}
+        mb={3}
+      >
+        <Box>
+          <Box display="flex" alignItems="flex-start" flexDirection="row">
+            <PersonOutline fontSize="large" />
+            <Typography variant="h5" fontWeight="bold" gutterBottom>
+              {tc("title")}
+            </Typography>
+          </Box>
+          <Typography variant="body2" color="text.secondary" mb={3} gutterBottom>
+            Manage employee information and schedules
+          </Typography>
+        </Box>
 
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Tabs value={tab} onChange={(_, v) => setTab(v)}>
-          {sectors.map((s, i) => (
-            <Tab key={i} label={s.label} />
-          ))}
-        </Tabs>
-        <Button variant="contained" onClick={() => navigate("/employees/new")}>
-          {tc("addEmployee")}
-        </Button>
-      </Box>
+        <Box display="flex" alignItems="center" flexWrap="wrap" gap={2}>
+          <ClickAwayListener onClickAway={() => setSearchOpen(false)}>
+            <Box display="flex" alignItems="center" position="relative">
+              <IconButton onClick={() => setSearchOpen(!searchOpen)}>
+                <Search />
+              </IconButton>
+              {searchOpen && (
+                <TextField
+                  placeholder={tc("searchPlaceholder")}
+                  variant="outlined"
+                  size="small"
+                  value={filterName}
+                  onChange={e => setFilterName(e.target.value)}
+                  sx={{
+                    ml: 1,
+                    width: { xs: '150px', sm: '200px' },
+                    transition: 'width 0.3s ease',
+                  }}
+                  autoFocus
+                />
+              )}
+            </Box>
+          </ClickAwayListener>
 
-      <Paper elevation={2} sx={{ padding: 2 }}>
-        <Table>
-          <TableHead sx={{ backgroundColor: "#f0f0f0" }}>
-            <TableRow>
-              <TableCell sx={{ width: '25%'}}>{tc("name")}</TableCell>
-              <TableCell sx={{ width: '25%'}}>{tc("position")}</TableCell>
-              <TableCell sx={{ width: '25%'}}>{tc("email")}</TableCell>
-              <TableCell sx={{ width: '15%'}}>Status</TableCell>
-              <TableCell sx={{ width: '15%'}} align="right">{tc("actions")}</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {employeesForTab.map((emp) => (
-              <TableRow key={emp.id} hover>
-                <TableCell>
-                  {emp.name} {emp.surname}
-                </TableCell>
-                <TableCell>{emp.role.replace("ROLE_", "")}</TableCell>
-                <TableCell>{emp.email}</TableCell>
-                <TableCell>{emp.status}</TableCell>
-                <TableCell align="right">
-                  <Button
-                    variant="contained"
-                    size="small"
-                    onClick={() => navigate(`/employees/${emp.username}`)}
-                  >
-                    {tc("preview")}
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        {employees.length > pageSize && (
-          <Stack direction="row" spacing={1} justifyContent="space-between">
-            <Button onClick={() => setPage(prev => Math.max(prev - 1, 0))} disabled={page === 0}>
-              {tc("previous")}
-            </Button>
-            <Button
-              onClick={() => setPage(prev => Math.min(prev + 1, Math.floor(employees.length / pageSize) - 1))}
-              disabled={page === Math.floor(employees.length / pageSize) - 1}
+          <FormControl size="small" sx={{ minWidth: 150 }}>
+            <InputLabel id="position-label">{tc("position")}</InputLabel>
+            <Select
+              labelId="position-label"
+              label={tc("type")}
+              value={filterPosition}
+              onChange={e => setFilterPosition(e.target.value as "ALL" | "RECEPTIONIST" | "MANAGER" | "EMPLOYEE")}
             >
-              {tc("next")}
-            </Button>
-          </Stack>
-        )}
-      </Paper>
-    </Box>
+              <MenuItem value="ALL">{tc("all")}</MenuItem>
+              <MenuItem value="RECEPTIONIST">{tc("receptionist")}</MenuItem>
+              <MenuItem value="MANAGER">{tc("manager")}</MenuItem>
+              <MenuItem value="EMPLOYEE">{tc("employee")}</MenuItem>
+            </Select>
+          </FormControl>
+          <Button 
+            variant="contained"
+            startIcon={<Add />}
+            onClick={() => navigate("/employees/new")}
+            >
+            {tc("addEmployee")}
+          </Button>
+        </Box>
+
+        <Grid container spacing={2}>
+          {filteredEmployees.map((emp) => (
+            <Grid key={emp.id} size={{ xs: 12, sm: 6, md: 4 }} sx={{ display: "flex" }} >
+              <EmployeeCard employee={emp} />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    </Paper>
   );
 }
 

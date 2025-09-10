@@ -112,20 +112,21 @@
       "orders": "Orders"
     },
     "servicesList": {
-      "title": "Services List",
+      "title": "Services Management",
       "availability": "Availability",
       "all": "All",
       "unavailable": "Unavailable",
       "available": "Available",
       "type": "Type",
       "generalService": "General Service",
-      "placeReservaion": "Place Reservation",
-      "addService": "Add Service",
+      "placeReservation": "Place Reservation",
+      "addService": "Add",
       "serviceName": "Service Name",
       "description": "Description",
       "price": "Price",
       "actions": "Actions",
-      "edit": "Edit"
+      "edit": "Edit",
+      "searchPlaceholder": "Search Services..."
     },
     "personnel": {
       "title": "Personnel",
@@ -137,7 +138,12 @@
       "actions": "Actions",
       "preview": "Preview",
       "previous": "Previous",
-      "next": "Next"
+      "next": "Next",
+      "searchPlaceholder": "Search Employee...",
+      "all": "All",
+      "receptionist": "Receptionist",
+      "manager": "Manager",
+      "employee": "Food & Beverage"
     },
     "personnelDetails": {
       "edit": "Edit Employee",

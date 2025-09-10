@@ -83,7 +83,7 @@ function Navbar() {
           <Typography color="textPrimary" fontWeight="bold" lineHeight={1.3}>
             {userDetails ? `${userDetails.name} ${userDetails.surname}` : user.username}
           </Typography>
-          <Typography color="textSecondary" fontWeight="bold" fontSize="0.8rem" lineHeight={1.3}>
+          <Typography color="textPrimary" fontWeight="bold" fontSize="0.8rem" lineHeight={1.3}>
             {user.role === "ROLE_GUEST" && userDetails ?
               `Room ${userDetails.guestData?.roomNumber}` :
               user.role.split("_")[1].toLowerCase()
