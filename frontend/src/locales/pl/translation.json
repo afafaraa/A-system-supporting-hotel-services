@@ -233,6 +233,47 @@
         "cancel": "Anuluj",
         "confirm": "Potwierdź"
       }
+    },
+    "profile": {
+      "room": "Pokój",
+      "personal_info": "Informacje osobiste",
+      "personal_info_subtitle": "Zarządzaj swoimi danymi osobowymi i informacjami kontaktowymi",
+      "username": "Nazwa użytkownika",
+      "full_name": "Imię i nazwisko",
+      "email": "Email",
+      "phone": "Telefon",
+      "special_requests": "Specjalne życzenia",
+
+      "stay_info": "Informacje o pobycie",
+      "stay_info_subtitle": "Szczegóły dotyczące twojego obecnego pobytu w hotelu",
+      "room_number": "Numer pokoju",
+      "check_in": "Data zameldowania",
+      "check_out": "Data wymeldowania",
+      "view_all": "Zobacz wszystkie",
+
+      "employee_card": "Karta pracownika",
+      "employee_card_subtitle": "Twoje dane dotyczące obecnego zatrudnienia",
+      "position": "Stanowisko",
+      "occupation": "Zawód",
+      "hire_date": "Data zatrudnienia",
+
+      "account_balance": "Saldo konta",
+      "account_balance_subtitle": "Przegląd aktualnego salda konta i ostatnich transakcji",
+      "current_bill": "Bieżący rachunek",
+      "recent_transactions": "Ostatnie transakcje",
+
+      "page_settings": "Ustawienia strony",
+      "page_language": "Język strony",
+      "page_theme": "Motyw strony",
+      "light": "Jasny",
+      "dark": "Ciemny",
+
+      "account_info": "Informacje o koncie",
+      "account_info_subtitle": "Zarządzaj preferencjami konta i ustawieniami bezpieczeństwa",
+      "email_notifications": "Powiadomienia e-mail",
+      "email_notifications_subtitle": "Otrzymuj aktualizacje dotyczące rezerwacji i usług",
+      "marketing_communication": "Komunikacja marketingowa",
+      "marketing_communication_subtitle": "Otrzymuj oferty specjalne i promocje"
     }
   },
   "ui": {

@@ -233,6 +233,47 @@
         "cancel": "Cancel",
         "confirm": "Confirm"
       }
+    },
+    "profile": {
+      "room": "Room",
+      "personal_info": "Personal Information",
+      "personal_info_subtitle": "Manage your personal details and contact information",
+      "username": "Username",
+      "full_name": "Full Name",
+      "email": "Email",
+      "phone": "Phone",
+      "special_requests": "Special Requests",
+
+      "stay_info": "Stay Information",
+      "stay_info_subtitle": "Details about your current hotel stay",
+      "room_number": "Room Number",
+      "check_in": "Check-In Date",
+      "check_out": "Check-Out Date",
+      "view_all": "View All",
+
+      "employee_card": "Employee Card",
+      "employee_card_subtitle": "Your details about current employment",
+      "position": "Position",
+      "occupation": "Occupation",
+      "hire_date": "Hire Date",
+
+      "account_balance": "Account Balance",
+      "account_balance_subtitle": "Overview of your current account balance and recent transactions",
+      "current_bill": "Current Bill",
+      "recent_transactions": "Recent Transactions",
+
+      "page_settings": "Page Settings",
+      "page_language": "Page Language",
+      "page_theme": "Page Theme",
+      "light": "Light",
+      "dark": "Dark",
+
+      "account_info": "Account Information",
+      "account_info_subtitle": "Manage your account preferences and security settings",
+      "email_notifications": "Email Notifications",
+      "email_notifications_subtitle": "Receive updates about your bookings and services",
+      "marketing_communication": "Marketing Communications",
+      "marketing_communication_subtitle": "Receive special offers and promotions"
     }
   },
   "ui": {

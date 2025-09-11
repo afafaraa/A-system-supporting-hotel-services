@@ -99,14 +99,14 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
               </DialogSection>
             }
             <DialogSection title={<><CommentOutlinedIcon fontSize="small" /> {tc("special_requests")}</>}>
-                Nothing to show, not implemented yet.
+                Nothing to show, not implemented yet. {/* TODO: implement special requests */}
             </DialogSection>
           </Stack>
         </>}
 
         <Box>
           <DialogSection title={tc("service_description")}>
-            <p>Some description for that particular service</p>
+            <p>Some description for that particular service</p> {/* TODO: implement service mini description fetching */}
             <p>{tc("duration")}: {schedule.duration ? schedule.duration + " " + tc("minutes") : "..."} • {tc("price")}: {schedule.price ?? tc("unset")}</p>
           </DialogSection>
         </Box>

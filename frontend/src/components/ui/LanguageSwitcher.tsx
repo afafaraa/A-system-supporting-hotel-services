@@ -19,7 +19,7 @@ const LanguageSwitcher: React.FC = () => {
   }
 
   return (
-    <Select sx={{minWidth: '170px', maxWidth: '215px', borderRadius: 2, flexGrow: 1, height: "2.5rem", bgcolor: "background.paper"}}
+    <Select sx={{minWidth: '170px', maxWidth: '215px', flexGrow: 1, height: "2.5rem", bgcolor: "background.paper"}}
             id="demo-simple-select"
             value={i18n.language}
             onChange={handleChange}

@@ -75,7 +75,7 @@ function ReviewsPage() {
           <SectionCard key={index} size={3}>
             <Stack direction="row" justifyContent="space-between" textAlign="center" sx={{mb: 2}} flexWrap="wrap" gap={1}>
               <ServiceIcon>
-                <Typography fontWeight="bold">Unknown service name</Typography>
+                <Typography fontWeight="bold">Unknown service name</Typography> {/* TODO: implement service name fetching */}
                 <Typography fontSize="12px" color="text.secondary">
                   {rating.fullName}{" | "}
                   {new Date(rating.createdAt).toLocaleTimeString(t('date.locale'), {hour: '2-digit', minute: '2-digit'})}
