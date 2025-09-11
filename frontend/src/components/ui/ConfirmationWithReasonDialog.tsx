@@ -24,6 +24,7 @@ function ConfirmationWithReasonDialog({onCancel, onConfirm}: Props) {
   const [reason, setReason] = useState<CancellationReason | "">("");
   const [error, setError] = useState<boolean>(false);
   const { t } = useTranslation();
+  const tc = (key: string) => t(`pages.employee.confirmation_dialog.${key}`);
 
   const handleChange = (event: SelectChangeEvent) => {
     setReason(event.target.value as unknown as CancellationReason);
@@ -42,31 +43,31 @@ function ConfirmationWithReasonDialog({onCancel, onConfirm}: Props) {
 
   return (
     <Dialog open={true} onClose={onCancel} sx={{"& .MuiDialog-paper": {p: {xs: 1, sm: 2}, borderRadius: 3}}}>
-      <DialogTitle textAlign="center">{t("confirmation_dialog.title")}</DialogTitle>
+      <DialogTitle textAlign="center">{tc("title")}</DialogTitle>
       <DialogContent>
-        <Typography fontSize={14} mb={2}>Are you sure you want to cancel / reject this service? </Typography>
-        <Typography fontSize={14} mb={1}>{t("confirmation_dialog.select_reason")}:</Typography>
+        <Typography fontSize={14} mb={2}>{tc("description")}</Typography>
+        <Typography fontSize={14} mb={1}>{tc("select_reason")}:</Typography>
         <FormControl fullWidth>
-          <InputLabel id="reason-label">Reason</InputLabel>
+          <InputLabel id="reason-label">{tc("reason")}</InputLabel>
           <Select
             labelId="reason-label"
             id="demo-simple-select"
             value={reason as string}
-            label="Reason"
+            label={tc("reason")}
             onChange={handleChange}
             error={error}
           >
             {reasonOptions.map((reason, index) =>
               <MenuItem key={index} value={reason}>
-                {t(`cancellation_reasons.${reason}`)}
+                {tc(`reasons.${reason}`)}
               </MenuItem>
             )}
           </Select>
         </FormControl>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCancel} sx={{color: "text.disabled"}}>{t("confirmation_dialog.cancel")}</Button>
-        <Button onClick={handleConfirm} color="error" variant="contained">{t("confirmation_dialog.confirm")}</Button>
+        <Button onClick={onCancel} sx={{color: "text.disabled"}}>{tc("cancel")}</Button>
+        <Button onClick={handleConfirm} color="error" variant="contained">{tc("confirm")}</Button>
       </DialogActions>
     </Dialog>
   );

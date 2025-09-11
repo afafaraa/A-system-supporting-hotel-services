@@ -13,6 +13,7 @@ import ServiceIcon from "../../components/ui/ServiceIcon.tsx";
 
 function TodaySchedulesPage() {
   const {t} = useTranslation();
+  const tc = (key: string) => t(`pages.employee.today_schedules.${key}`);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
   const [pageLoading, setPageLoading] = useState(true);
@@ -35,12 +36,12 @@ function TodaySchedulesPage() {
 
   return (
     <SectionCard>
-      <Title title={<><ScheduleOutlinedIcon /> Today's Services</>}
-             subtitle={`${schedules.length} services scheduled for today`} />
+      <Title title={<><ScheduleOutlinedIcon /> {tc("title")}</>}
+             subtitle={`${schedules.length} ${tc("subtitle")}`} />
       {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
       {pageLoading ? <></> : schedules.length === 0 ?
         <SectionCard size={4}>
-          No schedules found for today.
+          {tc("no_schedules")}
         </SectionCard>
         :
         schedules.slice(0, visibleCount).map(schedule => (
@@ -48,7 +49,7 @@ function TodaySchedulesPage() {
                      onClick={() => setSelectedSchedule(schedule)} >
           <ServiceIcon>
             <Typography fontWeight="bold">{schedule.title}</Typography>
-            <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? "Guest unknown"} | Room {schedule.room ?? "unknown"}</Typography>
+            <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? tc("guest_unknown")} | {tc("room")} {schedule.room ?? tc("unknown")}</Typography>
             <Typography fontSize="13px" sx={{mt: 1}}>{formatTimeRange(new Date(schedule.date), schedule.duration)}</Typography>
           </ServiceIcon>
           <Typography fontSize="12px" fontWeight="bold" px={{xs: 1, sm: 2}} py={0.5} borderRadius={1}
@@ -60,7 +61,7 @@ function TodaySchedulesPage() {
 
       {visibleCount < schedules.length &&
         <Box display="flex" justifyContent="center" mt={3}>
-          <Button variant="outlined" onClick={showMore} sx={{width: "300px"}}>Show more ↓</Button>
+          <Button variant="outlined" onClick={showMore} sx={{width: "300px"}}>{t("ui.show_more")}</Button>
         </Box>
       }
 

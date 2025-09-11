@@ -22,6 +22,7 @@ export type Rating = {
 
 function ReviewsPage() {
   const {t} = useTranslation();
+  const tc = (key: string) => t(`pages.employee.reviews.${key}`);
   const [ratings, setRatings] = useState<Rating[]>([]);
   const [visibleCount, setVisibleCount] = useState(5);
   const [pageLoading, setPageLoading] = useState(true);
@@ -51,30 +52,30 @@ function ReviewsPage() {
 
   return (
     <SectionCard>
-      <Title title={<><StarBorderOutlinedIcon /> Service Reviews & Performance</>}
-             subtitle={"Guest feedback for services you've provided"} />
+      <Title title={<><StarBorderOutlinedIcon /> {tc("title")}</>}
+             subtitle={tc("subtitle")} />
       <SectionCard sx={{bgcolor: "background.default", borderWidth: 0, borderRadius: 2}} display="flex" justifyContent="space-around" flexWrap="wrap" gap={2}>
         <Box display="flex" justifyContent="space-between" flex="1 0 0" gap={2}>
-          <InfoCard title={<><TrendingUpOutlinedIcon sx={{fontSize: "120%"}}/> Average Rating</>} value={avgRating}/>
-          <InfoCard title={<><CommentOutlinedIcon sx={{fontSize: "120%"}}/> Total Reviews</>} value={totalReviews}/>
+          <InfoCard title={<><TrendingUpOutlinedIcon sx={{fontSize: "120%"}}/> {tc("avg_rating")}</>} value={avgRating}/>
+          <InfoCard title={<><CommentOutlinedIcon sx={{fontSize: "120%"}}/> {tc("total_reviews")}</>} value={totalReviews}/>
         </Box>
         <Box display="flex" justifyContent="space-between" flex="1 0 0" gap={2}>
-          <InfoCard title={<><ThumbUpOutlinedIcon sx={{fontSize: "120%"}}/> 5-Star Reviews</>} value={FiveStarReviews}/>
-          <InfoCard title={<><CalendarTodayOutlinedIcon sx={{fontSize: "120%"}}/> This Month</>} value={thisMonth}/>
+          <InfoCard title={<><ThumbUpOutlinedIcon sx={{fontSize: "120%"}}/> {tc("5_star_reviews")}</>} value={FiveStarReviews}/>
+          <InfoCard title={<><CalendarTodayOutlinedIcon sx={{fontSize: "120%"}}/> {tc("this_month")}</>} value={thisMonth}/>
         </Box>
       </SectionCard>
       {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
       <Stack spacing={2} mt={3}>
         {pageLoading ? <></> : ratings.length === 0 ?
           <SectionCard size={4}>
-            No reviews found.
+            {tc("no_reviews")}
           </SectionCard>
           :
           ratings.slice(0, visibleCount).map((rating, index) => (
           <SectionCard key={index} size={3}>
             <Stack direction="row" justifyContent="space-between" textAlign="center" sx={{mb: 2}} flexWrap="wrap" gap={1}>
               <ServiceIcon>
-                <Typography fontWeight="bold">Unknown name</Typography>
+                <Typography fontWeight="bold">Unknown service name</Typography>
                 <Typography fontSize="12px" color="text.secondary">
                   {rating.fullName}{" | "}
                   {new Date(rating.createdAt).toLocaleTimeString(t('date.locale'), {hour: '2-digit', minute: '2-digit'})}
@@ -92,7 +93,7 @@ function ReviewsPage() {
 
         {visibleCount < ratings.length &&
           <Box display="flex" justifyContent="center" mt={3}>
-            <Button variant="outlined" onClick={showMore} sx={{width: "300px"}}>Show more ↓</Button>
+            <Button variant="outlined" onClick={showMore} sx={{width: "300px"}}>{t("ui.show_more")}</Button>
           </Box>
         }
       </Stack>

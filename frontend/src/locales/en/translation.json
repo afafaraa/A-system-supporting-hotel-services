@@ -17,10 +17,6 @@
     "stats": "Statistics",
     "logout": "Logout"
   },
-  "schedule_table": {
-    "previousWeek": "Previous week",
-    "nextWeek": "Next week"
-  },
   "pages": {
     "loading": {
       "wait": "Please wait,",
@@ -72,35 +68,6 @@
       },
       "empty": "No notifications available."
     },
-    "home": {
-      "title": "My Home Page",
-      "loggedUser": "Logged user",
-      "username": "Username",
-      "role": "Role",
-      "accountData": "Your account data",
-      "name": "Name",
-      "email": "Email",
-      "employeeData": "Employee data",
-      "roomNumber": "Room number",
-      "checkInDate": "Check-in date",
-      "checkOutDate": "Check-out date"
-    },
-    "my_schedule": {
-      "title": "My schedule",
-      "confirmed": "Confirmed",
-      "unconfirmed": "Unconfirmed",
-      "all": "All",
-      "details": {
-        "unknownService": "Unknown service",
-        "status": "Status",
-        "orderTime": "Order time",
-        "durationUnknown": "Duration unknown",
-        "confirm": "Confirm service",
-        "reject": "Reject service",
-        "complete": "Complete service",
-        "cancel": "Cancel service"
-      }
-    },
     "stats": {
       "title": "Statistics",
       "general": "General",
@@ -119,7 +86,7 @@
       "available": "Available",
       "type": "Type",
       "generalService": "General Service",
-      "placeReservaion": "Place Reservation",
+      "placeReservation": "Place Reservation",
       "addService": "Add Service",
       "serviceName": "Service Name",
       "description": "Description",
@@ -188,6 +155,91 @@
       "Su": "Su",
       "noServiceAvailable": "No services available for this day.",
       "nextAvailableServices": "Next available service dates"
+    },
+    "employee": {
+      "navbar": {
+        "today": "Today",
+        "requested": "Requested",
+        "calendar": "Calendar",
+        "reservations": "Reservation",
+        "reviews": "Reviews"
+      },
+      "today_schedules": {
+        "title": "Today's Services",
+        "subtitle": "services scheduled for today",
+        "no_schedules": "No services scheduled for today.",
+        "guest_unknown": "Guest unknown",
+        "room": "Room",
+        "unknown": "unknown"
+      },
+      "requested_schedules": {
+        "title": "Pending Service Requests",
+        "subtitle": "services waiting for approval",
+        "no_schedules": "No requested schedules found.",
+        "guest_unknown": "Guest unknown",
+        "room": "Room",
+        "unknown": "unknown"
+      },
+      "calendar": {
+        "title": "Weekly Calendar",
+        "subtitle": "Your weekly service schedule"
+      },
+      "reservations": {
+        "title": "Pending room reservations",
+        "subtitle": "Room reservations requiring approval"
+      },
+      "reviews": {
+        "title": "Service Reviews & Performance",
+        "subtitle": "Guest feedback for services you've provided",
+        "no_reviews": "No reviews available.",
+        "avg_rating": "Average Rating",
+        "total_reviews": "Total Reviews",
+        "5_star_reviews": "5-Star Reviews",
+        "this_month": "This Month"
+      },
+      "schedule_details": {
+        "subtitle": "Service request details and client information",
+        "unknown_service": "Unknown service",
+        "date_and_time": "Date & Time",
+        "status": "Status",
+        "guest_name": "Guest name",
+        "unknown_guest": "Unknown guest",
+        "room_number": "Room number",
+        "room": "Room",
+        "no_room": "No room assigned",
+        "order_time": "Order time",
+        "special_requests": "Special requests",
+        "service_description": "Service description",
+        "duration": "Duration",
+        "minutes": "minutes",
+        "price": "Price",
+        "unset": "Unset",
+        "confirm": "Confirm service",
+        "reject": "Reject service",
+        "complete": "Complete service",
+        "cancel": "Cancel service"
+      },
+      "confirmation_dialog": {
+        "title": "Action confirmation",
+        "description": "Are you sure you want to cancel / reject this service?",
+        "select_reason": "Select a reason",
+        "reason": "Reason",
+        "reasons": {
+          "overlapping_terms": "Overlapping terms",
+          "personal_reasons": "Personal reason",
+          "illness": "Illness",
+          "other": "Other reason"
+        },
+        "cancel": "Cancel",
+        "confirm": "Confirm"
+      }
+    }
+  },
+  "ui": {
+    "show_more": "Show more ↓",
+    "calendar": {
+      "current_week": "Current",
+      "today": "Today"
     }
   },
   "buttons": {
@@ -209,21 +261,5 @@
     "ACTIVE": "ACTIVE",
     "COMPLETED": "COMPLETED",
     "CANCELED": "CANCELED"
-  },
-  "confirmation_dialog": {
-    "title": "Action confirmation",
-    "confirm": "Confirm",
-    "cancel": "Cancel",
-    "description": {
-      "cancel": "Are you sure you want to cancel this service?",
-      "reject": "Are you sure you want to reject this service?"
-    },
-    "select_reason": "Select a reason"
-  },
-  "cancellation_reasons": {
-    "overlapping_terms": "Overlapping terms",
-    "personal_reasons": "Personal reason",
-    "illness": "Illness",
-    "other": "Other reason"
   }
 }

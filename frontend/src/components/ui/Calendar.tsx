@@ -19,8 +19,14 @@ function getYearWeek(date: Date): number {
   return year * 100 + week;
 }
 
-function Calendar() {
+interface CalendarProps {
+  title?: string;
+  subtitle?: string;
+}
+
+function Calendar({title, subtitle}: CalendarProps) {
   const { t } = useTranslation();
+  const tc = (key: string) => t(`ui.calendar.${key}`);
   const today = new Date();
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(startOfWeek(today, { weekStartsOn: 1 }));
   const yearWeek = getYearWeek(currentWeekStart);
@@ -90,8 +96,8 @@ function Calendar() {
 
   // ------------- CALENDAR HEADER -------------
   const CalendarTitle = () => (
-    <Title title={<><CalendarTodayOutlinedIcon /> Weekly Calendar</>}
-           subtitle={"Your weekly service schedule"} />
+    <Title title={<><CalendarTodayOutlinedIcon /> {title}</>}
+           subtitle={subtitle} />
   )
 
   const CurrentWeekInfo = () => (
@@ -99,13 +105,13 @@ function Calendar() {
       {formatNumericDayMonth(currentWeekStart)}
       {' - '}
       {formatNumericDayMonth(addDays(currentWeekStart, 6))}
-      {' '}{isSameWeek(currentWeekStart, today, {weekStartsOn: 1}) && "(Current)"}
+      {' '}{isSameWeek(currentWeekStart, today, {weekStartsOn: 1}) && `(${tc("current_week")})`}
     </Typography>
   )
 
   const ControlPanel = () => (
     <Stack direction="row" spacing={{xs: 1, sm: 3}} height={32}>
-      <Button onClick={handleTodayButtonClick} variant="outlined" size="small" sx={{px: 3, mr: 3}}>Today</Button>
+      <Button onClick={handleTodayButtonClick} variant="outlined" size="small" sx={{px: 3, mr: 3}}>{tc("today")}</Button>
       <Stack direction="row" spacing={1} height="inherit">
         <Button onClick={handlePrevWeekButtonClick} variant="outlined" size="small" sx={{minWidth: 32, width: 32, maxWidth: 32}}><ArrowBackIosNewIcon sx={{fontSize: "130%"}}/></Button>
         <Button onClick={handleNextWeekButtonClick} variant="outlined" size="small" sx={{minWidth: 32, width: 32, maxWidth: 32}}><ArrowForwardIosIcon sx={{fontSize: "130%"}}/></Button>
@@ -159,7 +165,7 @@ function Calendar() {
             <Box key={index} textAlign="center" alignItems="center" justifyContent="center" minWidth={140} width="100%" sx={{paddingTop: 2}}>
               <SectionCard size={1.5} sx={{fontWeight: "bold", bgcolor: isToday ? "primary.light" : "background.main"}}>
                 <Typography mb={2} fontSize="inherit" fontWeight="inherit" lineHeight="inherit">
-                  {dayOfWeek}<br/>{ currentDay.toLocaleDateString(t('date.locale'), {day: 'numeric', month: 'numeric'}) } {isToday && "(Today)"}
+                  {dayOfWeek}<br/>{ currentDay.toLocaleDateString(t('date.locale'), {day: 'numeric', month: 'numeric'}) } {isToday && `(${tc("today")})`}
                 </Typography>
                 {schedulesOnDay[index]?.map((schedule: Schedule) => (
                   <SectionCard key={schedule.id} size={1.5} sx={{...scheduleCardStyle, bgcolor: "transparent"}} onClick={() => setSelectedSchedule(schedule)}>

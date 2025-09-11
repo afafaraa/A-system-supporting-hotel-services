@@ -28,7 +28,7 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
   const [error, setError] = useState<string | null>(null);
   const [actionToConfirm, setActionToConfirm] = useState<"reject" | "cancel" | null>(null);
   const { t } = useTranslation();
-  const tc = (key: string) => t(`pages.my_schedule.details.${key}`);
+  const tc = (key: string) => t(`pages.employee.schedule_details.${key}`)
 
   const handleScheduleAction = (
     action: "confirm" | "complete" | "cancel" | "reject",
@@ -61,23 +61,22 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
   return (
     <Dialog open={open} onClose={onClose} sx={{"& .MuiDialog-paper": {p: {xs: 0, sm: 2}, borderRadius: 3}}}>
       <IconButton onClick={onClose} sx={{position: 'absolute', right: 16, top: 16}}><CloseIcon /></IconButton>
-      <Box width="50vw"></Box>
       <DialogTitle mb={1}>
         <ServiceIcon mb={1}>
-          <Typography fontWeight="bold" fontSize="21px">{schedule.title || tc("unknownService")}</Typography>
+          <Typography fontWeight="bold" fontSize="21px">{schedule.title || tc("unknown_service")}</Typography>
         </ServiceIcon>
-        <Typography fontSize="14px" color="text.secondary">Service request details and client information</Typography>
+        <Typography fontSize="14px" color="text.secondary">{tc("subtitle")}</Typography>
       </DialogTitle>
 
       <DialogContent>
 
         <Stack direction="row" spacing={elementsSpacing} mb={elementsSpacing}>
-          <DialogSection title={<><EventOutlinedIcon fontSize="small"/> Date & time</>} >
+          <DialogSection title={<><EventOutlinedIcon fontSize="small"/> {tc("date_and_time")}</>} >
             <p>{new Date(schedule.date).toLocaleDateString(t('date.locale'))}</p>
             <p>{formatTimeRange(new Date(schedule.date), schedule.duration)}</p>
           </DialogSection>
           <DialogSection title={tc("status")}>
-            <Box display="inline-block" px={1.5} py={0.2} my={0.2} borderRadius={1} color="calendar.text" bgcolor={`calendar.${schedule.status}`} fontWeight="bold">
+            <Box display="flex" alignItems="center" width="fit-content" px={1.5} py={0.2} my={0.2} borderRadius={1} color="calendar.text" bgcolor={`calendar.${schedule.status}`} fontWeight="bold">
               {t(`order_status.${schedule.status}`)}
             </Box>
           </DialogSection>
@@ -85,30 +84,30 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
 
         {schedule.status !== OrderStatus.AVAILABLE && <>
           <Stack direction="row" spacing={elementsSpacing} mb={elementsSpacing}>
-            <DialogSection title={<><PersonOutlineOutlinedIcon fontSize="small" /> Guest name</>}>
-              {schedule.guestName || "Unknown guest"}
+            <DialogSection title={<><PersonOutlineOutlinedIcon fontSize="small" /> {tc("guest_name")}</>}>
+              {schedule.guestName || tc("unknown_guest")}
             </DialogSection>
-            <DialogSection title={<><RoomOutlinedIcon fontSize="small" /> Room number</>}>
-              {"Room " + schedule.room || "No room assigned"}
+            <DialogSection title={<><RoomOutlinedIcon fontSize="small" /> {tc("room_number")}</>}>
+              {tc("room") + " " + schedule.room || tc("no_room")}
             </DialogSection>
           </Stack>
 
           <Stack direction="row" spacing={elementsSpacing} mb={elementsSpacing}>
             {schedule.orderTime &&
-              <DialogSection title={<><ScheduleOutlinedIcon fontSize="small" /> {tc("orderTime")}</>}>
+              <DialogSection title={<><ScheduleOutlinedIcon fontSize="small" /> {tc("order_time")}</>}>
                 {new Date(schedule.orderTime).toLocaleString(t("date.locale"))}
               </DialogSection>
             }
-            <DialogSection title={<><CommentOutlinedIcon fontSize="small" /> Special requests</>}>
+            <DialogSection title={<><CommentOutlinedIcon fontSize="small" /> {tc("special_requests")}</>}>
                 Nothing to show, not implemented yet.
             </DialogSection>
           </Stack>
         </>}
 
         <Box>
-          <DialogSection title={"Service description"}>
+          <DialogSection title={tc("service_description")}>
             <p>Some description for that particular service</p>
-            <p>Duration: {schedule.duration ? schedule.duration + " minutes" : "..."} • Price: {schedule.price ?? "unset"}</p>
+            <p>{tc("duration")}: {schedule.duration ? schedule.duration + " " + tc("minutes") : "..."} • {tc("price")}: {schedule.price ?? tc("unset")}</p>
           </DialogSection>
         </Box>
 

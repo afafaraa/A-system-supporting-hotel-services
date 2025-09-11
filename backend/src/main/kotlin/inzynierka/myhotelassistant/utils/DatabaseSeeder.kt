@@ -330,15 +330,6 @@ class DatabaseSeeder(
                         fullName = userService.findById(it.guestId!!)?.let { user -> user.name + " " + user.surname } ?: "Unknown",
                         stars = random.nextInt(1, 5),
                         comment = "Example comment for particular service. Rating generated randomly.",
-                        createdAt =
-                            LocalDateTime.ofEpochSecond(
-                                random.nextLong(
-                                    from = it.serviceDate.plusHours(1).toEpochSecond(java.time.ZoneOffset.UTC),
-                                    until = currentTime / 1000,
-                                ),
-                                0,
-                                java.time.ZoneOffset.UTC,
-                            ),
                     )
                 }
         ratingRepository.saveAll(ratings)

@@ -23,6 +23,7 @@ type ConfirmationProps = {
 
 function RequestedSchedulesPage() {
   const {t} = useTranslation();
+  const tc = (key: string) => t(`pages.employee.requested_schedules.${key}`);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null);
   const [pageLoading, setPageLoading] = useState(true);
@@ -84,22 +85,22 @@ function RequestedSchedulesPage() {
         return <>
           <StyledButton onClick={(e) => handleScheduleAction(schedule, "confirm", e)}
                         variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={actionLoading} sx={{mr: {xs: 1, md: 2}}}>
-            <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.my_schedule.details.confirm")}</Box>
+            <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.employee.schedule_details.confirm")}</Box>
           </StyledButton>
           <StyledButton onClick={(e) => confirmAction(schedule, "reject", e)}
                         variant="outlined" color="error" startIcon={<CancelOutlinedIcon/>} loading={actionLoading}>
-            <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.my_schedule.details.reject")}</Box>
+            <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.employee.schedule_details.reject")}</Box>
           </StyledButton>
         </>;
       case OrderStatus.ACTIVE:
         return <>
           <StyledButton onClick={(e) => handleScheduleAction(schedule, "complete", e)}
                         variant="contained" color="success" startIcon={<TaskAltOutlinedIcon/>} loading={actionLoading} sx={{mr: {xs: 1, md: 2}}}>
-            <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.my_schedule.details.complete")}</Box>
+            <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.employee.schedule_details.complete")}</Box>
           </StyledButton>
           <StyledButton onClick={(e) => confirmAction(schedule, "cancel", e)}
                         variant="outlined" color="error" startIcon={<CancelOutlinedIcon/>} loading={actionLoading}>
-            <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.my_schedule.details.cancel")}</Box>
+            <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.employee.schedule_details.cancel")}</Box>
           </StyledButton>
         </>;
       default:
@@ -114,12 +115,12 @@ function RequestedSchedulesPage() {
 
   return (
     <SectionCard>
-      <Title title={<><ScheduleOutlinedIcon /> Pending Service Requests</>}
-             subtitle={`${schedules.length} services waiting for approval`} />
+      <Title title={<><ScheduleOutlinedIcon /> {tc("title")}</>}
+             subtitle={`${schedules.length} ${tc("subtitle")}`} />
       {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
       {pageLoading ? <></> : schedules.length === 0 ?
         <SectionCard size={4}>
-          No requested schedules found.
+          {tc("no_schedules")}
         </SectionCard>
         :
         schedules.slice(0, visibleCount).map(schedule => (
@@ -127,7 +128,7 @@ function RequestedSchedulesPage() {
                      onClick={() => setSelectedSchedule(schedule)} >
           <ServiceIcon>
             <Typography fontWeight="bold">{schedule.title}</Typography>
-            <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? "Guest unknown"} | Room {schedule.room ?? "unknown"}</Typography>
+            <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? tc("guest_unknown")} | {tc("room")} {schedule.room ?? tc("unknown")}</Typography>
             <Box mt={1} fontSize={{xs: 11, sm: 13}}>
               {new Date(schedule.date).toLocaleDateString(t('date.locale'))} | {formatTimeRange(new Date(schedule.date), schedule.duration)}
             </Box>
@@ -140,7 +141,7 @@ function RequestedSchedulesPage() {
 
       {visibleCount < schedules.length &&
         <Box display="flex" justifyContent="center" mt={3}>
-          <Button variant="outlined" onClick={showMore} sx={{width: "300px"}}>Show more ↓</Button>
+          <Button variant="outlined" onClick={showMore} sx={{width: "300px"}}>{t("ui.show_more")}</Button>
         </Box>
       }
 
