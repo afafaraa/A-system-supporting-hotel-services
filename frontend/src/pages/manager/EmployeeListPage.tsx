@@ -84,7 +84,7 @@ function EmployeeListPage() {
   }
 
   return (
-    <Paper sx={{ p: 3, borderRadius: 3, mt: 5 }}>
+    <Paper sx={{ p: 3, borderRadius: 3, mt: 5, border: `1px solid`, borderColor: 'divider' }}>
       <Box
         display="flex"
         alignItems="center"
@@ -152,7 +152,7 @@ function EmployeeListPage() {
           </Button>
         </Box>
 
-        <Grid container spacing={2}>
+        <Grid container spacing={2} sx={{ width: '100%' }}>
           {filteredEmployees.map((emp) => (
             <Grid key={emp.id} size={{ xs: 12, sm: 6, md: 4 }} sx={{ display: "flex" }} >
               <EmployeeCard employee={emp} />

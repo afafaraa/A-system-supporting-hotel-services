@@ -50,6 +50,7 @@ function EmployeeSchedulePage() {
           updated[i].set(yearWeek, res.data.filter(tabFilters[i]));
         });
         setScheduleMap(updated);
+        console.log(res.data);
       })
       .catch(err => {
         if (isAxiosError(err)) {

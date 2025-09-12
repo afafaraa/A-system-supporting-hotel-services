@@ -1,40 +1,49 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, Typography, Box } from "@mui/material";
-import { format } from "date-fns";
-import { Event } from "./WeeklyCalendar";
+import { format, isToday } from "date-fns";
+import { Slot } from "./WeeklyCalendar";
 
 interface CalendarDayCardProps {
   date: Date;
-  events: Event[];
+  events: Slot[];
 }
 
-const CalendarDayCard: React.FC<CalendarDayCardProps> = ({ date, events }) => {
+function CalendarDayCard({ date, events }: CalendarDayCardProps) {
+  const highlightToday = isToday(date);
+
   return (
-    <Card variant="outlined" sx={{ minHeight: 140 }}>
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          {format(date, "EEE d")}
-        </Typography>
-        {events.length === 0 && (
-          <Typography variant="caption" color="text.disabled">
-            No events
+    <Card 
+      variant="outlined" 
+      sx={{ 
+        minHeight: 120,
+        borderColor: highlightToday ? 'primary.main' : 'divider',
+        backgroundColor: highlightToday ? 'primary.medium' : 'background.paper'
+      }}
+      elevation={2}
+      >
+      <CardContent sx={{ p: 1 }}>
+        <Box textAlign="center" mb={1}>
+          <Typography variant="body2" color="text.primary" fontWeight={600}>
+            {format(date, "EEE")}
           </Typography>
-        )}
-        {events.map((ev, idx) => (
+          <Typography variant="body2" color="text.primary">
+            {format(date, "d")}
+          </Typography>
+        </Box>
+        
+        {events.map((ev) => (
           <Box
-            key={idx}
+            key={ev.id}
             sx={{
               mt: 1,
               p: 1,
               border: "1px solid",
-              borderColor: "grey.300",
-              borderRadius: 1,
-              backgroundColor: "grey.50",
+              borderRadius: 2,
             }}
           >
-            <Typography variant="body2">{ev.title}</Typography>
-            <Typography variant="caption" color="text.secondary">
-              {ev.time}
+            <Typography variant="body2" fontWeight={500}>{ev.title}</Typography>
+            <Typography variant="caption" color="text.primary">
+              {format(new Date(ev.date), "HH:mm")} ({ev.duration} min) 
             </Typography>
           </Box>
         ))}

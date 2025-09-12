@@ -91,7 +91,7 @@ function ServicesListPage() {
     }
 
     return (
-        <Paper sx={{ p: 3, borderRadius: 3, mt: 5 }}>
+        <Paper sx={{ p: 3, borderRadius: 3, mt: 5, border: `1px solid`, borderColor: 'divider' }}>
             <Box
                 display="flex"
                 alignItems="center"
