@@ -49,7 +49,7 @@ function TodaySchedulesPage() {
                      onClick={() => setSelectedSchedule(schedule)} >
           <ServiceIcon>
             <Typography fontWeight="bold">{schedule.title}</Typography>
-            <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? tc("guest_unknown")} | {tc("room")} {schedule.room ?? tc("unknown")}</Typography>
+            <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? t("common.guest_unknown")} | {t("common.room")} {schedule.room ?? t("common.unknown")}</Typography>
             <Typography fontSize="13px" sx={{mt: 1}}>{formatTimeRange(new Date(schedule.date), schedule.duration)}</Typography>
           </ServiceIcon>
           <Typography fontSize="12px" fontWeight="bold" px={{xs: 1, sm: 2}} py={0.5} borderRadius={1}

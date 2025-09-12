@@ -67,7 +67,7 @@ class ServiceController(
                 employeeId = schedule.employeeId,
                 guestId = guest.id!!,
                 fullName = guest.name + " " + guest.surname,
-                stars = req.rating,
+                rating = req.rating,
                 comment = req.comment,
             )
         ratingRepository.save(rating)

@@ -2,6 +2,7 @@
   "date": {
     "locale": "en-US",
     "shortWeekdays": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    "fullWeekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
     "separator": ","
   },
   "navbar": {
@@ -167,18 +168,12 @@
       "today_schedules": {
         "title": "Today's Services",
         "subtitle": "services scheduled for today",
-        "no_schedules": "No services scheduled for today.",
-        "guest_unknown": "Guest unknown",
-        "room": "Room",
-        "unknown": "unknown"
+        "no_schedules": "No services scheduled for today."
       },
       "requested_schedules": {
         "title": "Pending Service Requests",
         "subtitle": "services waiting for approval",
-        "no_schedules": "No requested schedules found.",
-        "guest_unknown": "Guest unknown",
-        "room": "Room",
-        "unknown": "unknown"
+        "no_schedules": "No requested schedules found."
       },
       "calendar": {
         "title": "Weekly Calendar",
@@ -195,7 +190,8 @@
         "avg_rating": "Average Rating",
         "total_reviews": "Total Reviews",
         "5_star_reviews": "5-Star Reviews",
-        "this_month": "This Month"
+        "this_month": "This Month",
+        "unknown_service": "Unknown service"
       },
       "schedule_details": {
         "subtitle": "Service request details and client information",
@@ -203,9 +199,7 @@
         "date_and_time": "Date & Time",
         "status": "Status",
         "guest_name": "Guest name",
-        "unknown_guest": "Unknown guest",
         "room_number": "Room number",
-        "room": "Room",
         "no_room": "No room assigned",
         "order_time": "Order time",
         "special_requests": "Special requests",
@@ -235,7 +229,6 @@
       }
     },
     "profile": {
-      "room": "Room",
       "personal_info": "Personal Information",
       "personal_info_subtitle": "Manage your personal details and contact information",
       "username": "Username",
@@ -276,11 +269,17 @@
       "marketing_communication_subtitle": "Receive special offers and promotions"
     }
   },
+  "common": {
+    "room": "Room",
+    "guest_unknown": "Guest unknown",
+    "unknown": "unknown"
+  },
   "ui": {
     "show_more": "Show more ↓",
     "calendar": {
       "current_week": "Current",
-      "today": "Today"
+      "today": "Today",
+      "no_services_this_day": "No services on this day"
     }
   },
   "buttons": {

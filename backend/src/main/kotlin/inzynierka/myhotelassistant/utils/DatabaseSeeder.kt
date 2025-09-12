@@ -328,7 +328,7 @@ class DatabaseSeeder(
                         employeeId = it.employeeId,
                         guestId = it.guestId!!,
                         fullName = userService.findById(it.guestId!!)?.let { user -> user.name + " " + user.surname } ?: "Unknown",
-                        stars = random.nextInt(1, 5),
+                        rating = random.nextInt(1, 5),
                         comment = "Example comment for particular service. Rating generated randomly.",
                     )
                 }

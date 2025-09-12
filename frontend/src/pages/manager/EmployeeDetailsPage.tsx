@@ -4,7 +4,7 @@ import { axiosAuthApi } from "../../middleware/axiosApi";
 import { Box, CircularProgress, Paper, Tab, Tabs, Typography } from "@mui/material";
 import { Employee } from "../../types";
 import { useTranslation } from "react-i18next";
-import Calendar from "../../components/ui/Calendar.tsx";
+import Calendar from "../../components/ui/calendar/Calendar.tsx";
 
 function EmployeeDetailsPage() {
   const { username } = useParams<{ username: string }>();

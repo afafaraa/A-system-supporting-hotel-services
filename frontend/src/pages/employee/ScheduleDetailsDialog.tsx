@@ -85,10 +85,10 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
         {schedule.status !== OrderStatus.AVAILABLE && <>
           <Stack direction="row" spacing={elementsSpacing} mb={elementsSpacing}>
             <DialogSection title={<><PersonOutlineOutlinedIcon fontSize="small" /> {tc("guest_name")}</>}>
-              {schedule.guestName || tc("unknown_guest")}
+              {schedule.guestName || t("common.guest_unknown")}
             </DialogSection>
             <DialogSection title={<><RoomOutlinedIcon fontSize="small" /> {tc("room_number")}</>}>
-              {tc("room") + " " + schedule.room || tc("no_room")}
+              {t("common.room") + " " + schedule.room || tc("no_room")}
             </DialogSection>
           </Stack>
 

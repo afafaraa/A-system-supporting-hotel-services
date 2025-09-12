@@ -8,7 +8,7 @@ export type Rating = {
   fullName: string;
   rating: number;
   comment: string;
-  createdAt: Date;
+  createdAt: string | Date;
 };
 
 export type Service = {

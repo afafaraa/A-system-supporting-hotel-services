@@ -1,4 +1,4 @@
-import Calendar from "../../components/ui/Calendar.tsx";
+import Calendar from "../../components/ui/calendar/Calendar.tsx";
 import {useTranslation} from "react-i18next";
 
 function EmployeeCalendarPage() {

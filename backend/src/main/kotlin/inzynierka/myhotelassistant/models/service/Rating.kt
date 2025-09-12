@@ -12,7 +12,7 @@ data class Rating(
         fun fromEntity(entity: RatingEntity): Rating =
             Rating(
                 fullName = entity.fullName,
-                rating = entity.stars,
+                rating = entity.rating,
                 comment = entity.comment,
                 createdAt = entity.createdAt,
             )

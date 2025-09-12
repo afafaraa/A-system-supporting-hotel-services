@@ -52,7 +52,7 @@ function ProfilePage() {
             </Typography>
             {userDetails && userDetails.guestData &&
                 <Typography color="background.default" fontSize="0.8rem" display={{xs: "none", sm: "flex"}} alignItems="center" gap={0.5}>
-                    <PlaceOutlinedIcon fontSize="small"/> {tc("room")} {userDetails && userDetails.guestData.roomNumber}
+                    <PlaceOutlinedIcon fontSize="small"/> {t("common.room")} {userDetails && userDetails.guestData.roomNumber}
                 </Typography>
             }
           </Box>
@@ -91,7 +91,7 @@ function ProfilePage() {
                subtitle={tc("stay_info_subtitle")} />
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Typography fontSize="inherit" fontWeight="bold">{tc("room_number")}</Typography>
-          <Chip label={`${tc("room")} ${userDetails?.guestData?.roomNumber ?? ''}`} size="small" color="primary" variant="outlined"/>
+          <Chip label={`${t("common.room")} ${userDetails?.guestData?.roomNumber ?? ''}`} size="small" color="primary" variant="outlined"/>
         </Stack>
         <Divider sx={{ my: 3 }} />
         <Stack direction="row" justifyContent="space-between">

@@ -2,6 +2,7 @@
   "date": {
     "locale": "pl-PL",
     "shortWeekdays": ["Pn.", "Wt.", "Śr.", "Czw.", "Pt.", "So.", "Nd."],
+    "fullWeekdays": ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"],
     "separator": ""
   },
   "navbar": {
@@ -167,18 +168,12 @@
       "today_schedules": {
         "title": "Dzisiejsze usługi",
         "subtitle": "usług zaplanowanych na dzisiaj",
-        "no_schedules": "Brak usług zaplanowanych na dzisiaj.",
-        "guest_unknown": "Nieznany gość",
-        "room": "Pokój",
-        "unknown": "nieznany"
+        "no_schedules": "Brak usług zaplanowanych na dzisiaj."
       },
       "requested_schedules": {
         "title": "Oczekujące i aktywny usługi",
         "subtitle": "usług oczekujących na potwierdzenie",
-        "no_schedules": "Nie znaleziono usług do zaakceptowania.",
-        "guest_unknown": "Nieznany gość",
-        "room": "Pokój",
-        "unknown": "nieznany"
+        "no_schedules": "Nie znaleziono usług do zaakceptowania."
       },
       "calendar": {
         "title": "Kalendarz tygodniowy",
@@ -195,7 +190,8 @@
         "avg_rating": "Średnia ocena",
         "total_reviews": "Liczba opinii",
         "5_star_reviews": "Opinie 5-gwiazdkowe",
-        "this_month": "W tym miesiącu"
+        "this_month": "W tym miesiącu",
+        "unknown_service": "Nieznana usługa"
       },
       "schedule_details": {
         "subtitle": "Szczegóły zamówienia usługi i informacje o kliencie",
@@ -203,9 +199,7 @@
         "date_and_time": "Data i godzina",
         "status": "Status",
         "guest_name": "Imię i nazwisko gościa",
-        "unknown_guest": "Nieznany gość",
         "room_number": "Numer pokoju",
-        "room": "Pokój",
         "no_room": "Brak przypisanego pokoju",
         "order_time": "Czas zamówienia",
         "special_requests": "Specjalne życzenia",
@@ -235,7 +229,6 @@
       }
     },
     "profile": {
-      "room": "Pokój",
       "personal_info": "Informacje osobiste",
       "personal_info_subtitle": "Zarządzaj swoimi danymi osobowymi i informacjami kontaktowymi",
       "username": "Nazwa użytkownika",
@@ -276,11 +269,17 @@
       "marketing_communication_subtitle": "Otrzymuj oferty specjalne i promocje"
     }
   },
+  "common": {
+    "room": "Pokój",
+    "guest_unknown": "Nieznany gość",
+    "unknown": "nieznany"
+  },
   "ui": {
     "show_more": "Pokaż więcej ↓",
     "calendar": {
       "current_week": "Aktualny",
-      "today": "Dzisiaj"
+      "today": "Dzisiaj",
+      "no_services_this_day": "Brak usług tego dnia"
     }
   },
   "buttons": {

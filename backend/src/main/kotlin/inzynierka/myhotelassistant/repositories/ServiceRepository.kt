@@ -11,4 +11,10 @@ interface ServiceRepository : MongoRepository<ServiceEntity, String> {
     fun findAllByDisabledFalse(pageable: Pageable): Page<ServiceEntity>
 
     fun findFirstByNameIgnoreCase(name: String): ServiceEntity?
+
+    data class ServiceName(
+        val name: String,
+    )
+
+    fun findServiceNameById(id: String): ServiceName?
 }

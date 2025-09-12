@@ -12,7 +12,7 @@ data class RatingEntity(
     val employeeId: String,
     val guestId: String,
     val fullName: String,
-    val stars: Int,
+    val rating: Int,
     val comment: String? = null,
     val createdAt: LocalDateTime = LocalDateTime.now(),
 )

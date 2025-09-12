@@ -128,7 +128,7 @@ function RequestedSchedulesPage() {
                      onClick={() => setSelectedSchedule(schedule)} >
           <ServiceIcon>
             <Typography fontWeight="bold">{schedule.title}</Typography>
-            <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? tc("guest_unknown")} | {tc("room")} {schedule.room ?? tc("unknown")}</Typography>
+            <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? t("common.guest_unknown")} | {t("common.room")} {schedule.room ?? t("common.unknown")}</Typography>
             <Box mt={1} fontSize={{xs: 11, sm: 13}}>
               {new Date(schedule.date).toLocaleDateString(t('date.locale'))} | {formatTimeRange(new Date(schedule.date), schedule.duration)}
             </Box>
