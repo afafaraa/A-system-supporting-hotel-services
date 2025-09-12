@@ -14,8 +14,7 @@ import { styled } from "@mui/material/styles";
 
 const EmployeeCardPaper = styled(Paper)(({ theme }) => ({
     display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
+    alignItems: "flex-start",
     padding: theme.spacing(2),
     borderRadius: 12,
     width: "100%",
@@ -45,31 +44,33 @@ function EmployeeCard({ employee }: EmployeeCardProps) {
     return (
         <EmployeeCardPaper
             onClick={() => navigate(`/employees/${employee.username}`)}
-        >   
-            <Box display="flex" justifyContent="space-between">
-                <Avatar
-                    sx={{
-                        bgcolor: "primary.medium",
-                        width: 64,
-                        height: 64,
-                        color: "primary.main",
-                        fontSize: 20,
-                        fontWeight: "bold",
-                        border: `1px solid`,
-                        borderColor: "primary.main"
-                    }}
-                >
-                    {employee.name[0]}
-                    {employee.surname[0]}
-                </Avatar>
-
-                <Box>
-                    <Typography fontWeight="bold">
-                        {employee.name} {employee.surname}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        {employee.role.replace("ROLE_", "")}
-                    </Typography>
+        >
+            <Box display="flex" justifyContent="space-between" width="100%">
+                <Box display="flex" alignItems="center" gap={1}>
+                    <Avatar
+                        sx={{
+                            bgcolor: "primary.medium",
+                            width: 64,
+                            height: 64,
+                            color: "primary.main",
+                            fontSize: 20,
+                            fontWeight: "bold",
+                            border: `1px solid`,
+                            borderColor: "primary.main"
+                        }}
+                    >
+                        {employee.name[0]}
+                        {employee.surname[0]}
+                    </Avatar>
+                
+                    <Box>
+                        <Typography fontWeight="bold">
+                            {employee.name} {employee.surname}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            {employee.role.replace("ROLE_", "")}
+                        </Typography>
+                    </Box>
                 </Box>
                 <Box
                     onClick={e => e.stopPropagation()}
