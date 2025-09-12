@@ -10,13 +10,16 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import {t} from "i18next";
-import LanguageSwitcher from "../../components/layout/LanguageSwitcher.tsx";
+import LanguageSwitcher from "../../components/ui/LanguageSwitcher.tsx";
+import ThemeToggleGroup from "../../components/ui/ThemeToggleGroup.tsx";
 import React from "react";
 import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
-import ThemeSwitcher from "../../components/layout/ThemeSwitcher.tsx";
+import Title from "../../components/ui/Title.tsx";
+import {useTranslation} from "react-i18next";
 
 function ProfilePage() {
+  const {t} = useTranslation();
+  const tc = (key: string) => t("pages.profile." + key);
   const user = useSelector(selectUser);
   const userDetails = useSelector(selectUserDetails);
 
@@ -25,13 +28,6 @@ function ProfilePage() {
   const getUserInitials = (name: string, surname: string) => {
     return name.charAt(0).toUpperCase() + surname.charAt(0).toUpperCase();
   }
-
-  const Title: React.FC<{ title: React.ReactNode; subtitle?: React.ReactNode }> = ({ title, subtitle }) => (
-    <Box mb={3}>
-      <Typography fontSize="1.2rem" display="flex" alignItems="center" gap={1}>{title}</Typography>
-      <Typography fontSize="inherit" color="text.secondary">{subtitle}</Typography>
-    </Box>
-  )
 
   const UserProfile = () => (
     <SectionCard sx={{backgroundColor: "primary.main"}}>
@@ -56,7 +52,7 @@ function ProfilePage() {
             </Typography>
             {userDetails && userDetails.guestData &&
                 <Typography color="background.default" fontSize="0.8rem" display={{xs: "none", sm: "flex"}} alignItems="center" gap={0.5}>
-                    <PlaceOutlinedIcon fontSize="small"/> Room {userDetails && userDetails.guestData.roomNumber}
+                    <PlaceOutlinedIcon fontSize="small"/> {t("common.room")} {userDetails && userDetails.guestData.roomNumber}
                 </Typography>
             }
           </Box>
@@ -67,14 +63,14 @@ function ProfilePage() {
 
   const PersonalInformation = () => (
     <SectionCard>
-      <Title title={<><PersonOutlineOutlinedIcon color="primary"/> Personal Information</>}
-             subtitle={"Manage your personal details and contact information"} />
+      <Title title={<><PersonOutlineOutlinedIcon color="primary"/> {tc("personal_info")}</>}
+             subtitle={tc("personal_info_subtitle")} />
       <Stack direction="row" gap={4}>
         <Stack direction="column" gap={2} fontWeight="bold">
-          <span>Username</span>
-          <span>Full name</span>
-          <span>Email</span>
-          <span>Phone</span>
+          <span>{tc("username")}</span>
+          <span>{tc("full_name")}</span>
+          <span>{tc("email")}</span>
+          <span>{tc("phone")}</span>
         </Stack>
         <Stack direction="column" gap={2}>
           <span>{user.username}</span>
@@ -84,24 +80,24 @@ function ProfilePage() {
         </Stack>
       </Stack>
       <Divider sx={{ my: 3 }} />
-      <span style={{fontWeight: "bold"}}>Special Requests</span>
+      <span style={{fontWeight: "bold"}}>{tc("special_requests")}</span>
       <Typography fontSize="inherit" color="text.secondary" mt={1}>—</Typography>
     </SectionCard>
   )
 
   const StayInformation = () => (
     <SectionCard>
-        <Title title={<><CalendarTodayOutlinedIcon color="primary"/> Stay information</>}
-               subtitle={"Details about your current hotel stay"} />
+        <Title title={<><CalendarTodayOutlinedIcon color="primary"/> {tc("stay_info")}</>}
+               subtitle={tc("stay_info_subtitle")} />
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography fontSize="inherit" fontWeight="bold">Room number</Typography>
-          <Chip label={`Room ${userDetails?.guestData?.roomNumber ?? ''}`} size="small" color="primary" variant="outlined"/>
+          <Typography fontSize="inherit" fontWeight="bold">{tc("room_number")}</Typography>
+          <Chip label={`${t("common.room")} ${userDetails?.guestData?.roomNumber ?? ''}`} size="small" color="primary" variant="outlined"/>
         </Stack>
         <Divider sx={{ my: 3 }} />
         <Stack direction="row" justifyContent="space-between">
           <Stack direction="column" gap={2}>
-            <span>Check-in Date</span>
-            <span>Check-out Date</span>
+            <span>{tc("check_in")}</span>
+            <span>{tc("check_out")}</span>
           </Stack>
           <Stack direction="column" gap={2} textAlign="right" fontWeight="bold">
             {userDetails?.guestData && <>
@@ -111,22 +107,24 @@ function ProfilePage() {
           </Stack>
         </Stack>
         <Divider sx={{ my: 3 }} />
-        <Button variant="contained" fullWidth>View all</Button>
+        <Button variant="contained" fullWidth>{tc("view_all")}</Button>
     </SectionCard>
   )
 
-  const EmployeeCard = () => (
+  const EmployeeCard = () => ( // TODO: employee stats (services handled, hours worked, etc.)
     <SectionCard>
-      <Title title={<><BadgeOutlinedIcon color="primary"/> Employee Card</>}
-             subtitle={"Employee specific data card (e.g., position, department, hire date)"} />
+      <Title title={<><BadgeOutlinedIcon color="primary"/> {tc("employee_card")}</>}
+             subtitle={tc("employee_card_subtitle")} />
       <Stack direction="row" gap={4}>
         <Stack direction="column" gap={2} fontWeight="bold">
-          <span>Position</span>
-          <span>Occupation</span>
+          <span>{tc("position")}</span>
+          <span>{tc("occupation")}</span>
+          <span>{tc("hire_date")}</span>
         </Stack>
         <Stack direction="column" gap={2}>
           <span>{user.role.split("_")[1].toLowerCase()}</span>
           <span>{userDetails?.employeeData?.occupation ?? "—"}</span>
+          <span>—</span>
         </Stack>
       </Stack>
     </SectionCard>
@@ -134,13 +132,13 @@ function ProfilePage() {
 
   const AccountBalance = () => (
     <SectionCard>
-      <Title title={"Account Balance"}
-             subtitle={"Manage your hotel account balance and room tab"}/>
+      <Title title={tc("account_balance")}
+             subtitle={tc("account_balance_subtitle")}/>
       <SectionCard sx={{backgroundColor: "primary.main"}} textAlign="center">
-        <Typography color="background.default">Current bill</Typography>
+        <Typography color="background.default">{tc("current_bill")}</Typography>
         <Typography fontWeight="bold" color="background.default" fontSize="2.5rem">{userDetails?.guestData?.bill.toFixed(2)} PLN</Typography>
       </SectionCard>
-      <Typography mt={3}>Services history:</Typography>
+      <Typography mt={3}>{tc("recent_transactions")}:</Typography>
       {[1, 2, 3].map(item => (
         <SectionCard key={item} sx={{p: 3, borderRadius: 3, mt: 2}}>Placeholder {item}</SectionCard>
       ))}
@@ -150,13 +148,13 @@ function ProfilePage() {
 
   const PageSettings = () => (
     <SectionCard>
-      <Title title={<><SettingsOutlinedIcon color="primary"/> Page settings</>} />
+      <Title title={<><SettingsOutlinedIcon color="primary"/> {tc("page_settings")}</>} />
       <Stack gap={2}>
         <Typography component="div" display="flex" alignItems="center" gap={3}>
-          Page language: <LanguageSwitcher />
+          {tc("page_language")}: <LanguageSwitcher />
         </Typography>
         <Typography component="div" display="flex" alignItems="center" gap={3}>
-          Page theme: <ThemeSwitcher />
+          {tc("page_theme")}: <ThemeToggleGroup />
         </Typography>
       </Stack>
     </SectionCard>
@@ -174,14 +172,14 @@ function ProfilePage() {
 
   const AccountInformation = () => (
     <SectionCard>
-      <Title title={"Account Information"}
-             subtitle={"Manage your account preferences and security settings"}/>
+      <Title title={tc("account_info")}
+             subtitle={tc("account_info_subtitle")}/>
       <Stack gap={2}>
-        <CardWithSwitch title={"Email Notifications"}
-                        subtitle={"Receive updates about your bookings and services"}
+        <CardWithSwitch title={tc("email_notifications")}
+                        subtitle={tc("email_notifications_subtitle")}
                         endAdornment={<Switch />} />
-        <CardWithSwitch title={"Marketing Communications"}
-                        subtitle={"Receive special offers and promotions"}
+        <CardWithSwitch title={tc("marketing_communication")}
+                        subtitle={tc("marketing_communication_subtitle")}
                         endAdornment={<Switch />} />
       </Stack>
     </SectionCard>

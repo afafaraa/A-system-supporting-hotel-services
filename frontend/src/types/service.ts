@@ -5,9 +5,10 @@ export type WeekdayHour = {
 }
 
 export type Rating = {
-    author: string;
-    rating: number;
-    comment: string;
+  fullName: string;
+  rating: number;
+  comment: string;
+  createdAt: string | Date;
 };
 
 export type Service = {

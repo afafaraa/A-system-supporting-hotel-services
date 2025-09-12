@@ -20,12 +20,19 @@ import {PropsWithChildren, useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {initializeUserFromLocalStorage} from "./components/auth/auth.tsx";
 import ServiceSchedulePage from "./pages/guest/service-schedule/ServiceSchedulePage.tsx";
-import EmployeeSchedulePage from "./pages/employee/EmployeeSchedulePage.tsx";
 import LoadingPage from "./pages/user/LoadingPage.tsx";
 import EmployeeDetailsPage from "./pages/manager/EmployeeDetailsPage.tsx";
 import ServicesListPage from "./pages/manager/ServicesListPage.tsx";
 import StatsPage from "./pages/manager/StatsPage.tsx";
 import AddNewEmployeePage from './pages/manager/forms/AddNewEmployeePage.tsx';
+import GuestMainPage from "./pages/guest/layout/GuestMainPage.tsx";
+import EmployeeLayout from "./components/layout/EmployeeLayout.tsx";
+import EmployeeCalendarPage from "./pages/employee/EmployeeCalendarPage.tsx";
+import TodaySchedulesPage from "./pages/employee/TodaySchedulesPage.tsx";
+import RequestedSchedulesPage from "./pages/employee/RequestedSchedulesPage.tsx";
+import EmployeeReservationsPage from "./pages/employee/ReservationsPage.tsx";
+import EmployeeReviewsPage from "./pages/employee/ReviewsPage.tsx";
+import FallbackPage from "./pages/user/FallbackPage.tsx";
 
 function App(){
 
@@ -39,6 +46,7 @@ function App(){
             <Route element={<ProtectedRoute />}>
               <Route path="/home" element={<HomePage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/guest" element={<GuestMainPage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/services/available" element={<AvailableServicesPage />} />
               <Route path="/services/requested" element={<RequestedServicesPage />}/>
@@ -47,7 +55,13 @@ function App(){
               <Route path="/service-schedule/:id" element={<ServiceSchedulePage />} />
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_EMPLOYEE", "ROLE_RECEPTIONIST", "ROLE_MANAGER", "ROLE_ADMIN"]} />}>
-              <Route path="/employee/schedule" element={<EmployeeSchedulePage />} />
+              <Route element={<EmployeeLayout />}>
+                <Route path="/employee/today-schedules" element={<TodaySchedulesPage />} />
+                <Route path="/employee/requested-schedules" element={<RequestedSchedulesPage />} />
+                <Route path="/employee/calendar" element={<EmployeeCalendarPage />} />
+                <Route path="/employee/reservations" element={<EmployeeReservationsPage />} />
+                <Route path="/employee/reviews" element={<EmployeeReviewsPage />} />
+              </Route>
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_RECEPTIONIST", "ROLE_MANAGER", "ROLE_ADMIN"]} />}>
               <Route path="/add-reservation" element={<AddReservationPage />} />
@@ -68,6 +82,7 @@ function App(){
             <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="*" element={<Navigate to="/login" replace />} />
+            <Route path="/fallback" element={<FallbackPage />} />
           </Route>
 
         </Routes>

@@ -14,10 +14,15 @@ interface ScheduleRepository : MongoRepository<ScheduleEntity, String> {
         endDate: LocalDateTime,
     ): List<ScheduleEntity>
 
-    fun findByEmployeeIdAndServiceDateBetween(
+    fun findByEmployeeIdAndServiceDateBetweenOrderByServiceDate(
         employeeId: String,
         startDate: LocalDateTime,
         endDate: LocalDateTime,
+    ): List<ScheduleEntity>
+
+    fun findByEmployeeIdAndStatusInOrderByServiceDate(
+        employeeId: String,
+        statuses: List<OrderStatus>,
     ): List<ScheduleEntity>
 
     fun findFirstByServiceIdAndServiceDateBetweenOrderByServiceDateDesc(
@@ -32,4 +37,6 @@ interface ScheduleRepository : MongoRepository<ScheduleEntity, String> {
         guestId: String,
         statuses: List<OrderStatus>,
     ): List<ScheduleEntity>
+
+    fun findAllByStatusIn(statuses: List<OrderStatus>): List<ScheduleEntity>
 }

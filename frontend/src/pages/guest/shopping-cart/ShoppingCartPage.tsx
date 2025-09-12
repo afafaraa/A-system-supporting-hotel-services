@@ -1,4 +1,4 @@
-import AuthenticatedHeader from "../../../components/layout/AuthenticatedHeader.tsx";
+import AuthenticatedHeader from "../../../components/ui/AuthenticatedHeader.tsx";
 import {Button, Grid, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";

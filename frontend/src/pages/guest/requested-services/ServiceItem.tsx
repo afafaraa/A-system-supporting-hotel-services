@@ -21,7 +21,7 @@ function ServiceItem ({item, index, fetchData}: {item: RequestedServiceProps, in
           <div>
             <Typography sx={{fontSize: {xs: '1em', sm: '1.5em'}}} variant="h5">{item.name}</Typography>
             <Typography sx={{lineHeight: '14px', fontSize: {xs: '0.8em', sm: '1em'}}} variant="body2">{item.employeeFullName}</Typography>
-            <div style={{ color: item.status === OrderStatus.canceled ? 'red' : item.status === OrderStatus.active || item.status === OrderStatus.completed ? 'green' : 'orange' }}>
+            <div style={{ color: item.status === OrderStatus.CANCELED ? 'red' : item.status === OrderStatus.ACTIVE || item.status === OrderStatus.COMPLETED ? 'green' : 'orange' }}>
               {t(`pages.past_services.${item.status}`)}
             </div>
           </div>
@@ -29,10 +29,10 @@ function ServiceItem ({item, index, fetchData}: {item: RequestedServiceProps, in
         </div>
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'end'}}>
           <div>{(new Date(item.datetime)).toLocaleDateString()} : {(new Date(item.datetime)).toLocaleTimeString().slice(0,5)}</div>
-          {(item.status === OrderStatus.active || item.status === OrderStatus.requested) ? (
-            <Button variant="contained" disabled={(new Date(item.datetime).getTime() - Date.now() < 60 * 60 * 1000) || item.status === OrderStatus.active} onClick={() => setOpenCancel(true)}>{t('buttons.cancel')}</Button>
+          {(item.status === OrderStatus.ACTIVE || item.status === OrderStatus.REQUESTED) ? (
+            <Button variant="contained" disabled={(new Date(item.datetime).getTime() - Date.now() < 60 * 60 * 1000) || item.status === OrderStatus.ACTIVE} onClick={() => setOpenCancel(true)}>{t('buttons.cancel')}</Button>
           ) : (
-            <Button variant="contained" disabled={item.status === OrderStatus.canceled} onClick={() => setOpenRate(true)}>{t('pages.past_services.rate')}</Button>
+            <Button variant="contained" disabled={item.status === OrderStatus.CANCELED} onClick={() => setOpenRate(true)}>{t('pages.past_services.rate')}</Button>
           )}
           </div>
       </Box>

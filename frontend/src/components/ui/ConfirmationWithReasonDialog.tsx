@@ -1,22 +1,30 @@
-import {Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, FormControl, Select, InputLabel, MenuItem, SelectChangeEvent} from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  FormControl,
+  Select,
+  InputLabel,
+  MenuItem,
+  SelectChangeEvent,
+  Typography
+} from "@mui/material";
 import {useState} from "react";
 import {CancellationReason} from "../../types/cancellation_reasons.ts";
 import {useTranslation} from "react-i18next";
 
 type Props = {
-  open: boolean;
-  title: string;
-  description: string;
   onCancel: () => void;
   onConfirm: (reason: CancellationReason) => void;
-  confirmText: string;
-  cancelText: string;
 };
 
-function ConfirmationWithReasonDialog({open, title, description, onCancel, onConfirm, confirmText, cancelText}: Props) {
+function ConfirmationWithReasonDialog({onCancel, onConfirm}: Props) {
   const [reason, setReason] = useState<CancellationReason | "">("");
   const [error, setError] = useState<boolean>(false);
   const { t } = useTranslation();
+  const tc = (key: string) => t(`pages.employee.confirmation_dialog.${key}`);
 
   const handleChange = (event: SelectChangeEvent) => {
     setReason(event.target.value as unknown as CancellationReason);
@@ -34,34 +42,32 @@ function ConfirmationWithReasonDialog({open, title, description, onCancel, onCon
 
 
   return (
-    <Dialog open={open} onClose={onCancel}>
-      <DialogTitle>{title}</DialogTitle>
+    <Dialog open={true} onClose={onCancel} sx={{"& .MuiDialog-paper": {p: {xs: 1, sm: 2}, borderRadius: 3}}}>
+      <DialogTitle textAlign="center">{tc("title")}</DialogTitle>
       <DialogContent>
-        <DialogContentText gutterBottom>{description}</DialogContentText>
-        <DialogContentText gutterBottom>{t("confirmation_dialog.select_reason")}:</DialogContentText>
+        <Typography fontSize={14} mb={2}>{tc("description")}</Typography>
+        <Typography fontSize={14} mb={1}>{tc("select_reason")}:</Typography>
         <FormControl fullWidth>
-          <InputLabel id="reason-label">Reason</InputLabel>
+          <InputLabel id="reason-label">{tc("reason")}</InputLabel>
           <Select
             labelId="reason-label"
             id="demo-simple-select"
             value={reason as string}
-            label="Reason"
+            label={tc("reason")}
             onChange={handleChange}
             error={error}
           >
-            {reasonOptions.map(reason =>
-              <MenuItem value={reason}>
-                {t(`cancellation_reasons.${reason}`)}
+            {reasonOptions.map((reason, index) =>
+              <MenuItem key={index} value={reason}>
+                {tc(`reasons.${reason}`)}
               </MenuItem>
             )}
           </Select>
         </FormControl>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCancel} sx={{color: "darkslategray"}}>{cancelText}</Button>
-        <Button onClick={handleConfirm} color="error" variant="contained">
-          {confirmText}
-        </Button>
+        <Button onClick={onCancel} sx={{color: "text.disabled"}}>{tc("cancel")}</Button>
+        <Button onClick={handleConfirm} color="error" variant="contained">{tc("confirm")}</Button>
       </DialogActions>
     </Dialog>
   );

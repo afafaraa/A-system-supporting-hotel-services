@@ -25,7 +25,6 @@ data class ServiceCreateRequestDTO(
             price = price,
             type = type,
             disabled = disabled,
-            rating = mutableListOf(),
             duration = getDurationFromMinutes() ?: Duration.ZERO,
             maxAvailable = maxAvailable,
             weekday = weekday?.toMutableList() ?: mutableListOf(),

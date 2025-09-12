@@ -18,6 +18,7 @@ import {fontSizes} from "../../theme/fontSizes.ts";
 import {LogInWrapper} from "../../theme/styled-components/LogInWrapper.ts";
 import {LogInInput} from "../../theme/styled-components/LogInInput.ts";
 import {VisibilityOutlined, VisibilityOffOutlined} from "@mui/icons-material";
+import navigateToDashboard from "../../utils/navigateToDashboard.ts";
 
 function LoginPage(){
   const user = useSelector(selectUser);
@@ -33,7 +34,7 @@ function LoginPage(){
   const theme = useTheme();
 
   useEffect(() => {
-    if (user !== null) navigate('/home')
+    if (user !== null) navigateToDashboard(user.role, navigate);
   }, [user, navigate]);
 
   useEffect(() => {
@@ -52,7 +53,6 @@ function LoginPage(){
       .then(res => {
         if (res.data.accessToken && res.data.refreshToken) {
           setUserData(res.data.accessToken, res.data.refreshToken, dispatch)
-          navigate('/home')
         }
       })
       .catch(e => {

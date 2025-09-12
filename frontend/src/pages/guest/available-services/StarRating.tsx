@@ -1,4 +1,4 @@
-import {Rating as RatingType} from "./AvailableServiceCard.tsx";
+import {Rating as RatingType} from "../../../types";
 import Rating from "@mui/material/Rating";
 
 const StarRating = ({ rating }: {rating: RatingType[]}) => {

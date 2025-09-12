@@ -2,6 +2,7 @@
   "date": {
     "locale": "pl-PL",
     "shortWeekdays": ["Pn.", "Wt.", "Śr.", "Czw.", "Pt.", "So.", "Nd."],
+    "fullWeekdays": ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"],
     "separator": ""
   },
   "navbar": {
@@ -16,10 +17,6 @@
     "services": "Usługi",
     "stats": "Statystyki",
     "logout": "Wyloguj się"
-  },
-  "schedule_table": {
-    "previousWeek": "Poprzedni tydzień",
-    "nextWeek": "Następny tydzień"
   },
   "pages": {
     "loading": {
@@ -42,7 +39,11 @@
       "password": "Hasło",
       "registerButton": "Zarejestruj się",
       "goBack": "Wróć do logowania",
-      "invalidCodeError": "Nieprawidłowy kod rejestracyjny."
+      "invalidCodeError": "Nieprawidłowy kod rejestracyjny.",
+      "newPassword": "Nowe hasło",
+      "repeatPassword": "Powtórz hasło",
+      "passwordsDoNotMatch": "Hasła nie pasują do siebie.",
+      "resetPasswordButton": "Zresetuj hasło"
     },
     "reset-password": {
       "title": "Resetowanie hasła",
@@ -67,38 +68,6 @@
         "delete": "Usuń"
       },
       "empty": "Brak dostępnych powiadomień."
-    },
-    "home": {
-      "title": "Moja strona główna",
-      "loggedUser": "Zalogowany użytkownik",
-      "username": "Nazwa użytkownika",
-      "role": "Rola",
-      "accountData": "Dane konta",
-      "name": "Imię i nazwisko",
-      "email": "Email",
-      "employeeData": "Dane pracownika",
-      "roomNumber": "Numer pokoju",
-      "checkInDate": "Data zameldowania",
-      "checkOutDate": "Data wymeldowania"
-    },
-    "my_schedule": {
-      "title": "Mój harmonogram",
-      "confirmed": "Potwierdzone",
-      "unconfirmed": "Niepotwierdzone",
-      "all": "Wszystkie",
-      "details": {
-        "unknownService": "Nieznana usługa",
-        "status": "Status",
-        "orderTime": "Data zamówienia",
-        "durationUnknown": "Czas nieokreślony",
-        "confirm": "Zatwierdź usługę",
-        "reject": "Odrzuć usługę",
-        "complete": "Oznacz usługę jako zakończoną",
-        "cancel": "Anuluj usługę"
-      }
-    },
-    "available_services": {
-      "title": "Dostępne usługi"
     },
     "stats": {
       "title": "Statystyki",
@@ -147,6 +116,9 @@
       "workSchedule": "Harmonogram pracy",
       "employeeData": "Dane pracownika"
     },
+    "available_services": {
+      "title": "Dostępne usługi"
+    },
     "requested_services": {
       "title": "Zamówione usługi",
       "confirmationDialog": "Anulować usługę?",
@@ -184,11 +156,135 @@
       "Su": "Nd",
       "noServiceAvailable": "Brak dostępnych usług w tym dniu.",
       "nextAvailableServices": "Najbliższe terminy usług"
+    },
+    "employee": {
+      "navbar": {
+        "today": "Dzisiaj",
+        "requested": "Zamówione",
+        "calendar": "Kalendarz",
+        "reservations": "Rezerwacje",
+        "reviews": "Opinie"
+      },
+      "today_schedules": {
+        "title": "Dzisiejsze usługi",
+        "subtitle": "usług zaplanowanych na dzisiaj",
+        "no_schedules": "Brak usług zaplanowanych na dzisiaj."
+      },
+      "requested_schedules": {
+        "title": "Oczekujące i aktywny usługi",
+        "subtitle": "usług oczekujących na potwierdzenie",
+        "no_schedules": "Nie znaleziono usług do zaakceptowania."
+      },
+      "calendar": {
+        "title": "Kalendarz tygodniowy",
+        "subtitle": "Twój tygodniowy kalendarz usług"
+      },
+      "reservations": {
+        "title": "Oczekujące rezerwacji pokoi",
+        "subtitle": "Rezerwacje pokoi wymagające potwierdzenia"
+      },
+      "reviews": {
+        "title": "Opinie o usługach i wydajność",
+        "subtitle": "Opinie gości na temat świadczonych usług",
+        "no_reviews": "Brak dostępnych opinii.",
+        "avg_rating": "Średnia ocena",
+        "total_reviews": "Liczba opinii",
+        "5_star_reviews": "Opinie 5-gwiazdkowe",
+        "this_month": "W tym miesiącu",
+        "unknown_service": "Nieznana usługa"
+      },
+      "schedule_details": {
+        "subtitle": "Szczegóły zamówienia usługi i informacje o kliencie",
+        "unknown_service": "Nieznana usługa",
+        "date_and_time": "Data i godzina",
+        "status": "Status",
+        "guest_name": "Imię i nazwisko gościa",
+        "room_number": "Numer pokoju",
+        "no_room": "Brak przypisanego pokoju",
+        "order_time": "Czas zamówienia",
+        "special_requests": "Specjalne życzenia",
+        "service_description": "Opis usługi",
+        "duration": "Czas trwania",
+        "minutes": "minuty",
+        "price": "Cena",
+        "unset": "Nieustawiona",
+        "confirm": "Potwierdź usługę",
+        "reject": "Odrzuć usługę",
+        "complete": "Zakończ usługę",
+        "cancel": "Anuluj usługę"
+      },
+      "confirmation_dialog": {
+        "title": "Potwierdzenie akcji",
+        "description": "Czy jesteś pewien / pewna, że chcesz odrzucić / anulować tę usługę?",
+        "select_reason": "Wybierz powód",
+        "reason": "Powód akcji",
+        "reasons": {
+          "overlapping_terms": "Nakładające się terminy",
+          "personal_reasons": "Powód osobisty",
+          "illness": "Choroba",
+          "other": "Inny powód"
+        },
+        "cancel": "Anuluj",
+        "confirm": "Potwierdź"
+      }
+    },
+    "profile": {
+      "personal_info": "Informacje osobiste",
+      "personal_info_subtitle": "Zarządzaj swoimi danymi osobowymi i informacjami kontaktowymi",
+      "username": "Nazwa użytkownika",
+      "full_name": "Imię i nazwisko",
+      "email": "Email",
+      "phone": "Telefon",
+      "special_requests": "Specjalne życzenia",
+
+      "stay_info": "Informacje o pobycie",
+      "stay_info_subtitle": "Szczegóły dotyczące twojego obecnego pobytu w hotelu",
+      "room_number": "Numer pokoju",
+      "check_in": "Data zameldowania",
+      "check_out": "Data wymeldowania",
+      "view_all": "Zobacz wszystkie",
+
+      "employee_card": "Karta pracownika",
+      "employee_card_subtitle": "Twoje dane dotyczące obecnego zatrudnienia",
+      "position": "Stanowisko",
+      "occupation": "Zawód",
+      "hire_date": "Data zatrudnienia",
+
+      "account_balance": "Saldo konta",
+      "account_balance_subtitle": "Przegląd aktualnego salda konta i ostatnich transakcji",
+      "current_bill": "Bieżący rachunek",
+      "recent_transactions": "Ostatnie transakcje",
+
+      "page_settings": "Ustawienia strony",
+      "page_language": "Język strony",
+      "page_theme": "Motyw strony",
+      "light": "Jasny",
+      "dark": "Ciemny",
+
+      "account_info": "Informacje o koncie",
+      "account_info_subtitle": "Zarządzaj preferencjami konta i ustawieniami bezpieczeństwa",
+      "email_notifications": "Powiadomienia e-mail",
+      "email_notifications_subtitle": "Otrzymuj aktualizacje dotyczące rezerwacji i usług",
+      "marketing_communication": "Komunikacja marketingowa",
+      "marketing_communication_subtitle": "Otrzymuj oferty specjalne i promocje"
+    }
+  },
+  "common": {
+    "room": "Pokój",
+    "guest_unknown": "Nieznany gość",
+    "unknown": "nieznany"
+  },
+  "ui": {
+    "show_more": "Pokaż więcej ↓",
+    "calendar": {
+      "current_week": "Aktualny",
+      "today": "Dzisiaj",
+      "no_services_this_day": "Brak usług tego dnia"
     }
   },
   "buttons": {
     "cancel": "Anuluj",
-    "submit": "Zatwietdź",
+    "submit": "Zatwierdź",
     "delete": "Usuń",
     "deleteAll": "Usuń wszystko"
   },
@@ -205,21 +301,5 @@
     "ACTIVE": "AKTYWNY",
     "COMPLETED": "UKOŃCZONY",
     "CANCELED": "ANULOWANY"
-  },
-  "confirmation_dialog": {
-    "title": "Potwierdzenie akcji",
-    "confirm": "Potwierdź",
-    "cancel": "Anuluj",
-    "description": {
-      "cancel": "Czy na pewno chcesz anulować tę usługę?",
-      "reject": "Czy na pewno chcesz odrzucić tę usługę?"
-    },
-    "select_reason": "Wybierz powód"
-  },
-  "cancellation_reasons": {
-    "overlapping_terms": "Nakładające się terminy",
-    "personal_reasons": "Powód osobisty",
-    "illness": "Choroba",
-    "other": "Inny powód"
   }
 }

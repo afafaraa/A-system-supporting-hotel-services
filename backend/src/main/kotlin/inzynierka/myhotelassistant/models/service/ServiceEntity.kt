@@ -12,7 +12,6 @@ data class ServiceEntity(
     var price: Double,
     var type: ServiceType,
     var disabled: Boolean,
-    var rating: MutableList<Rating>,
     var duration: Duration,
     var maxAvailable: Int? = null,
     var weekday: MutableList<WeekdayHour> = mutableListOf(),

@@ -7,7 +7,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import {Notification, NotificationVariant} from "../../types/notification.ts";
-import {getDay, getTime} from "../../utils/utils.ts";
+import {formatDateFromTimestamp, formatTimeFromTimestamp} from "../../utils/dateFormatting.ts";
 
 function NotificationsContainer() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -43,13 +43,13 @@ function NotificationsContainer() {
         return (
           <Card key={n.id} variant="outlined" sx={{color: "text.primary",
             mt: 2, p: 2, borderRadius: "inherit", display: "flex", flexDirection: "column"}}>
-              <Typography fontSize="1.1rem" sx={{display: "flex", alignItems: "center", gap: 1}}>
+              <Box display="flex" alignItems="center" gap={1}>
                 <Icon sx={{fontSize: "1.3rem"}} color={color} />
-                {n.title}
-              </Typography>
+                <Typography fontSize="1.1rem" noWrap textOverflow="ellipsis" overflow="hidden">{n.title}</Typography>
+              </Box>
               <Typography fontSize="0.8rem">{n.message}</Typography>
               <Typography fontSize="0.8rem" mt={1}>
-                {getDay(n.timestamp)}, {getTime(n.timestamp)}
+                {formatDateFromTimestamp(n.timestamp)}, {formatTimeFromTimestamp(n.timestamp)}
               </Typography>
           </Card>
         )

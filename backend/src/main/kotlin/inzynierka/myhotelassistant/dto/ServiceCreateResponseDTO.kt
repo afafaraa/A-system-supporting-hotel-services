@@ -1,6 +1,7 @@
 package inzynierka.myhotelassistant.dto
 
 import inzynierka.myhotelassistant.models.service.Rating
+import inzynierka.myhotelassistant.models.service.RatingEntity
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.models.service.ServiceType
 import inzynierka.myhotelassistant.models.service.WeekdayHour
@@ -19,7 +20,10 @@ data class ServiceCreateResponseDTO(
     val image: String?,
 ) {
     companion object {
-        fun from(entity: ServiceEntity): ServiceCreateResponseDTO =
+        fun from(
+            entity: ServiceEntity,
+            ratings: List<RatingEntity>,
+        ): ServiceCreateResponseDTO =
             ServiceCreateResponseDTO(
                 id = entity.id,
                 name = entity.name,
@@ -27,7 +31,7 @@ data class ServiceCreateResponseDTO(
                 price = entity.price,
                 type = entity.type,
                 disabled = entity.disabled,
-                rating = entity.rating,
+                rating = ratings.map { Rating.fromEntity(it) },
                 duration = entity.duration.inWholeMinutes,
                 maxAvailable = entity.maxAvailable,
                 weekday = entity.weekday,

@@ -17,7 +17,7 @@
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const theme = storedTheme || (prefersDark ? 'dark' : 'light');
         document.documentElement.setAttribute('data-theme', theme);
-        document.documentElement.style.backgroundColor = theme === 'dark' ? '#19171c' : '#f1f0f5';
+        document.documentElement.style.backgroundColor = theme === 'dark' ? 'hsl(256, 8%, 10%)' : 'hsl(256, 20%, 95%)';
       })();
     </script>
     <script type="module" src="/src/main.tsx"></script>

@@ -5,7 +5,7 @@ function LoadingPage() {
   const { t } = useTranslation();
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh" bgcolor="background.default">
+    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100dvh" bgcolor="background.default">
       <CircularProgress />
       <Typography variant="h6" mt="1rem" color="text.primary">
         {t("pages.loading.wait")}

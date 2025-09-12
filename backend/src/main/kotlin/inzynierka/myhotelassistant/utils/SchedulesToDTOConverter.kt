@@ -13,6 +13,7 @@ class SchedulesToDTOConverter(
     private val userRepository: UserRepository,
 ) {
     fun convertList(schedules: List<ScheduleEntity>): List<ScheduleDTO> {
+        if (schedules.isEmpty()) return emptyList()
         val serviceIds = schedules.map { it.serviceId }.distinct()
         val servicesMap = serviceService.getSchedulesByIds(serviceIds)
         val guestIds = schedules.mapNotNull { it.guestId }.distinct()

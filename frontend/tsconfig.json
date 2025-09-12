@@ -4,5 +4,8 @@
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
   ],
+  "compilerOptions": {
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+  },
   "exclude": ["node_modules", "dist", "build"],
 }
