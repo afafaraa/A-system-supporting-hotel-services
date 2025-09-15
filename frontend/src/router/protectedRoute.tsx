@@ -1,5 +1,4 @@
-import {useEffect} from "react";
-import {Outlet, useNavigate} from "react-router-dom";
+import {Outlet, Navigate} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {selectUser} from "../redux/slices/userSlice.ts";
 
@@ -8,20 +7,12 @@ interface ProtectedRouteProps {
 }
 
 function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
-
-    const navigate = useNavigate();
-    const user = useSelector(selectUser);
-
-    useEffect(() => {
-        if (user === null) navigate("/login");
-        else if (allowedRoles && !allowedRoles.includes(user.role)) {
-            navigate("/home");
-        }
-    }, [navigate, user, allowedRoles]);
-
-    if (!user) return null;
-    if (allowedRoles && !allowedRoles.includes(user.role)) return null;
-
+  const user = useSelector(selectUser);
+  if (user === null)
+    return <Navigate to="/login" replace />;
+  else if (allowedRoles && !allowedRoles.includes(user.role))
+    return <Navigate to="/home" replace />;
+  else
     return <Outlet />;
 }
 
