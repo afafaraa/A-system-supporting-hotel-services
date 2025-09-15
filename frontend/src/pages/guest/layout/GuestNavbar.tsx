@@ -1,27 +1,33 @@
 import { useTheme } from '@mui/material';
 import { SectionWrapper } from '../../../theme/styled-components/SectionWrapper.ts';
 import { useRef, useState, useEffect, useCallback } from 'react';
-import {PageState} from "./GuestLayout.tsx";
+import { PageState } from './GuestLayout.tsx';
 
 function GuestNavbar({
-                       setCurrentPage,
-                       currentPage,
-                       subpages,
-                     }: {
-  setCurrentPage: (x: "Available Services" | "Booked Services" | "Book Hotel Room") => void;
+  setCurrentPage,
+  currentPage,
+  subpages,
+}: {
+  setCurrentPage: (
+    x: 'Available Services' | 'Booked Services' | 'Book Hotel Room'
+  ) => void;
   currentPage: PageState;
   subpages: PageState[];
 }) {
   const theme = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({
+  const [indicatorStyle, setIndicatorStyle] = useState<{
+    left: number;
+    width: number;
+  }>({
     left: 0,
     width: 0,
   });
 
   const updateIndicator = useCallback(() => {
     if (!containerRef.current) return;
-    const children = containerRef.current.querySelectorAll<HTMLSpanElement>('span');
+    const children =
+      containerRef.current.querySelectorAll<HTMLSpanElement>('span');
     const idx = subpages.indexOf(currentPage);
     if (idx !== -1 && children[idx]) {
       const el = children[idx];

@@ -15,7 +15,7 @@ function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
     const navigateBasedOnUserRole = () => {
         if (user) {
             if (user.role === 'ROLE_GUEST') {
-                navigate('/services/available');
+                navigate('/guest');
             } else if (user.role === 'EMPLOYEE') {
 
             } else {

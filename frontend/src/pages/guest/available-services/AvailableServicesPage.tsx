@@ -27,22 +27,17 @@ function AvailableServicesPage() {
     }
   }
 
-  if (loading) {
-    return <p>Loading...</p>
-  }
   return (
-    <div style={{width: '100%'}}>
-      <main style={{marginTop: '40px', marginBottom: '40px'}}>
-        <Grid container spacing={{xs: 1, md: 2}} columns={{ xs: 1, sm: 2, lg: 3}}>
-          {availableServices.map((service, index) => (
-            <Grid key={index} size={1}>
-              <AvailableServiceCard service={service}/>
-            </Grid>
-          ))}
-        </Grid>
-      </main>
-    </div>
-  )
+    <main style={{marginTop: '40px', marginBottom: '40px', width: '100%'}}>
+      <Grid container spacing={{xs: 1, md: 2}} columns={{ xs: 1, sm: 2, lg: 3}}>
+        {availableServices.map((service, index) => (
+          <Grid key={index} size={1}>
+            <AvailableServiceCard service={service}/>
+          </Grid>
+        ))}
+      </Grid>
+    </main>
+  );
 }
 
 export default AvailableServicesPage;

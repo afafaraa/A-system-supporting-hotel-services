@@ -126,7 +126,7 @@ function ShoppingCartPage() {
               <Button onClick={orderServices} variant="contained">{t('pages.shopping_cart.pay')}</Button>
               <Button onClick={orderServices} variant="contained">{t('pages.shopping_cart.addToBill')}</Button>
             </div>
-            <Button onClick={() => navigate("/services/available")} sx={{backgroundColor: 'white'}}>{t('pages.shopping_cart.continueShopping')}</Button>
+            <Button onClick={() => navigate("/guest")} sx={{backgroundColor: 'white'}}>{t('pages.shopping_cart.continueShopping')}</Button>
           </Grid>
         </Grid>
 

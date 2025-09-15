@@ -3,7 +3,8 @@ import { Box } from '@mui/material';
 import NotificationsContainer from '../../../components/ui/NotificationsContainer.tsx';
 import { useState } from 'react';
 import AvailableServicesPage from '../available-services/AvailableServicesPage.tsx';
-import BookedServicesPage from '../requested-services/BookedServicesPage.tsx';
+import BookedServicesPage from '../booked-services/BookedServicesPage.tsx';
+import HotelBookingPage from '../hotel-booking/HotelBookingPage.tsx';
 
 export type PageState = "Available Services" | "Booked Services" | "Book Hotel Room";
 
@@ -22,7 +23,7 @@ function GuestLayout() {
           <BookedServicesPage />
         )}
         {currentPage === "Book Hotel Room" && (
-          <AvailableServicesPage />
+          <HotelBookingPage />
         )}
       </Box>
       <Box display={{ xs: "none", md: "block" }} style={{width:'30%'}}>
