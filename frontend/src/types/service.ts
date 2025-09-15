@@ -2,7 +2,7 @@ export type WeekdayHour = {
     day: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
     startHour: number;
     endHour: number;
-}
+};
 
 export type Rating = {
   fullName: string;
@@ -23,4 +23,4 @@ export type Service = {
     maxAvailable?: number;
     weekday: WeekdayHour[];
     image?: string;
-}
+};

@@ -126,7 +126,7 @@ function EmployeeDetailsPage() {
               Full Name
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              {detail?.name} {detail?.surname}
+              Anna Smith
             </Typography>
           </Box>
         </Grid>
@@ -136,7 +136,7 @@ function EmployeeDetailsPage() {
               Email
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              {detail?.email}
+              ann.smith@mail.to
             </Typography>
           </Box>
         </Grid>

@@ -87,10 +87,11 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
             </Typography>
             <TextField
               variant="filled"
-              value={form.name}
+              value={form.name + (form.surname ? " " + form.surname : "")}
               onChange={(e) => {
-                handleChange("name", e.target.value.split(" ")[0]);
-                handleChange("surname", e.target.value.split(" ")[0]);
+                const parts = e.target.value.split(" ");
+                handleChange("name", parts[0]);
+                handleChange("surname", parts.slice(1).join(" "));
               }}
               fullWidth
               sx={{
