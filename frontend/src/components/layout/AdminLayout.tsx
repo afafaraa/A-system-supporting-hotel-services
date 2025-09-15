@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Container, AppBar } from "@mui/material";
-import NavigationTabs from "../../pages/manager/tempComponents/NavigationTabs.tsx";
+import NavigationTabs from "../../pages/manager/tempComponents/NavigationTabs";
+import { GlobalStyles } from "@mui/material";
+
+const inputGlobalStyles = <GlobalStyles styles={{ html: { overflowY: 'scroll' } }} />
 
 const AdminLayout: React.FC = () => {
     const navigate = useNavigate();
@@ -40,7 +43,9 @@ const AdminLayout: React.FC = () => {
 
     return (
         <Container maxWidth="lg">
+            {inputGlobalStyles}
             <AppBar position="static" color="transparent" sx={{ boxShadow: "none" }}>
+                
                 <NavigationTabs activeTab={activeTab} onChange={handleTabChange} tabs={tabs} />
             </AppBar>
             <Outlet />

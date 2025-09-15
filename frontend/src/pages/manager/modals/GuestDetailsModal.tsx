@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { Guest } from "../../../types/guest";
 import { Service } from "../../../types/service";
-import NavigationTabs from "../tempComponents/NavigationTabs";
+import NavigationTabs from "../../../pages/manager/tempComponents/NavigationTabs";
 import {
   Close,
   EmailOutlined,
