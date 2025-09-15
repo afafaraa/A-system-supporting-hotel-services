@@ -1,7 +1,7 @@
 import { useTheme } from '@mui/material';
 import { SectionWrapper } from '../../../theme/styled-components/SectionWrapper.ts';
 import { useRef, useState, useEffect } from 'react';
-import {PageState} from "./GuestMainPage.tsx";
+import {PageState} from "./GuestLayout.tsx";
 
 function GuestNavbar({
                        setCurrentPage,

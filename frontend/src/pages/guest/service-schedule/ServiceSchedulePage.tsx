@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { axiosAuthApi } from "../../../middleware/axiosApi.ts";
 import {
@@ -99,7 +99,7 @@ function ServiceSchedulePage() {
 
       // exclude unavailable
       setTimeSlots(
-        filtered.filter((slot) => slot.status === OrderStatus.available)
+        filtered.filter((slot) => slot.status === OrderStatus.AVAILABLE)
       );
     } catch (error) {
       console.error(error);
@@ -186,7 +186,6 @@ function ServiceSchedulePage() {
           </Card>
         </Grid>
 
-        {/* Booking section */}
         <Grid item xs={12} md={6}>
           <Card
             elevation={0}
@@ -200,7 +199,6 @@ function ServiceSchedulePage() {
                 Book your service
               </Typography>
 
-              {/* Date picker */}
               <Typography variant="subtitle2" sx={{ mb: 1 }}>
                 Select date
               </Typography>

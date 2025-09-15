@@ -8,7 +8,7 @@ export type PageState = "Available Services" | "Booked Services" | "Book Hotel R
 
 const subpages: PageState[] = ["Available Services", "Booked Services", "Book Hotel Room"];
 
-function GuestMainPage() {
+function GuestLayout() {
   const [currentPage, setCurrentPage] = useState<PageState>("Available Services");
   return (
     <div style={{display: 'flex', gap: '1rem'}}>
@@ -31,4 +31,4 @@ function GuestMainPage() {
   )
 }
 
-export default GuestMainPage;
+export default GuestLayout;

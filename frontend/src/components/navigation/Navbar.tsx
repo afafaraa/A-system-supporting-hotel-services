@@ -9,10 +9,12 @@ import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
 import {Link, useNavigate} from "react-router-dom";
-import ThemeSwitcher from "./ThemeSwitcher.tsx";
+import ThemeSwitcher from "../ui/ThemeSwitcher.tsx";
 import {selectUserDetails, setUserDetails, UserDetails} from "../../redux/slices/userDetailsSlice.ts";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
+import { selectNotificationsCount, setNotificationsCount } from '../../redux/slices/notificationsCount.ts';
+import { selectShoppingCartCount } from '../../redux/slices/shoppingCartSlice.ts';
 
 const drawerHeight = 64;
 

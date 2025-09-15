@@ -14,10 +14,6 @@ export const lightPalette: PaletteOptions = {
     main: '#FFE921',
     success: '#39D943',
   },
-  text: {
-    primary: 'rgba(0,0,0,1)',
-    secondary: 'rgba(118,111,132,1)',
-  },
   background: {
     default: 'hsl(256, 20%, 95%)',
     paper: 'hsl(256, 20%, 98%)',

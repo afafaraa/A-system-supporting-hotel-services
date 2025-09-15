@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import StarRating from './StarRating.tsx';
 import { useNavigate } from 'react-router-dom';
+import { Rating } from '../../../types';
 
 export type ServiceProps = {
   id: string;
@@ -18,12 +19,6 @@ export type ServiceProps = {
   rating: Rating[];
   duration: number;
   disabled: boolean;
-};
-
-export type Rating = {
-  fullName: string;
-  rating: number;
-  comment: string;
 };
 
 function AvailableServiceCard({ service }: { service: ServiceProps }) {

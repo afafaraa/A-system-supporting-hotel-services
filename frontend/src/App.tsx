@@ -25,7 +25,6 @@ import EmployeeDetailsPage from "./pages/manager/EmployeeDetailsPage.tsx";
 import ServicesListPage from "./pages/manager/ServicesListPage.tsx";
 import StatsPage from "./pages/manager/StatsPage.tsx";
 import AddNewEmployeePage from './pages/manager/forms/AddNewEmployeePage.tsx';
-import GuestMainPage from "./pages/guest/layout/GuestMainPage.tsx";
 import EmployeeLayout from "./components/layout/EmployeeLayout.tsx";
 import EmployeeCalendarPage from "./pages/employee/EmployeeCalendarPage.tsx";
 import TodaySchedulesPage from "./pages/employee/TodaySchedulesPage.tsx";
@@ -33,35 +32,25 @@ import RequestedSchedulesPage from "./pages/employee/RequestedSchedulesPage.tsx"
 import EmployeeReservationsPage from "./pages/employee/ReservationsPage.tsx";
 import EmployeeReviewsPage from "./pages/employee/ReviewsPage.tsx";
 import FallbackPage from "./pages/user/FallbackPage.tsx";
+// import GuestLayout from "./pages/guest/layout/GuestLayout.tsx";
 import GuestLayout from "./pages/guest/layout/GuestLayout.tsx";
-import GuestMainPage from "./pages/guest/layout/GuestMainPage.tsx";
 
 function App(){
   return (
     <BrowserRouter>
       <AppInitializer>
         <Routes>
-          <Route path="/services" element={<Navigate to={"/services/available"} replace />} />
-
           <Route element={<AuthenticatedLayout />}>
-            <Route element={<ProtectedRoute />}>
-              <Route path="/home" element={<HomePage />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route element={<ProtectedRoute allowedRoles={["ROLE_GUEST"]}/>}>
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/service-schedule/:id" element={<ServiceSchedulePage />} />
+              <Route path="/notifications" element={<NotificationsPage />} />
               <Route element={<GuestLayout />}>
-                <Route path="/notifications" element={<NotificationsPage />} />
                 <Route path="/services/available" element={<AvailableServicesPage />} />
                 <Route path="/services/requested" element={<RequestedServicesPage />}/>
-                <Route path="/services/history" element={<PastServicesPage />} />
                 <Route path="/services/shopping-cart" element={<ShoppingCartPage />} />
-                <Route path="/service-schedule/:id" element={<ServiceSchedulePage />} />
               </Route>
-              <Route path="/guest" element={<GuestMainPage />} />
-              <Route path="/notifications" element={<NotificationsPage />} />
-              <Route path="/services/available" element={<AvailableServicesPage />} />
-              <Route path="/services/requested" element={<RequestedServicesPage />}/>
-              <Route path="/services/history" element={<PastServicesPage />} />
-              <Route path="/services/shopping-cart" element={<ShoppingCartPage />} />
-              <Route path="/service-schedule/:id" element={<ServiceSchedulePage />} />
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_EMPLOYEE", "ROLE_RECEPTIONIST", "ROLE_MANAGER", "ROLE_ADMIN"]} />}>
               <Route element={<EmployeeLayout />}>
