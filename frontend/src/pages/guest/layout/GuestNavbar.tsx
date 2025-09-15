@@ -1,6 +1,6 @@
 import { useTheme } from '@mui/material';
 import { SectionWrapper } from '../../../theme/styled-components/SectionWrapper.ts';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import {PageState} from "./GuestLayout.tsx";
 
 function GuestNavbar({
@@ -19,7 +19,7 @@ function GuestNavbar({
     width: 0,
   });
 
-  const updateIndicator = () => {
+  const updateIndicator = useCallback(() => {
     if (!containerRef.current) return;
     const children = containerRef.current.querySelectorAll<HTMLSpanElement>('span');
     const idx = subpages.indexOf(currentPage);
@@ -27,18 +27,18 @@ function GuestNavbar({
       const el = children[idx];
       setIndicatorStyle({ left: el.offsetLeft, width: el.offsetWidth });
     }
-  };
+  }, [currentPage, subpages]);
 
   // Update when page changes
   useEffect(() => {
     updateIndicator();
-  }, [currentPage, subpages]);
+  }, [currentPage, subpages, updateIndicator]);
 
   // Update on window resize (responsive)
   useEffect(() => {
     window.addEventListener('resize', updateIndicator);
     return () => window.removeEventListener('resize', updateIndicator);
-  }, [currentPage, subpages]);
+  }, [currentPage, subpages, updateIndicator]);
 
   return (
     <SectionWrapper

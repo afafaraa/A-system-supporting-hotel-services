@@ -13,8 +13,7 @@ import EmployeeListPage from "./pages/manager/EmployeeListPage.tsx";
 import LogoutPage from "./pages/user/LogoutPage.tsx";
 import AvailableServicesPage from "./pages/guest/available-services/AvailableServicesPage.tsx";
 import NotificationsPage from "./pages/guest/NotificationsPage.tsx";
-import PastServicesPage from "./pages/guest/requested-services/PastServicesPage.tsx";
-import RequestedServicesPage from "./pages/guest/requested-services/RequestedServicesPage.tsx";
+import BookedServicesPage from "./pages/guest/requested-services/BookedServicesPage.tsx";
 import ShoppingCartPage from "./pages/guest/shopping-cart/ShoppingCartPage.tsx";
 import {PropsWithChildren, useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
@@ -46,10 +45,10 @@ function App(){
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/service-schedule/:id" element={<ServiceSchedulePage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/services/shopping-cart" element={<ShoppingCartPage />} />
               <Route element={<GuestLayout />}>
                 <Route path="/services/available" element={<AvailableServicesPage />} />
-                <Route path="/services/requested" element={<RequestedServicesPage />}/>
-                <Route path="/services/shopping-cart" element={<ShoppingCartPage />} />
+                <Route path="/services/requested" element={<BookedServicesPage />}/>
               </Route>
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_EMPLOYEE", "ROLE_RECEPTIONIST", "ROLE_MANAGER", "ROLE_ADMIN"]} />}>

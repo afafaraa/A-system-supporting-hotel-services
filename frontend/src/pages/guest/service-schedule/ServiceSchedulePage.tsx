@@ -17,6 +17,8 @@ import Grid from "@mui/material/Grid";
 import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { OrderStatus } from "../../../types/schedule.ts";
+import { addItem, selectShoppingCart } from '../../../redux/slices/shoppingCartSlice.ts';
+import { useDispatch, useSelector } from 'react-redux';
 
 type ScheduleProps = {
   id: string;
@@ -39,6 +41,8 @@ function ServiceSchedulePage() {
   const theme = useTheme();
   const [timeSlots, setTimeSlots] = useState<ScheduleProps[]>([]);
   const [selectedTime, setSelectedTime] = useState<string>("");
+  const dispatch = useDispatch();
+  const cartItems = useSelector(selectShoppingCart);
 
   useEffect(() => {
     fetchServiceData();
@@ -73,7 +77,6 @@ function ServiceSchedulePage() {
 
   const fetchSchedule = async (date: Date) => {
     try {
-      // fetch the *week* schedule
       const response = await axiosAuthApi(
         `/schedule/get/week/id/${params.id}`,
         {
@@ -81,23 +84,16 @@ function ServiceSchedulePage() {
         }
       );
 
-      const cartItems: string[] = JSON.parse(
-        localStorage.getItem("CART") || "[]"
-      );
-
-      // mark slots that are already in cart
       const scheduleItems = response.data.map((s: ScheduleProps) => ({
         ...s,
         inCart: cartItems.includes(s.id),
       }));
 
-      // keep only slots for the selected date
       const filtered = scheduleItems.filter((slot: ScheduleProps) => {
         const slotDate = new Date(slot.serviceDate);
         return slotDate.toDateString() === date.toDateString();
       });
 
-      // exclude unavailable
       setTimeSlots(
         filtered.filter((slot) => slot.status === OrderStatus.AVAILABLE)
       );
@@ -107,11 +103,7 @@ function ServiceSchedulePage() {
   };
 
   const handleAddToCart = (slot: ScheduleProps) => {
-    const cart: string[] = JSON.parse(localStorage.getItem("CART") || "[]");
-    if (!cart.includes(slot.id)) {
-      cart.push(slot.id);
-      localStorage.setItem("CART", JSON.stringify(cart));
-    }
+    dispatch(addItem(slot.id));
     setSelectedTime(slot.id);
   };
 
@@ -122,7 +114,6 @@ function ServiceSchedulePage() {
   return (
     <main style={{ width: "100%" }}>
       <Grid container spacing={3}>
-        {/* Service info */}
         <Grid item xs={12} md={6}>
           <Card
             elevation={0}
@@ -264,7 +255,7 @@ function ServiceSchedulePage() {
                   textTransform: "none",
                 }}
               >
-                {t("pages.service_schedule.addToCart") || "Add to Cart"}
+                {t("pages.service_schedule.addToCart")}
               </Button>
             </CardContent>
           </Card>

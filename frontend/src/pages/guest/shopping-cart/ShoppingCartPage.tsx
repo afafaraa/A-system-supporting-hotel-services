@@ -31,15 +31,16 @@ function ShoppingCartPage() {
   useEffect(() => {
     fetchCartData();
     fetchCurrentBill();
-
   },[])
 
   const fetchCartData = async () => {
     const cartList : CartProps[] = [];
     if (shoppingCart) {
+      console.log(shoppingCart)
       for (const id of shoppingCart) {
         try {
           const response = await axiosAuthApi.get(`/schedule/get/cart/id/${id}`)
+          console.log(response)
           const cartItem: CartProps = response.data;
           if (cartItem) cartList.push(cartItem);
         } catch (e) {
