@@ -6,10 +6,12 @@ declare module '@mui/material/styles' {
 
   interface Palette {
     calendar: Record<OrderStatus, CalendarColors>;
+    status: Record<'CHECKED_IN' | 'CHECKED_OUT' | 'UPCOMING' | 'NO_SHOW', string>;
   }
 
   interface PaletteOptions {
     calendar?: Palette["calendar"];
+    status?: Palette["status"];
   }
 
   interface PaletteColor {

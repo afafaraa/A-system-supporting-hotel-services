@@ -30,4 +30,10 @@ export const darkPalette: PaletteOptions = {
     COMPLETED: {primary: "hsl(122 40% 60%)", background: "hsl(122 60% 93%)"},
     CANCELED: {primary: "hsl(200 10% 30%)", background: "hsl(200 10% 90%)"},
   },
+    status: {
+    CHECKED_IN: '#39D943',
+    CHECKED_OUT: '#AAAAAA',
+    UPCOMING: '#7545FB',
+    NO_SHOW: '#FF0000',
+  },
 };

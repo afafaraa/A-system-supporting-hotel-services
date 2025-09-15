@@ -1,4 +1,3 @@
-import React from "react";
 import { Box, Button, IconButton, Typography } from "@mui/material";
 import { ArrowBack, ArrowForward, CalendarMonth } from "@mui/icons-material";
 import { addDays } from "date-fns";
@@ -45,7 +44,7 @@ function CalendarHeader({
         >
           Today
         </Button>
-        <IconButton 
+        <IconButton
           onClick={handlePrev}
           sx={{
             border: 1,

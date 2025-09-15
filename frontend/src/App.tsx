@@ -26,7 +26,8 @@ import ServicesListPage from "./pages/manager/ServicesListPage.tsx";
 import StatsPage from "./pages/manager/StatsPage.tsx";
 import AddNewEmployeePage from './pages/manager/forms/AddNewEmployeePage.tsx';
 import AdminLayout from "./components/layout/AdminLayout.tsx";
-import WeeklyCalendar from "./components/calendar/WeeklyCalendar.tsx";
+import WeeklyCalendar from "./pages/manager/tempComponents/calendar/WeeklyCalendar.tsx";
+import GuestsListPage from './pages/manager/GuestsListPage.tsx';
 
 function App(){
 
@@ -60,6 +61,7 @@ function App(){
                 <Route path="/employees/:username" element={<EmployeeDetailsPage />} />
                 <Route path="/management/services" element={<ServicesListPage />} />
                 <Route path="/management/statistics" element={<StatsPage />} />
+                <Route path="/management/guests" element={<GuestsListPage />} />
               </Route>
             </Route>
           </Route>
