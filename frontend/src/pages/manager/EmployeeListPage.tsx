@@ -13,7 +13,9 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Grid
+  Grid,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import { Search, PersonOutline, Add } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -30,9 +32,13 @@ function EmployeeListPage() {
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.personnel.${key}`);
   const [searchOpen, setSearchOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const [filterName, setFilterName] = useState('');
-  const [filterPosition, setFilterPosition] = useState<'ALL' | 'RECEPTIONIST' | 'MANAGER' | 'EMPLOYEE'>('ALL');
+  const [filterName, setFilterName] = useState("");
+  const [filterPosition, setFilterPosition] = useState<
+    "ALL" | "RECEPTIONIST" | "MANAGER" | "EMPLOYEE"
+  >("ALL");
 
   const pageSize = 10;
 
@@ -58,11 +64,13 @@ function EmployeeListPage() {
   }, [fetchEmployees]);
 
   const filteredEmployees = useMemo(() => {
-    return employees.filter(person => {
-      const nameMatch = filterName.trim() === '' ||
+    return employees.filter((person) => {
+      const nameMatch =
+        filterName.trim() === "" ||
         person.name.toLowerCase().includes(filterName.toLowerCase()) ||
         person.surname.toLowerCase().includes(filterName.toLowerCase());
-      const positionMatch = filterPosition === 'ALL' || person.role === filterPosition;
+      const positionMatch =
+        filterPosition === "ALL" || person.role === filterPosition;
       return nameMatch && positionMatch;
     });
   }, [employees, filterName, filterPosition]);
@@ -84,11 +92,19 @@ function EmployeeListPage() {
   }
 
   return (
-    <Paper sx={{ p: 3, borderRadius: 3, mt: 5, border: `1px solid`, borderColor: 'divider' }}>
+    <Paper
+      sx={{
+        p: 3,
+        borderRadius: 3,
+        mt: 5,
+        border: `1px solid`,
+        borderColor: "divider",
+      }}
+    >
       <Box
         display="flex"
         alignItems="center"
-        justifyContent="space-between"
+        justifyContent={isMobile ? "center" : "space-between"}
         flexWrap="wrap"
         gap={2}
         mb={3}
@@ -100,7 +116,12 @@ function EmployeeListPage() {
               {tc("title")}
             </Typography>
           </Box>
-          <Typography variant="body2" color="text.secondary" mb={3} gutterBottom>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            mb={3}
+            gutterBottom
+          >
             Manage employee information and schedules
           </Typography>
         </Box>
@@ -117,11 +138,11 @@ function EmployeeListPage() {
                   variant="outlined"
                   size="small"
                   value={filterName}
-                  onChange={e => setFilterName(e.target.value)}
+                  onChange={(e) => setFilterName(e.target.value)}
                   sx={{
                     ml: 1,
-                    width: { xs: '150px', sm: '200px' },
-                    transition: 'width 0.3s ease',
+                    width: "12rem",
+                    transition: "width 0.3s ease",
                   }}
                   autoFocus
                 />
@@ -135,7 +156,15 @@ function EmployeeListPage() {
               labelId="position-label"
               label={tc("type")}
               value={filterPosition}
-              onChange={e => setFilterPosition(e.target.value as "ALL" | "RECEPTIONIST" | "MANAGER" | "EMPLOYEE")}
+              onChange={(e) =>
+                setFilterPosition(
+                  e.target.value as
+                    | "ALL"
+                    | "RECEPTIONIST"
+                    | "MANAGER"
+                    | "EMPLOYEE"
+                )
+              }
             >
               <MenuItem value="ALL">{tc("all")}</MenuItem>
               <MenuItem value="RECEPTIONIST">{tc("receptionist")}</MenuItem>
@@ -143,18 +172,22 @@ function EmployeeListPage() {
               <MenuItem value="EMPLOYEE">{tc("employee")}</MenuItem>
             </Select>
           </FormControl>
-          <Button 
+          <Button
             variant="contained"
             startIcon={<Add />}
             onClick={() => navigate("/employees/new")}
-            >
+          >
             {tc("addEmployee")}
           </Button>
         </Box>
 
-        <Grid container spacing={2} sx={{ width: '100%' }}>
+        <Grid container spacing={2} sx={{ width: "100%" }}>
           {filteredEmployees.map((emp) => (
-            <Grid key={emp.id} size={{ xs: 12, sm: 6, md: 4 }} sx={{ display: "flex" }} >
+            <Grid
+              key={emp.id}
+              size={{ xs: 12, sm: 6, md: 4 }}
+              sx={{ display: "flex" }}
+            >
               <EmployeeCard employee={emp} />
             </Grid>
           ))}

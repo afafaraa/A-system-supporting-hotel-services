@@ -32,4 +32,10 @@ export const lightPalette: PaletteOptions = {
     CANCELED:  "hsl(0    0% 40%)",
     text: "#fff",
   },
+    status: {
+    CHECKED_IN: '#39D943',
+    CHECKED_OUT: '#AAAAAA',
+    UPCOMING: '#7545FB',
+    NO_SHOW: '#FF0000',
+  },
 };
