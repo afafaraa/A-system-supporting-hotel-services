@@ -1,6 +1,6 @@
 import axiosApi from "../../middleware/axiosApi";
 import {useEffect, useState} from 'react';
-import {useNavigate} from "react-router-dom";
+import {Navigate} from "react-router-dom";
 import Button from '@mui/material/Button';
 import {Box, Typography, useTheme} from "@mui/material";
 import AppLink from "../../components/ui/AppLink.tsx";
@@ -14,7 +14,7 @@ import {fontSizes} from "../../theme/fontSizes.ts";
 import ShadowCard from "../../theme/styled-components/ShadowCard.ts";
 import StyledInput from "../../theme/styled-components/StyledInput.ts";
 import InputLabel from "../../components/ui/InputLabel.tsx";
-import navigateToDashboard from "../../utils/navigateToDashboard.ts";
+import dashboardDestination from "../../utils/dashboardDestination.ts";
 import generatePasswordAdornment from "../../components/ui/generatePasswordAdornment.tsx";
 import PersonIcon from "@mui/icons-material/Person";
 import LockIcon from '@mui/icons-material/Lock';
@@ -26,15 +26,10 @@ function LoginPage(){
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.login.${key}`);
   const theme = useTheme();
-
-  useEffect(() => {
-    if (user !== null) navigateToDashboard(user.role, navigate);
-  }, [user, navigate]);
 
   useEffect(() => {
     if (error) {
@@ -42,6 +37,8 @@ function LoginPage(){
       return () => clearTimeout(timer);
     }
   }, [error]);
+
+  if (user) return <Navigate to={dashboardDestination(user.role)} replace />;
 
   const disabled = username === '' || password === '';
 
