@@ -40,6 +40,15 @@ const components: Components<Omit<Theme, "components">>  = {
       },
     },
   },
+  MuiLink: {
+    styleOverrides: {
+      root: {
+        display: 'block',
+        textDecoration: "none",
+        "&:hover": {textDecoration: "underline"}
+      },
+    },
+  },
 }
 
 export default components;

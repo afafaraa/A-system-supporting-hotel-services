@@ -1,8 +1,13 @@
-import {FormEvent, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import axiosApi from '../../middleware/axiosApi';
-import {Alert, Button, FormControl, Link, TextField, Typography} from "@mui/material";
+import {Button, Typography} from "@mui/material";
 import {useTranslation} from "react-i18next";
 import {isAxiosError} from "axios";
+import ShadowCard from "../../theme/styled-components/ShadowCard.ts";
+import InputLabel from "../../components/ui/InputLabel.tsx";
+import StyledInput from "../../theme/styled-components/StyledInput.ts";
+import AppLink from "../../components/ui/AppLink.tsx"
+import EmailIcon from '@mui/icons-material/Email';
 
 function SendResetPasswordEmail(){
     const [email, setEmail] = useState('');
@@ -19,45 +24,38 @@ function SendResetPasswordEmail(){
         }
     }, [error]);
 
-    const sendEmail = async (e: FormEvent) => {
-        e.preventDefault();
-        if (email.trim() === '') return;
+    const disabled = email.trim() === '';
+
+    const sendEmail = async () => {
+        if (disabled) return;
         setLoading(true);
         try {
             const res = await axiosApi.post(
               '/open/send-reset-password-email', { email: email }
             )
-            setInfo(tc("successMessage"));
+            setInfo("pages.reset-password.successMessage");
             console.log(res);
         } catch (err) {
             if (isAxiosError(err) && err.response) {
-                if (err.response.status === 400) setError(tc("invalidEmail"));
-                else if (err.response.status === 401) setInfo("Powinno działać, ale nie działa.");
-                else setError(t("error.unknownError"));
-            } else setError(t("error.unknownError"));
+                if (err.response.status === 400) setError("pages.reset-password.invalidEmail");
+                else setError("error.unknownError");
+            } else setError("error.unknownError");
         } finally {
             setLoading(false);
         }
     }
     return (
-      <FormControl component="form" onSubmit={sendEmail} sx={{px: 6, py: 8, borderRadius: 6, boxShadow: 10, backgroundColor: "background.paper"}}>
-        <Typography variant="h4" fontWeight="bold" align="center" sx={{mb: 4}}>{tc("title")}</Typography>
-        <TextField sx={{mb: 4}}
-          label={tc("email")}
-          autoComplete="email"
-          onChange={e => setEmail(e.target.value)}
-          type="email"
-          name="email"
-          id="email"
-          placeholder={tc("email")}
-        />
-        <Button onClick={sendEmail} type="submit" loading={loading}>{tc("sendButton")}</Button>
-        {info && <Alert severity="info" sx={{mt: 2}}>{info}</Alert>}
-        {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
-        <Link href="/login" align="center" fontSize={14} mt={3} color="textPrimary" sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"} }}>
-          {tc("goBack")}
-        </Link>
-      </FormControl>
+      <ShadowCard>
+        <Typography variant="h1" fontWeight="regular" fontSize={28} color="primary.main">{tc("title")}</Typography>
+
+        <InputLabel label={<><EmailIcon sx={{fontSize: "120%"}}/> {tc("email")}</>} htmlFor="email" mt={4}/>
+        <StyledInput id="email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={tc("email")} autoComplete="email" />
+
+        <Button disabled={disabled} variant="contained" onClick={sendEmail} loading={loading} fullWidth sx={{mt: 4}}>{tc("sendButton")}</Button>
+        {info && <Typography component="p" variant="caption" color="info" sx={{mt: 2}}>{t(info)}</Typography>}
+        {error && <Typography component="p" variant="caption" color="error" sx={{mt: 2}}>{t(error)}</Typography>}
+        <AppLink to="/login" mt={3} color="text.primary">{"< "}{tc("goBack")}</AppLink>
+      </ShadowCard>
     )
 }
 

@@ -1,21 +1,25 @@
 import axiosApi from "../../middleware/axiosApi";
-import {FormEvent, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
-import {Button, FormControl, TextField, Typography, InputAdornment, IconButton, Alert,} from "@mui/material";
+import {Button, Typography} from "@mui/material";
 import {useDispatch} from "react-redux";
 import {setUserData} from "../../components/auth/auth.tsx";
-import {Visibility, VisibilityOff} from "@mui/icons-material";
 import PersonIcon from "@mui/icons-material/Person";
 import KeyIcon from '@mui/icons-material/Key';
-import Link from "@mui/material/Link";
 import {useTranslation} from "react-i18next";
 import {isAxiosError} from "axios";
+import ShadowCard from "../../theme/styled-components/ShadowCard.ts";
+import AppLink from "../../components/ui/AppLink.tsx";
+import StyledInput from "../../theme/styled-components/StyledInput.ts";
+import InputLabel from "../../components/ui/InputLabel.tsx";
+import LockIcon from '@mui/icons-material/Lock';
+import generatePasswordAdornment from "../../components/ui/generatePasswordAdornment.tsx";
 
 function RegisterPage(){
   const [code, setCode] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -30,10 +34,11 @@ function RegisterPage(){
     }
   }, [error]);
 
-  const register = async (e: FormEvent) => {
-    e.preventDefault();
-    if (code === '' || username === '' || password === '') {
-      setError(t("error.emptyFields"));
+  const disabled = code === '' || username === '' || password === '';
+
+  const register = async () => {
+    if (disabled) {
+      setError("error.emptyFields");
       return;
     }
     setLoading(true);
@@ -44,80 +49,32 @@ function RegisterPage(){
         navigate('/home');
       }
     } catch (err) {
-      if (isAxiosError(err) && err.response && err.response.status === 400) setError(tc("invalidCodeError"));
-      else setError(t("error.unknownError"));
+      if (isAxiosError(err) && err.response && err.response.status === 400) setError("pages.register.invalidCodeError");
+      else setError("error.unknownError");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <FormControl component="form" onSubmit={register} sx={{px: 6, py: 8, borderRadius: 6, boxShadow: 10, backgroundColor: "background.paper"}}>
-      <Typography variant="h4" fontWeight="bold" align="center" sx={{mb: 4}}>{tc("title")}</Typography>
-      <TextField sx={{mb: 2}}
-        label={tc("code")}
-        onChange={(e) => setCode(e.target.value)}
-        type="text"
-        name="code"
-        id="code"
-        placeholder={tc("code")}
-        slotProps={{
-          input: {
-            endAdornment: (
-              <InputAdornment position="end">
-                <KeyIcon sx={{mx: "2px"}}/>
-              </InputAdornment>
-            ),
-          },
-        }}
-      />
-      <TextField sx={{mb: 2}}
-        label={tc("username")}
-        onChange={(e) => setUsername(e.target.value)}
-        type="text"
-        name="username"
-        id="username"
-        placeholder={tc("username")}
-        slotProps={{
-         input: {
-           endAdornment: (
-             <InputAdornment position="end">
-               <PersonIcon sx={{mx: "2px"}}/>
-             </InputAdornment>
-           ),
-         },
-        }}
-      />
-      <TextField sx={{mb: 4}}
-        label={tc("password")}
-        autoComplete="new-password"
-        onChange={(e) => setPassword(e.target.value)}
-        type={showPassword ? "text" : "password"}
-        name="password"
-        id="password"
-        placeholder={tc("password")}
-        slotProps={{
-          input: {
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  edge="end"
-                  size="small"
-                >
-                  {showPassword ? <VisibilityOff/> : <Visibility/>}
-                </IconButton>
-              </InputAdornment>
-            ),
-          },
-        }}
-      />
-      <Button onClick={register} type='submit' loading={loading}>{tc("registerButton")}</Button>
-      {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
-      <Link href="/login" align="center" fontSize={14} mt={3} color="textPrimary" sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"} }}>
-        {tc("goBack")}
-      </Link>
-    </FormControl>
+    <ShadowCard>
+      <Typography variant="h1" fontWeight="regular" fontSize={28} color="primary.main">{tc("title")}</Typography>
+
+      <InputLabel label={<><KeyIcon sx={{fontSize: "120%"}} /> {tc("code")}</>} htmlFor="code" mt={4}/>
+      <StyledInput id="code" name="code" value={code} onChange={(e) => setCode(e.target.value)} placeholder={tc("code")} />
+
+      <InputLabel label={<><PersonIcon sx={{fontSize: "120%"}} /> {tc("username")}</>} htmlFor="username" />
+      <StyledInput id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder={tc("username")} />
+
+      <InputLabel label={<><LockIcon sx={{fontSize: "120%"}} /> {tc("password")}</>} htmlFor="password" />
+      <StyledInput id="password" name="password" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="************" autoComplete="new-password"
+                   slotProps={generatePasswordAdornment(showPassword, setShowPassword)} />
+
+      <Button disabled={disabled} onClick={register} loading={loading} fullWidth variant="contained" sx={{mt: 4}}>{tc("registerButton")}</Button>
+      {error && <Typography component="p" variant="caption" color="error" sx={{mt: 2}}>{t(error)}</Typography>}
+      <AppLink to="/login" mt={3} color="text.primary">{"< "}{tc("goBack")}</AppLink>
+
+    </ShadowCard>
   )
 
 }

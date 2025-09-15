@@ -96,6 +96,7 @@ const publicPaths = [
   '/logout',
   '/register',
   '/reset-password',
+  '/fallback',
 ];
 
 const isPublicPath = (path: string) =>

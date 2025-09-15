@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles';
 import {TextField} from "@mui/material";
 
-export const LogInInput = styled(TextField)(
+export const StyledInput = styled(TextField)(
   ({ theme }) => ({
     borderRadius: 5,
     color: theme.palette.text.secondary,
@@ -12,6 +12,7 @@ export const LogInInput = styled(TextField)(
       '&.Mui-focused fieldset': {border: `2px solid ${theme.palette.primary.main}`, borderRadius: 5},
     },
     '& .MuiInputBase-input::placeholder': {opacity: 0.7},
-    marginBottom: 5,
+    width: '100%',
   })
 )
+export default StyledInput;

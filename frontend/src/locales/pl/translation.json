@@ -25,7 +25,7 @@
     },
     "login": {
       "title": "My Hotel Assistant",
-      "subtitle": "Access your hotel services and reservations",
+      "subtitle": "Twoje usługi hotelowe i rezerwacje",
       "username": "Nazwa użytkownika",
       "password": "Hasło",
       "loginButton": "Zaloguj się",
@@ -267,6 +267,11 @@
       "email_notifications_subtitle": "Otrzymuj aktualizacje dotyczące rezerwacji i usług",
       "marketing_communication": "Komunikacja marketingowa",
       "marketing_communication_subtitle": "Otrzymuj oferty specjalne i promocje"
+    },
+    "fallback": {
+      "title": "Coś poszło nie tak",
+      "subtitle": "Wystąpił nieoczekiwany błąd z przekierowaniem.",
+      "go_home": "Wróć do strony głównej"
     }
   },
   "common": {
