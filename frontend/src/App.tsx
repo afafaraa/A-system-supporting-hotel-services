@@ -23,7 +23,6 @@ import LoadingPage from "./pages/user/LoadingPage.tsx";
 import EmployeeDetailsPage from "./pages/manager/EmployeeDetailsPage.tsx";
 import ServicesListPage from "./pages/manager/ServicesListPage.tsx";
 import StatsPage from "./pages/manager/StatsPage.tsx";
-import AddNewEmployeePage from './pages/manager/forms/AddNewEmployeePage.tsx';
 import GuestMainPage from "./pages/guest/layout/GuestMainPage.tsx";
 import EmployeeLayout from "./components/layout/EmployeeLayout.tsx";
 import EmployeeCalendarPage from "./pages/employee/EmployeeCalendarPage.tsx";
@@ -32,6 +31,7 @@ import RequestedSchedulesPage from "./pages/employee/RequestedSchedulesPage.tsx"
 import EmployeeReservationsPage from "./pages/employee/ReservationsPage.tsx";
 import EmployeeReviewsPage from "./pages/employee/ReviewsPage.tsx";
 import FallbackPage from "./pages/user/FallbackPage.tsx";
+import AddNewEmployeePage from './pages/manager/AddNewEmployeePage.tsx';
 import AdminLayout from "./components/layout/AdminLayout.tsx";
 import WeeklyCalendar from "./pages/manager/tempComponents/calendar/WeeklyCalendar.tsx";
 import GuestsListPage from './pages/manager/GuestsListPage.tsx';

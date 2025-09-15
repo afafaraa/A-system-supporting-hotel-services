@@ -40,7 +40,7 @@ const ServiceCard = styled(Paper)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   [theme.breakpoints.down("sm")]: {
     flexDirection: "column",
-    alignItems: "flex-start",
+    alignItems: "center",
     gap: theme.spacing(1),
   },
 }));
