@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react';
+import {useNavigate} from "react-router-dom";
 import axiosApi from '../../middleware/axiosApi';
 import {Button, Typography} from "@mui/material";
 import {useTranslation} from "react-i18next";
@@ -6,7 +7,6 @@ import {isAxiosError} from "axios";
 import ShadowCard from "../../theme/styled-components/ShadowCard.ts";
 import InputLabel from "../../components/ui/InputLabel.tsx";
 import StyledInput from "../../theme/styled-components/StyledInput.ts";
-import AppLink from "../../components/ui/AppLink.tsx"
 import EmailIcon from '@mui/icons-material/Email';
 
 function SendResetPasswordEmail(){
@@ -15,6 +15,7 @@ function SendResetPasswordEmail(){
     const [info, setInfo] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const tc = (key: string) => t(`pages.reset-password.${key}`);
 
     useEffect(() => {
@@ -54,7 +55,7 @@ function SendResetPasswordEmail(){
         <Button disabled={disabled} variant="contained" onClick={sendEmail} loading={loading} fullWidth sx={{mt: 4}}>{tc("sendButton")}</Button>
         {info && <Typography component="p" variant="caption" color="info" sx={{mt: 2}}>{t(info)}</Typography>}
         {error && <Typography component="p" variant="caption" color="error" sx={{mt: 2}}>{t(error)}</Typography>}
-        <AppLink to="/login" mt={3} color="text.primary">{"< "}{tc("goBack")}</AppLink>
+        <Button size="small" sx={{mt: 1, fontSize: "105%"}} fullWidth onClick={() => navigate("/login")}>{"< "}{tc("goBack")}</Button>
       </ShadowCard>
     )
 }

@@ -78,7 +78,7 @@ function LoginPage(){
         </Box>
 
         <InputLabel label={<><PersonIcon sx={{fontSize: "120%"}} /> {tc("username")}</>} htmlFor="username" mt={3} />
-        <StyledInput type="email" value={username} onChange={(e) => setUsername(e.target.value)} id="username" placeholder="jan.kowalski@gmail.com"/>
+        <StyledInput type="text" value={username} onChange={(e) => setUsername(e.target.value)} id="username" placeholder={tc("username")}/>
 
         <InputLabel label={<><LockIcon sx={{fontSize: "120%"}} /> {tc("password")}</>} htmlFor="password" />
         <StyledInput type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="************"

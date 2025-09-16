@@ -9,7 +9,6 @@ import KeyIcon from '@mui/icons-material/Key';
 import {useTranslation} from "react-i18next";
 import {isAxiosError} from "axios";
 import ShadowCard from "../../theme/styled-components/ShadowCard.ts";
-import AppLink from "../../components/ui/AppLink.tsx";
 import StyledInput from "../../theme/styled-components/StyledInput.ts";
 import InputLabel from "../../components/ui/InputLabel.tsx";
 import LockIcon from '@mui/icons-material/Lock';
@@ -72,7 +71,7 @@ function RegisterPage(){
 
       <Button disabled={disabled} onClick={register} loading={loading} fullWidth variant="contained" sx={{mt: 4}}>{tc("registerButton")}</Button>
       {error && <Typography component="p" variant="caption" color="error" sx={{mt: 2}}>{t(error)}</Typography>}
-      <AppLink to="/login" mt={3} color="text.primary">{"< "}{tc("goBack")}</AppLink>
+      <Button size="small" sx={{mt: 1, fontSize: "105%"}} fullWidth onClick={() => navigate("/login")}>{"< "}{tc("goBack")}</Button>
 
     </ShadowCard>
   )

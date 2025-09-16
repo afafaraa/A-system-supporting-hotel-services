@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import axiosApi from '../../middleware/axiosApi';
-import {useParams} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import {useTranslation} from "react-i18next";
@@ -9,7 +9,6 @@ import ShadowCard from "../../theme/styled-components/ShadowCard.ts";
 import InputLabel from "../../components/ui/InputLabel.tsx";
 import StyledInput from "../../theme/styled-components/StyledInput.ts";
 import generatePasswordAdornment from "../../components/ui/generatePasswordAdornment.tsx";
-import AppLink from "../../components/ui/AppLink.tsx"
 
 function ResetPasswordPage() {
     const [password, setPassword] = useState('');
@@ -20,6 +19,7 @@ function ResetPasswordPage() {
     const [loading, setLoading] = useState(false);
     const {token} = useParams();
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const tc = (key: string) => t(`pages.reset-password.${key}`);
 
     useEffect(() => {
@@ -80,7 +80,7 @@ function ResetPasswordPage() {
         </Button>
         {info && <Typography component="p" variant="caption" color="info" sx={{mt: 2}}>{info}</Typography>}
         {error && <Typography component="p" variant="caption" color="error" sx={{mt: 2}}>{error}</Typography>}
-        <AppLink to="/login" mt={3} color="text.primary">{"< "}{tc("goBack")}</AppLink>
+        <Button size="small" sx={{mt: 1, fontSize: "105%"}} fullWidth onClick={() => navigate("/login")}>{"< "}{tc("goBack")}</Button>
       </ShadowCard>
     );
 }

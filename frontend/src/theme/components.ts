@@ -42,11 +42,14 @@ const components: Components<Omit<Theme, "components">>  = {
   },
   MuiLink: {
     styleOverrides: {
-      root: {
+      root: ({ theme }) => ({
         display: 'block',
         textDecoration: "none",
-        "&:hover": {textDecoration: "underline"}
-      },
+        "&:hover": {
+          textDecoration: "underline",
+          color: theme.palette.primary.main,
+        },
+      }),
     },
   },
 }
