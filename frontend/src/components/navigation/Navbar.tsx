@@ -97,7 +97,7 @@ function Navbar() {
   return (
     <>
       <AppBar elevation={1} position="fixed" color="transparent" sx={{bgcolor: theme => alpha(theme.palette.background.paper, 0.4), backdropFilter: "blur(10px)", justifyContent: "center", height: drawerHeight, py: 2,
-        px: "clamp(1rem, calc(8.547vw - 35.28px), 6rem)"}}> {/* padding 16 px to 96 px (sm to xl) */}
+        px: { xs: '16px', md: '160px' }}}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
 
           <AppLogo/>

@@ -16,7 +16,7 @@ import ShoppingCartPage from "./pages/guest/shopping-cart/ShoppingCartPage.tsx";
 import {PropsWithChildren, useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {initializeUserFromLocalStorage} from "./components/auth/auth.tsx";
-import ServiceSchedulePage from "./pages/guest/service-schedule/ServiceSchedulePage.tsx";
+import OrderServicePage from "./pages/guest/order-service/OrderServicePage.tsx";
 import LoadingPage from "./pages/user/LoadingPage.tsx";
 import EmployeeDetailsPage from "./pages/manager/EmployeeDetailsPage.tsx";
 import ServicesListPage from "./pages/manager/ServicesListPage.tsx";
@@ -40,7 +40,7 @@ function App(){
             <Route path="/home" element={<HomePage />} />
             <Route element={<ProtectedRoute allowedRoles={["ROLE_GUEST"]}/>}>
               <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/service-schedule/:id" element={<ServiceSchedulePage />} />
+              <Route path="/service-schedule/:id" element={<OrderServicePage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/services/shopping-cart" element={<ShoppingCartPage />} />
               <Route path="/guest" element={<GuestLayout />} />
