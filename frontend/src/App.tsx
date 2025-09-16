@@ -1,5 +1,6 @@
 import {BrowserRouter, Navigate, Route, Routes, useNavigate} from 'react-router-dom';
 import LoginPage from './pages/user/LoginPage.tsx';
+import HomePage from './pages/home/HomePage.tsx';
 import ProfilePage from "./pages/home/ProfilePage.tsx";
 import ProtectedRoute from './router/protectedRoute.tsx';
 import SendResetPasswordEmail from './pages/user/SendResetPasswordEmail.tsx';
@@ -46,6 +47,7 @@ function App(){
 
           <Route element={<AuthenticatedLayout />}>
             <Route element={<ProtectedRoute />}>
+              <Route path="/home" element={<HomePage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/guest" element={<GuestMainPage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
@@ -69,7 +71,7 @@ function App(){
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]} />}>
               <Route element={<AdminLayout />}>
-                <Route path="/home" element={<WeeklyCalendar />} />
+                <Route path="/management/calendar" element={<WeeklyCalendar />} />
                 <Route path="/employees" element={<EmployeeListPage />} />
                 <Route path="/employees/new" element={<AddNewEmployeePage />} />
                 <Route path="/employees/:username" element={<EmployeeDetailsPage />} />
