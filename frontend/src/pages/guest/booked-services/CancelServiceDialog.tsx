@@ -1,38 +1,66 @@
-import {Dialog, Button} from "@mui/material";
-import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
-import {useSelector} from "react-redux";
-import {selectUser} from "../../../redux/slices/userSlice.ts";
-import {useTranslation} from "react-i18next";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Typography,
+} from '@mui/material';
+import { axiosAuthApi } from '../../../middleware/axiosApi.ts';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../../redux/slices/userSlice.ts';
+import { useTranslation } from 'react-i18next';
 
-function CancelServiceDialog({open, setOpen, scheduleId, fetchData}: {open: boolean, setOpen: (open: boolean) => void, scheduleId: string, fetchData: () => void}) {
+interface CancelServiceDialogProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  scheduleId: string;
+  fetchData: () => void;
+}
+
+const CancelServiceDialog = ({
+  open,
+  setOpen,
+  scheduleId,
+  fetchData,
+}: CancelServiceDialogProps) => {
   const user = useSelector(selectUser);
   const { t } = useTranslation();
 
   const cancel = async () => {
     try {
-      await axiosAuthApi.post("/guest/order/cancel", {
+      await axiosAuthApi.post('/guest/order/cancel', {
         username: user?.username,
         orderId: scheduleId,
-      })
+      });
     } catch (e) {
-      console.error(e)
+      console.error(e);
     } finally {
-      setOpen(false)
-      fetchData()
+      setOpen(false);
+      fetchData();
     }
-  }
+  };
 
   return (
-    <Dialog open={open}>
-      <div style={{padding: '20px', textAlign: 'center', fontSize: '20px'}}>
-        {t('pages.requested_services.confirmationDialog')}
-        <div style={{marginTop:'15px'}}>
-          <Button sx={{marginRight: '10px'}} onClick={cancel}>{t('pages.requested_services.yes')}</Button>
-          <Button variant="contained" onClick={() => setOpen(false)}>{t('pages.requested_services.no')}</Button>
-        </div>
-      </div>
+    <Dialog open={open} onClose={() => setOpen(false)}>
+      <DialogTitle>
+        {t('pages.booked_services.confirmationDialogTitle')}
+      </DialogTitle>
+      <DialogContent>
+        <Typography variant="body1">
+          {t('pages.booked_services.confirmationDialog')}
+        </Typography>
+      </DialogContent>
+      <DialogActions sx={{ justifyContent: 'center', gap: 2, pb: 3 }}>
+        <Button onClick={cancel} color="error" variant="outlined">
+          {t('pages.booked_services.yes')}
+        </Button>
+        <Button onClick={() => setOpen(false)} variant="contained">
+          {t('pages.booked_services.no')}
+        </Button>
+      </DialogActions>
     </Dialog>
-  )
-}
+  );
+};
 
 export default CancelServiceDialog;

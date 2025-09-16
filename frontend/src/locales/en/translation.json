@@ -117,25 +117,22 @@
       "employeeData": "Employee Data"
     },
     "available_services": {
-      "title": "Available services"
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "bookNow": "Book now"
     },
-    "requested_services": {
-      "title": "Requested services",
-      "confirmationDialog": "Cancel service?",
-      "yes": "Yes",
-      "no": "No"
-    },
-    "past_services": {
-      "title": "Past services",
-      "rateServiceDialog": "Rate service",
-      "addComment": "Add comment",
-      "cancelComment": "Cancel comment",
-      "commentInputPlaceholder": "Write your comment here",
-      "rate": "Rate",
-      "ACTIVE": "In progress",
-      "REQUESTED": "Waiting for approval",
-      "CANCELED": "Canceled by employee",
-      "COMPLETED": "Finished"
+    "booked_services": {
+      "filterBookings": "Filter Bookings",
+      "searchPlaceholder": "Search for Booking",
+      "allBookings": "All Bookings",
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "inProgress": "In progress",
+      "canceled": "Canceled",
+      "completed": "Completed",
+      "noBookingsFound": "No bookings found.",
+      "rate": "Rate service",
+      "cancel": "Cancel service"
     },
     "shopping_cart": {
       "title": "Shopping cart",
@@ -146,16 +143,20 @@
       "addToBill": "Add to bill",
       "continueShopping": "Continue shopping"
     },
-    "service_schedule": {
-      "M": "M",
-      "T": "T",
-      "W": "W",
-      "Th": "Th",
-      "F": "F",
-      "S": "S",
-      "Su": "Su",
-      "noServiceAvailable": "No services available for this day.",
-      "nextAvailableServices": "Next available service dates"
+    "order_service": {
+      "availability": "Availability",
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "price": "Price",
+      "duration": "Duration",
+      "addToCart": "Add to Cart",
+      "noServiceAvailable": "No services available on this day.",
+      "nextAvailableServices": "Next available service slots",
+      "bookService": "Book your service",
+      "selectDate": "Select date",
+      "selectTime": "Select time",
+      "specialRequests": "Special Requests",
+      "noSlotsAvailable": "No slots available"
     },
     "employee": {
       "navbar": {

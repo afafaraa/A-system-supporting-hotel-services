@@ -14,15 +14,34 @@ const components: Components<Omit<Theme, 'components'>> = {
       root: ({ ownerState, theme }) => ({
         fontWeight: 'bold',
         textTransform: 'none',
-        ...(ownerState.color === 'error'
-          ? {
-              backgroundColor: theme.palette.secondary.error,
+        ...(ownerState.variant === 'outlined'
+          ? ownerState.color === 'error'
+            ? {
+              border: `1px solid ${theme.palette.error.main}`,
+              backgroundColor: 'transparent',
+              color: theme.palette.error.main,
+              '&:hover': {
+                backgroundColor: theme.palette.error.main,
+                border: `1px solid ${theme.palette.error.main}`,
+                color: theme.palette.primary.contrastText,
+              },
+            }
+            : {}
+          : ownerState.color === 'error'
+            ? {
+              backgroundColor: theme.palette.error.main,
               color: theme.palette.error.contrastText,
             }
-          : {
+            : {
               backgroundColor: theme.palette.primary.main,
               color: theme.palette.primary.contrastText,
             }),
+        '&.Mui-disabled': {
+          backgroundColor: theme.palette.background.default,
+          color: theme.palette.text.secondary,
+          cursor: 'not-allowed',
+          border: 'none',
+        },
       }),
     },
   },

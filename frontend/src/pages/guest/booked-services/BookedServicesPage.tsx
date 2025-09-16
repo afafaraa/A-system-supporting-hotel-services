@@ -17,6 +17,7 @@ import { useTheme } from '@mui/material/styles';
 import { SectionWrapper } from '../../../theme/styled-components/SectionWrapper.ts';
 import { SelectInput } from '../../../theme/styled-components/SelectInput.ts';
 import { TextInput } from '../../../theme/styled-components/TextInput.ts';
+import { useTranslation } from 'react-i18next';
 
 export type RequestedServiceProps = {
   id: string;
@@ -30,13 +31,13 @@ export type RequestedServiceProps = {
   specialRequests?: string;
 };
 
-const STATUS_OPTIONS: { key: string; label: string }[] = [
-  { key: 'ALL', label: 'All' },
-  { key: 'REQUESTED', label: 'Pending' },
-  { key: 'ACTIVE', label: 'Confirmed' },
-  { key: 'IN_PROGRESS', label: 'In progress' },
-  { key: 'CANCELED', label: 'Canceled' },
-  { key: 'COMPLETED', label: 'Completed' },
+const STATUS_OPTIONS: { key: string; labelKey: string }[] = [
+  { key: 'ALL', labelKey: 'allBookings' },
+  { key: 'REQUESTED', labelKey: 'pending' },
+  { key: 'ACTIVE', labelKey: 'confirmed' },
+  { key: 'IN_PROGRESS', labelKey: 'inProgress' },
+  { key: 'CANCELED', labelKey: 'canceled' },
+  { key: 'COMPLETED', labelKey: 'completed' },
 ];
 
 function BookedServicesPage() {
@@ -44,8 +45,8 @@ function BookedServicesPage() {
   const [services, setServices] = useState<RequestedServiceProps[]>([]);
   const [filterStatus, setFilterStatus] = useState<string>('ALL');
   const [search, setSearch] = useState<string>('');
-
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const fetchRequestedServices = useCallback(async () => {
     try {
@@ -99,7 +100,7 @@ function BookedServicesPage() {
               sx={{ color: theme.palette.primary.main, marginRight: '10px' }}
             />
             <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-              Filter Bookings
+              {t('pages.booked_services.filterBookings')}
             </Typography>
           </div>
           <SelectInput
@@ -107,10 +108,14 @@ function BookedServicesPage() {
             value={filterStatus}
             onChange={(e) => setFilterStatus(String(e.target.value))}
           >
-            <MenuItem value="ALL">{`(${counts.ALL || 0}) All Bookings`}</MenuItem>
+            <MenuItem value="ALL">
+              {`(${counts.ALL || 0}) ${t('pages.booked_services.allBookings')}`}
+            </MenuItem>
             {STATUS_OPTIONS.filter((s) => s.key !== 'ALL').map((s) => (
               <MenuItem key={s.key} value={s.key}>
-                {`(${counts[s.key] || 0}) ${s.label}`}
+                {`(${counts[s.key] || 0}) ${t(
+                  `pages.booked_services.${s.labelKey}`
+                )}`}
               </MenuItem>
             ))}
           </SelectInput>
@@ -119,7 +124,7 @@ function BookedServicesPage() {
         <TextInput
           fullWidth
           size="small"
-          placeholder="Search for Booking"
+          placeholder={t('pages.booked_services.searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           sx={{ backgroundColor: `${theme.palette.background.default}` }}
@@ -146,7 +151,9 @@ function BookedServicesPage() {
             return (
               <Chip
                 key={key}
-                label={`${s.label} ${count ? `(${count})` : ''}`}
+                label={`${t(`pages.booked_services.${s.labelKey}`)} ${
+                  count ? `(${count})` : ''
+                }`}
                 onClick={() => setFilterStatus(key)}
                 clickable
                 size="small"
@@ -180,7 +187,9 @@ function BookedServicesPage() {
             />
           ))
         ) : (
-          <Typography color="text.secondary">No bookings found.</Typography>
+          <Typography color="text.secondary">
+            {t('pages.booked_services.noBookingsFound')}
+          </Typography>
         )}
       </Box>
     </main>

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { RequestedServiceProps } from './BookedServicesPage.tsx';
 import {
   Card,
@@ -5,23 +6,27 @@ import {
   Typography,
   Box,
   Chip,
+  Button,
 } from '@mui/material';
 import { CalendarToday, AccessTime } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
+import CancelServiceDialog from './CancelServiceDialog';
+import RateServiceDialog from './RateServiceDialog';
 
-function mapStatusToLabel(status?: string) {
-  if (!status) return 'Unknown';
+function mapStatusToLabel(status?: string, t?: (key: string) => string) {
+  if (!status) return t ? t('pages.booked_services.unknown') : 'Unknown';
   switch (status) {
     case 'REQUESTED':
-      return 'Pending';
+      return t ? t('pages.booked_services.pending') : 'Pending';
     case 'ACTIVE':
-      return 'Confirmed';
+      return t ? t('pages.booked_services.confirmed') : 'Confirmed';
     case 'IN_PROGRESS':
-      return 'In progress';
+      return t ? t('pages.booked_services.inProgress') : 'In progress';
     case 'COMPLETED':
-      return 'Completed';
+      return t ? t('pages.booked_services.completed') : 'Completed';
     case 'CANCELED':
-      return 'Canceled';
+      return t ? t('pages.booked_services.canceled') : 'Canceled';
     default:
       return status;
   }
@@ -30,12 +35,14 @@ function mapStatusToLabel(status?: string) {
 function ServiceItem({
   item,
   index,
+  fetchData,
 }: {
   item: RequestedServiceProps;
   index: number;
   fetchData?: () => void;
 }) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const statusColor: Record<string, string> = {
     CANCELED: theme.palette.calendar?.CANCELED || '#666',
@@ -44,96 +51,135 @@ function ServiceItem({
     COMPLETED: theme.palette.calendar?.COMPLETED || '#27ae60',
     IN_PROGRESS: theme.palette.calendar?.AVAILABLE || '#3498db',
   };
-
   const badgeBg = statusColor[item.status] || theme.palette.primary.main;
 
+  const [openCancel, setOpenCancel] = useState(false);
+  const [openRate, setOpenRate] = useState(false);
+
   return (
-    <Card
-      key={index}
-      variant="outlined"
-      sx={{
-        borderRadius: '10px',
-        mb: 1,
-        border: `1px solid ${theme.palette.primary.border}`,
-        p: '10px 15px'
-      }}
-    >
-      <CardContent>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="flex-start"
-        >
-          <Box>
-            <Typography variant="h6" fontWeight={600}>
-              {item.name}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Comforting {item.name.toLowerCase()} delivered straight to you
-            </Typography>
-          </Box>
-          <Chip
-            label={mapStatusToLabel(item.status)}
-            size="small"
-            sx={{
-              backgroundColor: badgeBg,
-              color: theme.palette.primary.contrastText,
-              fontWeight: 600,
-              borderRadius: '5px',
-            }}
-          />
-        </Box>
-
-        <Box display="flex" gap={3} alignItems="center" my={2} color={theme.palette.primary.dark}>
+    <>
+      <Card
+        key={index}
+        variant="outlined"
+        sx={{
+          borderRadius: '10px',
+          mb: 1,
+          border: `1px solid ${theme.palette.primary.border}`,
+          p: '10px 15px 0 15px',
+        }}
+      >
+        <CardContent>
           <Box
             display="flex"
-            alignItems="center"
-            gap={1}
+            justifyContent="space-between"
+            alignItems="flex-start"
           >
-            <CalendarToday fontSize="small" />
-            <Typography variant="body2">
-              {new Date(item.datetime).toLocaleDateString()}
-            </Typography>
+            <Box>
+              <Typography variant="h6" fontWeight={600}>
+                {item.name}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Comforting {item.name.toLowerCase()} delivered straight to you
+              </Typography>
+            </Box>
+            <Chip
+              label={mapStatusToLabel(item.status, t)}
+              size="small"
+              sx={{
+                backgroundColor: badgeBg,
+                color: theme.palette.primary.contrastText,
+                fontWeight: 600,
+                borderRadius: '5px',
+              }}
+            />
           </Box>
+
           <Box
             display="flex"
+            gap={3}
             alignItems="center"
-            gap={1}
+            my={2}
+            color={theme.palette.primary.dark}
           >
-            <AccessTime fontSize="small" />
-            <Typography variant="body2">
-              {new Date(item.datetime).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </Typography>
+            <Box display="flex" alignItems="center" gap={1}>
+              <CalendarToday fontSize="small" />
+              <Typography variant="body2">
+                {new Date(item.datetime).toLocaleDateString()}
+              </Typography>
+            </Box>
+            <Box display="flex" alignItems="center" gap={1}>
+              <AccessTime fontSize="small" />
+              <Typography variant="body2">
+                {new Date(item.datetime).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </Typography>
+            </Box>
+            <Typography variant="body2">30 minutes</Typography>
           </Box>
-        </Box>
 
-        {item.specialRequests && (
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ display: 'block', mb: 1 }}
+          {item.specialRequests && (
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: 'block', mb: 1 }}
+            >
+              <strong>{t('pages.booked_services.specialRequests')}:</strong>{' '}
+              {item.specialRequests}
+            </Typography>
+          )}
+
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mb={2}
           >
-            <strong>Special requests:</strong> {item.specialRequests}
-          </Typography>
-        )}
+            <Typography
+              fontSize="20px"
+              fontWeight={700}
+              color={theme.palette.primary.main}
+            >
+              {item.price}$
+            </Typography>
+            {item.status === 'COMPLETED' && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setOpenRate(true)}
+                padding={'10px 0px'}
+              >
+                {t('pages.booked_services.rate')}
+              </Button>
+            )}
+            {item.status === 'REQUESTED' && (
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => setOpenCancel(true)}
+                sx={{padding: '5px 10px'}}
+              >
+                {t('pages.booked_services.cancel')}
+              </Button>
+            )}
+          </Box>
+        </CardContent>
+      </Card>
 
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Typography fontSize='20px' fontWeight={700} color={theme.palette.primary.main}>
-            {item.price}$
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            30 minutes
-          </Typography>
-        </Box>
-      </CardContent>
-    </Card>
+      <CancelServiceDialog
+        open={openCancel}
+        setOpen={setOpenCancel}
+        scheduleId={item.id}
+        fetchData={fetchData!}
+      />
+      <RateServiceDialog
+        open={openRate}
+        setOpen={setOpenRate}
+        scheduleId={item.id}
+        fetchData={fetchData!}
+      />
+    </>
   );
 }
 

@@ -10,14 +10,15 @@ import {
 import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { OrderServiceProps } from './OrderServicePage.tsx';
+import { useTranslation } from 'react-i18next';
 
 function ServiceCalendar({
-  selectedDate,
-  setSelectedDate,
-  timeSlots = [],
-  selectedTime,
-  setSelectedTime,
-}: {
+                           selectedDate,
+                           setSelectedDate,
+                           timeSlots = [],
+                           selectedTime,
+                           setSelectedTime,
+                         }: {
   selectedDate: Date | null;
   setSelectedDate: (x: Date | null) => void;
   timeSlots?: OrderServiceProps[];
@@ -25,17 +26,18 @@ function ServiceCalendar({
   setSelectedTime: (x: string) => void;
 }) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   // Filter slots for the selected date
   const filteredSlots = selectedDate
     ? timeSlots.filter((slot) => {
-        const slotDate = new Date(slot.serviceDate);
-        return (
-          slotDate.getFullYear() === selectedDate.getFullYear() &&
-          slotDate.getMonth() === selectedDate.getMonth() &&
-          slotDate.getDate() === selectedDate.getDate()
-        );
-      })
+      const slotDate = new Date(slot.serviceDate);
+      return (
+        slotDate.getFullYear() === selectedDate.getFullYear() &&
+        slotDate.getMonth() === selectedDate.getMonth() &&
+        slotDate.getDate() === selectedDate.getDate()
+      );
+    })
     : [];
 
   return (
@@ -50,13 +52,15 @@ function ServiceCalendar({
       >
         <CardContent>
           <Typography sx={{ fontWeight: '600', fontSize: '20px' }}>
-            Book your service
+            {t('pages.order_service.bookService')}
           </Typography>
           <Typography mb={3} color="text.secondary">
-            Select your preferred date and time
+            {t('pages.order_service.selectDate')} & {t('pages.order_service.selectTime')}
           </Typography>
 
-          <Typography sx={{ mb: 1, fontWeight: '600' }}>Select date</Typography>
+          <Typography sx={{ mb: 1, fontWeight: '600' }}>
+            {t('pages.order_service.selectDate')}
+          </Typography>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DateCalendar
               value={selectedDate}
@@ -71,7 +75,7 @@ function ServiceCalendar({
           </LocalizationProvider>
 
           <Typography mt={3} mb={1} fontWeight={600}>
-            Select time
+            {t('pages.order_service.selectTime')}
           </Typography>
           <TextField
             select
@@ -81,7 +85,7 @@ function ServiceCalendar({
             onChange={(e) => setSelectedTime(e.target.value)}
             sx={{
               backgroundColor: theme.palette.background.default,
-              borderRadius: '10px',
+              borderRadius: '5px',
               '& .MuiOutlinedInput-root': {
                 '& fieldset': {
                   border: 'none',
@@ -90,7 +94,7 @@ function ServiceCalendar({
             }}
           >
             {filteredSlots.length === 0 ? (
-              <MenuItem disabled>No slots available</MenuItem>
+              <MenuItem disabled>{t('pages.order_service.noSlotsAvailable')}</MenuItem>
             ) : (
               filteredSlots
                 .sort(
@@ -116,21 +120,24 @@ function ServiceCalendar({
                 })
             )}
           </TextField>
-          <Typography fontWeight={600} mt={3} mb={1}>Special Requests</Typography>
+
+          <Typography fontWeight={600} mt={3} mb={1}>
+            {t('pages.order_service.specialRequests')}
+          </Typography>
           <TextField
+            placeholder={t('pages.order_service.specialRequests')}
             sx={{
               backgroundColor: theme.palette.background.default,
-              borderRadius: 1,
               '& .MuiOutlinedInput-root': {
                 '& fieldset': {
                   border: 'none',
                 },
               },
-              borderRadius: '10px',
-              minHeight: '100px'
+              borderRadius: '5px',
+              minHeight: '100px',
             }}
             fullWidth
-          ></TextField>
+          />
         </CardContent>
       </Card>
     </Grid>

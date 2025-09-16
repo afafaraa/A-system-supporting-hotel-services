@@ -9,6 +9,7 @@ import {
 import StarRating from './StarRating.tsx';
 import { useNavigate } from 'react-router-dom';
 import { Rating } from '../../../types';
+import { useTranslation } from 'react-i18next';
 
 export type ServiceProps = {
   id: string;
@@ -24,6 +25,7 @@ export type ServiceProps = {
 function AvailableServiceCard({ service }: { service: ServiceProps }) {
   const navigate = useNavigate();
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Card
@@ -31,7 +33,7 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
       sx={{
         border: `1px solid ${theme.palette.primary.border}`,
         borderRadius: '10px',
-        minHeight: '40vh',
+        minHeight: '290px',
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -80,7 +82,6 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
           </Typography>
         </Box>
 
-        {/* BOTTOM */}
         <Box>
           <Box
             sx={{
@@ -102,25 +103,33 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
                 fontSize: '0.9em',
               }}
             >
-              {service.duration}min
+              {service.duration} min
             </Box>
 
             <Box
               sx={{
                 fontWeight: 500,
                 color: theme.palette.primary.contrastText,
-                backgroundColor: theme.palette.secondary.success,
+                backgroundColor: service.disabled
+                  ? theme.palette.secondary.error
+                  : theme.palette.secondary.success,
                 padding: '3px 5px',
                 fontSize: '0.8em',
                 borderRadius: '5px',
               }}
             >
-              {service.disabled ? 'Unavailable' : 'Available'}
+              {service.disabled
+                ? t('pages.available_services.unavailable')
+                : t('pages.available_services.available')}
             </Box>
           </Box>
 
-          <Button onClick={() => navigate(`/service-schedule/${service.id}`)} fullWidth sx={{ padding: '2px', marginTop: 2 }}>
-            Book now
+          <Button
+            onClick={() => navigate(`/service-schedule/${service.id}`)}
+            fullWidth
+            sx={{ padding: '2px', marginTop: 2 }}
+          >
+            {t('pages.available_services.bookNow')}
           </Button>
         </Box>
       </CardContent>

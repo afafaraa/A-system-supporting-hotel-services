@@ -34,7 +34,7 @@ function ServiceDescription({
   };
 
   return (
-    <Grid item xs={12} md={6}>
+    <Grid flexGrow={1} item xs={12} md={6}>
       <Card
         elevation={0}
         sx={{
@@ -82,7 +82,9 @@ function ServiceDescription({
                   width: 'fit-content',
                 }}
               >
-                {service.disabled ? 'Unavailable' : 'Available'}
+                {service.disabled
+                  ? t('pages.order_service.unavailable')
+                  : t('pages.order_service.available')}
               </div>
             </div>
           </Box>
@@ -96,27 +98,42 @@ function ServiceDescription({
           </Typography>
           <div
             style={{
-              marginTop: '20px',
-              border: `1px solid ${theme.palette.primary.border}`,
+              margin: '20px 0',
               display: 'flex',
               justifyContent: 'space-around',
               backgroundColor: theme.palette.background.default,
               borderRadius: '10px',
-              padding: '20px 0',
+              padding: '30px 0',
             }}
           >
-            <div style={{display: 'flex', alignItems: 'center' }}>
-              <p>$</p>
-              <div>
-                <p>Price</p>
-                <p>{service.price}</p>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <p style={{ fontWeight: 500, fontSize: '24px' }}>$</p>
+              <div style={{ margin: '0 10px', textAlign: 'center' }}>
+                <p
+                  style={{
+                    fontWeight: 500,
+                    fontSize: '20px',
+                    color: theme.palette.text.secondary,
+                  }}
+                >
+                  {t('pages.order_service.price')}
+                </p>
+                <p style={{ fontWeight: 600 }}>{service.price}</p>
               </div>
             </div>
-            <div style={{display: 'flex', alignItems: 'center' }}>
-              <p>$</p>
-              <div>
-                <p>Duration</p>
-                <p>{service.duration}</p>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <p style={{ fontWeight: 500, fontSize: '24px' }}>%</p>
+              <div style={{ margin: '0 10px', textAlign: 'center' }}>
+                <p
+                  style={{
+                    fontWeight: 500,
+                    fontSize: '20px',
+                    color: theme.palette.text.secondary,
+                  }}
+                >
+                  {t('pages.order_service.duration')}
+                </p>
+                <p style={{ fontWeight: 600 }}>{service.duration} min </p>
               </div>
             </div>
           </div>
@@ -133,7 +150,7 @@ function ServiceDescription({
               fontWeight: '600',
             }}
           >
-            {t('pages.service_schedule.addToCart')}
+            {t('pages.order_service.addToCart')}
           </Button>
         </CardContent>
       </Card>
