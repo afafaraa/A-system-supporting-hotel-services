@@ -75,7 +75,7 @@ export default function HotelBookingPage() {
           Book the perfect accommodation for your stay
         </Typography>
 
-        <Grid container spacing={2}>
+        <Grid container spacing={2} columns={{ xs: 1, sm: 2, md: 3 }}>
           {[
             {
               type: 'Standard Room',
@@ -93,7 +93,7 @@ export default function HotelBookingPage() {
               status: 'Available',
             },
           ].map((room, index) => (
-            <Grid flexGrow={1} item xs={12} md={3} key={index}>
+            <Grid size={1} key={index}>
               <Card
                 variant="outlined"
                 sx={{
@@ -102,7 +102,7 @@ export default function HotelBookingPage() {
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  padding: '15px 10px'
+                  padding: '15px 10px',
                 }}
               >
                 <CardContent>
@@ -117,37 +117,40 @@ export default function HotelBookingPage() {
                       {room.type}
                     </Typography>
                     <Typography
-                      color={theme.palette.primary.contrastText}
-                      backgroundColor={theme.palette.primary.main}
-                      fontSize="12px"
-                      fontWeight={600}
-                      padding="2px 5px"
-                      borderRadius="5px"
+                      sx={{
+                        color: `${theme.palette.primary.contrastText}`,
+                        backgroundColor: `${theme.palette.primary.main}`,
+                        fontSize: '12px',
+                        fontWeight: 600,
+                        padding: '2px 5px',
+                        borderRadius: '5px',
+                      }}
                     >
                       {room.status}
                     </Typography>
                   </div>
                   <Divider sx={{ my: 1 }} />
 
-                  <Typography sx={{ fontWeight: 600, fontSize: '20px', color: `${theme.palette.primary.main}` }}>
+                  <Typography
+                    sx={{
+                      fontWeight: 600,
+                      fontSize: '20px',
+                      color: `${theme.palette.primary.main}`,
+                    }}
+                  >
                     {room.price}$
                   </Typography>
-                  <Typography fontSize='12px' color="text.secondary">
+                  <Typography fontSize="12px" color="text.secondary">
                     Up to 2 guests per night
                   </Typography>
 
-                  <Typography
-                    sx={{ mt: 2, fontWeight: 500 }}
-                  >
+                  <Typography sx={{ mt: 2, fontWeight: 500 }}>
                     Amenities:
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
                     (Few listed)
                   </Typography>
-                  <Button
-                    fullWidth
-                    sx={{ borderRadius: '5px', mt: '15px' }}
-                  >
+                  <Button fullWidth sx={{ borderRadius: '5px', mt: '15px' }}>
                     Reserve Room
                   </Button>
                 </CardContent>

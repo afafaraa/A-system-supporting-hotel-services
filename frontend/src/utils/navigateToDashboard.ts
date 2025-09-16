@@ -5,7 +5,6 @@ function navigateToDashboard(role: string, navigate: NavigateFunction) {
   else if (role === 'ROLE_EMPLOYEE' || role === "ROLE_RECEPTIONIST") navigate('/employee/today-schedules');
   else if (role === 'ROLE_MANAGER') navigate('/employee/today-schedules');
   else if (role === 'ROLE_ADMIN') navigate('/employee/today-schedules');
-  else navigate('/fallback');
 }
 
 export default navigateToDashboard;

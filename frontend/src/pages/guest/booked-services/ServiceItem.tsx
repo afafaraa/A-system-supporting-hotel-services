@@ -148,7 +148,7 @@ function ServiceItem({
                 variant="contained"
                 color="primary"
                 onClick={() => setOpenRate(true)}
-                padding={'10px 0px'}
+                sx={{ padding: '10px 0px' }}
               >
                 {t('pages.booked_services.rate')}
               </Button>
@@ -158,7 +158,7 @@ function ServiceItem({
                 variant="outlined"
                 color="error"
                 onClick={() => setOpenCancel(true)}
-                sx={{padding: '5px 10px'}}
+                sx={{ padding: '5px 10px' }}
               >
                 {t('pages.booked_services.cancel')}
               </Button>

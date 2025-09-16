@@ -1,13 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Button,
-  Typography,
-  Box,
-  IconButton,
-  Divider,
-  useTheme,
-} from '@mui/material';
+import { Button, Typography, Box, IconButton, useTheme } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ShoppingCartItem from './ShoppingCartItem.tsx';
 import { selectUser } from '../../../redux/slices/userSlice.ts';
@@ -40,16 +33,8 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   const theme = useTheme();
 
   const [cart, setCart] = useState<CartProps[]>([]);
-  const [bill, setBill] = useState<number>(0);
 
-  useEffect(() => {
-    if (open) {
-      fetchCartData();
-      fetchCurrentBill();
-    }
-  }, [open, shoppingCart]);
-
-  const fetchCartData = async () => {
+  const fetchCartData = useCallback(async () => {
     const cartList: CartProps[] = [];
     if (shoppingCart.length > 0) {
       for (const id of shoppingCart) {
@@ -66,18 +51,14 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
       }
     }
     setCart(cartList);
-  };
+  }, [dispatch, shoppingCart]);
 
-  const fetchCurrentBill = async () => {
-    try {
-      const response = await axiosAuthApi.get(
-        `/guest/bill/get/${user?.username}`
-      );
-      setBill(response.data);
-    } catch (e) {
-      console.error(e);
+  useEffect(() => {
+    if (open) {
+      fetchCartData();
     }
-  };
+  }, [fetchCartData, open, shoppingCart]);
+
 
   const clearShoppingCart = () => {
     setCart([]);
@@ -93,11 +74,9 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
         });
       }
       clearShoppingCart();
-      fetchCartData();
+      await fetchCartData();
     } catch (e) {
       console.error(e);
-    } finally {
-      fetchCurrentBill();
     }
   };
 
@@ -144,7 +123,9 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
             alignItems: 'center',
           }}
         >
-          <Typography fontSize='20px' fontWeight={600}>Shopping Cart ({cart.length})</Typography>
+          <Typography fontSize="20px" fontWeight={600}>
+            Shopping Cart ({cart.length})
+          </Typography>
           <IconButton onClick={setOpen}>
             <CloseIcon />
           </IconButton>
@@ -191,14 +172,15 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
             </Typography>
           </div>
         </Box>
-        <Button
-          fullWidth
-          sx={{ mb: 1 }}
-          onClick={orderServices}
-        >
+        <Button fullWidth sx={{ mb: 1 }} onClick={orderServices}>
           Add to Tab
         </Button>
-        <Button fullWidth variant="outlined" color='error' onClick={clearShoppingCart}>
+        <Button
+          fullWidth
+          variant="outlined"
+          color="error"
+          onClick={clearShoppingCart}
+        >
           Clear Cart
         </Button>
       </Box>

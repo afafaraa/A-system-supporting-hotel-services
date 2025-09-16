@@ -12,7 +12,6 @@ import AddReservationPage from './pages/AddReservationPage.tsx'
 import EmployeeListPage from "./pages/manager/EmployeeListPage.tsx";
 import LogoutPage from "./pages/user/LogoutPage.tsx";
 import NotificationsPage from "./pages/guest/NotificationsPage.tsx";
-import ShoppingCartPage from "./pages/guest/shopping-cart/ShoppingCartPopup.tsx";
 import {PropsWithChildren, useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {initializeUserFromLocalStorage} from "./components/auth/auth.tsx";
@@ -37,12 +36,10 @@ function App(){
       <AppInitializer>
         <Routes>
           <Route element={<AuthenticatedLayout />}>
-            <Route path="/home" element={<HomePage />} />
             <Route element={<ProtectedRoute allowedRoles={["ROLE_GUEST"]}/>}>
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/service-schedule/:id" element={<OrderServicePage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
-              <Route path="/services/shopping-cart" element={<ShoppingCartPage />} />
               <Route path="/guest" element={<GuestLayout />} />
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_EMPLOYEE", "ROLE_RECEPTIONIST", "ROLE_MANAGER", "ROLE_ADMIN"]} />}>
@@ -66,7 +63,10 @@ function App(){
             </Route>
           </Route>
 
-          <Route element={<PublicLayout />}>
+          <Route element={<PublicLayout navbar={true}/>}>
+            <Route path="/home" element={<HomePage />} />
+          </Route>
+          <Route element={<PublicLayout navbar={false}/>}>
             <Route path="/logout" element={<LogoutPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/reset-password-email" element={<SendResetPasswordEmail />} />
@@ -103,7 +103,7 @@ function AppInitializer({ children }: PropsWithChildren) {
       const timer = setTimeout(() => setShowLoader(true), 300);
       initializeUserFromLocalStorage(dispatch)
         .then(isSuccessful => {
-          if (!isSuccessful && !pathIsPublic) navigate("/login");
+          if (!isSuccessful && !pathIsPublic) navigate("/home");
         })
         .finally(() => {
           clearTimeout(timer);

@@ -27,6 +27,9 @@ function AvailableServicesPage() {
     }
   }
 
+  if (loading) {
+    return <p>Loading...</p>
+  }
   return (
     <main style={{marginTop: '40px', marginBottom: '40px', width: '100%'}}>
       <Grid container spacing={{xs: 1, md: 2}} columns={{ xs: 1, sm: 2, lg: 3}}>

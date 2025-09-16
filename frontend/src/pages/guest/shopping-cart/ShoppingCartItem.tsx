@@ -1,4 +1,4 @@
-import { Button, Typography, useTheme, IconButton, Tooltip } from '@mui/material';
+import { Typography, useTheme, IconButton, Tooltip } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import { CartProps } from './ShoppingCartPopup.tsx';
 import { useTranslation } from 'react-i18next';
