@@ -72,7 +72,7 @@ function App(){
             <Route path="/reset-password-email" element={<SendResetPasswordEmail />} />
             <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="*" element={<Navigate to="/login" replace />} />
+            <Route path="*" element={<Navigate to="/home" replace />} />
             <Route path="/fallback" element={<FallbackPage />} />
           </Route>
 
