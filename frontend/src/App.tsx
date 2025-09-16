@@ -12,7 +12,7 @@ import AddReservationPage from './pages/AddReservationPage.tsx'
 import EmployeeListPage from "./pages/manager/EmployeeListPage.tsx";
 import LogoutPage from "./pages/user/LogoutPage.tsx";
 import NotificationsPage from "./pages/guest/NotificationsPage.tsx";
-import ShoppingCartPage from "./pages/guest/shopping-cart/ShoppingCartPage.tsx";
+import ShoppingCartPage from "./pages/guest/shopping-cart/ShoppingCartPopup.tsx";
 import {PropsWithChildren, useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {initializeUserFromLocalStorage} from "./components/auth/auth.tsx";

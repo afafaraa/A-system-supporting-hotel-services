@@ -11,10 +11,11 @@ import {selectUser} from "../../redux/slices/userSlice.ts";
 import {Link, useNavigate} from "react-router-dom";
 import ThemeSwitcher from "../ui/ThemeSwitcher.tsx";
 import {selectUserDetails, setUserDetails, UserDetails} from "../../redux/slices/userDetailsSlice.ts";
-import {useEffect} from "react";
+import { useEffect, useState } from 'react';
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import { selectNotificationsCount, setNotificationsCount } from '../../redux/slices/notificationsCount.ts';
 import { selectShoppingCartCount } from '../../redux/slices/shoppingCartSlice.ts';
+import ShoppingCartPopup from '../../pages/guest/shopping-cart/ShoppingCartPopup.tsx';
 
 const drawerHeight = 64;
 
@@ -28,6 +29,7 @@ function Navbar() {
   const theme = useTheme();
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.login.${key}`);
+  const [shoppingCartOpen, setShoppingCartOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (!user) return;
@@ -113,7 +115,7 @@ function Navbar() {
             </IconButton>
 
             {user.role === "ROLE_GUEST" &&
-              <IconButton onClick={() => navigate("/services/shopping-cart")}>
+              <IconButton onClick={() => setShoppingCartOpen(true)}>
                 <Badge badgeContent={shoppingCartCount} color="secondary">
                   <ShoppingCartOutlinedIcon />
                 </Badge>
@@ -130,6 +132,7 @@ function Navbar() {
         </Stack>
       </AppBar>
       <Box sx={{ height: drawerHeight }} />
+      <ShoppingCartPopup open={shoppingCartOpen} setOpen={() => setShoppingCartOpen(false)} />
     </>
   )
 }
