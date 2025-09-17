@@ -267,6 +267,11 @@
       "email_notifications_subtitle": "Receive updates about your bookings and services",
       "marketing_communication": "Marketing Communications",
       "marketing_communication_subtitle": "Receive special offers and promotions"
+    },
+    "fallback": {
+      "title": "Oops! Something went wrong.",
+      "subtitle": "This is a fallback page for undefined routes.",
+      "go_home": "Go back to Home Page"
     }
   },
   "common": {

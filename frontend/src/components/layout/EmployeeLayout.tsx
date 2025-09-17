@@ -20,7 +20,7 @@ function EmployeeLayout() {
   return (
     <>
       {inputGlobalStyles}
-      <DashboardNavbar tabs={tabs} />
+      <DashboardNavbar tabs={tabs} arrowButtons />
       <Outlet />
     </>
   )

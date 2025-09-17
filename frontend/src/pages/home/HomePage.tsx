@@ -1,13 +1,11 @@
 import {useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
-import {useNavigate} from "react-router-dom";
-import navigateToDashboard from "../../utils/navigateToDashboard.ts";
+import dashboardDestination from "../../utils/dashboardDestination.ts";
+import {Navigate} from "react-router-dom";
 
 function HomePage() {
-  const user = useSelector(selectUser);
-  const navigation = useNavigate();
-  navigateToDashboard(user?.role ?? "", navigation);
-  return null;
+  const role = useSelector(selectUser)?.role ?? "";
+  return <Navigate to={dashboardDestination(role)} replace />
 }
 
 export default HomePage;
