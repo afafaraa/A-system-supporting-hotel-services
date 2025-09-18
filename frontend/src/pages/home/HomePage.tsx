@@ -14,7 +14,7 @@ import {
   Stack,
   Grid,
 } from '@mui/material';
-import WifiIcon from '@mui/icons-material/Wifi';
+import RssFeedIcon from '@mui/icons-material/RssFeed';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import TvIcon from '@mui/icons-material/Tv';
 import LocalBarIcon from '@mui/icons-material/LocalBar';
@@ -34,7 +34,7 @@ const roomOptions = [
     description: 'Comfortable room with essential amenities',
     guests: 2,
     amenities: [
-      { icon: <WifiIcon />, label: 'Free Wi-Fi' },
+      { icon: <RssFeedIcon />, label: 'Free Wi-Fi' },
       { icon: <AcUnitIcon />, label: 'Air Conditioning' },
       { icon: <TvIcon />, label: 'Cable TV' },
       { icon: <RestaurantIcon />, label: 'Mini Fridge' },
@@ -46,7 +46,7 @@ const roomOptions = [
     description: 'Spacious room with premium amenities and city view',
     guests: 3,
     amenities: [
-      { icon: <WifiIcon />, label: 'Free Wi-Fi' },
+      { icon: <RssFeedIcon />, label: 'Free Wi-Fi' },
       { icon: <AcUnitIcon />, label: 'Air Conditioning' },
       { icon: <TvIcon />, label: 'Smart TV' },
       { icon: <LocalBarIcon />, label: 'Mini Bar' },
@@ -60,7 +60,7 @@ const roomOptions = [
       'Luxurious suite with separate living area and premium services',
     guests: 4,
     amenities: [
-      { icon: <WifiIcon />, label: 'Free Wi-Fi' },
+      { icon: <RssFeedIcon />, label: 'Free Wi-Fi' },
       { icon: <AcUnitIcon />, label: 'Air Conditioning' },
       { icon: <TvIcon />, label: 'Smart TV' },
       { icon: <LocalBarIcon />, label: 'Full Bar' },
@@ -106,10 +106,22 @@ function HomePage() {
           world-class service and elegant accommodations await you.
         </Typography>
         <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-          <Button variant="contained" color="secondary">
+          <Button
+            sx={{
+              backgroundColor: theme.palette.primary.dark,
+              color: theme.palette.primary.contrastText,
+              padding: '6px 14px',
+            }}
+          >
             Reserve a Room
           </Button>
-          <Button variant="outlined" color="secondary">
+          <Button
+            sx={{
+              padding: '6px 14px',
+            }}
+            variant="outlined"
+            color="secondary"
+          >
             Contact us
           </Button>
         </Box>
@@ -208,7 +220,7 @@ function HomePage() {
                       {room.amenities.map((amenity, idx) => (
                         <Chip
                           key={idx}
-                          icon={amenity.icon || null}
+                          // icon={amenity.icon || null}
                           label={amenity.label}
                           sx={{
                             backgroundColor: theme.palette.background.paper,
@@ -236,7 +248,7 @@ function HomePage() {
         sx={{
           backgroundColor: '#100D26',
           color: theme.palette.primary.contrastText,
-          paddingTop: '80px',
+          padding: '80px 0 40px 0',
         }}
       >
         <Grid
