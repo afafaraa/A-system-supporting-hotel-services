@@ -12,6 +12,7 @@ export const StyledInput = styled(TextField)(
       '&.Mui-focused fieldset': {border: `2px solid ${theme.palette.primary.main}`, borderRadius: 5},
     },
     '& .MuiInputBase-input::placeholder': {opacity: 0.7},
-    marginBottom: 5,
+    width: '100%',
   })
 )
+export default StyledInput;

@@ -70,6 +70,18 @@ const components: Components<Omit<Theme, 'components'>> = {
       },
     },
   },
+  MuiLink: {
+    styleOverrides: {
+      root: ({ theme }) => ({
+        display: 'block',
+        textDecoration: "none",
+        "&:hover": {
+          textDecoration: "underline",
+          color: theme.palette.primary.main,
+        },
+      }),
+    },
+  },
 };
 
 export default components;
