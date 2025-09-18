@@ -156,10 +156,10 @@ function Navbar() {
           justifyContent: 'center',
           height: drawerHeight,
           py: 2,
-          px: { xs: '16px', md: '160px' },
+          px: "max(0.5rem, calc(13vw - 58.667px))",
           borderBottom: `1px solid ${theme.palette.primary.border}`
         }}
-      >
+      > {/* padding 16 px to 96 px (sm to xl) */}
         <Stack
           direction="row"
           justifyContent="space-between"
