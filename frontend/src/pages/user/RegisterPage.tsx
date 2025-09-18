@@ -22,6 +22,7 @@ function RegisterPage(){
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.register.${key}`);
 
