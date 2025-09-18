@@ -14,7 +14,6 @@ declare module '@mui/material/styles' {
     medium: string,
     border?: string;
     success?: string;
-    shadow?: string;
     error?: string;
   }
 
@@ -22,7 +21,10 @@ declare module '@mui/material/styles' {
     medium?: string;
     border?: string;
     success?: string;
-    shadow?: string;
     error?: string;
+  }
+
+  interface TypeBackground {
+    shadow?: string;
   }
 }
