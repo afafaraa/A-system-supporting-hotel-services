@@ -16,7 +16,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { useTheme } from '@mui/material/styles';
 import { SectionWrapper } from '../../../theme/styled-components/SectionWrapper.ts';
 import { SelectInput } from '../../../theme/styled-components/SelectInput.ts';
-import { TextInput } from '../../../theme/styled-components/TextInput.ts';
+import { StyledInput } from '../../../theme/styled-components/StyledInput.ts';
 import { useTranslation } from 'react-i18next';
 
 export type RequestedServiceProps = {
@@ -121,7 +121,7 @@ function BookedServicesPage() {
           </SelectInput>
         </Box>
 
-        <TextInput
+        <StyledInput
           fullWidth
           size="small"
           placeholder={t('pages.booked_services.searchPlaceholder')}

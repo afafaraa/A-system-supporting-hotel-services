@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles';
 import {TextField} from "@mui/material";
 
-export const TextInput = styled(TextField)(
+export const StyledInput = styled(TextField)(
   ({ theme }) => ({
     borderRadius: 5,
     color: theme.palette.text.secondary,

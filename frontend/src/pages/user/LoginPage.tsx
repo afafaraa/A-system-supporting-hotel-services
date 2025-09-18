@@ -16,7 +16,7 @@ import {isAxiosError} from "axios";
 import Logo from "../../assets/hotel.svg?react";
 import {fontSizes} from "../../theme/fontSizes.ts";
 import {LogInWrapper} from "../../theme/styled-components/LogInWrapper.ts";
-import {TextInput} from "../../theme/styled-components/TextInput.ts";
+import {StyledInput} from "../../theme/styled-components/StyledInput.ts";
 import {VisibilityOutlined, VisibilityOffOutlined} from "@mui/icons-material";
 import navigateToDashboard from "../../utils/navigateToDashboard.ts";
 
@@ -98,10 +98,10 @@ function LoginPage(){
         </Box>
         <div style={{display: 'flex', flexDirection: 'column', width: '100%', gap: '5px', marginBottom: '20px'}}>
           <label style={{fontWeight: '500', fontSize: '14px', color: theme.palette.text.primary}} htmlFor="username">{tc("username")}</label>
-          <TextInput type="email" onChange={(e) => setUsername(e.target.value)} id="username" placeholder="jan.kowalski@gmail.com"/>
+          <StyledInput type="email" onChange={(e) => setUsername(e.target.value)} id="username" placeholder="jan.kowalski@gmail.com"/>
           <label style={{fontWeight: '500', fontSize: '14px', color: theme.palette.text.primary}} htmlFor="password">{tc("password")}</label>
-          <TextInput type={showPassword ? "text" : "password"} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="************"
-                     slotProps={passwordVisibility()}/>
+          <StyledInput type={showPassword ? "text" : "password"} onChange={(e) => setPassword(e.target.value)} id="password" placeholder="************"
+                       slotProps={passwordVisibility()}/>
         </div>
         <Link component={RouterLink} to="/reset-password-email" fontSize={12} color="text.secondary"
               sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"}}}>{tc("resetPassword")}</Link>
