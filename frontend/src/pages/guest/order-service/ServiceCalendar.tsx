@@ -13,12 +13,12 @@ import { OrderServiceProps } from './OrderServicePage.tsx';
 import { useTranslation } from 'react-i18next';
 
 function ServiceCalendar({
-                           selectedDate,
-                           setSelectedDate,
-                           timeSlots = [],
-                           selectedTime,
-                           setSelectedTime,
-                         }: {
+  selectedDate,
+  setSelectedDate,
+  timeSlots = [],
+  selectedTime,
+  setSelectedTime,
+}: {
   selectedDate: Date | null;
   setSelectedDate: (x: Date | null) => void;
   timeSlots?: OrderServiceProps[];
@@ -31,17 +31,17 @@ function ServiceCalendar({
   // Filter slots for the selected date
   const filteredSlots = selectedDate
     ? timeSlots.filter((slot) => {
-      const slotDate = new Date(slot.serviceDate);
-      return (
-        slotDate.getFullYear() === selectedDate.getFullYear() &&
-        slotDate.getMonth() === selectedDate.getMonth() &&
-        slotDate.getDate() === selectedDate.getDate()
-      );
-    })
+        const slotDate = new Date(slot.serviceDate);
+        return (
+          slotDate.getFullYear() === selectedDate.getFullYear() &&
+          slotDate.getMonth() === selectedDate.getMonth() &&
+          slotDate.getDate() === selectedDate.getDate()
+        );
+      })
     : [];
 
   return (
-    <Grid flexGrow={1} item xs={12} md={6}>
+    <Grid flexGrow={1} size={1}>
       <Card
         elevation={0}
         sx={{
@@ -55,7 +55,8 @@ function ServiceCalendar({
             {t('pages.order_service.bookService')}
           </Typography>
           <Typography mb={3} color="text.secondary">
-            {t('pages.order_service.selectDate')} & {t('pages.order_service.selectTime')}
+            {t('pages.order_service.selectDate')} &{' '}
+            {t('pages.order_service.selectTime')}
           </Typography>
 
           <Typography sx={{ mb: 1, fontWeight: '600' }}>
@@ -94,7 +95,9 @@ function ServiceCalendar({
             }}
           >
             {filteredSlots.length === 0 ? (
-              <MenuItem disabled>{t('pages.order_service.noSlotsAvailable')}</MenuItem>
+              <MenuItem disabled>
+                {t('pages.order_service.noSlotsAvailable')}
+              </MenuItem>
             ) : (
               filteredSlots
                 .sort(
