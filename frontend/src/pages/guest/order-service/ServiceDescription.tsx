@@ -34,7 +34,7 @@ function ServiceDescription({
   };
 
   return (
-    <Grid flexGrow={1} item xs={12} md={6}>
+    <Grid sx={{ flexGrow: 1 }} size={1}>
       <Card
         elevation={0}
         sx={{

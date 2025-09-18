@@ -96,7 +96,7 @@ function OrderServicePage() {
 
   return (
     <main style={{ width: '100%' }}>
-      <Grid container spacing={3}>
+      <Grid container spacing={3} columns={{ xs: 1, md: 2}}>
         <ServiceDescription
           service={service}
           timeSlots={timeSlots}
