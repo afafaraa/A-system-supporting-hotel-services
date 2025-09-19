@@ -21,12 +21,14 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import SpaIcon from '@mui/icons-material/Spa';
 import SportsTennisIcon from '@mui/icons-material/SportsTennis';
 import RoomServiceIcon from '@mui/icons-material/RoomService';
+import { useTranslation } from 'react-i18next';
+import LoginDialog from './LoginDialog.tsx';
+import { useState } from 'react';
 
 const roomOptions = [
   {
-    title: 'Standard Room',
+    key: 'standardRoom',
     price: 120,
-    description: 'Comfortable room with essential amenities',
     guests: 2,
     amenities: [
       { icon: <RssFeedIcon />, label: 'Free Wi-Fi' },
@@ -36,9 +38,8 @@ const roomOptions = [
     ],
   },
   {
-    title: 'Deluxe Room',
+    key: 'deluxeRoom',
     price: 180,
-    description: 'Spacious room with premium amenities and city view',
     guests: 3,
     amenities: [
       { icon: <RssFeedIcon />, label: 'Free Wi-Fi' },
@@ -49,10 +50,8 @@ const roomOptions = [
     ],
   },
   {
-    title: 'Executive Suite',
+    key: 'executiveSuite',
     price: 350,
-    description:
-      'Luxurious suite with separate living area and premium services',
     guests: 4,
     amenities: [
       { icon: <RssFeedIcon />, label: 'Free Wi-Fi' },
@@ -66,9 +65,12 @@ const roomOptions = [
 
 function HomePage() {
   const theme = useTheme();
+  const { t } = useTranslation();
+  const [openLoginDialog, setOpenLoginDialog] = useState<boolean>(false);
 
   return (
     <main style={{ padding: 0, width: '100%' }}>
+      <LoginDialog open={openLoginDialog} setOpen={setOpenLoginDialog}/>
       <Box
         sx={{
           width: '100%',
@@ -82,7 +84,7 @@ function HomePage() {
         }}
       >
         <Typography sx={{ fontWeight: '600' }} variant="h2">
-          Welcome to Grand Hotel
+          {t('pages.home.welcomeTitle')}
         </Typography>
         <Typography
           sx={{
@@ -91,8 +93,7 @@ function HomePage() {
             padding: { xs: '0 10%', md: '0 20%' },
           }}
         >
-          Experience luxury and comfort in the heart of the city. Our
-          world-class service and elegant accommodations await you.
+          {t('pages.home.welcomeSubtitle')}
         </Typography>
         <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
           <Button
@@ -101,8 +102,9 @@ function HomePage() {
               color: theme.palette.primary.contrastText,
               padding: '6px 14px',
             }}
+            onClick={() => document.getElementById("reserve-room")?.scrollIntoView({ behavior: "smooth" })}
           >
-            Reserve a Room
+            {t('pages.home.reserveRoom')}
           </Button>
           <Button
             sx={{
@@ -110,8 +112,9 @@ function HomePage() {
             }}
             variant="outlined"
             color="secondary"
+            onClick={() => document.getElementById("contact-us")?.scrollIntoView({ behavior: "smooth" })}
           >
-            Contact us
+            {t('pages.home.contactUs')}
           </Button>
         </Box>
       </Box>
@@ -121,20 +124,20 @@ function HomePage() {
           padding: '60px 20px',
           backgroundColor: theme.palette.background.default,
         }}
+        id='reserve-room'
       >
         <Typography
           variant="h4"
           align="center"
           sx={{ fontWeight: '600', marginBottom: '10px' }}
         >
-          Our Rooms & Suites
+          {t('pages.home.roomsTitle')}
         </Typography>
         <Typography
           align="center"
           sx={{ color: theme.palette.text.secondary, marginBottom: '40px' }}
         >
-          Choose from our carefully designed accommodations, each offering
-          comfort, style, and modern amenities.
+          {t('pages.home.roomsSubtitle')}
         </Typography>
 
         <Grid
@@ -164,7 +167,7 @@ function HomePage() {
                       }}
                     >
                       <Typography variant="h6" sx={{ fontWeight: '600' }}>
-                        {room.title}
+                        {t(`pages.home.${room.key}Title`)}
                       </Typography>
                       <Chip
                         label={`$${room.price}/night`}
@@ -182,7 +185,7 @@ function HomePage() {
                         color: theme.palette.text.secondary,
                       }}
                     >
-                      {room.description}
+                      {t(`pages.home.${room.key}Desc`)}
                     </Typography>
                     <Typography
                       sx={{
@@ -191,13 +194,13 @@ function HomePage() {
                         color: theme.palette.text.secondary,
                       }}
                     >
-                      Up to {room.guests} guests
+                      {t('pages.home.upToGuests', { count: room.guests })}
                     </Typography>
                     <Typography
                       variant="subtitle2"
                       sx={{ marginTop: '15px', fontWeight: '600' }}
                     >
-                      Amenities
+                      {t('pages.home.amenities')}
                     </Typography>
                     <Stack
                       direction="row"
@@ -209,7 +212,6 @@ function HomePage() {
                       {room.amenities.map((amenity, idx) => (
                         <Chip
                           key={idx}
-                          // icon={amenity.icon || null}
                           label={amenity.label}
                           sx={{
                             backgroundColor: theme.palette.background.paper,
@@ -223,8 +225,9 @@ function HomePage() {
                     variant="contained"
                     color="primary"
                     sx={{ marginTop: '20px', width: '100%' }}
+                    onClick={() => setOpenLoginDialog(true)}
                   >
-                    Reserve Now
+                    {t('pages.home.reserveNow')}
                   </Button>
                 </CardContent>
               </Card>
@@ -239,6 +242,7 @@ function HomePage() {
           color: theme.palette.primary.contrastText,
           padding: '80px 0 40px 0',
         }}
+        id='contact-us'
       >
         <Grid
           container
@@ -259,59 +263,42 @@ function HomePage() {
               >
                 <RoomServiceIcon />
               </Box>
-              Grand Hotel
+              {t('pages.home.footerTitle')}
             </Typography>
             <Typography sx={{ mt: 2, color: theme.palette.text.secondary }}>
-              Experience luxury and comfort in the heart of the city with our
-              world-class service.
+              {t('pages.home.footerDesc')}
             </Typography>
           </Grid>
 
           <Grid size={1}>
-            <Typography>Contact Info</Typography>
+            <Typography>{t('pages.home.contactInfo')}</Typography>
             <Stack spacing={2} sx={{ mt: 2 }}>
-              <Typography
-                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-              >
-                <LocationOnIcon color="secondary" /> 123 Grand Avenue, City
-                Center
+              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <LocationOnIcon color="secondary" /> {t('pages.home.address')}
               </Typography>
-              <Typography
-                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-              >
-                <PhoneIcon color="secondary" /> +1 (555) 123-4567
+              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <PhoneIcon color="secondary" /> {t('pages.home.phone')}
               </Typography>
-              <Typography
-                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-              >
-                <EmailIcon color="secondary" /> reservations@grandhotel.com
+              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <EmailIcon color="secondary" /> {t('pages.home.email')}
               </Typography>
             </Stack>
           </Grid>
 
           <Grid size={1}>
-            <Typography>Services</Typography>
+            <Typography>{t('pages.home.services')}</Typography>
             <Stack spacing={2} sx={{ mt: 2 }}>
-              <Typography
-                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-              >
-                <RoomServiceIcon color="secondary" /> Fine Dining & Room Service
+              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <RoomServiceIcon color="secondary" /> {t('pages.home.serviceDining')}
               </Typography>
-              <Typography
-                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-              >
-                <DirectionsCarIcon color="secondary" /> Transportation &
-                Concierge
+              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <DirectionsCarIcon color="secondary" /> {t('pages.home.serviceTransport')}
               </Typography>
-              <Typography
-                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-              >
-                <SpaIcon color="secondary" /> Spa & Wellness Center
+              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <SpaIcon color="secondary" /> {t('pages.home.serviceSpa')}
               </Typography>
-              <Typography
-                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-              >
-                <SportsTennisIcon color="secondary" /> Recreation Facilities
+              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <SportsTennisIcon color="secondary" /> {t('pages.home.serviceRecreation')}
               </Typography>
             </Stack>
           </Grid>
@@ -325,7 +312,7 @@ function HomePage() {
           }}
         >
           <Typography color="text.secondary">
-            © 2024 Grand Hotel. All rights reserved.
+            {t('pages.home.rights')}
           </Typography>
         </Box>
       </Box>

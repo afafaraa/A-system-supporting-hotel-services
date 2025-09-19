@@ -2,7 +2,15 @@
   "date": {
     "locale": "en-US",
     "shortWeekdays": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    "fullWeekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "fullWeekdays": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ],
     "separator": ","
   },
   "navbar": {
@@ -120,6 +128,35 @@
       "available": "Available",
       "unavailable": "Unavailable",
       "bookNow": "Book now"
+    },
+    "home": {
+      "welcomeTitle": "Welcome to Grand Hotel",
+      "welcomeSubtitle": "Experience luxury and comfort in the heart of the city. Our world-class service and elegant accommodations await you.",
+      "reserveRoom": "Reserve a Room",
+      "contactUs": "Contact us",
+      "roomsTitle": "Our Rooms & Suites",
+      "roomsSubtitle": "Choose from our carefully designed accommodations, each offering comfort, style, and modern amenities.",
+      "standardRoomTitle": "Standard Room",
+      "standardRoomDesc": "Comfortable room with essential amenities",
+      "deluxeRoomTitle": "Deluxe Room",
+      "deluxeRoomDesc": "Spacious room with premium amenities and city view",
+      "executiveSuiteTitle": "Executive Suite",
+      "executiveSuiteDesc": "Luxurious suite with separate living area and premium services",
+      "upToGuests": "Up to {{count}} guests",
+      "amenities": "Amenities",
+      "reserveNow": "Reserve Now",
+      "footerTitle": "Grand Hotel",
+      "footerDesc": "Experience luxury and comfort in the heart of the city with our world-class service.",
+      "contactInfo": "Contact Info",
+      "address": "123 Grand Avenue, City Center",
+      "phone": "+1 (555) 123-4567",
+      "email": "reservations@grandhotel.com",
+      "services": "Services",
+      "serviceDining": "Fine Dining & Room Service",
+      "serviceTransport": "Transportation & Concierge",
+      "serviceSpa": "Spa & Wellness Center",
+      "serviceRecreation": "Recreation Facilities",
+      "rights": "© 2024 Grand Hotel. All rights reserved."
     },
     "booked_services": {
       "filterBookings": "Filter Bookings",
