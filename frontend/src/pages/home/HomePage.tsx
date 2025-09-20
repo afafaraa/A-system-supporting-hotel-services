@@ -1,14 +1,4 @@
-import {
-  Box,
-  Button,
-  Typography,
-  useTheme,
-  Card,
-  CardContent,
-  Chip,
-  Stack,
-  Grid,
-} from '@mui/material';
+import { Box, Button, Typography, useTheme, Stack, Grid } from '@mui/material';
 import RssFeedIcon from '@mui/icons-material/RssFeed';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import TvIcon from '@mui/icons-material/Tv';
@@ -24,41 +14,69 @@ import RoomServiceIcon from '@mui/icons-material/RoomService';
 import { useTranslation } from 'react-i18next';
 import LoginDialog from './LoginDialog.tsx';
 import { useState } from 'react';
+import { Room } from '../../types/room.ts';
+import RoomCard from '../guest/hotel-booking/RoomCard.tsx';
 
-const roomOptions = [
+export function mapAmenityToIcon(key: string, fontSize?: string) {
+  switch (key) {
+    case 'wifi':
+      return <RssFeedIcon sx={{fontSize: fontSize ?? '12px'}} />;
+    case 'ac':
+      return <AcUnitIcon sx={{fontSize: fontSize ?? '12px'}}/>;
+    case 'tv':
+      return <TvIcon sx={{fontSize: fontSize ?? '12px'}}/>;
+    case 'miniFridge':
+      return <RestaurantIcon sx={{fontSize: fontSize ?? '12px'}}/>;
+    case 'miniBar':
+      return <LocalBarIcon sx={{fontSize: fontSize ?? '12px'}}/>;
+    default:
+      return (<span></span>);
+  }
+}
+
+export const roomOptions: Room[] = [
   {
-    key: 'standardRoom',
+    id: '1',
+    type: 'standard',
     price: 120,
-    guests: 2,
+    status: 'Available',
+    guestsTotal: 2,
+    description: 'A comfortable standard room with all the basic amenities for a pleasant stay.',
     amenities: [
-      { icon: <RssFeedIcon />, label: 'Free Wi-Fi' },
-      { icon: <AcUnitIcon />, label: 'Air Conditioning' },
-      { icon: <TvIcon />, label: 'Cable TV' },
-      { icon: <RestaurantIcon />, label: 'Mini Fridge' },
+      { key: 'wifi', label: 'Free Wi-Fi' },
+      { key: 'ac', label: 'Air Conditioning' },
+      { key: 'tv', label: 'Cable TV' },
+      { key: 'miniFridge', label: 'Mini Fridge' },
     ],
   },
   {
-    key: 'deluxeRoom',
+    id: '2',
+    type: 'deluxe',
     price: 180,
-    guests: 3,
+    status: 'Available',
+    guestsTotal: 3,
+    description: 'Spacious deluxe room with premium amenities and elegant furnishings for a luxurious experience.',
     amenities: [
-      { icon: <RssFeedIcon />, label: 'Free Wi-Fi' },
-      { icon: <AcUnitIcon />, label: 'Air Conditioning' },
-      { icon: <TvIcon />, label: 'Smart TV' },
-      { icon: <LocalBarIcon />, label: 'Mini Bar' },
-      { label: '+2 more' },
+      { key: 'wifi', label: 'Free Wi-Fi' },
+      { key: 'ac', label: 'Air Conditioning' },
+      { key: 'tv', label: 'Smart TV' },
+      { key: 'miniBar', label: 'Mini Bar' },
+      { key: 'more', label: '+2 more' },
     ],
   },
   {
-    key: 'executiveSuite',
+    id: '3',
+    type: 'exclusive',
     price: 350,
-    guests: 4,
+    status: 'Available',
+    guestsTotal: 4,
+    description: 'A top-tier exclusive suite with premium facilities, ideal for a luxurious stay or business trip.',
     amenities: [
-      { icon: <RssFeedIcon />, label: 'Free Wi-Fi' },
-      { icon: <AcUnitIcon />, label: 'Air Conditioning' },
-      { icon: <TvIcon />, label: 'Smart TV' },
-      { icon: <LocalBarIcon />, label: 'Full Bar' },
-      { label: '+4 more' },
+      { key: 'wifi', label: 'Free Wi-Fi' },
+      { key: 'ac', label: 'Air Conditioning' },
+      { key: 'tv', label: 'Smart TV' },
+      { key: 'miniBar', label: 'Full Bar' },
+      { key: 'more', label: '+4 more' },
     ],
   },
 ];
@@ -70,7 +88,7 @@ function HomePage() {
 
   return (
     <main style={{ padding: 0, width: '100%' }}>
-      <LoginDialog open={openLoginDialog} setOpen={setOpenLoginDialog}/>
+      <LoginDialog open={openLoginDialog} setOpen={setOpenLoginDialog} />
       <Box
         sx={{
           width: '100%',
@@ -102,7 +120,11 @@ function HomePage() {
               color: theme.palette.primary.contrastText,
               padding: '6px 14px',
             }}
-            onClick={() => document.getElementById("reserve-room")?.scrollIntoView({ behavior: "smooth" })}
+            onClick={() =>
+              document
+                .getElementById('reserve-room')
+                ?.scrollIntoView({ behavior: 'smooth' })
+            }
           >
             {t('pages.home.reserveRoom')}
           </Button>
@@ -112,7 +134,11 @@ function HomePage() {
             }}
             variant="outlined"
             color="secondary"
-            onClick={() => document.getElementById("contact-us")?.scrollIntoView({ behavior: "smooth" })}
+            onClick={() =>
+              document
+                .getElementById('contact-us')
+                ?.scrollIntoView({ behavior: 'smooth' })
+            }
           >
             {t('pages.home.contactUs')}
           </Button>
@@ -124,7 +150,7 @@ function HomePage() {
           padding: '60px 20px',
           backgroundColor: theme.palette.background.default,
         }}
-        id='reserve-room'
+        id="reserve-room"
       >
         <Typography
           variant="h4"
@@ -148,89 +174,7 @@ function HomePage() {
         >
           {roomOptions.map((room, index) => (
             <Grid sx={{ flexGrow: 1 }} size={1} key={index}>
-              <Card sx={{ borderRadius: '10px', height: '100%' }}>
-                <CardContent
-                  sx={{
-                    padding: '20px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    height: '100%',
-                  }}
-                >
-                  <div>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <Typography variant="h6" sx={{ fontWeight: '600' }}>
-                        {t(`pages.home.${room.key}Title`)}
-                      </Typography>
-                      <Chip
-                        label={`$${room.price}/night`}
-                        sx={{
-                          backgroundColor: theme.palette.secondary.main,
-                          fontWeight: 'bold',
-                          borderRadius: '10px',
-                        }}
-                      />
-                    </Box>
-
-                    <Typography
-                      sx={{
-                        marginTop: '10px',
-                        color: theme.palette.text.secondary,
-                      }}
-                    >
-                      {t(`pages.home.${room.key}Desc`)}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        marginTop: '8px',
-                        fontSize: '14px',
-                        color: theme.palette.text.secondary,
-                      }}
-                    >
-                      {t('pages.home.upToGuests', { count: room.guests })}
-                    </Typography>
-                    <Typography
-                      variant="subtitle2"
-                      sx={{ marginTop: '15px', fontWeight: '600' }}
-                    >
-                      {t('pages.home.amenities')}
-                    </Typography>
-                    <Stack
-                      direction="row"
-                      spacing={1}
-                      justifyContent="center"
-                      flexWrap="wrap"
-                      sx={{ marginTop: '10px' }}
-                    >
-                      {room.amenities.map((amenity, idx) => (
-                        <Chip
-                          key={idx}
-                          label={amenity.label}
-                          sx={{
-                            backgroundColor: theme.palette.background.paper,
-                          }}
-                        />
-                      ))}
-                    </Stack>
-                  </div>
-
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    sx={{ marginTop: '20px', width: '100%' }}
-                    onClick={() => setOpenLoginDialog(true)}
-                  >
-                    {t('pages.home.reserveNow')}
-                  </Button>
-                </CardContent>
-              </Card>
+              <RoomCard room={room} onReserve={() => setOpenLoginDialog(true)} size="medium"/>
             </Grid>
           ))}
         </Grid>
@@ -242,7 +186,7 @@ function HomePage() {
           color: theme.palette.primary.contrastText,
           padding: '80px 0 40px 0',
         }}
-        id='contact-us'
+        id="contact-us"
       >
         <Grid
           container
@@ -273,13 +217,19 @@ function HomePage() {
           <Grid size={1}>
             <Typography>{t('pages.home.contactInfo')}</Typography>
             <Stack spacing={2} sx={{ mt: 2 }}>
-              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography
+                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+              >
                 <LocationOnIcon color="secondary" /> {t('pages.home.address')}
               </Typography>
-              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography
+                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+              >
                 <PhoneIcon color="secondary" /> {t('pages.home.phone')}
               </Typography>
-              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography
+                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+              >
                 <EmailIcon color="secondary" /> {t('pages.home.email')}
               </Typography>
             </Stack>
@@ -288,17 +238,28 @@ function HomePage() {
           <Grid size={1}>
             <Typography>{t('pages.home.services')}</Typography>
             <Stack spacing={2} sx={{ mt: 2 }}>
-              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <RoomServiceIcon color="secondary" /> {t('pages.home.serviceDining')}
+              <Typography
+                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+              >
+                <RoomServiceIcon color="secondary" />{' '}
+                {t('pages.home.serviceDining')}
               </Typography>
-              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <DirectionsCarIcon color="secondary" /> {t('pages.home.serviceTransport')}
+              <Typography
+                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+              >
+                <DirectionsCarIcon color="secondary" />{' '}
+                {t('pages.home.serviceTransport')}
               </Typography>
-              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography
+                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+              >
                 <SpaIcon color="secondary" /> {t('pages.home.serviceSpa')}
               </Typography>
-              <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <SportsTennisIcon color="secondary" /> {t('pages.home.serviceRecreation')}
+              <Typography
+                sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+              >
+                <SportsTennisIcon color="secondary" />{' '}
+                {t('pages.home.serviceRecreation')}
               </Typography>
             </Stack>
           </Grid>

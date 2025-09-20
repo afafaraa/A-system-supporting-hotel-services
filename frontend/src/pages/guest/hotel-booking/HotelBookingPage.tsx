@@ -1,13 +1,11 @@
 import {
   Typography,
-  Button,
   Grid,
-  Card,
-  CardContent,
-  Divider,
   useTheme,
 } from '@mui/material';
 import { SectionWrapper } from '../../../theme/styled-components/SectionWrapper.ts';
+import { roomOptions } from '../../home/HomePage.tsx';
+import RoomCard from './RoomCard.tsx';
 
 export default function HotelBookingPage() {
   const theme = useTheme();
@@ -76,85 +74,9 @@ export default function HotelBookingPage() {
         </Typography>
 
         <Grid container spacing={2} columns={{ xs: 1, sm: 2, md: 3 }}>
-          {[
-            {
-              type: 'Standard Room',
-              price: 80,
-              status: 'Available',
-            },
-            {
-              type: 'Deluxe Room',
-              price: 120,
-              status: 'Available',
-            },
-            {
-              type: 'Exclusive Suite',
-              price: 220,
-              status: 'Available',
-            },
-          ].map((room, index) => (
+          {roomOptions.map((room, index) => (
             <Grid size={1} key={index}>
-              <Card
-                variant="outlined"
-                sx={{
-                  borderRadius: 2,
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  padding: '15px 10px',
-                }}
-              >
-                <CardContent>
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Typography sx={{ fontWeight: 600, fontSize: '16px' }}>
-                      {room.type}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        color: `${theme.palette.primary.contrastText}`,
-                        backgroundColor: `${theme.palette.primary.main}`,
-                        fontSize: '12px',
-                        fontWeight: 600,
-                        padding: '2px 5px',
-                        borderRadius: '5px',
-                      }}
-                    >
-                      {room.status}
-                    </Typography>
-                  </div>
-                  <Divider sx={{ my: 1 }} />
-
-                  <Typography
-                    sx={{
-                      fontWeight: 600,
-                      fontSize: '20px',
-                      color: `${theme.palette.primary.main}`,
-                    }}
-                  >
-                    {room.price}$
-                  </Typography>
-                  <Typography fontSize="12px" color="text.secondary">
-                    Up to 2 guests per night
-                  </Typography>
-
-                  <Typography sx={{ mt: 2, fontWeight: 500 }}>
-                    Amenities:
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    (Few listed)
-                  </Typography>
-                  <Button fullWidth sx={{ borderRadius: '5px', mt: '15px' }}>
-                    Reserve Room
-                  </Button>
-                </CardContent>
-              </Card>
+              <RoomCard room={room} onReserve={() => {}} size="small"/>
             </Grid>
           ))}
         </Grid>
