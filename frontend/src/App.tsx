@@ -39,8 +39,8 @@ function App(){
       <AppInitializer>
         <Routes>
           <Route element={<AuthenticatedLayout />}>
+            <Route path="/profile" element={<ProfilePage />} />
             <Route element={<ProtectedRoute allowedRoles={["ROLE_GUEST"]}/>}>
-              <Route path="/profile" element={<ProfilePage />} />
               <Route path="/service-schedule/:id" element={<OrderServicePage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/guest" element={<GuestLayout />}>
