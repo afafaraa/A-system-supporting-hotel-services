@@ -17,7 +17,6 @@ export const darkPalette: PaletteOptions = {
   background: {
     default: 'hsl(256, 8%, 10%)',
     paper: 'hsl(256, 8%, 14%)',
-    shadow: 'hsl(256, 20%, 20%)',
   },
   text: {
     primary: 'hsl(0, 0%, 95%)',

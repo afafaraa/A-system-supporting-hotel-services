@@ -14,23 +14,6 @@ import { useTranslation } from 'react-i18next';
 import CancelServiceDialog from './CancelServiceDialog';
 import RateServiceDialog from './RateServiceDialog';
 
-function mapStatusToLabel(status?: string, t?: (key: string) => string) {
-  if (!status) return t ? t('pages.booked_services.unknown') : 'Unknown';
-  switch (status) {
-    case 'REQUESTED':
-      return t ? t('pages.booked_services.pending') : 'Pending';
-    case 'ACTIVE':
-      return t ? t('pages.booked_services.confirmed') : 'Confirmed';
-    case 'IN_PROGRESS':
-      return t ? t('pages.booked_services.inProgress') : 'In progress';
-    case 'COMPLETED':
-      return t ? t('pages.booked_services.completed') : 'Completed';
-    case 'CANCELED':
-      return t ? t('pages.booked_services.canceled') : 'Canceled';
-    default:
-      return status;
-  }
-}
 
 function ServiceItem({
   item,
@@ -45,12 +28,30 @@ function ServiceItem({
   const { t } = useTranslation();
 
   const statusColor: Record<string, string> = {
-    CANCELED: theme.palette.calendar?.CANCELED || '#666',
-    ACTIVE: theme.palette.calendar?.ACTIVE || '#f5a623',
-    REQUESTED: theme.palette.calendar?.REQUESTED || '#8e44ad',
-    COMPLETED: theme.palette.calendar?.COMPLETED || '#27ae60',
-    IN_PROGRESS: theme.palette.calendar?.AVAILABLE || '#3498db',
+    CANCELED: theme.palette.calendar?.CANCELED,
+    ACTIVE: theme.palette.calendar?.ACTIVE,
+    REQUESTED: theme.palette.calendar?.REQUESTED,
+    COMPLETED: theme.palette.calendar?.COMPLETED,
+    IN_PROGRESS: theme.palette.calendar?.AVAILABLE,
   };
+
+  function mapStatusToLabel(status?: string) {
+    if (!status) return t('pages.booked_services.unknown');
+    switch (status) {
+      case 'REQUESTED':
+        return t('pages.booked_services.pending');
+      case 'ACTIVE':
+        return t('pages.booked_services.confirmed');
+      case 'IN_PROGRESS':
+        return t('pages.booked_services.inProgress');
+      case 'COMPLETED':
+        return t('pages.booked_services.completed');
+      case 'CANCELED':
+        return t('pages.booked_services.canceled');
+      default:
+        return status;
+    }
+  }
   const badgeBg = statusColor[item.status] || theme.palette.primary.main;
 
   const [openCancel, setOpenCancel] = useState(false);
@@ -83,7 +84,7 @@ function ServiceItem({
               </Typography>
             </Box>
             <Chip
-              label={mapStatusToLabel(item.status, t)}
+              label={mapStatusToLabel(item.status)}
               size="small"
               sx={{
                 backgroundColor: badgeBg,

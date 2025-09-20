@@ -6,7 +6,7 @@ import Navbar from '../navigation/Navbar.tsx';
 
 function PublicLayout({ navbar }: { navbar: boolean }) {
   return (
-    <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
+    <Container disableGutters maxWidth={false} sx={{ height: '100dvh' }}>
       {/*<Box position="fixed" sx={{margin: '90px 30px '}}><LanguageSwitcher/></Box>*/}
       {!navbar && (
         <Box position="fixed" m={1.5} right={0}>

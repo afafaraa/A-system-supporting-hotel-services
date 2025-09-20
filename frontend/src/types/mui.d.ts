@@ -23,8 +23,4 @@ declare module '@mui/material/styles' {
     success?: string;
     error?: string;
   }
-
-  interface TypeBackground {
-    shadow?: string;
-  }
 }
