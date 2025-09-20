@@ -1,9 +1,4 @@
 import { Box, Button, Typography, useTheme, Stack, Grid } from '@mui/material';
-import RssFeedIcon from '@mui/icons-material/RssFeed';
-import AcUnitIcon from '@mui/icons-material/AcUnit';
-import TvIcon from '@mui/icons-material/Tv';
-import LocalBarIcon from '@mui/icons-material/LocalBar';
-import RestaurantIcon from '@mui/icons-material/Restaurant';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
@@ -16,23 +11,6 @@ import LoginDialog from './LoginDialog.tsx';
 import { useState } from 'react';
 import { Room } from '../../types/room.ts';
 import RoomCard from '../guest/hotel-booking/RoomCard.tsx';
-
-export function mapAmenityToIcon(key: string, fontSize?: string) {
-  switch (key) {
-    case 'wifi':
-      return <RssFeedIcon sx={{fontSize: fontSize ?? '12px'}} />;
-    case 'ac':
-      return <AcUnitIcon sx={{fontSize: fontSize ?? '12px'}}/>;
-    case 'tv':
-      return <TvIcon sx={{fontSize: fontSize ?? '12px'}}/>;
-    case 'miniFridge':
-      return <RestaurantIcon sx={{fontSize: fontSize ?? '12px'}}/>;
-    case 'miniBar':
-      return <LocalBarIcon sx={{fontSize: fontSize ?? '12px'}}/>;
-    default:
-      return (<span></span>);
-  }
-}
 
 export const roomOptions: Room[] = [
   {

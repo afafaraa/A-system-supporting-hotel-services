@@ -9,9 +9,9 @@ import {
   useTheme,
 } from '@mui/material';
 import { Room } from '../../../types/room.ts';
-import { mapAmenityToIcon } from '../../home/HomePage.tsx';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
+import { mapAmenityToIcon } from '../../../utils/mapAmenityToIcon.tsx';
 
 export default function RoomCard({
   room,
@@ -26,7 +26,7 @@ export default function RoomCard({
   const { t } = useTranslation();
 
   const fontSize = useMemo(() => {
-    switch (size){
+    switch (size) {
       case 'medium':
         return 16;
       case 'small':
@@ -37,7 +37,14 @@ export default function RoomCard({
   }, [size]);
 
   return (
-    <Card sx={{ borderRadius: '10px', height: '100%', border: `1px solid ${theme.palette.primary.border}` }} elevation={0}>
+    <Card
+      sx={{
+        borderRadius: '10px',
+        height: '100%',
+        border: `1px solid ${theme.palette.primary.border}`,
+      }}
+      elevation={0}
+    >
       <CardContent
         sx={{
           padding: '20px',
@@ -55,7 +62,10 @@ export default function RoomCard({
               alignItems: 'center',
             }}
           >
-            <Typography variant="h6" sx={{ fontWeight: 600, fontSize: `${fontSize + 4}px` }}>
+            <Typography
+              variant="h6"
+              sx={{ fontWeight: 600, fontSize: `${fontSize + 4}px` }}
+            >
               {t(`pages.home.${room.type}Title`)}
             </Typography>
             <Chip
@@ -70,7 +80,11 @@ export default function RoomCard({
           </Box>
 
           <Typography
-            sx={{ marginTop: '10px', color: theme.palette.text.secondary, fontSize: `${fontSize}px` }}
+            sx={{
+              marginTop: '10px',
+              color: theme.palette.text.secondary,
+              fontSize: `${fontSize}px`,
+            }}
           >
             {t(`pages.home.${room.type}Desc`)}
           </Typography>
@@ -84,10 +98,16 @@ export default function RoomCard({
           >
             Up to {room.guestsTotal} guests
           </Typography>
+        </div>
 
+        <div>
           <Typography
             variant="subtitle2"
-            sx={{ marginTop: '15px', fontWeight: '600', fontSize: `${fontSize}` }}
+            sx={{
+              marginTop: '15px',
+              fontWeight: '600',
+              fontSize: `${fontSize}`,
+            }}
           >
             Amenities
           </Typography>
@@ -96,27 +116,34 @@ export default function RoomCard({
             direction="row"
             justifyContent="center"
             flexWrap="wrap"
-            sx={{ marginTop: '10px'}}
+            sx={{ marginTop: '10px' }}
           >
             {room.amenities.map((amenity, idx) => (
               <Chip
                 key={idx}
                 icon={mapAmenityToIcon(amenity.key, `${fontSize}px`)}
                 label={amenity.label}
-                sx={{ backgroundColor: theme.palette.background.paper,  fontSize: `${fontSize - 2}px`}}
+                sx={{
+                  backgroundColor: theme.palette.background.paper,
+                  fontSize: `${fontSize - 2}px`,
+                  border: `1px solid ${theme.palette.primary.border}`,
+                  padding: 0,
+                  height: 'auto',
+                  borderRadius: '5px',
+                  margin: '2px',
+                }}
               />
             ))}
           </Stack>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ marginTop: '20px', width: '100%' }}
+            onClick={onReserve}
+          >
+            Reserve Now
+          </Button>
         </div>
-
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ marginTop: '20px', width: '100%' }}
-          onClick={onReserve}
-        >
-          Reserve Now
-        </Button>
       </CardContent>
     </Card>
   );
