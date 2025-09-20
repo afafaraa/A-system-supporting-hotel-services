@@ -32,7 +32,7 @@ function ServiceItem({
     ACTIVE: theme.palette.calendar?.ACTIVE,
     REQUESTED: theme.palette.calendar?.REQUESTED,
     COMPLETED: theme.palette.calendar?.COMPLETED,
-    IN_PROGRESS: theme.palette.calendar?.AVAILABLE,
+    AVAILABLE: theme.palette.calendar?.AVAILABLE,
   };
 
   function mapStatusToLabel(status?: string) {
@@ -41,13 +41,13 @@ function ServiceItem({
       case 'REQUESTED':
         return t('pages.booked_services.pending');
       case 'ACTIVE':
-        return t('pages.booked_services.confirmed');
-      case 'IN_PROGRESS':
         return t('pages.booked_services.inProgress');
       case 'COMPLETED':
         return t('pages.booked_services.completed');
       case 'CANCELED':
         return t('pages.booked_services.canceled');
+      case 'AVAILABLE':
+        return t('pages.booked_services.available');
       default:
         return status;
     }
