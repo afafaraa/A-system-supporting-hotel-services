@@ -17,25 +17,16 @@ const components: Components<Omit<Theme, 'components'>> = {
         ...(ownerState.variant === 'outlined'
           ? ownerState.color === 'error'
             ? {
-              border: `1px solid ${theme.palette.error.main}`,
-              backgroundColor: 'transparent',
-              color: theme.palette.error.main,
-              '&:hover': {
-                backgroundColor: theme.palette.error.main,
                 border: `1px solid ${theme.palette.error.main}`,
-                color: theme.palette.primary.contrastText,
-              },
-            }
+                backgroundColor: 'transparent',
+                '&:hover': {
+                  backgroundColor: theme.palette.error.main,
+                  border: `1px solid ${theme.palette.error.main}`,
+                  color: theme.palette.primary.contrastText,
+                },
+              }
             : {}
-          : ownerState.color === 'error'
-            ? {
-              backgroundColor: theme.palette.error.main,
-              color: theme.palette.error.contrastText,
-            }
-            : {
-              backgroundColor: theme.palette.primary.main,
-              color: theme.palette.primary.contrastText,
-            }),
+          : {}),
         '&.Mui-disabled': {
           backgroundColor: theme.palette.background.default,
           color: theme.palette.text.secondary,
@@ -74,9 +65,9 @@ const components: Components<Omit<Theme, 'components'>> = {
     styleOverrides: {
       root: ({ theme }) => ({
         display: 'block',
-        textDecoration: "none",
-        "&:hover": {
-          textDecoration: "underline",
+        textDecoration: 'none',
+        '&:hover': {
+          textDecoration: 'underline',
           color: theme.palette.primary.main,
         },
       }),
