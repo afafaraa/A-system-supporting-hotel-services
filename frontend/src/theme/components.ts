@@ -14,19 +14,13 @@ const components: Components<Omit<Theme, 'components'>> = {
       root: ({ ownerState, theme }) => ({
         fontWeight: 'bold',
         textTransform: 'none',
-        ...(ownerState.variant === 'outlined'
-          ? ownerState.color === 'error'
-            ? {
-                border: `1px solid ${theme.palette.error.main}`,
-                backgroundColor: 'transparent',
-                '&:hover': {
-                  backgroundColor: theme.palette.error.main,
-                  border: `1px solid ${theme.palette.error.main}`,
-                  color: theme.palette.primary.contrastText,
-                },
-              }
-            : {}
-          : {}),
+        ...(ownerState.variant === 'outlined' && ownerState.color === 'error' && {
+          transition: theme.transitions.create(['background-color', 'color']),
+          '&:hover': {
+            backgroundColor: theme.palette.error.main,
+            color: theme.palette.error.contrastText,
+          },
+        }),
         '&.Mui-disabled': {
           backgroundColor: theme.palette.background.default,
           color: theme.palette.text.secondary,
@@ -59,6 +53,11 @@ const components: Components<Omit<Theme, 'components'>> = {
       root: {
         backgroundImage: 'none',
       },
+    },
+  },
+  MuiCard: {
+    defaultProps: {
+      variant: "outlined",
     },
   },
   MuiLink: {

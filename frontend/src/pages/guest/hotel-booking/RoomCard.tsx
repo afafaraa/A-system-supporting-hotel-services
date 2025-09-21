@@ -41,9 +41,7 @@ export default function RoomCard({
       sx={{
         borderRadius: '10px',
         height: '100%',
-        border: `1px solid ${theme.palette.primary.border}`,
       }}
-      elevation={0}
     >
       <CardContent
         sx={{
@@ -70,8 +68,8 @@ export default function RoomCard({
             </Typography>
             <Chip
               label={`${room.price}/night`}
+              color="secondary"
               sx={{
-                backgroundColor: theme.palette.secondary.main,
                 fontWeight: 'bold',
                 borderRadius: '10px',
                 fontSize: `${fontSize - 2}px`,
@@ -126,7 +124,7 @@ export default function RoomCard({
                 sx={{
                   backgroundColor: theme.palette.background.paper,
                   fontSize: `${fontSize - 2}px`,
-                  border: `1px solid ${theme.palette.primary.border}`,
+                  border: `1px solid ${theme.palette.divider}`,
                   padding: 0,
                   height: 'auto',
                   borderRadius: '5px',

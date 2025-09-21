@@ -1,13 +1,15 @@
 import {useEffect, useState} from "react";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {
-  Box, Stack, Typography,
-  Paper, Card
+  Box, Typography,
+  Card
 } from "@mui/material";
 import { useTranslation } from 'react-i18next';
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import {Notification, NotificationVariant} from "../../types/notification.ts";
 import {formatDateFromTimestamp, formatTimeFromTimestamp} from "../../utils/dateFormatting.ts";
+import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
+import Title from "./Title.tsx";
 
 function NotificationsContainer() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -25,19 +27,10 @@ function NotificationsContainer() {
   }, []);
 
   return (
-    <Paper variant="outlined" sx={{p: 4, borderRadius: 4}}>
-      <Box mb={notifications.length === 0 ? 0 : 2}>
-        <Stack direction="row" alignItems="center" fontSize="1.5rem" spacing={0.8}>
-          <NotificationsOutlinedIcon fontSize="inherit"/>
-          <Typography fontSize="inherit" lineHeight="2rem">
-            {tc("title")}
-          </Typography>
-        </Stack>
-        <Typography fontSize="0.8rem" color="text.secondary" mt={0.5}>
-          {notifications.length} {tc("unread")}
-        </Typography>
-      </Box>
-
+    <SectionCard size={3}>
+      <Title title={<><NotificationsOutlinedIcon /> {tc("title")}</>}
+             subtitle={<>{notifications.length} {tc("unread")}</>}
+             mb={notifications.length === 0 ? 0 : 2} />
       {notifications.length !== 0 && notifications.map(n => {
         const { icon: Icon, color } = NotificationVariant[n.variant];
         return (
@@ -48,13 +41,13 @@ function NotificationsContainer() {
                 <Typography fontSize="1.1rem" noWrap textOverflow="ellipsis" overflow="hidden">{n.title}</Typography>
               </Box>
               <Typography fontSize="0.8rem">{n.message}</Typography>
-              <Typography fontSize="0.8rem" mt={1}>
+              <Typography fontSize="0.8rem" mt={1} color="text.secondary">
                 {formatDateFromTimestamp(n.timestamp)}, {formatTimeFromTimestamp(n.timestamp)}
               </Typography>
           </Card>
         )
       })}
-    </Paper>
+    </SectionCard>
   )
 }
 

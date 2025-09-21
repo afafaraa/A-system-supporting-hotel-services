@@ -1,8 +1,8 @@
 import axiosApi from "../../middleware/axiosApi";
 import {useEffect, useState} from 'react';
-import {useNavigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
 import {Button, Typography} from "@mui/material";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {setUserData} from "../../components/auth/auth.tsx";
 import PersonIcon from "@mui/icons-material/Person";
 import KeyIcon from '@mui/icons-material/Key';
@@ -13,8 +13,11 @@ import StyledInput from "../../theme/styled-components/StyledInput.ts";
 import InputLabel from "../../components/ui/InputLabel.tsx";
 import LockIcon from '@mui/icons-material/Lock';
 import generatePasswordAdornment from "../../components/ui/generatePasswordAdornment.tsx";
+import dashboardDestination from "../../utils/dashboardDestination.ts";
+import {selectUser} from "../../redux/slices/userSlice.ts";
 
 function RegisterPage(){
+  const user = useSelector(selectUser);
   const [code, setCode] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -32,6 +35,8 @@ function RegisterPage(){
       return () => clearTimeout(timer);
     }
   }, [error]);
+
+  if (user) return <Navigate to={dashboardDestination(user.role)} replace />;
 
   const disabled = code === '' || username === '' || password === '';
 

@@ -27,7 +27,7 @@ function CalendarGrid(
       <Typography fontSize={{xs: 10, sm: 11}} color="text.secondary" mb={3}>
         {formatTimeRange(new Date(schedule.date), schedule.duration)}
       </Typography>
-      <Box px={0.8} py={0.4} position="absolute" bottom={4} right={4} fontSize={11} fontWeight="bold"
+      <Box px={0.8} py={0.6} position="absolute" bottom={4} right={4} fontSize={11} fontWeight="bold"
            color={`calendar.text`} bgcolor={`calendar.${schedule.status}`}
            sx={{borderRadius: 1.5}}>
         {t(`order_status.${schedule.status}`)}

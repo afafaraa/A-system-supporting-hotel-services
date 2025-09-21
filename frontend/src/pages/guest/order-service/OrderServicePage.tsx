@@ -8,6 +8,7 @@ import { selectShoppingCart } from '../../../redux/slices/shoppingCartSlice.ts';
 import { useSelector } from 'react-redux';
 import ServiceDescription from './ServiceDescription.tsx';
 import ServiceCalendar from './ServiceCalendar.tsx';
+import AppLink from "../../../components/ui/AppLink.tsx";
 
 export type OrderServiceProps = {
   id: string;
@@ -96,6 +97,7 @@ function OrderServicePage() {
 
   return (
     <main style={{ width: '100%' }}>
+      <AppLink to="/guest/available" display="inline-block" color="text.primary" mb={1}>{"< Go back"}</AppLink>
       <Grid container spacing={3} columns={{ xs: 1, md: 2}}>
         <ServiceDescription
           service={service}

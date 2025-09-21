@@ -5,17 +5,18 @@ import TvIcon from '@mui/icons-material/Tv';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 
 export function mapAmenityToIcon(key: string, fontSize?: string) {
+  const iconStyle = {fontSize: fontSize ?? '12px'};
   switch (key) {
     case 'wifi':
-      return <RssFeedIcon sx={{fontSize: fontSize ?? '12px'}} />;
+      return <RssFeedIcon sx={iconStyle} />;
     case 'ac':
-      return <AcUnitIcon sx={{fontSize: fontSize ?? '12px'}}/>;
+      return <AcUnitIcon sx={iconStyle}/>;
     case 'tv':
-      return <TvIcon sx={{fontSize: fontSize ?? '12px'}}/>;
+      return <TvIcon sx={iconStyle}/>;
     case 'miniFridge':
-      return <RestaurantIcon sx={{fontSize: fontSize ?? '12px'}}/>;
+      return <RestaurantIcon sx={iconStyle}/>;
     case 'miniBar':
-      return <LocalBarIcon sx={{fontSize: fontSize ?? '12px'}}/>;
+      return <LocalBarIcon sx={iconStyle}/>;
     default:
       return (<span></span>);
   }

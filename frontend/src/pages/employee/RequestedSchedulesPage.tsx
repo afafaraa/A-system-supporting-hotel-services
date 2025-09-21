@@ -75,30 +75,30 @@ function RequestedSchedulesPage() {
   };
 
   const StyledButton = styled(Button)(({theme}) => ({
-    fontWeight: "bold", textTransform: "none", height: 40, minWidth: 40,
-    [theme.breakpoints.down('md')]: {width: 40, "& .MuiButton-startIcon": {margin: 0}},
+    fontWeight: "bold", textTransform: "none", height: 40, minWidth: 40, borderRadius: 12, padding: '1rem',
+    [theme.breakpoints.down('md')]: {padding: '1.5rem', width: 40, "& .MuiButton-startIcon": {margin: 0}},
   }));
 
   function renderActions(schedule: Schedule) {
     switch (schedule.status) {
       case OrderStatus.REQUESTED:
         return <>
-          <StyledButton onClick={(e) => handleScheduleAction(schedule, "confirm", e)}
+          <StyledButton size="small" onClick={(e) => handleScheduleAction(schedule, "confirm", e)}
                         variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={actionLoading} sx={{mr: {xs: 1, md: 2}}}>
             <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.employee.schedule_details.confirm")}</Box>
           </StyledButton>
-          <StyledButton onClick={(e) => confirmAction(schedule, "reject", e)}
+          <StyledButton size="small" onClick={(e) => confirmAction(schedule, "reject", e)}
                         variant="outlined" color="error" startIcon={<CancelOutlinedIcon/>} loading={actionLoading}>
             <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.employee.schedule_details.reject")}</Box>
           </StyledButton>
         </>;
       case OrderStatus.ACTIVE:
         return <>
-          <StyledButton onClick={(e) => handleScheduleAction(schedule, "complete", e)}
+          <StyledButton size="small" onClick={(e) => handleScheduleAction(schedule, "complete", e)}
                         variant="contained" color="success" startIcon={<TaskAltOutlinedIcon/>} loading={actionLoading} sx={{mr: {xs: 1, md: 2}}}>
             <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.employee.schedule_details.complete")}</Box>
           </StyledButton>
-          <StyledButton onClick={(e) => confirmAction(schedule, "cancel", e)}
+          <StyledButton size="small" onClick={(e) => confirmAction(schedule, "cancel", e)}
                         variant="outlined" color="error" startIcon={<CancelOutlinedIcon/>} loading={actionLoading}>
             <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.employee.schedule_details.cancel")}</Box>
           </StyledButton>
@@ -133,7 +133,7 @@ function RequestedSchedulesPage() {
               {new Date(schedule.date).toLocaleDateString(t('date.locale'))} | {formatTimeRange(new Date(schedule.date), schedule.duration)}
             </Box>
           </ServiceIcon>
-          <Stack direction="row">
+          <Stack direction="row" alignItems="center">
             {renderActions(schedule)}
           </Stack>
         </SectionCard>

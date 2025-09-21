@@ -8,11 +8,9 @@ export const lightPalette: PaletteOptions = {
     main: 'hsl(256, 80%, 60%)',
     dark: 'hsl(256, 50%, 40%)',
     contrastText: 'hsl(0, 0%, 95%)',
-    border: 'rgba(0, 0, 0, 0.25)'
   },
   secondary: {
     main: '#FFE921',
-    success: '#39D943',
   },
   background: {
     default: 'hsl(256, 20%, 95%)',
@@ -25,6 +23,10 @@ export const lightPalette: PaletteOptions = {
   action: {
     active: 'rgba(0, 0, 0, 0.75)',
   },
+  success: {
+    main: 'hsl(124, 68%, 40%)'
+  },
+  divider: 'rgba(0, 0, 0, 0.25)',
   calendar: {
     AVAILABLE: "hsl(200 60% 60%)",
     REQUESTED: "hsl(270 60% 60%)",

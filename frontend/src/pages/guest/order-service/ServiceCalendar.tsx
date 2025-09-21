@@ -43,10 +43,8 @@ function ServiceCalendar({
   return (
     <Grid flexGrow={1} size={1}>
       <Card
-        elevation={0}
         sx={{
           borderRadius: 2,
-          border: `1px solid ${theme.palette.primary.border}`,
           p: '15px 20px',
         }}
       >
@@ -67,7 +65,7 @@ function ServiceCalendar({
               value={selectedDate}
               onChange={(newDate) => setSelectedDate(newDate)}
               sx={{
-                border: `1px solid ${theme.palette.primary.border}`,
+                border: `1px solid ${theme.palette.divider}`,
                 borderRadius: '10px',
                 padding: '15px 10px 15px 10px',
                 width: '100%',

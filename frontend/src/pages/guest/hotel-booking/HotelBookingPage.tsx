@@ -11,9 +11,9 @@ export default function HotelBookingPage() {
   const theme = useTheme();
 
   return (
-    <main style={{ width: '100%', marginTop: '40px', marginBottom: '40px' }}>
+    <main>
       <SectionWrapper
-        sx={{ borderRadius: '10px', padding: '15px 20px 25px 20px' }}
+        sx={{ borderRadius: 3, padding: 3 }}
       >
         <Typography sx={{ fontWeight: 600, fontSize: '20px' }}>
           My Room Reservations
@@ -27,7 +27,7 @@ export default function HotelBookingPage() {
             display: 'flex',
             justifyContent: 'space-between',
             borderRadius: '7px',
-            border: `1px solid ${theme.palette.primary.border}`,
+            border: `1px solid ${theme.palette.divider}`,
             padding: '15px 20px',
             alignItems: 'center',
           }}
@@ -50,8 +50,8 @@ export default function HotelBookingPage() {
               backgroundColor: `${theme.palette.primary.main}`,
               color: `${theme.palette.primary.contrastText}`,
               fontWeight: 500,
-              padding: '2px 5px',
-              borderRadius: '5px',
+              padding: '4px 12px',
+              borderRadius: '8px',
             }}
           >
             Confirmed
@@ -61,9 +61,7 @@ export default function HotelBookingPage() {
 
       <SectionWrapper
         sx={{
-          borderRadius: '10px',
-          padding: '15px 20px 25px 20px',
-          marginTop: '20px',
+          borderRadius: 3, padding: 3, mt: 3,
         }}
       >
         <Typography sx={{ fontWeight: 600, fontSize: '20px' }}>

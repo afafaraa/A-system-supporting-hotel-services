@@ -8,11 +8,9 @@ export const darkPalette: PaletteOptions = {
     main: 'hsl(256, 80%, 60%)',
     dark: 'hsl(256, 50%, 40%)',
     contrastText: 'hsl(256, 95%, 95%)',
-    border: 'rgba(146, 146, 146, 0.25)',
   },
   secondary: {
     main: '#FFE921',
-    success: '#39D943',
   },
   background: {
     default: 'hsl(256, 8%, 10%)',
@@ -25,6 +23,10 @@ export const darkPalette: PaletteOptions = {
   action: {
     active: 'hsl(0, 0%, 95%)',
   },
+  success: {
+    main: 'hsl(124, 68%, 40%)'
+  },
+  divider: 'rgba(146, 146, 146, 0.25)',
   calendar: {
     AVAILABLE: "hsl(200 60% 50%)",
     REQUESTED: "hsl(270 60% 50%)",

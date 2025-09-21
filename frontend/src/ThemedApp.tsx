@@ -16,7 +16,8 @@ function ThemedApp() {
   useEffect(() => {
     localStorage.setItem('THEME', paletteMode);
     document.documentElement.setAttribute('data-theme', paletteMode);
-  }, [paletteMode]);
+    document.documentElement.style.backgroundColor = theme.palette.background.default;
+  }, [paletteMode, theme]);
 
   return (
     <PaletteContext.Provider value={{ setPalette: setPaletteMode }}>

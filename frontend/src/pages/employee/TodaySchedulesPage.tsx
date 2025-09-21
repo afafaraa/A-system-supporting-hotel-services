@@ -52,7 +52,7 @@ function TodaySchedulesPage() {
             <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? t("common.guest_unknown")} | {t("common.room")} {schedule.room ?? t("common.unknown")}</Typography>
             <Typography fontSize="13px" sx={{mt: 1}}>{formatTimeRange(new Date(schedule.date), schedule.duration)}</Typography>
           </ServiceIcon>
-          <Typography fontSize="12px" fontWeight="bold" px={{xs: 1, sm: 2}} py={0.5} borderRadius={1}
+          <Typography fontSize="12px" fontWeight="bold" px={{xs: 1, sm: 2}} py={1} borderRadius={3}
                       color="calendar.text" bgcolor={"calendar." + schedule.status}>
             {t(`order_status.${schedule.status}`)}
           </Typography>

@@ -5,7 +5,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import ServiceItem from './ServiceItem.tsx';
 import {
   Box,
-  InputAdornment,
   Chip,
   Typography,
   Stack,
@@ -90,20 +89,21 @@ function BookedServicesPage() {
   }, [services, search, filterStatus]);
 
   return (
-    <main style={{ width: '100%', marginTop: '40px', marginBottom: '40px' }}>
+    <main>
       <SectionWrapper
-        sx={{ borderRadius: '10px', padding: '15px 20px 25px 20px' }}
+        sx={{ borderRadius: 3, padding: 3, paddingTop: 2 }}
       >
         <Box display="flex" alignItems="center" justifyContent="space-between">
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <FilterListIcon
-              sx={{ color: theme.palette.primary.main, marginRight: '10px' }}
+              sx={{ color: theme.palette.primary.main, marginRight: 1 }}
             />
             <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
               {t('pages.booked_services.filterBookings')}
             </Typography>
           </div>
           <SelectInput
+            sx={{'& .MuiSelect-select': {p: '5px 12px'}}}
             labelId="booking-scope-label"
             value={filterStatus}
             onChange={(e) => setFilterStatus(String(e.target.value))}
@@ -127,20 +127,14 @@ function BookedServicesPage() {
           placeholder={t('pages.booked_services.searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          sx={{ backgroundColor: `${theme.palette.background.default}` }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon fontSize="small" />
-              </InputAdornment>
-            ),
-          }}
+          sx={{ backgroundColor: `${theme.palette.background.default}`, mt: 1 }}
+          slotProps={{ input: { startAdornment: <SearchIcon fontSize="small" /> } }}
         />
 
         <Stack
-          sx={{ marginTop: '30px' }}
+          sx={{ marginTop: '16px' }}
           direction="row"
-          spacing={1}
+          gap={1}
           flexWrap="wrap"
         >
           {STATUS_OPTIONS.map((s) => {
@@ -159,10 +153,13 @@ function BookedServicesPage() {
                 size="small"
                 sx={{
                   borderRadius: '5px',
-                  border: `1px solid ${theme.palette.primary.border}`,
+                  border: `1px solid ${theme.palette.divider}`,
                   backgroundColor: isSelected
                     ? theme.palette.primary.main
                     : 'transparent',
+                  '&:hover': {
+                    backgroundColor: isSelected ? theme.palette.primary.dark : theme.palette.action.hover,
+                  },
                   color: isSelected
                     ? theme.palette.primary.contrastText
                     : theme.palette.text.primary,
