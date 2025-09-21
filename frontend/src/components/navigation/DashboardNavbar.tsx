@@ -5,11 +5,19 @@ import {useEffect, useMemo, useRef, useState} from "react";
 import {matchPath, useLocation, useNavigate} from "react-router-dom";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import {styled} from "@mui/material/styles";
 
 interface DashboardNavbarProps {
   tabs: ReadonlyArray<{ name: string; link: string }>;
   arrowButtons?: boolean;
 }
+
+const ArrowButton = styled(IconButton)(({ theme }) => ({
+  zIndex: 2, position: "absolute", top: 2,
+  backgroundColor: theme.palette.background.paper,
+  "&:disabled": {backgroundColor: theme.palette.background.paper},
+  "&:hover": {backgroundColor: theme.palette.primary.medium}
+}));
 
 function DashboardNavbar({ tabs, arrowButtons=false }: DashboardNavbarProps) {
   const navigate = useNavigate();
@@ -76,15 +84,16 @@ function DashboardNavbar({ tabs, arrowButtons=false }: DashboardNavbarProps) {
   }
 
   return (
-    <Stack mb={2} direction="row" width="100%" borderRadius="99px" height={40} p={0.5}
+    <Stack mb={2} direction="row" width="100%" borderRadius="99px" height={40} p={0.36} position="relative"
            bgcolor="background.paper" border={theme => `1px solid ${theme.palette.divider}`}
     >
 
-      <IconButton style={{display: !arrowButtons ? "none" : undefined}} disabled={disableLeftArrow} onClick={() => handleArrowClick("left")}>
+      <ArrowButton disabled={disableLeftArrow} onClick={() => handleArrowClick("left")}
+                   style={{left: 2, display: !arrowButtons ? "none" : undefined}}>
         <ArrowBackIosNewIcon sx={{fontSize: "18px"}} />
-      </IconButton>
+      </ArrowButton>
 
-      <Stack ref={containerRef} direction="row" borderRadius="99px" flexGrow={1} position="relative"
+      <Stack ref={containerRef} direction="row" borderRadius="99px" flexGrow={1} position="relative" px={arrowButtons ? "34px" : 0}
              sx={{ overflowX: 'auto', scrollbarWidth: "none", "&::-webkit-scrollbar": {display: "none"} }}>
         {tabs.map((tab) => (
           <Box key={tab.link} display="flex" flex="1 0 0" px={3} justifyContent="center" alignItems="center" zIndex={1}
@@ -101,9 +110,10 @@ function DashboardNavbar({ tabs, arrowButtons=false }: DashboardNavbarProps) {
         />
       </Stack>
 
-      <IconButton style={{display: !arrowButtons ? "none" : undefined}} disabled={disableRightArrow} onClick={() => handleArrowClick("right")}>
+      <ArrowButton disabled={disableRightArrow} onClick={() => handleArrowClick("right")}
+                   style={{right: 2, display: !arrowButtons ? "none" : undefined}}>
         <ArrowForwardIosIcon sx={{fontSize: "18px"}} />
-      </IconButton>
+      </ArrowButton>
 
     </Stack>
   );
