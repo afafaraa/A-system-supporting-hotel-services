@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { Employee } from "../../types";
 import { styled } from "@mui/material/styles";
 import EditEmployeeModal from "./modals/EditEmployeeModal.tsx";
+import { useTranslation } from "react-i18next";
 
 const EmployeeCardPaper = styled(Paper)(({ theme }) => ({
   display: "flex",
@@ -36,9 +37,8 @@ interface EmployeeCardProps {
   employee: Employee;
 }
 
-const tempAreas: string[] = ["Breakfast", "Lunch", "Dinner"];
-
 function EmployeeCard({ employee }: EmployeeCardProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [editOpen, setEditOpen] = useState(false);
 
@@ -70,7 +70,7 @@ function EmployeeCard({ employee }: EmployeeCardProps) {
               {employee.name} {employee.surname}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {employee.role.replace("ROLE_", "").toLowerCase()}
+              {t(`common.department.${(employee.employeeData?.department ?? "").toLowerCase()}`)}
             </Typography>
           </Box>
         </Box>
@@ -105,10 +105,10 @@ function EmployeeCard({ employee }: EmployeeCardProps) {
         justifyContent="center"
         mt={1}
       >
-        {tempAreas?.map((area: string, idx: number) => (
+        {employee.employeeData?.sectors?.map((area: string, idx: number) => (
           <Chip
             key={idx}
-            label={area}
+            label={t(`common.sectors.${area.toLowerCase()}`)}
             size="small"
             color="primary"
             variant="outlined"

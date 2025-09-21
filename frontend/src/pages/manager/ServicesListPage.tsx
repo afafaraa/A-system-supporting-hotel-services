@@ -28,6 +28,7 @@ import ServiceFormModal from "./modals/ServiceFormModal";
 import ServiceDeleteModal from "./modals/ServiceDeleteModal";
 import { Service } from "../../types";
 import { useTranslation } from "react-i18next";
+import { SectionCard } from "../../theme/styled-components/SectionCard";
 
 const ServiceCard = styled(Paper)(({ theme }) => ({
   display: "flex",
@@ -47,7 +48,7 @@ const ServiceCard = styled(Paper)(({ theme }) => ({
 
 function ServicesListPage() {
   const { t } = useTranslation();
-  const tc = (key: string) => t(`pages.servicesList.${key}`);
+  const tc = (key: string) => t(`pages.manager.services_list.${key}`);
   const [allServices, setAllServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -109,15 +110,7 @@ function ServicesListPage() {
   }
 
   return (
-    <Paper
-      sx={{
-        p: 3,
-        borderRadius: 3,
-        mt: 5,
-        border: `1px solid`,
-        borderColor: "divider",
-      }}
-    >
+    <SectionCard>
       <Box
         display="flex"
         alignItems="center"
@@ -136,7 +129,7 @@ function ServicesListPage() {
             mb={3}
             gutterBottom
           >
-            View and manage hotel guests and their information
+            {tc("subtitle")}
           </Typography>
         </Box>
 
@@ -148,7 +141,7 @@ function ServicesListPage() {
               </IconButton>
               {searchOpen && (
                 <TextField
-                  placeholder={tc("searchPlaceholder")}
+                  placeholder={tc("search_placeholder")}
                   variant="outlined"
                   size="small"
                   value={filterName}
@@ -349,7 +342,7 @@ function ServicesListPage() {
           }
         }}
       />
-    </Paper>
+    </SectionCard>
   );
 }
 

@@ -1,5 +1,5 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
-import { axiosAuthApi } from "../../middleware/axiosApi.ts";
+import { useEffect, useState, useMemo, useCallback } from 'react';
+import { axiosAuthApi } from '../../middleware/axiosApi.ts';
 import {
   Box,
   Button,
@@ -16,29 +16,27 @@ import {
   Grid,
   useTheme,
   useMediaQuery,
-} from "@mui/material";
-import { Search, PersonOutline, Add } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
-import { Employee } from "../../types";
-import { useTranslation } from "react-i18next";
-import EmployeeCard from "./EmployeeCard.tsx";
+} from '@mui/material';
+import { Search, PersonOutline, Add } from '@mui/icons-material';
+import { Employee, Role } from '../../types';
+import { useTranslation } from 'react-i18next';
+import EmployeeCard from './EmployeeCard.tsx';
+import EditEmployeeModal from './modals/EditEmployeeModal.tsx';
 
 function EmployeeListPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(0);
-  const navigate = useNavigate();
   const { t } = useTranslation();
-  const tc = (key: string) => t(`pages.personnel.${key}`);
+  const tc = (key: string) => t(`pages.manager.personnel.${key}`);
   const [searchOpen, setSearchOpen] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [open, setOpen] = useState(false);
 
-  const [filterName, setFilterName] = useState("");
-  const [filterPosition, setFilterPosition] = useState<
-    "ALL" | "RECEPTIONIST" | "MANAGER" | "EMPLOYEE"
-  >("ALL");
+  const [filterName, setFilterName] = useState('');
+  const [filterPosition, setFilterPosition] = useState<'ALL' | Role>('ALL');
 
   const pageSize = 10;
 
@@ -46,14 +44,14 @@ function EmployeeListPage() {
     setLoading(true);
 
     try {
-      const res = await axiosAuthApi.get<Employee[]>("/management/employees", {
+      const res = await axiosAuthApi.get<Employee[]>('/management/employees', {
         params: { page: page, size: pageSize },
       });
       console.log(res.data);
       setEmployees(res.data);
     } catch (err) {
       console.error(err);
-      setError("Failed to fetch employees");
+      setError('Failed to fetch employees');
     } finally {
       setLoading(false);
     }
@@ -66,11 +64,11 @@ function EmployeeListPage() {
   const filteredEmployees = useMemo(() => {
     return employees.filter((person) => {
       const nameMatch =
-        filterName.trim() === "" ||
+        filterName.trim() === '' ||
         person.name.toLowerCase().includes(filterName.toLowerCase()) ||
         person.surname.toLowerCase().includes(filterName.toLowerCase());
       const positionMatch =
-        filterPosition === "ALL" || person.role === filterPosition;
+        filterPosition === 'ALL' || person.role === filterPosition;
       return nameMatch && positionMatch;
     });
   }, [employees, filterName, filterPosition]);
@@ -98,13 +96,13 @@ function EmployeeListPage() {
         borderRadius: 3,
         mt: 5,
         border: `1px solid`,
-        borderColor: "divider",
+        borderColor: 'divider',
       }}
     >
       <Box
         display="flex"
         alignItems="center"
-        justifyContent={isMobile ? "center" : "space-between"}
+        justifyContent={isMobile ? 'center' : 'space-between'}
         flexWrap="wrap"
         gap={2}
         mb={3}
@@ -113,7 +111,7 @@ function EmployeeListPage() {
           <Box display="flex" alignItems="flex-start" flexDirection="row">
             <PersonOutline fontSize="large" />
             <Typography variant="h5" fontWeight="bold" gutterBottom>
-              {tc("title")}
+              {tc('title')}
             </Typography>
           </Box>
           <Typography
@@ -122,7 +120,7 @@ function EmployeeListPage() {
             mb={3}
             gutterBottom
           >
-            Manage employee information and schedules
+            {tc('subtitle')}
           </Typography>
         </Box>
 
@@ -134,15 +132,15 @@ function EmployeeListPage() {
               </IconButton>
               {searchOpen && (
                 <TextField
-                  placeholder={tc("searchPlaceholder")}
+                  placeholder={tc('searchPlaceholder')}
                   variant="outlined"
                   size="small"
                   value={filterName}
                   onChange={(e) => setFilterName(e.target.value)}
                   sx={{
                     ml: 1,
-                    width: "12rem",
-                    transition: "width 0.3s ease",
+                    width: '12rem',
+                    transition: 'width 0.3s ease',
                   }}
                   autoFocus
                 />
@@ -151,48 +149,52 @@ function EmployeeListPage() {
           </ClickAwayListener>
 
           <FormControl size="small" sx={{ minWidth: 150 }}>
-            <InputLabel id="position-label">{tc("position")}</InputLabel>
+            <InputLabel id="position-label">{tc('position')}</InputLabel>
             <Select
               labelId="position-label"
-              label={tc("type")}
+              label={tc('type')}
               value={filterPosition}
               onChange={(e) =>
-                setFilterPosition(
-                  e.target.value as
-                    | "ALL"
-                    | "RECEPTIONIST"
-                    | "MANAGER"
-                    | "EMPLOYEE"
-                )
+                setFilterPosition(e.target.value as 'ALL' | Role)
               }
             >
-              <MenuItem value="ALL">{tc("all")}</MenuItem>
-              <MenuItem value="RECEPTIONIST">{tc("receptionist")}</MenuItem>
-              <MenuItem value="MANAGER">{tc("manager")}</MenuItem>
-              <MenuItem value="EMPLOYEE">{tc("employee")}</MenuItem>
+              <MenuItem value="ALL">{tc('all')}</MenuItem>
+              <MenuItem value="RECEPTIONIST">{tc('receptionist')}</MenuItem>
+              <MenuItem value="MANAGER">{tc('manager')}</MenuItem>
+              <MenuItem value="EMPLOYEE">{tc('employee')}</MenuItem>
             </Select>
           </FormControl>
           <Button
             variant="contained"
             startIcon={<Add />}
-            onClick={() => navigate("/employees/new")}
+            onClick={() => setOpen(true)}
           >
-            {tc("addEmployee")}
+            {tc('addEmployee')}
           </Button>
         </Box>
 
-        <Grid container spacing={2} sx={{ width: "100%" }}>
+        <Grid container spacing={2} sx={{ width: '100%' }}>
           {filteredEmployees.map((emp) => (
             <Grid
               key={emp.id}
               size={{ xs: 12, sm: 6, md: 4 }}
-              sx={{ display: "flex" }}
+              sx={{ display: 'flex' }}
             >
               <EmployeeCard employee={emp} />
             </Grid>
           ))}
         </Grid>
       </Box>
+      <EditEmployeeModal
+        open={open}
+        onClose={() => setOpen(false)}
+        onSaved={(newEmployee) => {
+          if (newEmployee) {
+            setEmployees((prev) => [newEmployee, ...prev]);
+            setOpen(false);
+          }
+        }}
+      />
     </Paper>
   );
 }

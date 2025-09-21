@@ -12,3 +12,5 @@ export type Guest = {
     email: string;
     status: 'Checked-in' | 'Checked-out' | 'Upcoming';
 }
+
+export type  GuestStatusFilter = "ALL" | "CHECKED_IN" | "CHECKED_OUT" | "UPCOMING";

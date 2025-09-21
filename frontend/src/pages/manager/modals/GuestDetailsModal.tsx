@@ -22,6 +22,7 @@ import {
   CommentOutlined,
   EmojiFoodBeverage,
 } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 interface GuestDetailsProps {
   open: boolean;
@@ -86,8 +87,10 @@ const serviceHistory: Service[] = [
 ];
 
 function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
+  const { t } = useTranslation(); 
+  const tc = (key: string) => t(`pages.manager.guests.${key}`);
   const [activeTab, setActiveTab] = useState(0);
-  const tabs = ["Guest Info", `Services (${guest?.servicesCount || 0})`];
+  const tabs = [tc("guest_info"), `${tc("services")} (${guest?.servicesCount || 0})`];
 
   return (
     <Dialog
@@ -150,7 +153,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
               </Typography>
               <Box display="flex" alignItems="center" gap={1}>
                 <Chip
-                  label={guest.status}
+                  label={tc(guest.status)}
                   sx={{
                     bgcolor: (theme) =>
                       theme.palette.status[
@@ -172,7 +175,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
             </Box>
           </Box>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-            Room {guest.room} | {guest.servicesCount} services booked
+            {tc("room")} {guest.room} | {guest.servicesCount} {tc("booked")}
           </Typography>
           <NavigationTabs
             activeTab={activeTab}
@@ -190,7 +193,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                     sx={{ p: 2, borderRadius: 3, height: "100%" }}
                   >
                     <Typography variant="subtitle1" fontWeight="bold" mb={2}>
-                      Contact Information
+                      {tc("contact_info")} 
                     </Typography>
                     <Box display="flex" alignItems="center" gap={1} mb={1}>
                       <EmailOutlined fontSize="small" color="action" />
@@ -198,11 +201,11 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                     </Box>
                     <Box display="flex" alignItems="center" gap={1} mb={1}>
                       <RoomOutlined fontSize="small" color="action" />
-                      <Typography variant="body2">Room {guest.room}</Typography>
+                      <Typography variant="body2">{tc("room")} {guest.room}</Typography>
                     </Box>
                     <Box display="flex" alignItems="center" gap={1}>
                       <Language fontSize="small" color="action" />
-                      <Typography variant="body2">English</Typography>
+                      <Typography variant="body2">{tc("language")}</Typography>
                     </Box>
                   </Paper>
                 </Grid>
@@ -213,7 +216,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                     sx={{ p: 2, borderRadius: 3, height: "100%" }}
                   >
                     <Typography variant="subtitle1" fontWeight="bold" mb={2}>
-                      Stay Information
+                      {tc("stay_info")}
                     </Typography>
                     <Box
                       display="flex"
@@ -226,7 +229,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                         color="text.primary"
                         fontWeight="bold"
                       >
-                        Check-in Date
+                        {tc("check_in")} {tc("date")}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         {new Date(guest.checkInDate)
@@ -245,7 +248,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                         color="text.primary"
                         fontWeight="bold"
                       >
-                        Check-out Date
+                        {tc("check_out")} {tc("date")}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         {new Date(guest.checkOutDate)
@@ -264,7 +267,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                         color="text.primary"
                         fontWeight="bold"
                       >
-                        Account Balance
+                        {tc("account_balance")}
                       </Typography>
                       <Typography
                         component="span"
@@ -293,7 +296,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                   color="black"
                   gutterBottom
                 >
-                  Additional Information
+                  {tc("additional_info")}
                 </Typography>
                 <Typography
                   variant="body2"
@@ -302,7 +305,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                   sx={{ display: "flex", alignItems: "center", gap: 1 }}
                 >
                   <CommentOutlined fontSize="small" sx={{ color: "black" }} />
-                  Special Requests:
+                  {tc("special_requests")}:
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   High floor, city view preferred
@@ -314,10 +317,10 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
           {activeTab === 1 && (
             <>
               <Typography variant="h5" fontWeight="bold" mt={2} mb={1}>
-                Upcoming Services
+                {tc("upcoming_services")}
               </Typography>
               <Typography variant="body2" color="text.secondary" mb={2}>
-                {upcomingServices.length} upcoming services
+                {upcomingServices.length} {tc("upcoming_services").toLowerCase()}
               </Typography>
               {upcomingServices.map((service) => (
                 <Paper
@@ -351,10 +354,10 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                     <Box display="flex" flexDirection="column" gap={0.5}>
                       <Typography fontWeight="bold">{service.name}</Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {guest.name} {guest.surname} | Room {guest.room}
+                        {guest.name} {guest.surname} | {tc("room")} {guest.room}
                       </Typography>
                       <Typography variant="body2" color="text.primary">
-                        09/08/2025 at {service.weekday[0].startHour}:00 AM
+                        09/08/2025 {tc("at")} {service.weekday[0].startHour}:00
                       </Typography>
                     </Box>
                   </Box>
@@ -383,10 +386,10 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
               ))}
 
               <Typography variant="h5" fontWeight="bold" mt={2} mb={1}>
-                Service History
+                {tc("service_history")}
               </Typography>
               <Typography variant="body2" color="text.secondary" mb={2}>
-                {serviceHistory.length} completed service
+                {serviceHistory.length} {tc("completed_service")}
               </Typography>
               {serviceHistory.map((service) => (
                 <Paper
@@ -420,10 +423,10 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                     <Box display="flex" flexDirection="column" gap={0.5}>
                       <Typography fontWeight="bold">{service.name}</Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {guest.name} {guest.surname} | Room {guest.room}
+                        {guest.name} {guest.surname} | {tc("room")} {guest.room}
                       </Typography>
                       <Typography variant="body2" color="text.primary">
-                        09/08/2025 at {service.weekday[0].startHour}:00 AM
+                        09/08/2025 {tc("at")} {service.weekday[0].startHour}:00
                       </Typography>
                     </Box>
                   </Box>

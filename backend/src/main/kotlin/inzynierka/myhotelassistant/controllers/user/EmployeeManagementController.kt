@@ -2,6 +2,9 @@ package inzynierka.myhotelassistant.controllers.user
 
 import inzynierka.myhotelassistant.dto.ScheduleDTO
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
+import inzynierka.myhotelassistant.models.user.Department
+import inzynierka.myhotelassistant.models.user.EmployeeData
+import inzynierka.myhotelassistant.models.user.Sector
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.EmployeeService
 import inzynierka.myhotelassistant.services.ScheduleService
@@ -12,16 +15,7 @@ import jakarta.validation.constraints.Size
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.time.ZonedDateTime
 import java.time.format.DateTimeParseException
 
@@ -61,6 +55,7 @@ class EmployeeManagementController(
             message = "Role must be either EMPLOYEE, RECEPTIONIST or MANAGER",
         )
         val role: String? = null,
+        val employeeData: EmployeeData?
     )
 
     @PostMapping
@@ -120,6 +115,17 @@ class EmployeeManagementController(
     ) {
         employeeService.deleteEmployee(username)
         logger.debug("Removed employee: $username")
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun updateEmployee(
+        @PathVariable id: String,
+        @RequestBody employeeDTO: EmployeeDTO,
+    ): UserEntity {
+        val updated = employeeService.updateEmployee(id, employeeDTO)
+        logger.debug("Updated employee: ${updated.username}")
+        return updated
     }
 
     @PatchMapping("/role")

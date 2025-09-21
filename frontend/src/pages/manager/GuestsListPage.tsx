@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import {
   Box,
-  Paper,
   Typography,
   ClickAwayListener,
   IconButton,
@@ -17,8 +16,10 @@ import {
 } from "@mui/material";
 import { PersonOutline, Search } from "@mui/icons-material";
 import GuestCard from "./GuestCard";
-import { Guest } from "../../types/guest";
+import { Guest, GuestStatusFilter } from "../../types/guest";
 import GuestDetailsModal from "./modals/GuestDetailsModal";
+import { SectionCard } from "../../theme/styled-components/SectionCard";
+import { useTranslation } from "react-i18next";
 
 const tempGuests: Guest[] = [
   {
@@ -66,6 +67,8 @@ const tempGuests: Guest[] = [
 ];
 
 function GuestsListPage() {
+  const { t } = useTranslation(); 
+  const tc = (key: string) => t(`pages.manager.guests.${key}`);
   const [searchOpen, setSearchOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -73,9 +76,7 @@ function GuestsListPage() {
   const [selectedGuest, setSelectedGuest] = useState<Guest | null>(null);
 
   const [filterName, setFilterName] = useState("");
-  const [filterStatus, setFilterStatus] = useState<
-    "ALL" | "CHECKED_IN" | "CHECKED_OUT" | "UPCOMING"
-  >("ALL");
+  const [filterStatus, setFilterStatus] = useState<GuestStatusFilter>("ALL");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -99,6 +100,7 @@ function GuestsListPage() {
       </Box>
     );
   }
+  
   if (error) {
     return (
       <Box display="flex" justifyContent="center" p={4}>
@@ -108,15 +110,7 @@ function GuestsListPage() {
   }
 
   return (
-    <Paper
-      sx={{
-        p: 3,
-        borderRadius: 3,
-        mt: 5,
-        border: `1px solid`,
-        borderColor: "divider",
-      }}
-    >
+    <SectionCard>
       <Box
         display="flex"
         alignItems="center"
@@ -129,7 +123,7 @@ function GuestsListPage() {
           <Box display="flex" alignItems="flex-start" flexDirection="row">
             <PersonOutline fontSize="large" />
             <Typography variant="h5" fontWeight="bold" gutterBottom>
-              Guests Management
+              {tc("title")}
             </Typography>
           </Box>
           <Typography
@@ -138,7 +132,7 @@ function GuestsListPage() {
             mb={3}
             gutterBottom
           >
-            View and manage hotel guests and their information
+            {tc("subtitle")}
           </Typography>
         </Box>
 
@@ -156,7 +150,7 @@ function GuestsListPage() {
               </IconButton>
               {searchOpen && (
                 <TextField
-                  placeholder="Search guests..."
+                  placeholder={tc("searchPlaceholder")}
                   variant="outlined"
                   size="small"
                   value={filterName}
@@ -180,18 +174,14 @@ function GuestsListPage() {
               value={filterStatus}
               onChange={(e) =>
                 setFilterStatus(
-                  e.target.value as
-                    | "ALL"
-                    | "CHECKED_IN"
-                    | "CHECKED_OUT"
-                    | "UPCOMING"
+                  e.target.value as GuestStatusFilter
                 )
               }
             >
-              <MenuItem value="ALL">All</MenuItem>
-              <MenuItem value="CHECKED_IN">Checked In</MenuItem>
-              <MenuItem value="CHECKED_OUT">Checked Out</MenuItem>
-              <MenuItem value="UPCOMING">Upcoming</MenuItem>
+              <MenuItem value="ALL">{tc("ALL")}</MenuItem>
+              <MenuItem value="CHECKED_IN">{tc("Checked-in")}</MenuItem>
+              <MenuItem value="CHECKED_OUT">{tc("Checked-out")}</MenuItem>
+              <MenuItem value="UPCOMING">{tc("Upcoming")}</MenuItem>
             </Select>
           </FormControl>
         </Box>
@@ -217,7 +207,7 @@ function GuestsListPage() {
           onClose={() => setModalOpen(false)}
         />
       )}
-    </Paper>
+    </SectionCard>
   );
 }
 

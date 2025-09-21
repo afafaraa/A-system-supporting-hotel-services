@@ -32,9 +32,7 @@ import RequestedSchedulesPage from "./pages/employee/RequestedSchedulesPage.tsx"
 import EmployeeReservationsPage from "./pages/employee/ReservationsPage.tsx";
 import EmployeeReviewsPage from "./pages/employee/ReviewsPage.tsx";
 import FallbackPage from "./pages/user/FallbackPage.tsx";
-import AddNewEmployeePage from './pages/manager/AddNewEmployeePage.tsx';
 import AdminLayout from "./components/layout/AdminLayout.tsx";
-import WeeklyCalendar from "./pages/manager/tempComponents/calendar/WeeklyCalendar.tsx";
 import GuestsListPage from './pages/manager/GuestsListPage.tsx';
 
 function App(){
@@ -71,9 +69,8 @@ function App(){
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]} />}>
               <Route element={<AdminLayout />}>
-                <Route path="/management/calendar" element={<WeeklyCalendar />} />
+                <Route path="/management/calendar" element={<EmployeeCalendarPage />} />
                 <Route path="/employees" element={<EmployeeListPage />} />
-                <Route path="/employees/new" element={<AddNewEmployeePage />} />
                 <Route path="/employees/:username" element={<EmployeeDetailsPage />} />
                 <Route path="/management/services" element={<ServicesListPage />} />
                 <Route path="/management/statistics" element={<StatsPage />} />

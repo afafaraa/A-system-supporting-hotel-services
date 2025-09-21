@@ -1,55 +1,29 @@
-import React, { useState, useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Container, AppBar } from "@mui/material";
-import NavigationTabs from "../../pages/manager/tempComponents/NavigationTabs";
+import { useMemo } from "react";
+import { Outlet } from "react-router-dom";
 import { GlobalStyles } from "@mui/material";
+import DashboardNavbar from "../navigation/DashboardNavbar";
+import { useTranslation } from "react-i18next";
 
 const inputGlobalStyles = <GlobalStyles styles={{ html: { overflowY: 'scroll' } }} />
 
-const AdminLayout: React.FC = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
+function AdminLayout() {
+    const { t } = useTranslation();
+    const tc = (key: string) => t(`pages.manager.navbar.${key}`);
 
-    const tabRoutes: Record<number, string> = {
-        0: "/management/guests",
-        1: "/management/services",
-        2: "/management/calendar",
-        3: "/employees",
-        4: "/management/statistics",
-    }
-
-    const tabs: string[] = ["Guests", "Services", "Calendar", "Personnel", "Statistics"];
-
-    const routeToTabIndex = (path: string): number => {
-        if (path.startsWith("/management/guests")) return 0;
-        if (path.startsWith("/management/services")) return 1;
-        if (path.startsWith("/management/calendar")) return 2;
-        if (path.startsWith("/employees")) return 3;
-        if (path.startsWith("/management/statistics")) return 4;
-        return 2;
-    };
-
-    
-    const [activeTab, setActiveTab] = useState<number>(routeToTabIndex(location.pathname));
-
-    useEffect(() => {
-        setActiveTab(routeToTabIndex(location.pathname));
-    }, [location.pathname]);
-
-    const handleTabChange = (index: number) => {
-        setActiveTab(index);
-        navigate(tabRoutes[index]);
-    };
+    const tabs = useMemo(() => ([
+        { name: tc("guests"), link: "/management/guests" },
+        { name: tc("services"), link: "/management/services" },
+        { name: tc("calendar"), link: "/management/calendar" },
+        { name: tc("employees"), link: "/employees" },
+        { name: tc("statistics"), link: "/management/statistics" },
+    ] as const), [t]);
 
     return (
-        <Container maxWidth="lg">
+        <>
             {inputGlobalStyles}
-            <AppBar position="static" color="transparent" sx={{ boxShadow: "none" }}>
-                
-                <NavigationTabs activeTab={activeTab} onChange={handleTabChange} tabs={tabs} />
-            </AppBar>
+            <DashboardNavbar tabs={tabs} />
             <Outlet />
-        </Container>
+        </>
     );
 };
 

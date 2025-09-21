@@ -10,6 +10,7 @@ import {
 import { Guest } from "../../types/guest";
 import { styled } from "@mui/material/styles";
 import { RoomOutlined, EmailOutlined } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 interface GuestCardProps {
   guest: Guest;
@@ -36,6 +37,8 @@ const EmployeeCardPaper = styled(Paper)(({ theme }) => ({
 }));
 
 function GuestCard({ guest, onClick }: GuestCardProps) {
+  const { t } = useTranslation(); 
+  const tc = (key: string) => t(`pages.manager.guests.${key}`);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -65,7 +68,7 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
             <Box display="flex" alignItems="center" gap={1}>
               <RoomOutlined fontSize="small" sx={{ color: "text.secondary" }} />
               <Typography variant="body1" color="text.secondary">
-                Room {guest.room}
+                {tc("room")} {guest.room}
               </Typography>
               <EmailOutlined
                 fontSize="small"
@@ -80,7 +83,7 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
           )}
           <Box display="flex" alignItems="center" gap={1}>
             <Typography variant="body2" color="text.primary">
-              Check-in:{" "}
+              {tc("check_in")}:{" "}
               {new Date(guest.checkInDate)
                 .toLocaleDateString("pl-PL")
                 .replace(/\./g, "/")}
@@ -89,7 +92,7 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
               |
             </Typography>
             <Typography variant="body2" color="text.primary">
-              Check-out:{" "}
+              {tc("check_out")}:{" "}
               {new Date(guest.checkOutDate)
                 .toLocaleDateString("pl-PL")
                 .replace(/\./g, "/")}
@@ -111,7 +114,7 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
           alignItems="center"
         >
           <Chip
-            label={guest.status}
+            label={tc(guest.status)}
             sx={{
               bgcolor: (theme) =>
                 theme.palette.status[
@@ -126,10 +129,10 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
             }}
           />
           <Typography variant="body2" color="text.secondary">
-            {guest.servicesCount} services
+            {guest.servicesCount} {tc("services").toLowerCase()}
           </Typography>
           <Typography variant="body2" color="primary.main">
-            {guest.upcomingServicesCount} upcoming
+            {guest.upcomingServicesCount} {tc("Upcoming").toLowerCase()}
           </Typography>
         </Box>
         <Box
@@ -142,7 +145,7 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
             {guest.bill.toFixed(2)}$
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Balance
+            {tc("balance")}
           </Typography>
         </Box>
       </Box>

@@ -9,8 +9,9 @@ interface NavigationTabsProps {
 
 const PillTabs = styled(Tabs)(({ theme }) => ({
   minHeight: "2rem",
+  width: "100%",
   "& .MuiTabs-flexContainer": {
-    justifyContent: "space-around",
+    justifyContent: "space-between",
   },
   "& .MuiTabs-indicator": {
     display: "none",
@@ -24,17 +25,18 @@ const PillTabs = styled(Tabs)(({ theme }) => ({
 const PillTab = styled(Tab)(({ theme }) => ({
   textTransform: "none",
   minHeight: "2rem",
-  minWidth: "5.5rem",
+  flex: 1,
   borderRadius: "2rem",
-  marginRight: theme.spacing(1),
-  padding: "0.5rem 5rem",
+  marginRight: theme.spacing(0.5),
+  marginLeft: theme.spacing(0.5),
+  padding: "0.5rem 0",
   fontWeight: 500,
   fontSize: "0.875rem",
   color: theme.palette.text.primary,
+  maxWidth: "none",
   "&.Mui-selected": {
     background: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
-    padding: "0 5rem",
   },
 }));
 

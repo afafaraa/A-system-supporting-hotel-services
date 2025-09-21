@@ -16,6 +16,7 @@ import {
 import { useState, useEffect, useRef } from 'react';
 import { Service } from '../../../types';
 import { axiosAuthApi } from '../../../middleware/axiosApi';
+import { useTranslation } from 'react-i18next';
 import {
   EditOutlined,
   Save,
@@ -36,6 +37,8 @@ type Props = {
 type UploadState = 'idle' | 'uploading' | 'success' | 'error';
 
 function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
+  const { t } = useTranslation();
+  const tc = (key: string) => t(`pages.manager.services_list.${key}`);
   const isEdit = Boolean(initial?.id);
   const [form, setForm] = useState<Service>({
     name: '',
@@ -101,11 +104,11 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
     const maxSize = 10 * 1024 * 1024;
 
     if (!allowedTypes.includes(file.type)) {
-      return 'Dozwolone są tylko pliki JPG, PNG i WebP';
+      return tc("allowed_files_warning");
     }
 
     if (file.size > maxSize) {
-      return 'Plik nie może być większy niż 10MB';
+      return tc("file_size_warning");
     }
 
     return null;
@@ -141,8 +144,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
         }
       }, 2000);
     } catch (error: unknown) {
-      console.error('Upload error:', error);
-      let errorMessage = 'Błąd podczas uploadu';
+      let errorMessage = tc("upload_error")
       if (typeof error === 'object' && error !== null && 'response' in error) {
         const err = error as { response?: { data?: { error?: string } } };
         errorMessage = err.response?.data?.error || errorMessage;
@@ -199,11 +201,11 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
         <Box display="flex" alignItems="center">
           <EditOutlined sx={{ mr: 1, verticalAlign: 'middle' }} />
           <Typography variant="h5" fontWeight="bold">
-            {isEdit ? 'Edit Service' : 'Add Service'}
+            {isEdit ? tc("edit_service") : tc("add_service")}
           </Typography>
         </Box>
         <Typography variant="subtitle2" color="text.secondary">
-          {isEdit ? 'Update service information' : 'Add a new service.'}
+          {isEdit ? tc("edit_subtitle") : tc("add_subtitle") }
         </Typography>
       </DialogTitle>
 
@@ -211,7 +213,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 6 }}>
             <Typography variant="body1" fontWeight="bold">
-              Service Name
+              {tc("name")}
             </Typography>
             <TextField
               variant="filled"
@@ -231,7 +233,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
 
           <Grid size={{ xs: 12, md: 6 }}>
             <Typography variant="body1" fontWeight="bold">
-              Category
+              {tc("category")}
             </Typography>
             <TextField
               variant="filled"
@@ -253,7 +255,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 6 }}>
             <Typography variant="body1" fontWeight="bold">
-              Price ($)
+              {tc("price")} ($)
             </Typography>
             <TextField
               variant="filled"
@@ -275,7 +277,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
 
           <Grid size={{ xs: 12, md: 6 }}>
             <Typography variant="body1" fontWeight="bold">
-              Duration (in minutes)
+              {tc("duration")}
             </Typography>
             <TextField
               variant="filled"
@@ -299,7 +301,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
 
         <Box>
           <Typography variant="body1" fontWeight="bold">
-            Description
+            {tc("description")}
           </Typography>
           <TextField
             variant="filled"
@@ -322,7 +324,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
         </Box>
         <Box>
           <Typography variant="body1" fontWeight="bold">
-            Icon
+            {tc("icon")}
           </Typography>
           <Box display="flex" alignItems="center" gap={2} mb={1}>
             <Paper
@@ -376,7 +378,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
                 {uploadState === 'uploading' && (
                   <>
                     <CircularProgress />
-                    <Typography>Uploading...</Typography>
+                    <Typography>{tc("uploading")}</Typography>
                   </>
                 )}
 
@@ -384,7 +386,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
                   <>
                     <CheckCircle color="success" fontSize="large" />
                     <Typography color="success.main">
-                      Upload zakończony!
+                      {tc("upload_complete")}
                     </Typography>
                   </>
                 )}
@@ -392,7 +394,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
                 {uploadState === 'error' && (
                   <>
                     <Error color="error" fontSize="large" />
-                    <Typography color="error.main">Błąd uploadu</Typography>
+                    <Typography color="error.main">{t("errorupload_error")}</Typography>
                   </>
                 )}
 
@@ -400,7 +402,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
                   <>
                     <CloudUpload sx={{ fontSize: 48, color: 'grey.400' }} />
                     <Typography variant="body2" color="text.secondary">
-                      Upload new Icon
+                      {tc("upload_title")}
                     </Typography>
                   </>
                 )}
@@ -411,7 +413,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
 
         <Box display="flex" alignItems="center" gap={2}>
           <Typography variant="body1" fontWeight="bold">
-            Availability
+            {tc("availability")}
           </Typography>
           <FormControlLabel
             control={
@@ -426,11 +428,11 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
       </DialogContent>
       <DialogActions>
         <Button variant="outlined" onClick={onClose}>
-          Cancel
+          {t("buttons.cancel")}
         </Button>
         <Button variant="contained" onClick={handleSubmit}>
           <Save sx={{ mr: 1, verticalAlign: 'middle' }} />
-          {isEdit ? 'Update Service' : 'Create Service'}
+          {isEdit ? tc("update") : tc("create")}
         </Button>
       </DialogActions>
     </Dialog>

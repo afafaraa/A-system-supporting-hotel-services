@@ -14,9 +14,5 @@ class StatsController(
     private val statsService: StatsService,
 ) {
     @GetMapping
-    fun getStats(): StatsResponse = statsService.getStats()
-
-    @GetMapping("/services")
-    @ResponseStatus(HttpStatus.OK)
-    fun getServiceStats(): List<StatsService.ServiceStatsDto> = statsService.getServiceStats()
+    fun getStats(): List<StatsService.ServiceStat> = statsService.getStats()
 }

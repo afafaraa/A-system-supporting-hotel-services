@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   open: boolean;
@@ -20,11 +21,13 @@ type Props = {
   onConfirm: (deleteOption: number) => Promise<void>;
 };
 
-export default function ServiceDeleteModal({
+function ServiceDeleteModal({
   open,
   onClose,
   onConfirm,
 }: Props) {
+  const { t } = useTranslation();
+  const tc = (key: string) => t(`pages.manager.services_list.${key}`);
   const [deleteOption, setDeleteOption] = useState(1);
   const [loading, setLoading] = useState(false);
 
@@ -52,13 +55,12 @@ export default function ServiceDeleteModal({
       <DialogTitle>
         <Box display="flex" alignItems="center">
           <Delete sx={{ mr: 1, verticalAlign: "middle" }} />
-          <Typography variant="h5" fontWeight="bold">
-            Delete Service
+          <Typography variant="h5" fontWeight="bold" gutterBottom>
+            {tc("delete")}
           </Typography>
         </Box>
         <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-          Are you sure you want to delete this service? <br />
-          This action cannot be undone.
+          {tc("delete_subtitle1")} <br /> {tc("delete_subtitle2")}
         </Typography>
       </DialogTitle>
       <DialogContent>
@@ -75,7 +77,7 @@ export default function ServiceDeleteModal({
                 color="text.primary"
                 fontWeight="bold"
               >
-                Delete all bookings
+                {tc("delete_all")}
               </Typography>
             }
           />
@@ -88,7 +90,7 @@ export default function ServiceDeleteModal({
                 color="text.primary"
                 fontWeight="bold"
               >
-                Delete only available bookings
+                {tc("delete_available")}
               </Typography>
             }
           />
@@ -96,7 +98,7 @@ export default function ServiceDeleteModal({
       </DialogContent>
       <DialogActions>
         <Button variant="outlined" onClick={onClose} disabled={loading}>
-          Cancel
+          {t("buttons.cancel")}
         </Button>
         <Button
           variant="contained"
@@ -105,9 +107,11 @@ export default function ServiceDeleteModal({
           disabled={loading}
           startIcon={loading ? <CircularProgress size={16} /> : <Delete />}
         >
-          {loading ? "Deleting..." : "Delete"}
+          {loading ? tc("deleting") : t("buttons.delete")}
         </Button>
       </DialogActions>
     </Dialog>
   );
 }
+
+export default ServiceDeleteModal;
