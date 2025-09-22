@@ -118,7 +118,7 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
         <Box
           display="flex"
           flexDirection="column"
-          gap={0.5}
+          gap={1}
           alignItems="center"
         >
           <Typography variant="h6" fontWeight="bold" color="primary.main">

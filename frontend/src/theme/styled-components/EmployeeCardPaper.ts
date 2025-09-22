@@ -15,7 +15,7 @@ export const EmployeeCardPaper = styled(Paper)(({ theme }) => ({
   cursor: "pointer",
   transition: "all 0.2s ease-in-out",
   "&:hover": {
-    boxShadow: 6,
+    boxShadow: theme.shadows[6],
     transform: "translateY(-2px)",
   },
 }));
