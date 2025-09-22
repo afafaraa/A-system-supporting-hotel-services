@@ -4,40 +4,21 @@ import {
   Box,
   IconButton,
   Chip,
-  Paper,
   Typography,
 } from "@mui/material";
 import { Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { Employee } from "../../types";
-import { styled } from "@mui/material/styles";
 import EditEmployeeModal from "./modals/EditEmployeeModal.tsx";
 import { useTranslation } from "react-i18next";
-
-const EmployeeCardPaper = styled(Paper)(({ theme }) => ({
-  display: "flex",
-  alignItems: "flex-start",
-  padding: theme.spacing(2),
-  borderRadius: 12,
-  width: "100%",
-  boxShadow: "none",
-  border: `1px solid ${theme.palette.divider}`,
-  marginBottom: theme.spacing(2),
-  flexDirection: "column",
-  gap: 1.5,
-  cursor: "pointer",
-  transition: "all 0.2s ease-in-out",
-  "&:hover": {
-    boxShadow: 6,
-    transform: "translateY(-2px)",
-  },
-}));
+import { EmployeeCardPaper } from "../../theme/styled-components/EmployeeCardPaper.ts";
 
 interface EmployeeCardProps {
   employee: Employee;
+  onUpdated: (employee: Employee) => void;
 }
 
-function EmployeeCard({ employee }: EmployeeCardProps) {
+function EmployeeCard({ employee, onUpdated }: EmployeeCardProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [editOpen, setEditOpen] = useState(false);
@@ -122,7 +103,7 @@ function EmployeeCard({ employee }: EmployeeCardProps) {
         onClose={() => setEditOpen(false)}
         onSaved={() => {
           setEditOpen(false);
-          window.location.reload();
+          onUpdated(employee);
         }}
       />
     </EmployeeCardPaper>

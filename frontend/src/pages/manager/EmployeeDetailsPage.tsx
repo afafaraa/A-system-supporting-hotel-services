@@ -15,8 +15,6 @@ import EmployeeCalendarPage from '../employee/EmployeeCalendarPage.tsx';
 import { ArrowBack } from '@mui/icons-material';
 import { SectionCard } from '../../theme/styled-components/SectionCard';
 
-const tempAreas: string[] = ['Breakfast', 'Lunch', 'Dinner'];
-
 function EmployeeDetailsPage() {
   const { username } = useParams<{ username: string }>();
   const [detail, setDetail] = useState<Employee | null>(null);
@@ -24,7 +22,7 @@ function EmployeeDetailsPage() {
   const [error, setError] = useState<string | null>(null);
 
   const { t } = useTranslation();
-  const tc = (key: string) => t(`pages.manager.employee_details.${key}`);
+  const tc = useCallback((key: string) => t(`pages.manager.employee_details.${key}`), [t]);
   const navigate = useNavigate();
 
   const fetchDetails = useCallback(async () => {
@@ -47,7 +45,7 @@ function EmployeeDetailsPage() {
 
   useEffect(() => {
     fetchDetails();
-  }, []);
+  }, [fetchDetails]);
 
   if (loading) {
     return (
@@ -141,7 +139,7 @@ function EmployeeDetailsPage() {
               {tc("department")}
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              Food & Beverage
+              {t(`common.department.${(detail.employeeData?.department ?? "").toLowerCase()}`)}
             </Typography>
           </Box>
         </Grid>
@@ -157,7 +155,7 @@ function EmployeeDetailsPage() {
               justifyContent="flex-start"
               mt={1}
             >
-              {tempAreas?.map((area: string, idx: number) => (
+              {detail.employeeData?.sectors?.map((area: string, idx: number) => (
                 <Chip
                   key={idx}
                   label={t(`common.sectors.${area.toLowerCase()}`)}

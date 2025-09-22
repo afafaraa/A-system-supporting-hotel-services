@@ -23,28 +23,12 @@ import {
   MeetingRoom,
   RoomService,
 } from "@mui/icons-material";
-import { styled } from "@mui/material/styles";
 import ServiceFormModal from "./modals/ServiceFormModal";
 import ServiceDeleteModal from "./modals/ServiceDeleteModal";
 import { Service } from "../../types";
 import { useTranslation } from "react-i18next";
 import { SectionCard } from "../../theme/styled-components/SectionCard";
-
-const ServiceCard = styled(Paper)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  padding: theme.spacing(2),
-  borderRadius: 12,
-  boxShadow: "none",
-  border: `1px solid ${theme.palette.divider}`,
-  marginBottom: theme.spacing(2),
-  [theme.breakpoints.down("sm")]: {
-    flexDirection: "column",
-    alignItems: "center",
-    gap: theme.spacing(1),
-  },
-}));
+import { ServiceCard } from "../../theme/styled-components/ServiceCard";
 
 function ServicesListPage() {
   const { t } = useTranslation();
@@ -185,9 +169,9 @@ function ServicesListPage() {
               onChange={(e) =>
                 setFilterType(
                   e.target.value as
-                    | "ALL"
-                    | "GENERAL_SERVICE"
-                    | "PLACE_RESERVATION"
+                  | "ALL"
+                  | "GENERAL_SERVICE"
+                  | "PLACE_RESERVATION"
                 )
               }
             >

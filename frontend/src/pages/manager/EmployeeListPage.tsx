@@ -27,7 +27,7 @@ function EmployeeListPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(0);
+  const [page] = useState(0);
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.manager.personnel.${key}`);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -72,6 +72,10 @@ function EmployeeListPage() {
       return nameMatch && positionMatch;
     });
   }, [employees, filterName, filterPosition]);
+
+  const handleEmployeeUpdated = (updated: Employee) => {
+    setEmployees((prev) => prev.map((emp) => (emp.id === updated.id ? updated : emp)))
+  }
 
   if (loading) {
     return (
@@ -180,7 +184,10 @@ function EmployeeListPage() {
               size={{ xs: 12, sm: 6, md: 4 }}
               sx={{ display: 'flex' }}
             >
-              <EmployeeCard employee={emp} />
+              <EmployeeCard 
+                employee={emp} 
+                onUpdated={handleEmployeeUpdated}
+              />
             </Grid>
           ))}
         </Grid>

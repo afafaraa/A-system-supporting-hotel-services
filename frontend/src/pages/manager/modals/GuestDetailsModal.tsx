@@ -87,7 +87,7 @@ const serviceHistory: Service[] = [
 ];
 
 function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
   const tc = (key: string) => t(`pages.manager.guests.${key}`);
   const [activeTab, setActiveTab] = useState(0);
   const tabs = [tc("guest_info"), `${tc("services")} (${guest?.servicesCount || 0})`];
@@ -157,12 +157,12 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                   sx={{
                     bgcolor: (theme) =>
                       theme.palette.status[
-                        guest.status
-                          .toUpperCase()
-                          .replace(
-                            /-/g,
-                            "_"
-                          ) as keyof typeof theme.palette.status
+                      guest.status
+                        .toUpperCase()
+                        .replace(
+                          /-/g,
+                          "_"
+                        ) as keyof typeof theme.palette.status
                       ],
                     color: "primary.contrastText",
                     minWidth: 110,
@@ -175,7 +175,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
             </Box>
           </Box>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-            {tc("room")} {guest.room} | {guest.servicesCount} {tc("booked")}
+            {tc("room")} {guest.guestData?.roomNumber} | {guest.servicesCount} {tc("booked")}
           </Typography>
           <NavigationTabs
             activeTab={activeTab}
@@ -193,7 +193,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                     sx={{ p: 2, borderRadius: 3, height: "100%" }}
                   >
                     <Typography variant="subtitle1" fontWeight="bold" mb={2}>
-                      {tc("contact_info")} 
+                      {tc("contact_info")}
                     </Typography>
                     <Box display="flex" alignItems="center" gap={1} mb={1}>
                       <EmailOutlined fontSize="small" color="action" />
@@ -201,7 +201,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                     </Box>
                     <Box display="flex" alignItems="center" gap={1} mb={1}>
                       <RoomOutlined fontSize="small" color="action" />
-                      <Typography variant="body2">{tc("room")} {guest.room}</Typography>
+                      <Typography variant="body2">{tc("room")} {guest.guestData?.roomNumber}</Typography>
                     </Box>
                     <Box display="flex" alignItems="center" gap={1}>
                       <Language fontSize="small" color="action" />
@@ -232,7 +232,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                         {tc("check_in")} {tc("date")}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {new Date(guest.checkInDate)
+                        {new Date(guest.guestData?.checkInDate ?? "")
                           .toLocaleDateString("pl-PL")
                           .replace(/\./g, "/")}
                       </Typography>
@@ -251,7 +251,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                         {tc("check_out")} {tc("date")}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {new Date(guest.checkOutDate)
+                        {new Date(guest.guestData?.checkOutDate ?? "")
                           .toLocaleDateString("pl-PL")
                           .replace(/\./g, "/")}
                       </Typography>
@@ -274,7 +274,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                         fontWeight="bold"
                         color="primary"
                       >
-                        {guest.bill.toFixed(2)}$
+                        {guest.guestData?.bill.toFixed(2)}$
                       </Typography>
                     </Box>
                   </Paper>
@@ -354,7 +354,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                     <Box display="flex" flexDirection="column" gap={0.5}>
                       <Typography fontWeight="bold">{service.name}</Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {guest.name} {guest.surname} | {tc("room")} {guest.room}
+                        {guest.name} {guest.surname} | {tc("room")} {guest.guestData?.roomNumber}
                       </Typography>
                       <Typography variant="body2" color="text.primary">
                         09/08/2025 {tc("at")} {service.weekday[0].startHour}:00
@@ -423,7 +423,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                     <Box display="flex" flexDirection="column" gap={0.5}>
                       <Typography fontWeight="bold">{service.name}</Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {guest.name} {guest.surname} | {tc("room")} {guest.room}
+                        {guest.name} {guest.surname} | {tc("room")} {guest.guestData?.roomNumber}
                       </Typography>
                       <Typography variant="body2" color="text.primary">
                         09/08/2025 {tc("at")} {service.weekday[0].startHour}:00

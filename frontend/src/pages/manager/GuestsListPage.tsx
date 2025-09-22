@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import {
   Box,
   Typography,
@@ -20,55 +20,15 @@ import { Guest, GuestStatusFilter } from "../../types/guest";
 import GuestDetailsModal from "./modals/GuestDetailsModal";
 import { SectionCard } from "../../theme/styled-components/SectionCard";
 import { useTranslation } from "react-i18next";
+import { axiosAuthApi } from '../../middleware/axiosApi';
 
-const tempGuests: Guest[] = [
-  {
-    id: 1,
-    name: "Alice",
-    surname: "Johnson",
-    checkInDate: "2023-10-01",
-    checkOutDate: "2023-10-05",
-    room: "301",
-    servicesCount: 3,
-    upcomingServicesCount: 1,
-    phone: "123-456-7890",
-    bill: 750,
-    email: "johndoe@example.com",
-    status: "Checked-in",
-  },
-  {
-    id: 2,
-    name: "Alice",
-    surname: "Johnson",
-    checkInDate: "2023-10-01",
-    checkOutDate: "2023-10-05",
-    room: "301",
-    servicesCount: 3,
-    upcomingServicesCount: 1,
-    phone: "123-456-7890",
-    bill: 750,
-    email: "johndoe@example.com",
-    status: "Checked-out",
-  },
-  {
-    id: 3,
-    name: "Alice",
-    surname: "Johnson",
-    checkInDate: "2023-10-01",
-    checkOutDate: "2023-10-05",
-    room: "301",
-    servicesCount: 3,
-    upcomingServicesCount: 1,
-    phone: "123-456-7890",
-    bill: 750,
-    email: "johndoe@example.com",
-    status: "Upcoming",
-  },
-];
 
 function GuestsListPage() {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
   const tc = (key: string) => t(`pages.manager.guests.${key}`);
+
+  const [guests, setGuests] = useState<Guest[]>([]);
+  const [page] = useState(0);
   const [searchOpen, setSearchOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -80,8 +40,62 @@ function GuestsListPage() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  const fetchGuests = useCallback(async () => {
+    setLoading(true)
+
+    try {
+      const res = await axiosAuthApi.get<Guest[]>('/guest/management', {
+        params: { page: page, size: 10 },
+      });
+      const mapped: Guest[] = res.data.map((u) => ({
+        id: u.id,
+        name: u.name,
+        surname: u.surname,
+        servicesCount: u.servicesCount ?? 0,
+        upcomingServicesCount: u.upcomingServicesCount ?? 0,
+        phone: u.phone ?? "",
+        email: u.email,
+        status: mapStatus(
+          u.guestData?.checkInDate ? u.guestData.checkInDate.toString() : "",
+          u.guestData?.checkOutDate ? u.guestData.checkOutDate.toString() : ""
+        ),
+        guestData: u.guestData
+          ? {
+            roomNumber: u.guestData.roomNumber,
+            checkInDate: u.guestData.checkInDate,
+            checkOutDate: u.guestData.checkOutDate,
+            bill: u.guestData.bill,
+          }
+          : undefined,
+      }));
+      setGuests(mapped);
+    } catch (err) {
+      console.error(err)
+      setError('Failed to fetch employees')
+    } finally {
+      setLoading(false)
+    }
+  }, [page])
+
+  useEffect(() => {
+    fetchGuests()
+  }, [fetchGuests])
+
+  const mapStatus = (
+    checkInDate: string,
+    checkOutDate: string
+  ): "Checked-in" | "Checked-out" | "Upcoming" => {
+    const now = new Date();
+    const checkIn = new Date(checkInDate);
+    const checkOut = new Date(checkOutDate);
+
+    if (now < checkIn) return "Upcoming";
+    if (now > checkOut) return "Checked-out";
+    return "Checked-in";
+  };
+
   const filteredGuests = useMemo(() => {
-    return tempGuests.filter((guest) => {
+    return guests.filter((guest) => {
       const nameMatch =
         filterName.trim() === "" ||
         guest.name.toLowerCase().includes(filterName.toLowerCase()) ||
@@ -91,7 +105,7 @@ function GuestsListPage() {
         guest.status.replace("-", "_").toUpperCase() === filterStatus;
       return statusMatch && nameMatch;
     });
-  }, [filterName, filterStatus]);
+  }, [guests, filterName, filterStatus]);
 
   if (loading) {
     return (
@@ -100,7 +114,7 @@ function GuestsListPage() {
       </Box>
     );
   }
-  
+
   if (error) {
     return (
       <Box display="flex" justifyContent="center" p={4}>

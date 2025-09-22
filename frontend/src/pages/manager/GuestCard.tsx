@@ -1,5 +1,4 @@
 import {
-  Paper,
   Typography,
   Avatar,
   Box,
@@ -8,42 +7,23 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { Guest } from "../../types/guest";
-import { styled } from "@mui/material/styles";
 import { RoomOutlined, EmailOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
+import { GuestCardPaper } from "../../theme/styled-components/GuestCardPaper";
 
 interface GuestCardProps {
   guest: Guest;
   onClick: () => void;
 }
 
-const EmployeeCardPaper = styled(Paper)(({ theme }) => ({
-  display: "flex",
-  justifyContent: "space-between",
-  flexWrap: "wrap",
-  padding: theme.spacing(2),
-  borderRadius: 12,
-  width: "100%",
-  boxShadow: "none",
-  minHeight: 100,
-  border: `1px solid ${theme.palette.divider}`,
-  gap: theme.spacing(1.5),
-  cursor: "pointer",
-  transition: "all 0.2s ease-in-out",
-  "&:hover": {
-    boxShadow: theme.shadows[6],
-    transform: "translateY(-2px)",
-  },
-}));
-
 function GuestCard({ guest, onClick }: GuestCardProps) {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
   const tc = (key: string) => t(`pages.manager.guests.${key}`);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <EmployeeCardPaper onClick={onClick}>
+    <GuestCardPaper onClick={onClick}>
       <Box display="flex" alignItems="center" gap={2} flexGrow={1}>
         <Box>
           <Avatar
@@ -68,7 +48,7 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
             <Box display="flex" alignItems="center" gap={1}>
               <RoomOutlined fontSize="small" sx={{ color: "text.secondary" }} />
               <Typography variant="body1" color="text.secondary">
-                {tc("room")} {guest.room}
+                {tc("room")} {guest.guestData?.roomNumber}
               </Typography>
               <EmailOutlined
                 fontSize="small"
@@ -84,7 +64,7 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
           <Box display="flex" alignItems="center" gap={1}>
             <Typography variant="body2" color="text.primary">
               {tc("check_in")}:{" "}
-              {new Date(guest.checkInDate)
+              {new Date(guest.guestData?.checkInDate ?? "")
                 .toLocaleDateString("pl-PL")
                 .replace(/\./g, "/")}
             </Typography>
@@ -93,7 +73,7 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
             </Typography>
             <Typography variant="body2" color="text.primary">
               {tc("check_out")}:{" "}
-              {new Date(guest.checkOutDate)
+              {new Date(guest.guestData?.checkOutDate ?? "")
                 .toLocaleDateString("pl-PL")
                 .replace(/\./g, "/")}
             </Typography>
@@ -118,9 +98,9 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
             sx={{
               bgcolor: (theme) =>
                 theme.palette.status[
-                  guest.status
-                    .toUpperCase()
-                    .replace(/-/g, "_") as keyof typeof theme.palette.status
+                guest.status
+                  .toUpperCase()
+                  .replace(/-/g, "_") as keyof typeof theme.palette.status
                 ],
               color: "primary.contrastText",
               minWidth: 110,
@@ -142,14 +122,14 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
           alignItems="center"
         >
           <Typography variant="h6" fontWeight="bold" color="primary.main">
-            {guest.bill.toFixed(2)}$
+            {guest.guestData?.bill.toFixed(2)}$
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {tc("balance")}
           </Typography>
         </Box>
       </Box>
-    </EmployeeCardPaper>
+    </GuestCardPaper>
   );
 }
 

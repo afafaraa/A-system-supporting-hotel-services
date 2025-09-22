@@ -5,4 +5,5 @@ enum class Department {
     RECEPTION,
     HOUSEKEEPING,
     MAINTENANCE,
+    MANAGEMENT,
 }

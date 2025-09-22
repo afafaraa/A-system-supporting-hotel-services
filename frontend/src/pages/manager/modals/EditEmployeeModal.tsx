@@ -14,6 +14,7 @@ import {
   FormControl,
   Chip,
   OutlinedInput,
+  FilledInputProps
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { Employee, Department, Sector } from '../../../types';
@@ -74,7 +75,7 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
 
   const handleChange = (
     k: keyof Employee | 'department' | 'sectors',
-    v: any
+    v: string | Department | Sector | string[] | Department[] | Sector[]
   ) => {
     if (k === 'department' || k === 'sectors') {
       setForm((prev) => ({
@@ -166,7 +167,7 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
                 },
               }}
               slotProps={{
-                input: { disableUnderline: true } as any,
+                input: { disableUnderline: true } as FilledInputProps
               }}
             />
           </Box>
@@ -188,7 +189,7 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
                 },
               }}
               slotProps={{
-                input: { disableUnderline: true } as any,
+                input: { disableUnderline: true } as FilledInputProps,
               }}
             />
           </Box>
@@ -213,7 +214,7 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
                 },
               }}
               slotProps={{
-                input: { disableUnderline: true } as any,
+                input: { disableUnderline: true } as FilledInputProps,
               }}
             />
           </Box>
@@ -246,7 +247,7 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
               ))}
             </Select>
           </Box>
-          
+
         </Box>
         <Box>
           <Typography variant="body1" fontWeight="bold" mb={1}>
@@ -266,11 +267,11 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
               input={<OutlinedInput />}
               renderValue={(selected) => (
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, p: 0.5 }}>
-                  {Array.isArray(selected) ? 
+                  {Array.isArray(selected) ?
                     selected.map((value) => (
-                      <Chip 
-                        key={value} 
-                        label={t(`common.sectors.${value.toLowerCase()}`)} 
+                      <Chip
+                        key={value}
+                        label={t(`common.sectors.${value.toLowerCase()}`)}
                         size="small"
                         sx={{
                           height: 24,
@@ -322,8 +323,8 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
               }}
             >
               {sectors.map((sector) => (
-                <MenuItem 
-                  key={sector} 
+                <MenuItem
+                  key={sector}
                   value={sector}
                   sx={{
                     '&:hover': {
@@ -346,7 +347,7 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
                       },
                     }}
                   />
-                  <ListItemText 
+                  <ListItemText
                     primary={t(`common.sectors.${sector.toLowerCase()}`)}
                     sx={{
                       '& .MuiListItemText-primary': {
@@ -359,7 +360,7 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
               ))}
             </Select>
           </FormControl>
-          
+
           {form.employeeData?.sectors && form.employeeData.sectors.length > 0 && (
             <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
               {form.employeeData.sectors.length} {form.employeeData.sectors.length === 1 ? 'sector' : 'sectors'} selected

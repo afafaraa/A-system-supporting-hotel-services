@@ -8,6 +8,7 @@ import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.repositories.ServiceRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.ZoneId
@@ -18,7 +19,7 @@ import kotlin.math.roundToLong
 class StatsService(
     private val scheduleRepository: ScheduleRepository,
     private val serviceRepository: ServiceRepository,
-    private val userRepository: UserRepository,
+    private val userService: UserService,
 ) {
     data class ServiceStat(
         val id: Int,
@@ -33,10 +34,7 @@ class StatsService(
                 .findAll()
                 .filter { it.status != OrderStatus.CANCELED }
 
-        val allGuests =
-            userRepository
-                .findAll()
-                .filter { it.role == Role.GUEST && it.guestData != null }
+        val allGuests = userService.getAllGuests(Pageable.unpaged())
 
         val today = LocalDate.now()
         val bookingsToday = allOrders.count { it.serviceDate.toLocalDate() == today }

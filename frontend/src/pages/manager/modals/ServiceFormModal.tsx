@@ -12,6 +12,7 @@ import {
   Paper,
   CircularProgress,
   Grid,
+  FilledInputProps
 } from '@mui/material';
 import { useState, useEffect, useRef } from 'react';
 import { Service } from '../../../types';
@@ -133,21 +134,18 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
       );
 
       const imageUrl = response.data.downloadUri;
-      console.log('Upload response:', response.data);
-      console.log('Image URL:', imageUrl);
       handleChange('image', imageUrl);
       setUploadState('success');
 
       setTimeout(() => {
-        if (uploadState !== 'error') {
-          setUploadState('idle');
-        }
+        setUploadState((prev) => (prev === 'error' ? 'error' : 'idle'));
       }, 2000);
     } catch (error: unknown) {
       let errorMessage = tc("upload_error")
       if (typeof error === 'object' && error !== null && 'response' in error) {
         const err = error as { response?: { data?: { error?: string } } };
         errorMessage = err.response?.data?.error || errorMessage;
+        console.error(errorMessage)
       }
       setUploadState('error');
     }
@@ -205,7 +203,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
           </Typography>
         </Box>
         <Typography variant="subtitle2" color="text.secondary">
-          {isEdit ? tc("edit_subtitle") : tc("add_subtitle") }
+          {isEdit ? tc("edit_subtitle") : tc("add_subtitle")}
         </Typography>
       </DialogTitle>
 
@@ -227,7 +225,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
                   p: 1,
                 },
               }}
-              slotProps={{ input: { disableUnderline: true } as any }}
+              slotProps={{ input: { disableUnderline: true } as FilledInputProps }}
             />
           </Grid>
 
@@ -247,7 +245,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
                   p: 1,
                 },
               }}
-              slotProps={{ input: { disableUnderline: true } as any }}
+              slotProps={{ input: { disableUnderline: true } as FilledInputProps }}
             />
           </Grid>
         </Grid>
@@ -271,7 +269,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
                   p: 1,
                 },
               }}
-              slotProps={{ input: { disableUnderline: true } as any }}
+              slotProps={{ input: { disableUnderline: true } as FilledInputProps }}
             />
           </Grid>
 
@@ -294,7 +292,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
                   p: 1,
                 },
               }}
-              slotProps={{ input: { disableUnderline: true } as any }}
+              slotProps={{ input: { disableUnderline: true } as FilledInputProps }}
             />
           </Grid>
         </Grid>
@@ -318,7 +316,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
               },
             }}
             slotProps={{
-              input: { disableUnderline: true } as any,
+              input: { disableUnderline: true } as FilledInputProps,
             }}
           />
         </Box>
@@ -394,7 +392,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
                 {uploadState === 'error' && (
                   <>
                     <Error color="error" fontSize="large" />
-                    <Typography color="error.main">{t("errorupload_error")}</Typography>
+                    <Typography color="error.main">{t("error.upload_error")}</Typography>
                   </>
                 )}
 
@@ -412,7 +410,7 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
         </Box>
 
         <Box display="flex" alignItems="center" gap={2}>
-          <Typography variant="body1" fontWeight="bold">
+          <Typography variant="body1" fontWeight="bold" color={!form.disabled ? "primary" : "textSecondary"}>
             {tc("availability")}
           </Typography>
           <FormControlLabel

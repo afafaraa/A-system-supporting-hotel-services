@@ -15,13 +15,7 @@ import {
   AttachMoney,
   PeopleAltOutlined,
 } from '@mui/icons-material';
-
-type ServiceStat = {
-  id: string | number;
-  name: string;
-  orderCount?: number;
-  revenue?: string;
-};
+import { ServiceStat } from '../../types/service_stat';
 
 function StatsPage() {
   const { t } = useTranslation();

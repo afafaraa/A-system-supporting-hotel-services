@@ -373,7 +373,8 @@
       "food_and_beverage": "Jedzenie & Napoje",
       "housekeeping": "Sprzątanie",
       "reception": "Recepcja",
-      "maintenance": "Servis"
+      "maintenance": "Servis",
+      "management": "Zarządzanie"
     }
   },
   "ui": {

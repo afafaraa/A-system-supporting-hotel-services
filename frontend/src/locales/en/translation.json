@@ -143,7 +143,7 @@
         "searchPlaceholder": "Search guests...",
         "ALL": "All",
         "Checked-out": "Checked-out",
-        "Checked-in": "Checked-in",
+        "Checked-in": "Checked-in"  ,
         "Upcoming": "Upcoming",
         "room": "Room",
         "check_in": "Check-in",
@@ -377,7 +377,8 @@
       "food_and_beverage": "Food & Beverage",
       "housekeeping": "Housekeeping",
       "reception": "Reception",
-      "maintenance": "Maintenance"
+      "maintenance": "Maintenance",
+      "management": "Management"
     }
   },
   "ui": {
