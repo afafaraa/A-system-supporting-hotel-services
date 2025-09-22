@@ -5,7 +5,6 @@ import {
   MenuItem,
   TextField,
   Typography,
-  useTheme,
 } from '@mui/material';
 import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -14,31 +13,18 @@ import { useTranslation } from 'react-i18next';
 
 function ServiceCalendar({
   selectedDate,
-  setSelectedDate,
   timeSlots = [],
   selectedTime,
   setSelectedTime,
+  handleDateChange
 }: {
   selectedDate: Date | null;
-  setSelectedDate: (x: Date | null) => void;
   timeSlots?: OrderServiceProps[];
   selectedTime: string;
   setSelectedTime: (x: string) => void;
+  handleDateChange: (date: Date | null) => void;
 }) {
-  const theme = useTheme();
   const { t } = useTranslation();
-
-  // Filter slots for the selected date
-  const filteredSlots = selectedDate
-    ? timeSlots.filter((slot) => {
-        const slotDate = new Date(slot.serviceDate);
-        return (
-          slotDate.getFullYear() === selectedDate.getFullYear() &&
-          slotDate.getMonth() === selectedDate.getMonth() &&
-          slotDate.getDate() === selectedDate.getDate()
-        );
-      })
-    : [];
 
   return (
     <Grid flexGrow={1} size={1}>
@@ -63,9 +49,9 @@ function ServiceCalendar({
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DateCalendar
               value={selectedDate}
-              onChange={(newDate) => setSelectedDate(newDate)}
+              onChange={(newDate) => handleDateChange(newDate)}
               sx={{
-                border: `1px solid ${theme.palette.divider}`,
+                border: theme => `1px solid ${theme.palette.divider}`,
                 borderRadius: '10px',
                 padding: '15px 10px 15px 10px',
                 width: '100%',
@@ -74,7 +60,7 @@ function ServiceCalendar({
           </LocalizationProvider>
 
           <Typography mt={3} mb={1} fontWeight={600}>
-            {t('pages.order_service.selectTime')}
+            {t('pages.order_service.selectTime')} {`(${timeSlots.length})`}
           </Typography>
           <TextField
             select
@@ -83,7 +69,7 @@ function ServiceCalendar({
             value={selectedTime}
             onChange={(e) => setSelectedTime(e.target.value)}
             sx={{
-              backgroundColor: theme.palette.background.default,
+              backgroundColor: "background.default",
               borderRadius: '5px',
               '& .MuiOutlinedInput-root': {
                 '& fieldset': {
@@ -92,12 +78,12 @@ function ServiceCalendar({
               },
             }}
           >
-            {filteredSlots.length === 0 ? (
+            {timeSlots.length === 0 ? (
               <MenuItem disabled>
                 {t('pages.order_service.noSlotsAvailable')}
               </MenuItem>
             ) : (
-              filteredSlots
+              timeSlots
                 .sort(
                   (a, b) =>
                     new Date(a.serviceDate).getTime() -
@@ -114,7 +100,7 @@ function ServiceCalendar({
                     .padStart(2, '0')}`;
 
                   return (
-                    <MenuItem key={slot.id} value={String(slot.id)}>
+                    <MenuItem key={slot.id} value={slot.id}>
                       {timeLabel} — {slot.employeeFullName}
                     </MenuItem>
                   );
@@ -128,7 +114,7 @@ function ServiceCalendar({
           <TextField
             placeholder={t('pages.order_service.specialRequests')}
             sx={{
-              backgroundColor: theme.palette.background.default,
+              backgroundColor: "background.default",
               '& .MuiOutlinedInput-root': {
                 '& fieldset': {
                   border: 'none',

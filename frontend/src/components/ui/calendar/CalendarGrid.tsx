@@ -53,9 +53,8 @@ function CalendarGrid(
       const currentDay = addDays(currentWeekStart, index);
       const isToday = isSameDay(currentDay, today);
       return (
-        <Box key={index} textAlign="center" alignItems="center" justifyContent="center" minWidth={140} width="100%"
-             sx={{paddingTop: 2}}>
-          <SectionCard size={1.5} sx={{fontWeight: "bold", bgcolor: isToday ? "primary.light" : "background.main"}}>
+        <Box key={index} textAlign="center" alignItems="center" justifyContent="center" minWidth={140} width="100%" pt={1}>
+          <SectionCard size={2} sx={{fontWeight: "bold", bgcolor: isToday ? "primary.light" : "background.main", paddingX: {xs: 0.5, sm: 1}, borderRadius: 4}}>
             <Typography fontSize="inherit" fontWeight="inherit">{dayOfWeek}</Typography>
             <Typography mb={2} fontSize="smaller" lineHeight="inherit">
               {currentDay.toLocaleDateString(t('date.locale'), {

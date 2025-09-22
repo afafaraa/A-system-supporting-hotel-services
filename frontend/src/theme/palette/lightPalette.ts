@@ -22,6 +22,8 @@ export const lightPalette: PaletteOptions = {
   },
   action: {
     active: 'rgba(0, 0, 0, 0.75)',
+    disabled: 'rgba(118, 111, 132, 1)',        // text.secondary
+    disabledBackground: 'hsl(256, 20%, 95%)',  // background.default
   },
   success: {
     main: 'hsl(124, 68%, 40%)'

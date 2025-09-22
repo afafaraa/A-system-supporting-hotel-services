@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.time.temporal.TemporalAdjusters
@@ -45,8 +46,25 @@ class ScheduleService(
         return scheduleRepository.findByServiceIdAndServiceDateBetween(
             serviceId = id,
             startDate = monday.atStartOfDay(),
-            endDate = sunday.atTime(23, 59, 59),
+            endDate = sunday.atTime(LocalTime.MAX),
         )
+    }
+
+    fun getTodayAvailableSchedulesByServiceId(
+        serviceId: String,
+        date: String,
+    ): List<ScheduleEntity> {
+        try {
+            val parsedDate = ZonedDateTime.parse(date).toLocalDate()
+            return scheduleRepository.findByServiceIdAndStatusAndServiceDateBetween(
+                serviceId = serviceId,
+                status = OrderStatus.AVAILABLE,
+                startDate = parsedDate.atStartOfDay(),
+                endDate = parsedDate.atTime(LocalTime.MAX),
+            )
+        } catch (_: DateTimeParseException) {
+            throw InvalidArgumentException("Invalid date format. Expected format is ISO_ZONED_DATE_TIME.")
+        }
     }
 
     fun weekBounds(day: LocalDate): Pair<LocalDate, LocalDate> {

@@ -22,6 +22,8 @@ export const darkPalette: PaletteOptions = {
   },
   action: {
     active: 'hsl(0, 0%, 95%)',
+    disabled: 'rgba(140, 138, 144, 1)',        // text.secondary
+    disabledBackground: 'hsl(256, 8%, 10%)',   // background.default
   },
   success: {
     main: 'hsl(124, 68%, 40%)'

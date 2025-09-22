@@ -116,7 +116,7 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
           </Box>
 
           <Button
-            onClick={() => navigate(`/service-schedule/${service.id}`)}
+            onClick={() => navigate(`/service-schedule/${service.id}`, { state: service })}
             fullWidth
             sx={{ marginTop: 2 }}
             variant="contained"

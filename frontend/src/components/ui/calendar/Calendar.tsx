@@ -102,8 +102,8 @@ function Calendar({title, subtitle}: CalendarProps) {
   }
 
   const CalendarHeader = () => (
-    <Box p={1.2} mb={0.8}>
-      <Stack direction="row" justifyContent="space-between" gap={2} flexWrap="wrap" mb={1}>
+    <SectionCard mb={1}>
+      <Stack direction="row" justifyContent="space-between" gap={2} flexWrap="wrap">
         {/* Calendar title */}
         <Box flexGrow={1}>
           <Title title={<><CalendarTodayOutlinedIcon /> {title}</>}
@@ -129,13 +129,13 @@ function Calendar({title, subtitle}: CalendarProps) {
       </Stack>
       {/* Mobile elements arrangement controls */}
       {isXs && (
-        <ToggleButtonGroup value={mobileArrangement} exclusive onChange={handleMobileArrangementChange} size="small" fullWidth sx={{mb: 1}}>
+        <ToggleButtonGroup value={mobileArrangement} exclusive onChange={handleMobileArrangementChange} size="small" fullWidth sx={{mt: 1}}>
           <ToggleButton value={"list"} aria-label="list" sx={{gap: 1}}><FormatListBulletedOutlinedIcon /> List</ToggleButton>
           <ToggleButton value={"grid"} aria-label="grid" sx={{gap: 1}}><ViewWeekOutlinedIcon /> Grid</ToggleButton>
         </ToggleButtonGroup>
       )}
-      {error && <Alert severity="error" sx={{mb: 1}}>{error}</Alert>}
-    </Box>
+      {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
+    </SectionCard>
   )
 
   const fullWeekdays: string[] = t("date.fullWeekdays", { returnObjects: true }) as string[];
@@ -143,9 +143,8 @@ function Calendar({title, subtitle}: CalendarProps) {
   const schedulesOnDay: Partial<Record<number, Schedule[]>> = Object.groupBy(schedulesForWeek, (s: Schedule) => numberToWeekday[s.weekday]);
 
   return (
-    <SectionCard size={2} sx={{borderRadius: 4}}>
+    <>
       <CalendarHeader />
-
       {(isXs && mobileArrangement === "list") ?
         CalendarList(fullWeekdays, currentWeekStart, today, t, tc, schedulesOnDay, setSelectedSchedule) :
         CalendarGrid(scrollRef, fullWeekdays, currentWeekStart, today, t, tc, schedulesOnDay, setSelectedSchedule)
@@ -155,7 +154,7 @@ function Calendar({title, subtitle}: CalendarProps) {
         <ScheduleDetailsDialog open={true} onClose={() => setSelectedSchedule(null)}
                                schedule={selectedSchedule} onScheduleUpdated={onScheduleUpdated} />
       )}
-    </SectionCard>
+    </>
   )
 }
 

@@ -117,7 +117,7 @@ function RequestedSchedulesPage() {
     <SectionCard>
       <Title title={<><ScheduleOutlinedIcon /> {tc("title")}</>}
              subtitle={`${schedules.length} ${tc("subtitle")}`} />
-      {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
+      {error && <Alert severity="error" sx={{my: 2}}>{error}</Alert>}
       {pageLoading ? <></> : schedules.length === 0 ?
         <SectionCard size={4}>
           {tc("no_schedules")}

@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { axiosAuthApi } from '../../../middleware/axiosApi.ts';
 import { ServiceProps } from '../available-services/AvailableServiceCard.tsx';
 import Grid from '@mui/material/Grid';
-import { OrderStatus } from '../../../types/schedule.ts';
 import { selectShoppingCart } from '../../../redux/slices/shoppingCartSlice.ts';
 import { useSelector } from 'react-redux';
 import ServiceDescription from './ServiceDescription.tsx';
@@ -24,65 +23,18 @@ function OrderServicePage() {
   const params = useParams();
   const location = useLocation();
   const serviceFromState = location.state as ServiceProps | undefined;
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [service, setService] = useState<ServiceProps>();
   const [loading, setLoading] = useState(false);
   const [timeSlots, setTimeSlots] = useState<OrderServiceProps[]>([]);
   const [selectedTime, setSelectedTime] = useState<string>('');
   const cartItems = useSelector(selectShoppingCart);
 
-  const fetchServiceData = useCallback(async () => {
-    setLoading(true);
-
-    try {
-      const response = await axiosAuthApi.get(`/services/one/${params.id}`);
-      setService(response.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
+  const fetchServiceData = useCallback(() => {
+    if (serviceFromState) {
+      setService(serviceFromState);
+      return;
     }
-  }, [params.id]);
-
-  const fetchSchedule = useCallback(async (date: Date) => {
-    try {
-      const response = await axiosAuthApi(
-        `/schedule/get/week/id/${params.id}`,
-        {
-          params: { date: date.toISOString().split('T')[0] },
-        }
-      );
-
-      const scheduleItems = response.data.map((s: OrderServiceProps) => ({
-        ...s,
-        inCart: cartItems.includes(s.id),
-      }));
-
-      const filtered = scheduleItems.filter((slot: OrderServiceProps) => {
-        const slotDate = new Date(slot.serviceDate);
-        return slotDate.toDateString() === date.toDateString();
-      });
-
-      setTimeSlots(
-        filtered.filter((slot: OrderServiceProps) => slot.status === OrderStatus.AVAILABLE)
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  }, [cartItems, params.id]);
-
-  useEffect(() => {
-    fetchServiceData();
-  }, [fetchServiceData]);
-
-  useEffect(() => {
-    if (service && selectedDate) {
-      fetchSchedule(selectedDate);
-    }
-  }, [service, selectedDate, fetchSchedule]);
-
-  useEffect(() => {
-    if (serviceFromState) return;
     setLoading(true);
     axiosAuthApi
       .get(`/services/one/${params.id}`)
@@ -91,8 +43,39 @@ function OrderServicePage() {
       .finally(() => setLoading(false));
   }, [params.id, serviceFromState]);
 
+  const fetchSchedule = useCallback((date: Date) => {
+    axiosAuthApi
+      .get(`/schedule/today/by-service-id/${params.id}/available?date=${date.toISOString()}`)
+      .then(response => {
+        const scheduleItems = response.data.map((s: OrderServiceProps) => ({
+          ...s,
+          inCart: cartItems.includes(s.id),
+        }));
+        setTimeSlots(scheduleItems);
+      })
+      .catch(error => {
+        console.log(error)
+      });
+  }, [cartItems, params.id]);
+
+  useEffect(() => {
+    fetchServiceData();
+  }, [fetchServiceData]);
+
+  useEffect(() => {
+    if (service && selectedDate) fetchSchedule(selectedDate);
+  }, [service, selectedDate, fetchSchedule]);
+
   if (loading || service == null) {
     return <p>Loading...</p>;
+  }
+
+  const handleDateChange = (date: Date | null) => {
+    if (date && date !== selectedDate) {
+      setSelectedTime('');
+      setTimeSlots([]);
+      setSelectedDate(date);
+    }
   }
 
   return (
@@ -107,10 +90,10 @@ function OrderServicePage() {
         />
         <ServiceCalendar
           selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
           timeSlots={timeSlots}
           selectedTime={selectedTime}
           setSelectedTime={setSelectedTime}
+          handleDateChange={handleDateChange}
         />
       </Grid>
     </main>

@@ -31,6 +31,13 @@ class EmployeeService(
         return user
     }
 
+    fun getEmployeeFullNameById(employeeId: String): String {
+        val user =
+            userRepository.findUserNameById(employeeId)
+                ?: throw EntityNotFoundException("Employee with id '$employeeId' was not found")
+        return "${user.name} ${user.surname}"
+    }
+
     fun getAllEmployees(pageable: Pageable): List<UserEntity> = userRepository.findByRoleIn(employeeRoles, pageable).content
 
     @Throws(InvalidRoleNameException::class)
