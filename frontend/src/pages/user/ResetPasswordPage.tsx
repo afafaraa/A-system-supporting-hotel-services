@@ -1,12 +1,14 @@
-import {FormEvent, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import axiosApi from '../../middleware/axiosApi';
-import {useParams} from 'react-router-dom';
-import {FormControl, InputAdornment, IconButton, TextField, Typography, Alert} from "@mui/material";
-import {Visibility, VisibilityOff} from "@mui/icons-material";
+import {useNavigate, useParams} from 'react-router-dom';
+import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Link from "@mui/material/Link";
 import {useTranslation} from "react-i18next";
 import {isAxiosError} from "axios";
+import ShadowCard from "../../theme/styled-components/ShadowCard.ts";
+import InputLabel from "../../components/ui/InputLabel.tsx";
+import StyledInput from "../../theme/styled-components/StyledInput.ts";
+import generatePasswordAdornment from "../../components/ui/generatePasswordAdornment.tsx";
 
 function ResetPasswordPage() {
     const [password, setPassword] = useState('');
@@ -17,6 +19,7 @@ function ResetPasswordPage() {
     const [loading, setLoading] = useState(false);
     const {token} = useParams();
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const tc = (key: string) => t(`pages.reset-password.${key}`);
 
     useEffect(() => {
@@ -26,9 +29,10 @@ function ResetPasswordPage() {
         }
     }, [error]);
 
-    const resetPassword = async (e: FormEvent) => {
-        e.preventDefault();
-        if (password === '' || repeatPassword === '') {
+    const disabled = password === '' || repeatPassword === '';
+
+    const resetPassword = async () => {
+        if (disabled) {
             setError(t("error.emptyFields"));
             return;
         }
@@ -61,50 +65,23 @@ function ResetPasswordPage() {
     }
 
     return (
-      <FormControl component="form" onSubmit={resetPassword} sx={{px: 6, py: 8, borderRadius: 6, boxShadow: 10, backgroundColor: "background.paper"}}>
-        <Typography variant="h4" fontWeight="bold" align="center" sx={{mb: 4}}>{tc("title")}</Typography>
-        <TextField sx={{mb: 2}}
-          label={tc("newPassword")}
-          autoComplete="new-password"
-          onChange={e => setPassword(e.target.value)}
-          type={showPassword ? "text" : "password"}
-          name="password"
-          id="password"
-          placeholder={tc("newPassword")}
-          slotProps={{
-            input: {
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    edge="end"
-                    size="small"
-                  >
-                    {showPassword ? <VisibilityOff/> : <Visibility/>}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
-        <TextField sx={{mb: 4}}
-          label={tc("repeatPassword")}
-          autoComplete="new-password"
-          onChange={e => setRepeatPassword(e.target.value)}
-          type="password"
-          name="password"
-          id="repeatPassword"
-          placeholder={tc("repeatPassword")}
-        />
-        <Button variant="contained" onClick={resetPassword} type="submit" loading={loading} >
+      <ShadowCard>
+        <Typography variant="h1" fontWeight="regular" fontSize={28} color="primary.main">{tc("title")}</Typography>
+
+        <InputLabel label={tc("newPassword")} htmlFor="password" mt={4}/>
+        <StyledInput id="password" name="password" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder={tc("newPassword")} autoComplete="new-password"
+                     slotProps={generatePasswordAdornment(showPassword, setShowPassword)} />
+
+        <InputLabel label={tc("repeatPassword")} htmlFor="repeatPassword" />
+        <StyledInput id="repeatPassword" name="password" type="password" value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} placeholder={tc("repeatPassword")} autoComplete="new-password" />
+
+        <Button disabled={disabled} variant="contained" onClick={resetPassword} loading={loading} sx={{mt: 4}} fullWidth>
           {tc("resetPasswordButton")}
         </Button>
-        {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
-        {info && <Alert severity="info" sx={{mt: 2}}>{info}</Alert>}
-        <Link href="/login" align="center" fontSize={14} mt={3} color="textPrimary" sx={{textDecoration: "none", "&:hover": {textDecoration: "underline"} }}>
-          {tc("goBack")}
-        </Link>
-      </FormControl>
+        {info && <Typography component="p" variant="caption" color="info" sx={{mt: 2}}>{info}</Typography>}
+        {error && <Typography component="p" variant="caption" color="error" sx={{mt: 2}}>{error}</Typography>}
+        <Button size="small" sx={{mt: 1, fontSize: "105%"}} fullWidth onClick={() => navigate("/login")}>{"< "}{tc("goBack")}</Button>
+      </ShadowCard>
     );
 }
 
