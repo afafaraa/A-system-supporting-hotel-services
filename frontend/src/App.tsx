@@ -27,7 +27,7 @@ import RequestedSchedulesPage from "./pages/employee/RequestedSchedulesPage.tsx"
 import EmployeeReservationsPage from "./pages/employee/ReservationsPage.tsx";
 import EmployeeReviewsPage from "./pages/employee/ReviewsPage.tsx";
 import FallbackPage from "./pages/user/FallbackPage.tsx";
-import GuestLayout from "./components/layout/GuestLayout.tsx";
+import GuestLayout from "./pages/guest/layout/GuestLayout.tsx";
 import AdminLayout from "./components/layout/AdminLayout.tsx";
 import GuestsListPage from './pages/manager/GuestsListPage.tsx';
 import AvailableServicesPage from './pages/guest/available-services/AvailableServicesPage.tsx';
