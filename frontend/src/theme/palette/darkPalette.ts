@@ -11,7 +11,8 @@ export const darkPalette: PaletteOptions = {
     border: 'rgba(146, 146, 146, 0.25)',
   },
   secondary: {
-    main: '#FFE921'
+    main: '#FFE921',
+    success: '#39D943',
   },
   background: {
     default: 'hsl(256, 8%, 10%)',

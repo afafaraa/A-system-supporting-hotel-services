@@ -11,21 +11,16 @@ import RegisterPage from './pages/user/RegisterPage.tsx';
 import AddReservationPage from './pages/AddReservationPage.tsx'
 import EmployeeListPage from "./pages/manager/EmployeeListPage.tsx";
 import LogoutPage from "./pages/user/LogoutPage.tsx";
-import AvailableServicesPage from "./pages/guest/available-services/AvailableServicesPage.tsx";
 import NotificationsPage from "./pages/guest/NotificationsPage.tsx";
-import PastServicesPage from "./pages/guest/requested-services/PastServicesPage.tsx";
-import RequestedServicesPage from "./pages/guest/requested-services/RequestedServicesPage.tsx";
-import ShoppingCartPage from "./pages/guest/shopping-cart/ShoppingCartPage.tsx";
 import {PropsWithChildren, useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {initializeUserFromLocalStorage} from "./components/auth/auth.tsx";
-import ServiceSchedulePage from "./pages/guest/service-schedule/ServiceSchedulePage.tsx";
+import OrderServicePage from "./pages/guest/order-service/OrderServicePage.tsx";
 import LoadingPage from "./pages/user/LoadingPage.tsx";
 import EmployeeDetailsPage from "./pages/manager/EmployeeDetailsPage.tsx";
 import ServicesListPage from "./pages/manager/ServicesListPage.tsx";
 import StatsPage from "./pages/manager/StatsPage.tsx";
 import AddNewEmployeePage from './pages/manager/forms/AddNewEmployeePage.tsx';
-import GuestMainPage from "./pages/guest/layout/GuestMainPage.tsx";
 import EmployeeLayout from "./components/layout/EmployeeLayout.tsx";
 import EmployeeCalendarPage from "./pages/employee/EmployeeCalendarPage.tsx";
 import TodaySchedulesPage from "./pages/employee/TodaySchedulesPage.tsx";
@@ -33,26 +28,27 @@ import RequestedSchedulesPage from "./pages/employee/RequestedSchedulesPage.tsx"
 import EmployeeReservationsPage from "./pages/employee/ReservationsPage.tsx";
 import EmployeeReviewsPage from "./pages/employee/ReviewsPage.tsx";
 import FallbackPage from "./pages/user/FallbackPage.tsx";
+import GuestLayout from "./pages/guest/layout/GuestLayout.tsx";
+import AvailableServicesPage from './pages/guest/available-services/AvailableServicesPage.tsx';
+import BookedServicesPage from './pages/guest/booked-services/BookedServicesPage.tsx';
+import HotelBookingPage from './pages/guest/hotel-booking/HotelBookingPage.tsx';
 
 function App(){
-
   return (
     <BrowserRouter>
       <AppInitializer>
         <Routes>
-          <Route path="/services" element={<Navigate to={"/services/available"} replace />} />
-
           <Route element={<AuthenticatedLayout />}>
-            <Route element={<ProtectedRoute />}>
-              <Route path="/home" element={<HomePage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/guest" element={<GuestMainPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route element={<ProtectedRoute allowedRoles={["ROLE_GUEST"]}/>}>
+              <Route path="/service-schedule/:id" element={<OrderServicePage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
-              <Route path="/services/available" element={<AvailableServicesPage />} />
-              <Route path="/services/requested" element={<RequestedServicesPage />}/>
-              <Route path="/services/history" element={<PastServicesPage />} />
-              <Route path="/services/shopping-cart" element={<ShoppingCartPage />} />
-              <Route path="/service-schedule/:id" element={<ServiceSchedulePage />} />
+              <Route path="/guest" element={<GuestLayout />}>
+                <Route index element={<Navigate to="available" replace />} />
+                <Route path="available" element={<AvailableServicesPage />} />
+                <Route path="booked" element={<BookedServicesPage />} />
+                <Route path="hotel" element={<HotelBookingPage />} />
+              </Route>
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_EMPLOYEE", "ROLE_RECEPTIONIST", "ROLE_MANAGER", "ROLE_ADMIN"]} />}>
               <Route element={<EmployeeLayout />}>
@@ -75,13 +71,16 @@ function App(){
             </Route>
           </Route>
 
-          <Route element={<PublicLayout />}>
+          <Route element={<PublicLayout navbar={true}/>}>
+            <Route path="/home" element={<HomePage />} />
+          </Route>
+          <Route element={<PublicLayout navbar={false}/>}>
             <Route path="/logout" element={<LogoutPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/reset-password-email" element={<SendResetPasswordEmail />} />
             <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="*" element={<Navigate to="/login" replace />} />
+            <Route path="*" element={<Navigate to="/home" replace />} />
             <Route path="/fallback" element={<FallbackPage />} />
           </Route>
 
@@ -113,7 +112,7 @@ function AppInitializer({ children }: PropsWithChildren) {
       const timer = setTimeout(() => setShowLoader(true), 300);
       initializeUserFromLocalStorage(dispatch)
         .then(isSuccessful => {
-          if (!isSuccessful && !pathIsPublic) navigate("/login");
+          if (!isSuccessful && !pathIsPublic) navigate("/home");
         })
         .finally(() => {
           clearTimeout(timer);

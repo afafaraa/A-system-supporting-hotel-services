@@ -2,7 +2,15 @@
   "date": {
     "locale": "en-US",
     "shortWeekdays": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    "fullWeekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "fullWeekdays": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ],
     "separator": ","
   },
   "navbar": {
@@ -117,25 +125,51 @@
       "employeeData": "Employee Data"
     },
     "available_services": {
-      "title": "Available services"
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "bookNow": "Book now"
     },
-    "requested_services": {
-      "title": "Requested services",
-      "confirmationDialog": "Cancel service?",
-      "yes": "Yes",
-      "no": "No"
+    "home": {
+      "welcomeTitle": "Welcome to Grand Hotel",
+      "welcomeSubtitle": "Experience luxury and comfort in the heart of the city. Our world-class service and elegant accommodations await you.",
+      "reserveRoom": "Reserve a Room",
+      "contactUs": "Contact us",
+      "roomsTitle": "Our Rooms & Suites",
+      "roomsSubtitle": "Choose from our carefully designed accommodations, each offering comfort, style, and modern amenities.",
+      "standardTitle": "Standard Room",
+      "standardDesc": "Comfortable room with essential amenities",
+      "deluxeTitle": "Deluxe Room",
+      "deluxeDesc": "Spacious room with premium amenities and city view",
+      "exclusiveTitle": "Exclusive Suite",
+      "exclusiveDesc": "Luxurious suite with separate living area and premium services",
+      "upToGuests": "Up to {{count}} guests",
+      "amenities": "Amenities",
+      "reserveNow": "Reserve Now",
+      "footerTitle": "Grand Hotel",
+      "footerDesc": "Experience luxury and comfort in the heart of the city with our world-class service.",
+      "contactInfo": "Contact Info",
+      "address": "123 Grand Avenue, City Center",
+      "phone": "+1 (555) 123-4567",
+      "email": "reservations@grandhotel.com",
+      "services": "Services",
+      "serviceDining": "Fine Dining & Room Service",
+      "serviceTransport": "Transportation & Concierge",
+      "serviceSpa": "Spa & Wellness Center",
+      "serviceRecreation": "Recreation Facilities",
+      "rights": "© 2024 Grand Hotel. All rights reserved."
     },
-    "past_services": {
-      "title": "Past services",
-      "rateServiceDialog": "Rate service",
-      "addComment": "Add comment",
-      "cancelComment": "Cancel comment",
-      "commentInputPlaceholder": "Write your comment here",
-      "rate": "Rate",
-      "ACTIVE": "In progress",
-      "REQUESTED": "Waiting for approval",
-      "CANCELED": "Canceled by employee",
-      "COMPLETED": "Finished"
+    "booked_services": {
+      "filterBookings": "Filter Bookings",
+      "searchPlaceholder": "Search for Booking",
+      "allBookings": "All Bookings",
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "inProgress": "In progress",
+      "canceled": "Canceled",
+      "completed": "Completed",
+      "noBookingsFound": "No bookings found.",
+      "rate": "Rate service",
+      "cancel": "Cancel service"
     },
     "shopping_cart": {
       "title": "Shopping cart",
@@ -146,16 +180,20 @@
       "addToBill": "Add to bill",
       "continueShopping": "Continue shopping"
     },
-    "service_schedule": {
-      "M": "M",
-      "T": "T",
-      "W": "W",
-      "Th": "Th",
-      "F": "F",
-      "S": "S",
-      "Su": "Su",
-      "noServiceAvailable": "No services available for this day.",
-      "nextAvailableServices": "Next available service dates"
+    "order_service": {
+      "availability": "Availability",
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "price": "Price",
+      "duration": "Duration",
+      "addToCart": "Add to Cart",
+      "noServiceAvailable": "No services available on this day.",
+      "nextAvailableServices": "Next available service slots",
+      "bookService": "Book your service",
+      "selectDate": "Select date",
+      "selectTime": "Select time",
+      "specialRequests": "Special Requests",
+      "noSlotsAvailable": "No slots available"
     },
     "employee": {
       "navbar": {
