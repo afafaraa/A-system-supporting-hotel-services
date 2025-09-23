@@ -12,7 +12,8 @@ const LanguageSwitcher: React.FC = () => {
   const languageBox = (language: string, code: string) => {
     return (
       <Stack direction="row" gap={1} alignItems="center">
-        <img alt={`${code} flag`} src={`https://flagcdn.com/40x30/${code}.png`} height="20px" />
+        {/* Flags from the page: https://flagcdn.com/40x30/... */}
+        <img alt={`${code} flag`} src={`/flags/${code}.png`} height="20px" />
         {language}
       </Stack>
     )

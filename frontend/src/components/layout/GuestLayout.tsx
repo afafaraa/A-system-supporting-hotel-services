@@ -1,10 +1,10 @@
-import Box from "@mui/material/Box";
+import Box from "@mui/system/Box";
 import { Outlet } from "react-router-dom";
 import NotificationsContainer from "../ui/NotificationsContainer.tsx";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import DashboardNavbar from "../navigation/DashboardNavbar.tsx";
 
-const inputGlobalStyles = <GlobalStyles styles={{ html: { overflowY: 'scroll' } }} />
+const globalStyles = <GlobalStyles styles={{ html: { overflowY: 'scroll' } }} />
 
 const tabs = [
   { name: "Available Services", link: "/guest/available" },
@@ -15,12 +15,12 @@ const tabs = [
 function GuestLayout() {
   return (
     <div style={{ display: "flex", gap: "1rem" }}>
-      <Box sx={{ width: { xs: "100%", md: "70%" } }}>
-        {inputGlobalStyles}
+      <Box width={{ xs: "100%", md: "70%" }}>
+        {globalStyles}
         <DashboardNavbar tabs={tabs} />
         <Outlet />
       </Box>
-      <Box display={{ xs: "none", md: "block" }} style={{ width: "30%" }}>
+      <Box width="30%" display={{ xs: "none", md: "block" }}>
         <NotificationsContainer />
       </Box>
     </div>

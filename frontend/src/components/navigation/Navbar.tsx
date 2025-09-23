@@ -198,7 +198,7 @@ function Navbar() {
             <Stack direction="row" spacing={2} alignItems="center">
               <ThemeSwitcher />
               <Button variant="outlined" color="primary" onClick={() => navigate('/login')} endIcon={<LoginOutlinedIcon />}>
-                Login
+                {tc("loginButton")}
               </Button>
             </Stack>
           )}
