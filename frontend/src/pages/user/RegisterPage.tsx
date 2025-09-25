@@ -21,8 +21,8 @@ function RegisterPage(){
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.register.${key}`);
 
@@ -45,7 +45,6 @@ function RegisterPage(){
       const res = await axiosApi.post('/open/register', { code, username, password });
       if (res.data.accessToken && res.data.refreshToken) {
         setUserData(res.data.accessToken, res.data.refreshToken, dispatch)
-        navigate('/home');
       }
     } catch (err) {
       if (isAxiosError(err) && err.response && err.response.status === 400) setError("pages.register.invalidCodeError");

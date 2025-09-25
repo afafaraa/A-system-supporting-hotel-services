@@ -2,14 +2,11 @@ import {Grid} from "@mui/material";
 import AvailableServiceCard, {ServiceProps} from "./AvailableServiceCard.tsx";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import {useEffect, useState} from "react";
-import AuthenticatedHeader from "../../../components/ui/AuthenticatedHeader.tsx";
-import {useTranslation} from "react-i18next";
 
 function AvailableServicesPage() {
   const [availableServices, setAvailableServices] = useState<ServiceProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [page] = useState(0);
-  const { t } = useTranslation();
 
   const pageSize = 100; // temporary until pagination
 
@@ -34,19 +31,16 @@ function AvailableServicesPage() {
     return <p>Loading...</p>
   }
   return (
-    <div style={{width: '100%'}}>
-      <AuthenticatedHeader title={t('pages.available_services.title')}/>
-      <main style={{marginTop: '20px', marginBottom: '40px'}}>
-        <Grid container spacing={{xs: 2, md: 3}} columns={{ xs: 1, sm: 2, md: 3, xl: 4}}>
-          {availableServices.map((service, index) => (
-            <Grid key={index} size={1}>
-              <AvailableServiceCard service={service}/>
-            </Grid>
-          ))}
-        </Grid>
-      </main>
-    </div>
-  )
+    <main style={{marginTop: '40px', marginBottom: '40px', width: '100%'}}>
+      <Grid container spacing={{xs: 1, md: 2}} columns={{ xs: 1, sm: 2, lg: 3}}>
+        {availableServices.map((service, index) => (
+          <Grid key={index} size={1}>
+            <AvailableServiceCard service={service}/>
+          </Grid>
+        ))}
+      </Grid>
+    </main>
+  );
 }
 
 export default AvailableServicesPage;

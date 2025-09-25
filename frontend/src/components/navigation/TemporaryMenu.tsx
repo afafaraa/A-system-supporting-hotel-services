@@ -33,7 +33,7 @@ function TemporaryMenu() {
   };
 
   const nav = [
-    {text: tc("availableServices"), icon: DesignServicesIcon, navTo: '/services/available' , roles: ['ROLE_GUEST']},
+    {text: tc("availableServices"), icon: DesignServicesIcon, navTo: '/guest' , roles: ['ROLE_GUEST']},
     {text: tc("requestedServices"), icon: AssignmentTurnedInIcon, navTo: '/services/requested', roles: ['ROLE_GUEST']},
     {text: tc("pastServices"), icon: HistoryIcon, navTo: '/services/history', roles: ['ROLE_GUEST']},
     {text: tc("mySchedule"), icon: EventNoteIcon, navTo: '/employee/schedule', roles: ['ROLE_EMPLOYEE', 'ROLE_RECEPTIONIST', 'ROLE_MANAGER', 'ROLE_ADMIN']},

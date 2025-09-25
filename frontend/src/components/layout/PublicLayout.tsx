@@ -1,19 +1,31 @@
-import {Outlet} from "react-router-dom";
-import {Container, Box} from "@mui/material";
-import LanguageSwitcher from "../ui/LanguageSwitcher.tsx";
-import ThemeSwitcher from "../ui/ThemeSwitcher.tsx";
+import { Outlet } from 'react-router-dom';
+import { Container, Box } from '@mui/material';
+// import LanguageSwitcher from "../ui/LanguageSwitcher.tsx";
+import ThemeSwitcher from '../ui/ThemeSwitcher.tsx';
+import Navbar from '../navigation/Navbar.tsx';
 
-function PublicLayout() {
-
+function PublicLayout({ navbar }: { navbar: boolean }) {
   return (
-    <Container disableGutters maxWidth={false} sx={{height:"100dvh"}}>
-      <Box position="fixed" m={1.5}><LanguageSwitcher/></Box>
-      <Box position="fixed" m={1.5} right={0}><ThemeSwitcher/></Box>
-      <Box height="inherit" px="10px" display="flex" justifyContent="center" alignItems="center">
+    <Container disableGutters maxWidth={false} sx={{ height: '100dvh' }}>
+      {/*<Box position="fixed" sx={{margin: '90px 30px '}}><LanguageSwitcher/></Box>*/}
+      {!navbar && (
+        <Box position="fixed" m={1.5} right={0}>
+          <ThemeSwitcher />
+        </Box>
+      )}
+      {navbar && <Navbar />}
+      <Box
+        sx={{
+          height: 'inherit',
+          display: 'flex',
+          justifyContent: navbar ? '' : 'center',
+          alignItems: navbar ? '' : 'center',
+        }}
+      >
         <Outlet />
       </Box>
     </Container>
-  )
+  );
 }
 
 export default PublicLayout;

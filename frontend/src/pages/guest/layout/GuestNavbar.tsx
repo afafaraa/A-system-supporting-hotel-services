@@ -1,44 +1,44 @@
 import { useTheme } from '@mui/material';
 import { SectionWrapper } from '../../../theme/styled-components/SectionWrapper.ts';
-import { useRef, useState, useEffect } from 'react';
-import {PageState} from "./GuestMainPage.tsx";
+import { useRef, useState, useEffect, useCallback } from 'react';
+import { PageState } from './GuestLayout.tsx';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-function GuestNavbar({
-                       setCurrentPage,
-                       currentPage,
-                       subpages,
-                     }: {
-  setCurrentPage: (x: "Available Services" | "Booked Services" | "Book Hotel Room") => void;
-  currentPage: PageState;
-  subpages: PageState[];
-}) {
+function GuestNavbar({ subpages }: { subpages: PageState[] }) {
   const theme = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [indicatorStyle, setIndicatorStyle] = useState<{
+    left: number;
+    width: number;
+  }>({
     left: 0,
     width: 0,
   });
 
-  const updateIndicator = () => {
+  const updateIndicator = useCallback(() => {
     if (!containerRef.current) return;
-    const children = containerRef.current.querySelectorAll<HTMLSpanElement>('span');
-    const idx = subpages.indexOf(currentPage);
+    const children = containerRef.current.querySelectorAll<HTMLSpanElement>("span");
+
+    const idx = subpages.findIndex((s) => location.pathname.endsWith(s.path));
     if (idx !== -1 && children[idx]) {
       const el = children[idx];
       setIndicatorStyle({ left: el.offsetLeft, width: el.offsetWidth });
     }
-  };
+  }, [subpages, location.pathname]);
+
 
   // Update when page changes
   useEffect(() => {
     updateIndicator();
-  }, [currentPage, subpages]);
+  }, [subpages, updateIndicator]);
 
   // Update on window resize (responsive)
   useEffect(() => {
     window.addEventListener('resize', updateIndicator);
     return () => window.removeEventListener('resize', updateIndicator);
-  }, [currentPage, subpages]);
+  }, [subpages, updateIndicator]);
 
   return (
     <SectionWrapper
@@ -68,7 +68,7 @@ function GuestNavbar({
 
       {subpages.map((item) => (
         <span
-          key={item}
+          key={item.path}
           role="button"
           style={{
             flexGrow: 1,
@@ -83,14 +83,14 @@ function GuestNavbar({
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             color:
-              item === currentPage
+              location.pathname.endsWith(item.path)
                 ? theme.palette.primary.contrastText
                 : theme.palette.text.primary,
           }}
-          onClick={() => setCurrentPage(item)}
-          title={item}
+          onClick={() => navigate(item.path)}
+          title={item.label}
         >
-          {item}
+          {item.label}
         </span>
       ))}
     </SectionWrapper>

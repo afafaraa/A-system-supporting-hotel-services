@@ -2,7 +2,15 @@
   "date": {
     "locale": "pl-PL",
     "shortWeekdays": ["Pn.", "Wt.", "Śr.", "Czw.", "Pt.", "So.", "Nd."],
-    "fullWeekdays": ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"],
+    "fullWeekdays": [
+      "Poniedziałek",
+      "Wtorek",
+      "Środa",
+      "Czwartek",
+      "Piątek",
+      "Sobota",
+      "Niedziela"
+    ],
     "separator": ""
   },
   "navbar": {
@@ -89,13 +97,51 @@
       "employeeData": "Dane pracownika"
     },
     "available_services": {
-      "title": "Dostępne usługi"
+      "available": "Dostępne",
+      "unavailable": "Niedostępne",
+      "bookNow": "Zarezerwuj teraz"
     },
-    "requested_services": {
-      "title": "Zamówione usługi",
-      "confirmationDialog": "Anulować usługę?",
-      "yes": "Tak",
-      "no": "Nie"
+    "booked_services": {
+      "filterBookings": "Filtruj rezerwacje",
+      "searchPlaceholder": "Szukaj rezerwacji",
+      "allBookings": "Wszystkie rezerwacje",
+      "pending": "Oczekujące",
+      "confirmed": "Potwierdzone",
+      "inProgress": "W trakcie",
+      "canceled": "Anulowane",
+      "completed": "Zakończone",
+      "noBookingsFound": "Nie znaleziono rezerwacji.",
+      "rate": "Oceń usługę",
+      "cancel": "Anuluj usługę"
+    },
+    "home": {
+      "welcomeTitle": "Witamy w Grand Hotelu",
+      "welcomeSubtitle": "Doświadcz luksusu i komfortu w sercu miasta. Nasza obsługa na światowym poziomie i eleganckie pokoje czekają na Ciebie.",
+      "reserveRoom": "Zarezerwuj pokój",
+      "contactUs": "Skontaktuj się z nami",
+      "roomsTitle": "Nasze pokoje i apartamenty",
+      "roomsSubtitle": "Wybierz spośród starannie zaprojektowanych pokoi, które oferują komfort, styl i nowoczesne udogodnienia.",
+      "standardRoomTitle": "Pokój Standard",
+      "standardRoomDesc": "Komfortowy pokój z podstawowymi udogodnieniami",
+      "deluxeRoomTitle": "Pokój Deluxe",
+      "deluxeRoomDesc": "Przestronny pokój z luksusowymi udogodnieniami i widokiem na miasto",
+      "exclusiveSuiteTitle": "Apartament Prezydencki",
+      "exclusiveSuiteDesc": "Luksusowy apartament z oddzielnym salonem i usługami premium",
+      "upToGuests": "Do {{count}} gości",
+      "amenities": "Udogodnienia",
+      "reserveNow": "Zarezerwuj teraz",
+      "footerTitle": "Grand Hotel",
+      "footerDesc": "Doświadcz luksusu i komfortu w sercu miasta z naszą obsługą na światowym poziomie.",
+      "contactInfo": "Informacje kontaktowe",
+      "address": "123 Aleja Grand, Centrum Miasta",
+      "phone": "+1 (555) 123-4567",
+      "email": "rezerwacje@grandhotel.com",
+      "services": "Usługi",
+      "serviceDining": "Wykwintna kuchnia i obsługa pokojowa",
+      "serviceTransport": "Transport i concierge",
+      "serviceSpa": "Spa i centrum odnowy biologicznej",
+      "serviceRecreation": "Obiekty rekreacyjne",
+      "rights": "© 2024 Grand Hotel. Wszelkie prawa zastrzeżone."
     },
     "past_services": {
       "title": "Zrealizowane usługi",
@@ -118,16 +164,20 @@
       "addToBill": "Dodaj do rachunku",
       "continueShopping": "Kontynuuj zakupy"
     },
-    "service_schedule": {
-      "M": "Pn",
-      "T": "Wt",
-      "W": "Śr",
-      "Th": "Cz",
-      "F": "Pt",
-      "S": "Sb",
-      "Su": "Nd",
+    "order_service": {
+      "availability": "Dostępność",
+      "available": "Dostępne",
+      "unavailable": "Niedostępne",
+      "price": "Cena",
+      "duration": "Czas trwania",
+      "addToCart": "Dodaj do koszyka",
       "noServiceAvailable": "Brak dostępnych usług w tym dniu.",
-      "nextAvailableServices": "Najbliższe terminy usług"
+      "nextAvailableServices": "Najbliższe dostępne terminy",
+      "bookService": "Zarezerwuj usługę",
+      "selectDate": "Wybierz datę",
+      "selectTime": "Wybierz godzinę",
+      "specialRequests": "Specjalne życzenia",
+      "noSlotsAvailable": "Brak dostępnych terminów"
     },
     "manager": {
         "navbar": {

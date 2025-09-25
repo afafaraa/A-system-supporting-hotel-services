@@ -11,7 +11,8 @@ export const lightPalette: PaletteOptions = {
     border: 'rgba(0, 0, 0, 0.25)'
   },
   secondary: {
-    main: '#FFE921'
+    main: '#FFE921',
+    success: '#39D943',
   },
   background: {
     default: 'hsl(256, 20%, 95%)',
