@@ -37,6 +37,5 @@ export const darkPalette: PaletteOptions = {
     CHECKED_IN: '#39D943',
     CHECKED_OUT: '#AAAAAA',
     UPCOMING: '#7545FB',
-    NO_SHOW: '#FF0000',
   },
 };

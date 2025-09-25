@@ -5,7 +5,10 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import inzynierka.myhotelassistant.configs.RSAKeyConfig
 import inzynierka.myhotelassistant.configs.SecurityConfig
 import inzynierka.myhotelassistant.controllers.user.EmployeeManagementController
+import inzynierka.myhotelassistant.models.user.Department
+import inzynierka.myhotelassistant.models.user.EmployeeData
 import inzynierka.myhotelassistant.models.user.Role
+import inzynierka.myhotelassistant.models.user.Sector
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.EmployeeService
 import inzynierka.myhotelassistant.services.ScheduleService
@@ -60,6 +63,7 @@ class EmployeeManagementControllerTest {
                 name = "john", // okay
                 surname = "doe", // okay
                 role = "invalid-role",
+                employeeData = EmployeeData(department = Department.FOOD_AND_BEVERAGE, sectors = listOf(Sector.SECURITY)),
             )
         var violations = validator.validate(invalidRequest)
         assertEquals(4, violations.size)
@@ -72,6 +76,7 @@ class EmployeeManagementControllerTest {
                 name = "john-9998", // invalid characters
                 surname = "dOe-San",
                 role = "manAger",
+                employeeData = EmployeeData(department = Department.FOOD_AND_BEVERAGE, sectors = listOf(Sector.SECURITY)),
             )
         violations = validator.validate(invalidRequest)
         assertEquals(2, violations.size)
@@ -87,6 +92,7 @@ class EmployeeManagementControllerTest {
                 email = "employee@example.com",
                 name = "john",
                 surname = "Doe",
+                employeeData = EmployeeData(department = Department.FOOD_AND_BEVERAGE, sectors = listOf(Sector.SECURITY)),
             )
         val expectedEmployee =
             UserEntity(

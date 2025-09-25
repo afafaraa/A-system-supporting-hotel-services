@@ -8,7 +8,12 @@ import inzynierka.myhotelassistant.models.service.RatingEntity
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.models.service.ServiceType
 import inzynierka.myhotelassistant.models.service.WeekdayHour
-import inzynierka.myhotelassistant.models.user.*
+import inzynierka.myhotelassistant.models.user.Department
+import inzynierka.myhotelassistant.models.user.EmployeeData
+import inzynierka.myhotelassistant.models.user.GuestData
+import inzynierka.myhotelassistant.models.user.Role
+import inzynierka.myhotelassistant.models.user.Sector
+import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.NotificationRepository
 import inzynierka.myhotelassistant.repositories.RatingRepository
 import inzynierka.myhotelassistant.repositories.RoomRepository
@@ -347,7 +352,6 @@ class DatabaseSeeder(
                     name = "Jim",
                     surname = "Brown",
                     employeeData = EmployeeData(Department.MANAGEMENT),
-
                 ),
             )
             logger.info("Default 'manager' added to database")

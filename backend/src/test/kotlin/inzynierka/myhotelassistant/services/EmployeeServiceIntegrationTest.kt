@@ -2,7 +2,10 @@ package inzynierka.myhotelassistant.services
 
 import inzynierka.myhotelassistant.controllers.user.EmployeeManagementController
 import inzynierka.myhotelassistant.exceptions.HttpException
+import inzynierka.myhotelassistant.models.user.Department
+import inzynierka.myhotelassistant.models.user.EmployeeData
 import inzynierka.myhotelassistant.models.user.Role
+import inzynierka.myhotelassistant.models.user.Sector
 import inzynierka.myhotelassistant.repositories.UserRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -50,6 +53,7 @@ class EmployeeServiceIntegrationTest {
             email = "jan@example.com",
             name = "Jan",
             surname = "Kowalski",
+            employeeData = EmployeeData(department = Department.FOOD_AND_BEVERAGE, sectors = listOf(Sector.SECURITY)),
         )
 
     @Test

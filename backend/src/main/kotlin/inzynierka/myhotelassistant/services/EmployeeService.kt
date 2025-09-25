@@ -42,9 +42,9 @@ class EmployeeService(
             name = employeeDTO.name.lowercase().replaceFirstChar { it.uppercase() },
             surname = employeeDTO.surname.lowercase().replaceFirstChar { it.uppercase() },
             role = employeeDTO.role?.let { Role.convertFromString(it.uppercase()) } ?: Role.EMPLOYEE,
-            employeeData = employeeDTO.employeeData
+            employeeData = employeeDTO.employeeData,
         )
-    
+
     @Throws(UserAlreadyExistsException::class)
     fun addEmployee(employee: UserEntity): UserEntity {
         if (userRepository.existsByUsername(employee.username)) {
@@ -84,7 +84,10 @@ class EmployeeService(
 
     @Transactional
     @Throws(EntityNotFoundException::class, InvalidRoleNameException::class)
-    fun updateEmployee(id: String, employeeDTO: EmployeeManagementController.EmployeeDTO): UserEntity {
+    fun updateEmployee(
+        id: String,
+        employeeDTO: EmployeeManagementController.EmployeeDTO,
+    ): UserEntity {
         val employee = findByIdOrThrow(id)
 
         employee.username = employeeDTO.username

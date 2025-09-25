@@ -1,19 +1,13 @@
 package inzynierka.myhotelassistant.services
 
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
-import inzynierka.myhotelassistant.models.stats.DailySales
 import inzynierka.myhotelassistant.models.stats.ServiceStat
-import inzynierka.myhotelassistant.models.stats.StatsResponse
-import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.repositories.ServiceRepository
-import inzynierka.myhotelassistant.repositories.UserRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import kotlin.math.roundToLong
 
 @Service
 class StatsService(
@@ -39,21 +33,28 @@ class StatsService(
         val today = LocalDate.now()
         val bookingsToday = allOrders.count { it.serviceDate.toLocalDate() == today }
 
-        val checkIns = allGuests.count {
-            val checkIn = it.guestData!!.checkInDate.atZone(ZoneId.systemDefault()).toLocalDate()
-            checkIn == today
-        }
+        val checkIns =
+            allGuests.count {
+                val checkIn =
+                    it.guestData!!
+                        .checkInDate
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate()
+                checkIn == today
+            }
 
-        val totalGuests = allGuests.count {
-            val guestData = it.guestData!!
-            val checkIn = guestData.checkInDate.atZone(ZoneId.systemDefault()).toLocalDate()
-            val checkOut = guestData.checkOutDate.atZone(ZoneId.systemDefault()).toLocalDate()
-            !today.isBefore(checkIn) && !today.isAfter(checkOut)
-        }
+        val totalGuests =
+            allGuests.count {
+                val guestData = it.guestData!!
+                val checkIn = guestData.checkInDate.atZone(ZoneId.systemDefault()).toLocalDate()
+                val checkOut = guestData.checkOutDate.atZone(ZoneId.systemDefault()).toLocalDate()
+                !today.isBefore(checkIn) && !today.isAfter(checkOut)
+            }
 
-        val totalRevenue = allOrders.sumOf { order ->
-            serviceRepository.findById(order.serviceId).map { it.price }.orElse(0.0)
-        }
+        val totalRevenue =
+            allOrders.sumOf { order ->
+                serviceRepository.findById(order.serviceId).map { it.price }.orElse(0.0)
+            }
 
         return listOf(
             ServiceStat(id = 1, name = "bookings_today", orderCount = bookingsToday),

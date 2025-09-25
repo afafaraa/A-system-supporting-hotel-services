@@ -6,5 +6,5 @@ enum class Sector {
     DINNER,
     ROOM_SERVICE,
     SECURITY,
-    SPA_AND_WELLNESS
+    SPA_AND_WELLNESS,
 }
