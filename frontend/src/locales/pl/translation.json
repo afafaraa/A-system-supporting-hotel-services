@@ -87,34 +87,6 @@
       "salesOverTime": "Sprzedaż w czasie",
       "orders": "Zamówienia"
     },
-    "servicesList": {
-      "title": "Lista usług",
-      "availability": "Dostępność",
-      "all": "Wszystkie",
-      "unavailable": "Niedostępne",
-      "available": "Dostępne",
-      "type": "Typ",
-      "generalService": "Usługa ogólna",
-      "placeReservation": "Zarezerwuj miejsce",
-      "addService": "Dodaj usługę",
-      "serviceName": "Nazwa usługi",
-      "description": "Opis",
-      "price": "Cena",
-      "actions": "Akcje",
-      "edit": "Edytuj"
-    },
-    "personnel": {
-      "title": "Personel",
-      "addEmployee": "Dodaj pracownika",
-      "name": "Imię i nazwisko",
-      "position": "Stanowisko",
-      "email": "Email",
-      "stats": "Status",
-      "actions": "Akcje",
-      "preview": "Podgląd",
-      "previous": "Poprzedni",
-      "next": "Następny"
-    },
     "personnelDetails": {
       "edit": "Edytuj pracownika",
       "name": "Imię i nazwisko",
@@ -206,6 +178,125 @@
       "selectTime": "Wybierz godzinę",
       "specialRequests": "Specjalne życzenia",
       "noSlotsAvailable": "Brak dostępnych terminów"
+    },
+    "manager": {
+        "navbar": {
+          "guests": "Goście",
+          "services": "Usługi",
+          "calendar": "Kalendarz",
+          "employees": "Pracownicy",
+          "statistics": "Statystyki"
+      },
+      "guests": {
+        "title": "Zarządzanie gośćmi",
+        "subtitle": "Wyświetl gości hotelowych i informacje o nich",
+        "searchPlaceholder": "Szukaj Gościa...",
+        "ALL": "Wszyscy",
+        "Checked-out": "Wymeldowany",
+        "Checked-in": "Zameldowany",
+        "Upcoming": "Nadchodzące",
+        "room": "Pokój",
+        "check_in": "Od",
+        "check_out": "Do",
+        "services": "Usługi",
+        "balance": "Saldo",
+        "booked": "usług zamówionych",
+        "contact_info": "Informacje kontaktowe",
+        "language": "Polski",
+        "stay_info":"Informacje o pobycie",
+        "date": "Data",
+        "account_balance": "Saldo konta",
+        "additional_info": "Dodatkowe Informacje",
+        "special_requests": "Specjalne życzenia",
+        "upcoming_services": "Nadchodzące usługi",
+        "service_history": "Historia usług",
+        "completed_service": "wykonane usługi",
+        "at": "o",
+        "guest_info": "Informacje"
+      },
+      "services_list": {
+        "title": "Zarządzanie usługami",
+        "subtitle": "Wyświetl usługi hotelowe i informacje o nich",
+        "availability": "Dostępność",
+        "all": "Wszystkie",
+        "unavailable": "Niedostępne",
+        "available": "Dostępne",
+        "type": "Typ",
+        "generalService": "Usługa ogólna",
+        "placeReservation": "Zarezerwuj miejsce",
+        "addService": "Dodaj usługę",
+        "serviceName": "Nazwa usługi",
+        "description": "Opis",
+        "price": "Cena",
+        "actions": "Akcje",
+        "edit": "Edytuj",
+        "search_placeholder": "Szukaj Usług...",
+        "allowed_files_warning": "Dozwolone są tylko pliki JPG, PNG i WebP",
+        "file_size_warning": "Plik nie może być większy niż 10MB",
+        "edit_service": "Edytuj Usługę",
+        "add_service": "Dodaj Usługę",
+        "edit_subtitle": "Aktualizuj informacje o usłudze",
+        "add_subtitle": "Dodaj nową usługę",
+        "name": "Nazwa Usługi",
+        "category": "Kategoria",
+        "duration": "Czas trwania (w minutach)",
+        "descritption" : "Opis",
+        "icon": "Ikona",
+        "uploading": "Przesyłanie...",
+        "upload_complete": "Przesyłanie Zakończone!",
+        "upload_title": "Prześlij nową Ikonę",
+        "update": "Aktualizuj Usługę",
+        "create": "Utwórz Usługę",
+        "delete": "Usuń Usługę",
+        "delete_subtitle1": "Czy jesteś pewien, że chcesz usunąć tą usługę?",
+        "delete_subtitle2": "Tego działania nie można cofnąć.",
+        "delete_all": "Usuń wszystkie rezerwacje",
+        "delete_available": "Usuń tylko wolne terminy",
+        "deleting": "Usuwanie..."
+      },
+      "personnel": {
+        "title": "Personel",
+        "subtitle": "Zarządzaj grafikami oraz informacjami o pracownikach",
+        "addEmployee": "Dodaj pracownika",
+        "name": "Imię",
+        "position": "Stanowisko",
+        "email": "Email",
+        "stats": "Status",
+        "actions": "Akcje",
+        "preview": "Podgląd",
+        "previous": "Poprzedni",
+        "next": "Następny",
+        "searchPlaceholder": "Szukaj Pracownika...",
+        "all": "Wszystkie",
+        "receptionist": "Recepcja",
+        "manager": "Manager",
+        "employee": "Pracownik",
+        "edit": "Edytuj pracownika",
+        "edit_subtitle": "Aktualizuj informacje o pracowniku",
+        "surname": "Nazwisko",
+        "department": "Oddział",
+        "update":"Aktualizuj Pracownika",
+        "add": "Dodaj nowego pracownika",
+        "add_subtitle": "Uzupełnij dane nowego pracownika",
+        "sectors": "Obszary działania"
+      },
+      "statistics": {
+        "bookings_today": "Dzisiejsze Rezerwacje",
+        "check_ins": "Zameldowania",
+        "revenue": "Przychód",
+        "total_guests": "Całkowita Liczba Gości"
+      },
+      "employee_details": {
+        "title": "Informacje o Pracowniku",
+        "subtitle": "Szczegółowe dane i grafik pracownika",
+        "full_name": "Imię i nazwisko",
+        "email": "Adres e-mail",
+        "department": "Dział",
+        "assigned_services": "Przypisane usługi",
+        "no_services": "Brak przypisanych usług",
+        "error_fetch": "Nie udało się pobrać danych pracownika.",
+        "not_found": "Nie znaleziono pracownika."
+      }
     },
     "employee": {
       "navbar": {
@@ -327,7 +418,19 @@
   "common": {
     "room": "Pokój",
     "guest_unknown": "Nieznany gość",
-    "unknown": "nieznany"
+    "unknown": "nieznany",
+    "sectors": {
+      "breakfast": "Śniadania",
+      "lunch": "Lunch",
+      "dinner": "Obiady"
+    },
+    "department": {
+      "food_and_beverage": "Jedzenie & Napoje",
+      "housekeeping": "Sprzątanie",
+      "reception": "Recepcja",
+      "maintenance": "Servis",
+      "management": "Zarządzanie"
+    }
   },
   "ui": {
     "show_more": "Pokaż więcej ↓",
@@ -341,14 +444,19 @@
     "cancel": "Anuluj",
     "submit": "Zatwierdź",
     "delete": "Usuń",
-    "deleteAll": "Usuń wszystko"
+    "deleteAll": "Usuń wszystko",
+    "back": "Cofnij",
+    "update": "Aktualizuj Pracownika"
   },
   "error": {
     "networkError": "Błąd połączenia z serwerem.",
     "serverError": "Błąd serwera. Spróbuj ponownie później.",
     "unknownError": "Wystąpił nieznany błąd.",
     "emptyFields": "Wszystkie pola muszą być wypełnione.",
-    "invalidCredentials": "Nieprawidłowe dane logowania."
+    "invalidCredentials": "Nieprawidłowe dane logowania.",
+    "upload_error": "Błąd podczas przesyłania pliku.",
+    "add_employee_failure": "Failed to add new employee",
+    "edit_employee_failure": "Failde to edit employee"
   },
   "order_status": {
     "AVAILABLE": "DOSTĘPNY",

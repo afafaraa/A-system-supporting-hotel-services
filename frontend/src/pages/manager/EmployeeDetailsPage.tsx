@@ -1,34 +1,47 @@
-import { useParams } from "react-router-dom";
-import {useEffect, useState, useCallback} from "react";
-import { axiosAuthApi } from "../../middleware/axiosApi";
-import { Box, CircularProgress, Paper, Tab, Tabs, Typography } from "@mui/material";
-import { Employee } from "../../types";
-import { useTranslation } from "react-i18next";
-import Calendar from "../../components/ui/calendar/Calendar.tsx";
+import { useNavigate, useParams } from 'react-router-dom';
+import { useState, useCallback, useEffect } from 'react';
+import { axiosAuthApi } from '../../middleware/axiosApi';
+import {
+  Box,
+  CircularProgress,
+  Typography,
+  Grid,
+  Button,
+  Chip,
+} from '@mui/material';
+import { Employee } from '../../types';
+import { useTranslation } from 'react-i18next';
+import EmployeeCalendarPage from '../employee/EmployeeCalendarPage.tsx';
+import { ArrowBack } from '@mui/icons-material';
+import { SectionCard } from '../../theme/styled-components/SectionCard';
 
 function EmployeeDetailsPage() {
   const { username } = useParams<{ username: string }>();
-  const [tab, setTab] = useState(0);
   const [detail, setDetail] = useState<Employee | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
   const { t } = useTranslation();
-  const tc = (key: string) => t(`pages.personnelDetails.${key}`);
+  const tc = useCallback((key: string) => t(`pages.manager.employee_details.${key}`), [t]);
+  const navigate = useNavigate();
 
   const fetchDetails = useCallback(async () => {
+    if (!username) return;
     setLoading(true);
+    setError(null);
 
     try {
-      const res = await axiosAuthApi.get<Employee>(`/management/employees/username/${username}`);
-      console.log(res.data);
+      const res = await axiosAuthApi.get<Employee>(
+        `/management/employees/username/${username}`
+      );
       setDetail(res.data);
     } catch (err) {
       console.error(err);
-      setError("Failed to fetch employee details");
+      setError(tc('errorFetch'));
     } finally {
       setLoading(false);
     }
-  }, [username]);
+  }, [username, tc]);
 
   useEffect(() => {
     fetchDetails();
@@ -36,45 +49,128 @@ function EmployeeDetailsPage() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" p={4}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '60vh',
+        }}
+      >
         <CircularProgress />
       </Box>
-    )
+    );
   }
 
   if (error) {
     return (
-      <Box display={"flex"} justifyContent="center" p={4}>
-        <p>{error}</p>
-      </Box>
-    )
+      <Typography color="error" sx={{ textAlign: 'center', mt: 4 }}>
+        {error}
+      </Typography>
+    );
+  }
+
+  if (!detail) {
+    return (
+      <Typography sx={{ textAlign: 'center', mt: 4 }}>
+        {tc("notFound")}
+      </Typography>
+    );
   }
 
   return (
-    <Box p={2} sx={{ width: "100%", mr: 10 }}>
-      <Typography variant="h4" gutterBottom>
-        {detail?.name} {detail?.surname}
-      </Typography>
-      <Box my={2}>
-        <Tabs value={tab} onChange={(_, v) => setTab(v)}>
-          <Tab label={tc("workSchedule")} />
-          <Tab label={tc("employeeData")} />
-        </Tabs>
-      </Box>
-      {tab === 0 && (
-        <Calendar />
-      )}
-
-      {tab === 1 && detail && (
-        <Box display="flex" flexDirection="column" component={Paper} p={4} mt={2} gap={2}>
-          <Typography variant="body1">{tc("name")}: <strong>{detail.name} {detail.surname}</strong></Typography>
-          <Typography variant="body1">{tc("username")}: <strong>{detail.username}</strong></Typography>
-          <Typography variant="body1">{tc("email")}: <strong>{detail.email}</strong></Typography>
-          <Typography variant="body1">{tc("role")}: <strong>{detail.role}</strong></Typography>
+    <SectionCard>
+      <Button
+        variant="contained"
+        startIcon={<ArrowBack />}
+        onClick={() => {
+          navigate('/employees');
+        }}
+        sx={{ mb: 1 }}
+      >
+        {t('buttons.back')}
+      </Button>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        flexWrap="wrap"
+        gap={2}
+        mb={3}
+      >
+        <Box>
+          <Typography variant="h5" fontWeight="bold">
+            {tc('title')}
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            color="text.secondary"
+            mb={3}
+            gutterBottom
+          >
+            {tc('subtitle')}
+          </Typography>
         </Box>
-      )}
+      </Box>
+      <Grid container spacing={2} sx={{ my: 2 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Box display="flex" flexDirection="column">
+            <Typography variant="h6" fontWeight="bold">
+              {tc('full_name')}
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              {`${detail.name} ${detail.surname}`}
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Box display="flex" flexDirection="column">
+            <Typography variant="h6" fontWeight="bold">
+              {tc("email")}
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              {detail.email}
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Box display="flex" flexDirection="column">
+            <Typography variant="h6" fontWeight="bold">
+              {tc("department")}
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              {t(`common.department.${(detail.employeeData?.department ?? "").toLowerCase()}`)}
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Box display="flex" flexDirection="column">
+            <Typography variant="h6" fontWeight="bold">
+              {tc("assigned_services")}
+            </Typography>
+            <Box
+              display="flex"
+              flexWrap="wrap"
+              gap={1}
+              justifyContent="flex-start"
+              mt={1}
+            >
+              {detail.employeeData?.sectors?.map((area: string, idx: number) => (
+                <Chip
+                  key={idx}
+                  label={t(`common.sectors.${area.toLowerCase()}`)}
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                />
+              ))}
+            </Box>
+          </Box>
+        </Grid>
+      </Grid>
 
-    </Box>
+      <EmployeeCalendarPage />
+    </SectionCard>
   );
 }
 

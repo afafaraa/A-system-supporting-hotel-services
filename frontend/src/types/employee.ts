@@ -1,10 +1,19 @@
 export type Employee = {
     id: string;
-    role: "EMPLOYEE" | "RECEPTIONIST" | "MANAGER";
+    role: Role;
     username: string;
     email: string;
     name: string;
     surname: string;
     status: "ACTIVE" | "INACTIVE" | "SUSPENDED";
-    occupation?: string;
+    employeeData?: {
+        department?: Department;
+        sectors?: Sector[];
+    };
 };
+
+export type Role = "EMPLOYEE" | "RECEPTIONIST" | "MANAGER"
+
+export type Department = "FOOD_AND_BEVERAGE" | "HOUSEKEEPING" | "RECEPTION" | "MAINTENANCE";
+
+export type Sector = "BREAKFAST"  | "LUNCH"  | "DINNER"  | "ROOM_SERVICE"  | "SECURITY" | "SPA_AND_WELLNESS";

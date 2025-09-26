@@ -4,6 +4,7 @@ import inzynierka.myhotelassistant.controllers.user.EmployeeManagementController
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidRoleNameException
 import inzynierka.myhotelassistant.exceptions.HttpException.UserAlreadyExistsException
+import inzynierka.myhotelassistant.models.user.EmployeeData
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.Role.Companion.employeeRoles
 import inzynierka.myhotelassistant.models.user.UserEntity
@@ -41,6 +42,7 @@ class EmployeeService(
             name = employeeDTO.name.lowercase().replaceFirstChar { it.uppercase() },
             surname = employeeDTO.surname.lowercase().replaceFirstChar { it.uppercase() },
             role = employeeDTO.role?.let { Role.convertFromString(it.uppercase()) } ?: Role.EMPLOYEE,
+            employeeData = employeeDTO.employeeData,
         )
 
     @Throws(UserAlreadyExistsException::class)
@@ -78,5 +80,36 @@ class EmployeeService(
         if (oldRole == newRole) throw InvalidRoleNameException("User already has this role")
         user.role = newRole
         userRepository.save(user)
+    }
+
+    @Transactional
+    @Throws(EntityNotFoundException::class, InvalidRoleNameException::class)
+    fun updateEmployee(
+        id: String,
+        employeeDTO: EmployeeManagementController.EmployeeDTO,
+    ): UserEntity {
+        val employee = findByIdOrThrow(id)
+
+        employee.username = employeeDTO.username
+        employee.email = employeeDTO.email
+        employee.name = employeeDTO.name.lowercase().replaceFirstChar { it.uppercase() }
+        employee.surname = employeeDTO.surname.lowercase().replaceFirstChar { it.uppercase() }
+
+        if (!employeeDTO.role.isNullOrBlank()) {
+            val newRole = Role.convertFromString(employeeDTO.role.uppercase())
+            if (newRole == Role.GUEST) throw InvalidRoleNameException("Cannot assign GUEST role to an employee")
+            if (newRole == Role.ADMIN) throw InvalidRoleNameException("Cannot assign ADMIN role to an employee")
+            employee.role = newRole
+        }
+
+        employeeDTO.employeeData?.let { newEmployeeData ->
+            if (employee.employeeData == null) {
+                employee.employeeData = EmployeeData()
+            }
+            employee.employeeData!!.department = newEmployeeData.department
+            employee.employeeData!!.sectors = newEmployeeData.sectors
+        }
+
+        return userRepository.save(employee)
     }
 }

@@ -2,16 +2,19 @@ package inzynierka.myhotelassistant.controllers.user
 
 import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
+import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.OrderService
 import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
 import inzynierka.myhotelassistant.services.UserService
+import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
@@ -102,6 +105,16 @@ class GuestController(
     ): Double {
         val guest = userService.findByUsernameOrThrow(username)
         return guest.guestData?.bill ?: 0.0
+    }
+
+    @GetMapping("/management")
+    @ResponseStatus(HttpStatus.OK)
+    fun getAllGuests(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int,
+    ): List<UserEntity> {
+        val pageable = PageRequest.of(page, size)
+        return userService.getAllGuests(pageable)
     }
 
     private fun findAllByStatusAndUserId(

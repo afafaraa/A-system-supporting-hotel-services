@@ -8,8 +8,11 @@ import inzynierka.myhotelassistant.models.service.RatingEntity
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.models.service.ServiceType
 import inzynierka.myhotelassistant.models.service.WeekdayHour
+import inzynierka.myhotelassistant.models.user.Department
+import inzynierka.myhotelassistant.models.user.EmployeeData
 import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
+import inzynierka.myhotelassistant.models.user.Sector
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.NotificationRepository
 import inzynierka.myhotelassistant.repositories.RatingRepository
@@ -136,12 +139,13 @@ class DatabaseSeeder(
         if (!userRepo.existsByUsername("employee1")) {
             userRepo.save(
                 UserEntity(
-                    role = Role.MANAGER,
+                    role = Role.EMPLOYEE,
                     username = "employee1",
                     password = passwordEncoder.encode("password"),
                     email = "employee1@gmail.com",
                     name = "Joe",
                     surname = "Doe",
+                    employeeData = EmployeeData(Department.HOUSEKEEPING, listOf(Sector.SECURITY)),
                 ),
             )
         }
@@ -154,6 +158,7 @@ class DatabaseSeeder(
                     email = "ann.smith@mymail.com",
                     name = "Anna",
                     surname = "Smith",
+                    employeeData = EmployeeData(Department.RECEPTION, listOf(Sector.SPA_AND_WELLNESS)),
                 ),
             )
         }
@@ -166,6 +171,7 @@ class DatabaseSeeder(
                     email = "c.brown@yahoo.com",
                     name = "Charlie",
                     surname = "Brown",
+                    employeeData = EmployeeData(Department.FOOD_AND_BEVERAGE, listOf(Sector.BREAKFAST, Sector.LUNCH, Sector.DINNER)),
                 ),
             )
         }
@@ -345,6 +351,7 @@ class DatabaseSeeder(
                     email = "manager@gmail.com",
                     name = "Jim",
                     surname = "Brown",
+                    employeeData = EmployeeData(Department.MANAGEMENT),
                 ),
             )
             logger.info("Default 'manager' added to database")

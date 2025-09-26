@@ -87,34 +87,6 @@
       "salesOverTime": "Sales over time",
       "orders": "Orders"
     },
-    "servicesList": {
-      "title": "Services List",
-      "availability": "Availability",
-      "all": "All",
-      "unavailable": "Unavailable",
-      "available": "Available",
-      "type": "Type",
-      "generalService": "General Service",
-      "placeReservation": "Place Reservation",
-      "addService": "Add Service",
-      "serviceName": "Service Name",
-      "description": "Description",
-      "price": "Price",
-      "actions": "Actions",
-      "edit": "Edit"
-    },
-    "personnel": {
-      "title": "Personnel",
-      "addEmployee": "Add Employee",
-      "name": "Name",
-      "position": "Position",
-      "email": "Email",
-      "stats": "Status",
-      "actions": "Actions",
-      "preview": "Preview",
-      "previous": "Previous",
-      "next": "Next"
-    },
     "personnelDetails": {
       "edit": "Edit Employee",
       "name": "Name",
@@ -194,6 +166,126 @@
       "selectTime": "Select time",
       "specialRequests": "Special Requests",
       "noSlotsAvailable": "No slots available"
+    },
+    "manager": {
+      "navbar": {
+          "guests": "Guests",
+          "services": "Services",
+          "calendar": "Calendar",
+          "employees": "Personnel",
+          "statistics": "Statistics"
+      },
+      "guests": {
+        "title": "Guests Management",
+        "subtitle": "View and manage hotel guests and their information",
+        "searchPlaceholder": "Search guests...",
+        "ALL": "All",
+        "Checked-out": "Checked-out",
+        "Checked-in": "Checked-in"  ,
+        "Upcoming": "Upcoming",
+        "room": "Room",
+        "check_in": "Check-in",
+        "check_out": "Check-out",
+        "services": "Services",
+        "balance": "Balance",
+        "booked": "services booked",
+        "contact_info": "Contact Information",
+        "language": "English",
+        "stay_info":"Stay Information",
+        "date": "Date",
+        "account_balance": "Account Balance",
+        "additional_info": "Additional Information",
+        "special_requests": "Special Requests",
+        "upcoming_services": "Upcoming Services",
+        "service_history": "Service History",
+        "completed_service": "completed service",
+        "at": "at",
+        "guest_info": "Guest Info"
+      },
+      "services_list": {
+        "title": "Service Management",
+        "subtitle": "View and manage hotel guests and their information",
+        "availability": "Availability",
+        "all": "All",
+        "unavailable": "Unavailable",
+        "available": "Available",
+        "type": "Type",
+        "generalService": "General Service",
+        "placeReservation": "Place Reservation",
+        "addService": "Add",
+        "serviceName": "Service Name",
+        "description": "Description",
+        "price": "Price",
+        "actions": "Actions",
+        "edit": "Edit",
+        "searchPlaceholder": "Search Services...",
+        "allowed_files_warning": "Files allowed only in JPG, PNG, and WebP format!",
+        "file_size_warning": "File cannot be larger than 10MB",
+        "upload_error": "Upload error",
+        "edit_service": "Edit Service",
+        "add_service": "Add Service",
+        "edit_subtitle": "Update service information",
+        "add_subtitle": "Add a new service",
+        "name": "Service Name",
+        "category": "Category",
+        "duration": "Duration (in minutes)",
+        "descritption" : "Description",
+        "icon": "Icon",
+        "uploading": "Uploading...",
+        "upload_complete": "Upload Complete!",
+        "upload_title": "Upload new Icon",
+        "update": "Update Service",
+        "create": "Create Service",
+        "delete": "Delete Service",
+        "delete_subtitle1": "Are you sure you want to delete this service?",
+        "delete_subtitle2": "This action cannot be undone.",
+        "delete_all": "Delete all bookings",
+        "delete_available": "Delete only available bookings",
+        "deleting": "Deleting..."
+      }, 
+      "personnel": {
+        "title": "Personnel",
+        "subtitle": "Manage employee information and schedules",
+        "addEmployee": "Add Employee",
+        "name": "Name",
+        "position": "Position",
+        "email": "Email",
+        "stats": "Status",
+        "actions": "Actions",
+        "preview": "Preview",
+        "previous": "Previous",
+        "next": "Next",
+        "searchPlaceholder": "Search Employee...",
+        "all": "All",
+        "receptionist": "Receptionist",
+        "manager": "Manager",
+        "employee": "Food & Beverage",
+        "edit":"Edit Employee",
+        "edit_subtitle": "Update employee information",
+        "surname":"Surname",
+        "department": "Department",
+        "update":"Update Employee",
+        "add": "Add New Employee",
+        "add_subtitle": "Fill in the details of the new employee",
+        "sectors": "Sectors"
+      },
+      "statistics": {
+        "bookings_today": "Today's Bookings ",
+        "check_ins": "Check-ins",
+        "revenue": "Revenue",
+        "total_guests": "Total Guests"
+      },
+      "employee_details": {
+        "title": "Employee Information",
+        "subtitle": "View employee information",
+        "full_name": "Full Name",
+        "email": "Email",
+        "department": "Department",
+        "assigned_services": "Assigned Services",
+        "no_services": "Brak przypisanych usług",
+        "error_fetch": "Nie udało się pobrać danych pracownika.",
+        "not_found": "Nie znaleziono pracownika."
+      }
     },
     "employee": {
       "navbar": {
@@ -315,7 +407,22 @@
   "common": {
     "room": "Room",
     "guest_unknown": "Guest unknown",
-    "unknown": "unknown"
+    "unknown": "unknown",
+    "sectors": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "room_service": "Room Service",
+      "security": "Security",
+      "spa_and_wellness": "Spa & Wellness"
+    },
+    "department": {
+      "food_and_beverage": "Food & Beverage",
+      "housekeeping": "Housekeeping",
+      "reception": "Reception",
+      "maintenance": "Maintenance",
+      "management": "Management"
+    }
   },
   "ui": {
     "show_more": "Show more ↓",
@@ -329,14 +436,18 @@
     "cancel": "Cancel",
     "submit": "Submit",
     "delete": "Delete",
-    "deleteAll": "Delete all"
+    "deleteAll": "Delete all",
+    "back": "Back",
+    "update":"Update"
   },
   "error": {
     "networkError": "Server connection error.",
     "serverError": "Server error. Please try again later.",
     "unknownError": "Unknown error occurred.",
     "emptyFields": "All fields must be filled.",
-    "invalidCredentials": "Invalid login credentials."
+    "invalidCredentials": "Invalid login credentials.",
+    "upload_error": "Error during uploading file.",
+    "add_employee_failure": "Failed to add new employee"
   },
   "order_status": {
     "AVAILABLE": "AVAILABLE",

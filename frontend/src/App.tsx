@@ -20,7 +20,6 @@ import LoadingPage from "./pages/user/LoadingPage.tsx";
 import EmployeeDetailsPage from "./pages/manager/EmployeeDetailsPage.tsx";
 import ServicesListPage from "./pages/manager/ServicesListPage.tsx";
 import StatsPage from "./pages/manager/StatsPage.tsx";
-import AddNewEmployeePage from './pages/manager/forms/AddNewEmployeePage.tsx';
 import EmployeeLayout from "./components/layout/EmployeeLayout.tsx";
 import EmployeeCalendarPage from "./pages/employee/EmployeeCalendarPage.tsx";
 import TodaySchedulesPage from "./pages/employee/TodaySchedulesPage.tsx";
@@ -28,6 +27,8 @@ import RequestedSchedulesPage from "./pages/employee/RequestedSchedulesPage.tsx"
 import EmployeeReservationsPage from "./pages/employee/ReservationsPage.tsx";
 import EmployeeReviewsPage from "./pages/employee/ReviewsPage.tsx";
 import FallbackPage from "./pages/user/FallbackPage.tsx";
+import AdminLayout from "./components/layout/AdminLayout.tsx";
+import GuestsListPage from './pages/manager/GuestsListPage.tsx';
 import GuestLayout from "./pages/guest/layout/GuestLayout.tsx";
 import AvailableServicesPage from './pages/guest/available-services/AvailableServicesPage.tsx';
 import BookedServicesPage from './pages/guest/booked-services/BookedServicesPage.tsx';
@@ -63,11 +64,14 @@ function App(){
               <Route path="/add-reservation" element={<AddReservationPage />} />
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]} />}>
-              <Route path="/employees" element={<EmployeeListPage />} />
-              <Route path="/employees/new" element={<AddNewEmployeePage />} />
-              <Route path="/employees/:username" element={<EmployeeDetailsPage />} />
-              <Route path="/management/services" element={<ServicesListPage />} />
-              <Route path="/management/statistics" element={<StatsPage />} />
+              <Route element={<AdminLayout />}>
+                <Route path="/management/calendar" element={<EmployeeCalendarPage />} />
+                <Route path="/employees" element={<EmployeeListPage />} />
+                <Route path="/employees/:username" element={<EmployeeDetailsPage />} />
+                <Route path="/management/services" element={<ServicesListPage />} />
+                <Route path="/management/statistics" element={<StatsPage />} />
+                <Route path="/management/guests" element={<GuestsListPage />} />
+              </Route>
             </Route>
           </Route>
 

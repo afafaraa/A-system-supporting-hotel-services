@@ -11,6 +11,7 @@ import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
@@ -97,7 +98,10 @@ class UserService(
     }
 
     fun generatePassword(user: AddUserRequest): String =
-        encodeString(user.name + "_" + user.surname + "_" + user.roomNumber + "_" + user.checkInDate + "_" + user.checkOutDate, 12)
+        encodeString(
+            user.name + "_" + user.surname + "_" + user.roomNumber + "_" + user.checkInDate + "_" + user.checkOutDate,
+            12,
+        )
 
     fun generateUsername(user: AddUserRequest): String {
         val userEncode =
@@ -139,4 +143,6 @@ class UserService(
         )
 
     fun getCurrentUser(username: String) = findByUsernameOrThrow(username)
+
+    fun getAllGuests(pageable: Pageable): List<UserEntity> = userRepository.findByRoleIn(listOf(Role.GUEST), pageable).content
 }

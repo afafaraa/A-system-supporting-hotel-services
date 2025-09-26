@@ -13,8 +13,8 @@ data class UserEntity(
     @Indexed(unique = true)
     var username: String,
     var password: String,
-    val name: String,
-    val surname: String,
+    var name: String,
+    var surname: String,
     var guestData: GuestData? = null,
-    val employeeData: EmployeeData? = null,
+    var employeeData: EmployeeData? = null,
 )
