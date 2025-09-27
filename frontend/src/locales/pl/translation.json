@@ -322,7 +322,19 @@
       },
       "reservations": {
         "title": "Oczekujące rezerwacji pokoi",
-        "subtitle": "Rezerwacje pokoi wymagające potwierdzenia"
+        "subtitle": "Rezerwacje pokoi wymagające potwierdzenia",
+        "no_reservations": "Brak oczekujących rezerwacji pokoi.",
+        "date-of-stay": "Data pobytu",
+        "creation-time": "Czas utworzenia",
+        "guests": "Goście",
+        "people": "osób",
+        "price": "Cena",
+        "paid": "Opłacona",
+        "special-requests": "Specjalne życzenia",
+        "reject-dialog": {
+          "title": "Czy na pewno chcesz odrzucić tę rezerwację?",
+          "rejection-reason": "Powód odrzucenia"
+        }
       },
       "reviews": {
         "title": "Opinie o usługach i wydajność",
@@ -357,7 +369,6 @@
       "confirmation_dialog": {
         "title": "Potwierdzenie akcji",
         "description": "Czy jesteś pewien / pewna, że chcesz odrzucić / anulować tę usługę?",
-        "select_reason": "Wybierz powód",
         "reason": "Powód akcji",
         "reasons": {
           "overlapping_terms": "Nakładające się terminy",
@@ -416,9 +427,17 @@
     }
   },
   "common": {
+    "yes": "Tak",
+    "no": "Nie",
     "room": "Pokój",
     "guest_unknown": "Nieznany gość",
     "unknown": "nieznany",
+    "room_standard": {
+      "Budget": "Budżetowy",
+      "Standard": "Standardowy",
+      "Deluxe": "Deluxe",
+      "Exclusive Suite": "Apartament"
+    },
     "sectors": {
       "breakfast": "Śniadania",
       "lunch": "Lunch",
@@ -445,6 +464,9 @@
     "submit": "Zatwierdź",
     "delete": "Usuń",
     "deleteAll": "Usuń wszystko",
+    "confirm": "Potwierdź",
+    "approve": "Zatwierdź",
+    "reject": "Odrzuć",
     "back": "Cofnij",
     "update": "Aktualizuj Pracownika"
   },
@@ -456,7 +478,7 @@
     "invalidCredentials": "Nieprawidłowe dane logowania.",
     "upload_error": "Błąd podczas przesyłania pliku.",
     "add_employee_failure": "Failed to add new employee",
-    "edit_employee_failure": "Failde to edit employee"
+    "edit_employee_failure": "Failed to edit employee"
   },
   "order_status": {
     "AVAILABLE": "DOSTĘPNY",

@@ -242,7 +242,7 @@
         "delete_all": "Delete all bookings",
         "delete_available": "Delete only available bookings",
         "deleting": "Deleting..."
-      }, 
+      },
       "personnel": {
         "title": "Personnel",
         "subtitle": "Manage employee information and schedules",
@@ -292,7 +292,7 @@
         "today": "Today",
         "requested": "Requested",
         "calendar": "Calendar",
-        "reservations": "Reservation",
+        "reservations": "Reservations",
         "reviews": "Reviews"
       },
       "today_schedules": {
@@ -311,7 +311,19 @@
       },
       "reservations": {
         "title": "Pending room reservations",
-        "subtitle": "Room reservations requiring approval"
+        "subtitle": "Room reservations requiring approval",
+        "no_reservations": "No pending reservations.",
+        "date-of-stay": "Date of stay",
+        "creation-time": "Creation time",
+        "guests": "Guests",
+        "people": "people",
+        "price": "Price",
+        "paid": "Paid",
+        "special-requests": "Special requests",
+        "reject-dialog": {
+          "title": "Are you sure you want to reject this reservation?",
+          "rejection-reason": "Rejection reason"
+        }
       },
       "reviews": {
         "title": "Service Reviews & Performance",
@@ -346,7 +358,6 @@
       "confirmation_dialog": {
         "title": "Action confirmation",
         "description": "Are you sure you want to cancel / reject this service?",
-        "select_reason": "Select a reason",
         "reason": "Reason",
         "reasons": {
           "overlapping_terms": "Overlapping terms",
@@ -405,9 +416,17 @@
     }
   },
   "common": {
+    "yes": "Yes",
+    "no": "No",
     "room": "Room",
     "guest_unknown": "Guest unknown",
     "unknown": "unknown",
+    "room_standard": {
+      "Budget": "Budget",
+      "Standard": "Standard",
+      "Deluxe": "Deluxe",
+      "Exclusive Suite": "Exclusive Suite"
+    },
     "sectors": {
       "breakfast": "Breakfast",
       "lunch": "Lunch",
@@ -437,6 +456,9 @@
     "submit": "Submit",
     "delete": "Delete",
     "deleteAll": "Delete all",
+    "confirm": "Confirm",
+    "approve": "Approve",
+    "reject": "Reject",
     "back": "Back",
     "update":"Update"
   },

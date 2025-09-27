@@ -95,6 +95,7 @@ function App(){
 }
 
 const publicPaths = [
+  '/home',
   '/login',
   '/logout',
   '/register',

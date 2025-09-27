@@ -46,7 +46,6 @@ function ConfirmationWithReasonDialog({onCancel, onConfirm}: Props) {
       <DialogTitle textAlign="center">{tc("title")}</DialogTitle>
       <DialogContent>
         <Typography fontSize={14} mb={2}>{tc("description")}</Typography>
-        <Typography fontSize={14} mb={1}>{tc("select_reason")}:</Typography>
         <FormControl fullWidth>
           <InputLabel id="reason-label">{tc("reason")}</InputLabel>
           <Select
@@ -56,6 +55,12 @@ function ConfirmationWithReasonDialog({onCancel, onConfirm}: Props) {
             label={tc("reason")}
             onChange={handleChange}
             error={error}
+            sx={{
+              borderRadius: "12px",
+              bgcolor: "background.default",
+              '& .MuiOutlinedInput-notchedOutline': {borderColor: 'background.default', borderRadius: "12px"},
+              '& .MuiInputBase-input': { fontSize: "90%" },
+            }}
           >
             {reasonOptions.map((reason, index) =>
               <MenuItem key={index} value={reason}>
