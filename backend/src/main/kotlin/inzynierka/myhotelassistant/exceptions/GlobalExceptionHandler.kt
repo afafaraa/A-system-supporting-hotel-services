@@ -62,4 +62,13 @@ class GlobalExceptionHandler {
             ),
         )
     }
+
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun handleIllegalArgumentException(e: IllegalArgumentException): ResponseEntity<ErrorResponse> =
+        ResponseEntity.badRequest().body(
+            ErrorResponse(
+                error = "IllegalArgumentException",
+                message = e.message ?: "Invalid argument provided",
+            ),
+        )
 }
