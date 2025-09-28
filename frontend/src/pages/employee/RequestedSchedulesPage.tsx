@@ -15,6 +15,7 @@ import {CancellationReason} from "../../types/cancellation_reasons.ts";
 import ConfirmationWithReasonDialog from "../../components/ui/ConfirmationWithReasonDialog.tsx";
 import {styled} from "@mui/material/styles";
 import ServiceIcon from "../../components/ui/ServiceIcon.tsx";
+import OrderStatusChip from "../../components/ui/OrderStatusChip.tsx";
 
 type ConfirmationProps = {
   schedule: Schedule;
@@ -75,40 +76,49 @@ function RequestedSchedulesPage() {
   };
 
   const StyledButton = styled(Button)(({theme}) => ({
-    fontWeight: "bold", textTransform: "none", height: 40, minWidth: 40, borderRadius: 12, padding: '1rem',
-    [theme.breakpoints.down('md')]: {padding: '1.5rem', width: 40, "& .MuiButton-startIcon": {margin: 0}},
+    fontWeight: "bold",
+    textTransform: "none",
+    height: 40,
+    minWidth: 40,
+    borderRadius: 12,
+    padding: '0.8rem',
+    fontSize: "0.8rem",
+    "& .MuiSvgIcon-root": { fontSize: "18px" },
+    [theme.breakpoints.down('md')]: {
+      padding: '1.5rem',
+      width: 40,
+      "& .MuiButton-startIcon": { margin: 0 },
+      "& .MuiSvgIcon-root": { fontSize: "21px" },
+    },
   }));
 
   function renderActions(schedule: Schedule) {
     switch (schedule.status) {
       case OrderStatus.REQUESTED:
         return <>
-          <StyledButton size="small" onClick={(e) => handleScheduleAction(schedule, "confirm", e)}
+          <StyledButton onClick={(e) => handleScheduleAction(schedule, "confirm", e)}
                         variant="contained" startIcon={<TaskAltOutlinedIcon/>} loading={actionLoading} sx={{mr: {xs: 1, md: 2}}}>
             <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.employee.schedule_details.confirm")}</Box>
           </StyledButton>
-          <StyledButton size="small" onClick={(e) => confirmAction(schedule, "reject", e)}
+          <StyledButton onClick={(e) => confirmAction(schedule, "reject", e)}
                         variant="outlined" color="error" startIcon={<CancelOutlinedIcon/>} loading={actionLoading}>
             <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.employee.schedule_details.reject")}</Box>
           </StyledButton>
         </>;
       case OrderStatus.ACTIVE:
         return <>
-          <StyledButton size="small" onClick={(e) => handleScheduleAction(schedule, "complete", e)}
+          <StyledButton onClick={(e) => handleScheduleAction(schedule, "complete", e)}
                         variant="contained" color="success" startIcon={<TaskAltOutlinedIcon/>} loading={actionLoading} sx={{mr: {xs: 1, md: 2}}}>
             <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.employee.schedule_details.complete")}</Box>
           </StyledButton>
-          <StyledButton size="small" onClick={(e) => confirmAction(schedule, "cancel", e)}
+          <StyledButton onClick={(e) => confirmAction(schedule, "cancel", e)}
                         variant="outlined" color="error" startIcon={<CancelOutlinedIcon/>} loading={actionLoading}>
             <Box component="span" display={{ xs: "none", md: "inline" }}>{t("pages.employee.schedule_details.cancel")}</Box>
           </StyledButton>
         </>;
       default:
         return (
-          <Typography fontSize="12px" fontWeight="bold" px={2} py={0.5} borderRadius={1}
-                      color="calendar.text" bgcolor={"calendar." + schedule.status}>
-            {t(`order_status.${schedule.status}`)}
-          </Typography>
+          <OrderStatusChip size="big" status={schedule.status} />
         );
     }
   }
@@ -124,7 +134,7 @@ function RequestedSchedulesPage() {
         </SectionCard>
         :
         schedules.slice(0, visibleCount).map(schedule => (
-        <SectionCard size={2} sx={{mt: 2, px: {xs: 1.5, sm: 4}, cursor: "pointer"}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
+        <SectionCard clickable size={2} sx={{mt: 2, px: {xs: 1.5, sm: 4}}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
                      onClick={() => setSelectedSchedule(schedule)} >
           <ServiceIcon>
             <Typography fontWeight="bold">{schedule.title}</Typography>

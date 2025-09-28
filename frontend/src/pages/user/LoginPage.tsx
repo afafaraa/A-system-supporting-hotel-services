@@ -103,7 +103,7 @@ function LoginPage(){
         }}>[admin] admin</button>
         <button onClick={() => {
           setUsername("employee1"); setPassword("password"); login();
-        }}>[manager] employee1</button>
+        }}>[employee] employee1</button>
         <button onClick={() => {
           setUsername("employee2"); setPassword("password123"); login();
         }}>[reception] employee2</button>

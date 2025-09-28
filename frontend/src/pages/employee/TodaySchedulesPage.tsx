@@ -10,6 +10,7 @@ import {useTranslation} from "react-i18next";
 import ScheduleDetailsDialog from "./ScheduleDetailsDialog.tsx";
 import {formatTimeRange} from "../../utils/dateFormatting.ts";
 import ServiceIcon from "../../components/ui/ServiceIcon.tsx";
+import OrderStatusChip from "../../components/ui/OrderStatusChip.tsx";
 
 function TodaySchedulesPage() {
   const {t} = useTranslation();
@@ -45,17 +46,14 @@ function TodaySchedulesPage() {
         </SectionCard>
         :
         schedules.slice(0, visibleCount).map(schedule => (
-        <SectionCard size={2} sx={{mt: 2, px: {xs: 1.5, sm: 4}, cursor: "pointer"}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
+        <SectionCard clickable size={2} sx={{mt: 2, px: {xs: 1.5, sm: 4}}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
                      onClick={() => setSelectedSchedule(schedule)} >
           <ServiceIcon>
             <Typography fontWeight="bold">{schedule.title}</Typography>
             <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? t("common.guest_unknown")} | {t("common.room")} {schedule.room ?? t("common.unknown")}</Typography>
             <Typography fontSize="13px" sx={{mt: 1}}>{formatTimeRange(new Date(schedule.date), schedule.duration)}</Typography>
           </ServiceIcon>
-          <Typography fontSize="12px" fontWeight="bold" px={{xs: 1, sm: 2}} py={1} borderRadius={3}
-                      color="calendar.text" bgcolor={"calendar." + schedule.status}>
-            {t(`order_status.${schedule.status}`)}
-          </Typography>
+          <OrderStatusChip size="big" status={schedule.status} />
         </SectionCard>
       ))}
 

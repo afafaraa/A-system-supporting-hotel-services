@@ -34,7 +34,7 @@ function EmployeeCard({ employee, onUpdated }: EmployeeCardProps) {
         <Box display="flex" alignItems="center" gap={1}>
           <Avatar
             sx={{
-              bgcolor: "primary.medium",
+              bgcolor: "primary.light",
               width: 64,
               height: 64,
               color: "primary.main",

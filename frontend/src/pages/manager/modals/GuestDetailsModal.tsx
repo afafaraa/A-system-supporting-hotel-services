@@ -10,8 +10,7 @@ import {
   Paper,
   Grid,
 } from "@mui/material";
-import { Guest } from "../../../types/guest";
-import { Service } from "../../../types/service";
+import { Guest, Service } from "../../../types";
 import NavigationTabs from "../../../pages/manager/tempComponents/NavigationTabs";
 import {
   Close,
@@ -127,7 +126,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
           <Box display="flex" alignItems="center" gap={2} mb={0.5}>
             <Avatar
               sx={{
-                bgcolor: "primary.medium",
+                bgcolor: "primary.light",
                 width: 64,
                 height: 64,
                 color: "primary.main",
@@ -286,28 +285,26 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                   p: 2,
                   borderRadius: 3,
                   mt: 2,
-                  bgcolor: "grey.200",
+                  bgcolor: "background.default",
                   boxShadow: 0,
                 }}
               >
                 <Typography
                   variant="subtitle1"
-                  fontWeight="bold"
-                  color="black"
+                  fontWeight="500"
                   gutterBottom
                 >
                   {tc("additional_info")}
                 </Typography>
                 <Typography
                   variant="body2"
-                  color="black"
                   fontWeight="bold"
-                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.3 }}
                 >
-                  <CommentOutlined fontSize="small" sx={{ color: "black" }} />
+                  <CommentOutlined fontSize="small" />
                   {tc("special_requests")}:
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color="text.secondary" fontSize="smaller">
                   High floor, city view preferred
                 </Typography>
               </Paper>

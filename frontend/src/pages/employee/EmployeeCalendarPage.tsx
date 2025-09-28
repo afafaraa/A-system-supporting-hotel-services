@@ -6,7 +6,10 @@ function EmployeeCalendarPage() {
   const tc = (key: string) => t(`pages.employee.calendar.${key}`);
 
   return (
-    <Calendar title={tc("title")} subtitle={tc("subtitle")}/>
+    <Calendar title={tc("title")}
+              subtitle={tc("subtitle")}
+              fetchingUrl="/schedule?date="
+    />
   );
 }
 

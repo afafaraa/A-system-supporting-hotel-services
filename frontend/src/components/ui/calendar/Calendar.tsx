@@ -26,12 +26,13 @@ function getYearWeek(date: Date): number {
 interface CalendarProps {
   title?: string;
   subtitle?: string;
+  fetchingUrl: string;
 }
 
 export type MobileArrangementType = "list" | "grid" | null;
 const numberToWeekday: Record<string, number> = {"MONDAY": 0, "TUESDAY": 1, "WEDNESDAY": 2, "THURSDAY": 3, "FRIDAY": 4, "SATURDAY": 5, "SUNDAY": 6} as const;
 
-function Calendar({title, subtitle}: CalendarProps) {
+function Calendar({title, subtitle, fetchingUrl}: CalendarProps) {
   const { t } = useTranslation();
   const tc = (key: string) => t(`ui.calendar.${key}`);
   const today = new Date();
@@ -51,18 +52,19 @@ function Calendar({title, subtitle}: CalendarProps) {
 
   useEffect(() => {
     if (schedules.has(yearWeek)) return;
-    axiosAuthApi.get<Schedule[]>('/schedule?date=' + addDays(currentWeekStart, 1).toISOString())
+    axiosAuthApi.get<Schedule[]>(fetchingUrl + addDays(currentWeekStart, 1).toISOString())
       .then(res => {
         const updated = new Map(schedules);
         updated.set(yearWeek, res.data);
         setSchedules(updated);
       })
       .catch(err => {
+        console.log(err);
         if (isAxiosError(err)) {
           if (err.response?.status !== 404) setError("Unable to fetch schedules: " + err.message);
         } else { setError("An unexpected error occurred while fetching schedules"); }
       });
-  }, [currentWeekStart, schedules, yearWeek]);
+  }, [currentWeekStart, fetchingUrl, schedules, yearWeek]);
 
   useLayoutEffect(() => {
     const el = scrollRef.current;

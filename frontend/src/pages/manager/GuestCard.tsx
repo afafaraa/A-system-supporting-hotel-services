@@ -28,7 +28,7 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
         <Box>
           <Avatar
             sx={{
-              bgcolor: "primary.medium",
+              bgcolor: "primary.light",
               width: 64,
               height: 64,
               color: "primary.main",

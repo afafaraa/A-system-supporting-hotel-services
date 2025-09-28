@@ -15,6 +15,7 @@ import ConfirmationWithReasonDialog from "../../components/ui/ConfirmationWithRe
 import {CancellationReason} from "../../types/cancellation_reasons.ts";
 import {formatTimeRange} from "../../utils/dateFormatting.ts";
 import ServiceIcon from "../../components/ui/ServiceIcon.tsx";
+import OrderStatusChip from "../../components/ui/OrderStatusChip.tsx";
 
 type Props = {
   open: boolean;
@@ -76,9 +77,7 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
             <p>{formatTimeRange(new Date(schedule.date), schedule.duration)}</p>
           </DialogSection>
           <DialogSection title={tc("status")}>
-            <Box display="flex" alignItems="center" width="fit-content" px={1.5} py={0.4} my={0.2} borderRadius={1} color="calendar.text" bgcolor={`calendar.${schedule.status}`} fontWeight="bold">
-              {t(`order_status.${schedule.status}`)}
-            </Box>
+            <OrderStatusChip size="small" status={schedule.status} sx={{my: 0.2}}/>
           </DialogSection>
         </Stack>
 
