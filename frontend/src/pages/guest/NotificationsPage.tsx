@@ -13,7 +13,7 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import {Notification, NotificationVariant} from "../../types/notification.ts";
 import {formatDateFromTimestamp, formatTimeFromTimestamp} from "../../utils/dateFormatting.ts";
 import {setNotificationsCount} from "../../redux/slices/notificationsCount.ts";
-import Title from "../../components/ui/Title.tsx";
+import SectionTitle from "../../components/ui/SectionTitle.tsx";
 import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
 
 function NotificationsPage() {
@@ -104,8 +104,8 @@ function NotificationsPage() {
 
   return (
     <SectionCard>
-      <Title bigger title={<><NotificationsOutlinedIcon /> {tc("title")}</>}
-             subtitle={<>{notifications.length} {tc("unread")}</>} />
+      <SectionTitle title={<><NotificationsOutlinedIcon /> {tc("title")}</>}
+                    subtitle={<>{notifications.length} {tc("unread")}</>} />
 
       {error && <Alert severity="error" sx={{mb: 3}}>{error}</Alert>}
 

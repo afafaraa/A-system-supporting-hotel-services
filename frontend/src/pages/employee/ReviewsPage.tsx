@@ -1,4 +1,4 @@
-import Title from "../../components/ui/Title.tsx";
+import SectionTitle from "../../components/ui/SectionTitle.tsx";
 import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
 import {ReactElement, useEffect, useState} from "react";
@@ -50,8 +50,8 @@ function ReviewsPage() {
 
   return (
     <SectionCard>
-      <Title title={<><StarBorderOutlinedIcon /> {tc("title")}</>}
-             subtitle={tc("subtitle")} />
+      <SectionTitle title={<><StarBorderOutlinedIcon /> {tc("title")}</>}
+                    subtitle={tc("subtitle")} />
       <SectionCard sx={{bgcolor: "background.default", borderWidth: 0, borderRadius: 2}} display="flex" justifyContent="space-around" flexWrap="wrap" gap={2}>
         <Box display="flex" justifyContent="space-between" flex="1 0 0" gap={2}>
           <InfoCard title={<><TrendingUpOutlinedIcon sx={{fontSize: "120%"}}/> {tc("avg_rating")}</>} value={avgRating}/>

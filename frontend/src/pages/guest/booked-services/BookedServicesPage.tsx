@@ -103,7 +103,6 @@ function BookedServicesPage() {
             </Typography>
           </div>
           <SelectInput
-            sx={{'& .MuiSelect-select': {p: '5px 12px'}}}
             labelId="booking-scope-label"
             value={filterStatus}
             onChange={(e) => setFilterStatus(String(e.target.value))}
@@ -127,7 +126,7 @@ function BookedServicesPage() {
           placeholder={t('pages.booked_services.searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          sx={{ backgroundColor: `${theme.palette.background.default}`, mt: 1 }}
+          sx={{ mt: 1 }}
           slotProps={{ input: { startAdornment: <SearchIcon fontSize="small" /> } }}
         />
 

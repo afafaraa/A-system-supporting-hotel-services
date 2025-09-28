@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
-import Title from "../../components/ui/Title.tsx";
+import SectionTitle from "../../components/ui/SectionTitle.tsx";
 import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
 import {Schedule} from "../../types/schedule.ts";
 import {Typography, Button, Alert} from "@mui/material";
@@ -36,8 +36,8 @@ function TodaySchedulesPage() {
 
   return (
     <SectionCard>
-      <Title title={<><ScheduleOutlinedIcon /> {tc("title")}</>}
-             subtitle={`${schedules.length} ${tc("subtitle")}`} />
+      <SectionTitle title={<><ScheduleOutlinedIcon /> {tc("title")}</>}
+                    subtitle={`${schedules.length} ${tc("subtitle")}`} />
       {error && <Alert severity="error" sx={{my: 2}}>{error}</Alert>}
       {pageLoading ? <></> : schedules.length === 0 ?
         <SectionCard size={4}>

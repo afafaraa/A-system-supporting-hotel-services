@@ -4,27 +4,29 @@ import { GlobalStyles } from "@mui/material";
 import DashboardNavbar from "../navigation/DashboardNavbar";
 import { useTranslation } from "react-i18next";
 
-const inputGlobalStyles = <GlobalStyles styles={{ html: { overflowY: 'scroll' } }} />
+const globalStyles = <GlobalStyles styles={{ html: { overflowY: 'scroll' } }} />
+
+const tabs = [
+  { key: "guests",     link: "/management/guests" },
+  { key: "services",   link: "/management/services" },
+  { key: "calendar",   link: "/management/calendar" },
+  { key: "employees",  link: "/employees" },
+  { key: "statistics", link: "/management/statistics" },
+] as const;
 
 function AdminLayout() {
-    const { t } = useTranslation();
-    const tc = (key: string) => t(`pages.manager.navbar.${key}`);
+  const {t} = useTranslation();
+  const translatedTabs = useMemo(() =>
+    tabs.map(tab => ({ name: t(`pages.manager.navbar.${tab.key}`), link: tab.link })
+  ), [t]);
 
-    const tabs = useMemo(() => ([
-        { name: tc("guests"), link: "/management/guests" },
-        { name: tc("services"), link: "/management/services" },
-        { name: tc("calendar"), link: "/management/calendar" },
-        { name: tc("employees"), link: "/employees" },
-        { name: tc("statistics"), link: "/management/statistics" },
-    ] as const), [t]);
-
-    return (
-        <>
-            {inputGlobalStyles}
-            <DashboardNavbar tabs={tabs} />
-            <Outlet />
-        </>
-    );
-};
+  return (
+    <>
+      {globalStyles}
+      <DashboardNavbar tabs={translatedTabs} arrowButtons/>
+      <Outlet />
+    </>
+  );
+}
 
 export default AdminLayout;

@@ -5,7 +5,6 @@ import {
   Button,
   CircularProgress,
   Typography,
-  Paper,
   ClickAwayListener,
   IconButton,
   TextField,
@@ -14,14 +13,14 @@ import {
   Select,
   MenuItem,
   Grid,
-  useTheme,
-  useMediaQuery,
 } from '@mui/material';
 import { Search, PersonOutline, Add } from '@mui/icons-material';
 import { Employee, Role } from '../../types';
 import { useTranslation } from 'react-i18next';
 import EmployeeCard from './EmployeeCard.tsx';
 import EditEmployeeModal from './modals/EditEmployeeModal.tsx';
+import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
+import SectionTitle from "../../components/ui/SectionTitle.tsx";
 
 function EmployeeListPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -31,8 +30,6 @@ function EmployeeListPage() {
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.manager.personnel.${key}`);
   const [searchOpen, setSearchOpen] = useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [open, setOpen] = useState(false);
 
   const [filterName, setFilterName] = useState('');
@@ -94,61 +91,44 @@ function EmployeeListPage() {
   }
 
   return (
-    <Paper
-      sx={{
-        p: 3,
-        borderRadius: 3,
-        mt: 5,
-        border: `1px solid`,
-        borderColor: 'divider',
-      }}
-    >
+    <SectionCard>
       <Box
         display="flex"
         alignItems="center"
-        justifyContent={isMobile ? 'center' : 'space-between'}
         flexWrap="wrap"
         gap={2}
         mb={3}
       >
-        <Box>
-          <Box display="flex" alignItems="flex-start" flexDirection="row">
-            <PersonOutline fontSize="large" />
-            <Typography variant="h5" fontWeight="bold" gutterBottom>
-              {tc('title')}
-            </Typography>
-          </Box>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            mb={3}
-            gutterBottom
-          >
-            {tc('subtitle')}
-          </Typography>
-        </Box>
+        <SectionTitle title={<><PersonOutline /> {tc('title')}</>}
+                      subtitle={tc('subtitle')} mb={0}>
 
-        <Box display="flex" alignItems="center" flexWrap="wrap" gap={2}>
+        </SectionTitle>
+
+        <Box display="flex"
+             alignItems="center"
+             flexWrap="wrap"
+             gap={2}
+             justifyContent="flex-end"
+             flexGrow={1}
+        >
           <ClickAwayListener onClickAway={() => setSearchOpen(false)}>
-            <Box display="flex" alignItems="center" position="relative">
+            <Box display="grid" alignItems="center" position="relative"
+                 gridTemplateColumns={`auto ${searchOpen ? "1fr" : "0fr"}`} columnGap={searchOpen ? 1 : 0}
+                 sx={{transition: "grid-template-columns 0.3s ease, column-gap 0.3s ease, flex-wrap 0.3s ease"}}>
               <IconButton onClick={() => setSearchOpen(!searchOpen)}>
                 <Search />
               </IconButton>
-              {searchOpen && (
-                <TextField
-                  placeholder={tc('searchPlaceholder')}
-                  variant="outlined"
-                  size="small"
-                  value={filterName}
-                  onChange={(e) => setFilterName(e.target.value)}
-                  sx={{
-                    ml: 1,
-                    width: '12rem',
-                    transition: 'width 0.3s ease',
-                  }}
-                  autoFocus
-                />
-              )}
+              <TextField
+                placeholder={tc('searchPlaceholder')}
+                variant="outlined"
+                size="small"
+                value={filterName}
+                onChange={(e) => setFilterName(e.target.value)}
+                sx={{
+                  visibility: searchOpen ? "visible" : "hidden",
+                }}
+                autoFocus
+              />
             </Box>
           </ClickAwayListener>
 
@@ -172,26 +152,27 @@ function EmployeeListPage() {
             variant="contained"
             startIcon={<Add />}
             onClick={() => setOpen(true)}
+            sx={{borderRadius: '12px'}}
           >
             {tc('addEmployee')}
           </Button>
         </Box>
-
-        <Grid container spacing={2} sx={{ width: '100%' }}>
-          {filteredEmployees.map((emp) => (
-            <Grid
-              key={emp.id}
-              size={{ xs: 12, sm: 6, md: 4 }}
-              sx={{ display: 'flex' }}
-            >
-              <EmployeeCard 
-                employee={emp} 
-                onUpdated={handleEmployeeUpdated}
-              />
-            </Grid>
-          ))}
-        </Grid>
       </Box>
+
+      <Grid container spacing={2} sx={{ width: '100%' }}>
+        {filteredEmployees.map((emp) => (
+          <Grid
+            key={emp.id}
+            size={{ xs: 12, sm: 6, md: 4 }}
+            sx={{ display: 'flex' }}
+          >
+            <EmployeeCard
+              employee={emp}
+              onUpdated={handleEmployeeUpdated}
+            />
+          </Grid>
+        ))}
+      </Grid>
       <EditEmployeeModal
         open={open}
         onClose={() => setOpen(false)}
@@ -202,7 +183,7 @@ function EmployeeListPage() {
           }
         }}
       />
-    </Paper>
+    </SectionCard>
   );
 }
 

@@ -155,7 +155,7 @@ function Navbar() {
           justifyContent: 'center',
           height: drawerHeight,
           py: 2,
-          px: "max(0.5rem, calc(13vw - 58.667px))",
+          px: "max(1rem, calc(13vw - 58.667px))",
           borderBottom: `1px solid ${theme.palette.divider}`
         }}
       > {/* padding 16 px to 96 px (sm to xl) */}

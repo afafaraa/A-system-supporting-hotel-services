@@ -59,7 +59,7 @@ function StatsPage() {
     <Grid container spacing={3} sx={{ mt: 5 }}>
       {stats.map((stat) => (
         <Grid size={{ xs: 12, sm: 6, md: 3 }} key={stat.id}>
-          <Card>
+          <Card sx={{borderRadius: "12px", p: 0.5}}>
             <CardContent sx={{ width: '100%', minHeight: 100 }}>
               <Box
                 display="flex"

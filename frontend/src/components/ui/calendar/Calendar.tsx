@@ -1,6 +1,6 @@
 import {SectionCard} from "../../../theme/styled-components/SectionCard.ts";
 import {Alert, Box, Button, Stack, ToggleButton, ToggleButtonGroup, Typography, useMediaQuery} from "@mui/material";
-import Title from "../Title.tsx";
+import SectionTitle from "../SectionTitle.tsx";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -106,8 +106,8 @@ function Calendar({title, subtitle}: CalendarProps) {
       <Stack direction="row" justifyContent="space-between" gap={2} flexWrap="wrap">
         {/* Calendar title */}
         <Box flexGrow={1}>
-          <Title title={<><CalendarTodayOutlinedIcon /> {title}</>}
-                 subtitle={subtitle} mb={0}/>
+          <SectionTitle title={<><CalendarTodayOutlinedIcon /> {title}</>}
+                        subtitle={subtitle} mb={0}/>
         </Box>
         <Stack direction="row" justifyContent="space-between" gap={2} flexWrap="nowrap" flexGrow={1} mb={2}>
           {/* Selected week range */}

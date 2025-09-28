@@ -6,7 +6,7 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import { Guest } from "../../types/guest";
+import { Guest } from "../../types";
 import { RoomOutlined, EmailOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { GuestCardPaper } from "../../theme/styled-components/GuestCardPaper";
@@ -41,20 +41,20 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
           </Avatar>
         </Box>
         <Box display="flex" flexDirection="column" gap={0.5}>
-          <Typography variant="h6" fontWeight="bold">
+          <Typography fontWeight="bold">
             {guest.name} {guest.surname}
           </Typography>
           {!isMobile ? (
             <Box display="flex" alignItems="center" gap={1}>
               <RoomOutlined fontSize="small" sx={{ color: "text.secondary" }} />
-              <Typography variant="body1" color="text.secondary">
+              <Typography variant="body2" color="text.secondary">
                 {tc("room")} {guest.guestData?.roomNumber}
               </Typography>
               <EmailOutlined
                 fontSize="small"
                 sx={{ color: "text.secondary", ml: 3 }}
               />
-              <Typography variant="body1" color="text.secondary">
+                <Typography variant="body2" color="text.secondary">
                 {guest.email}
               </Typography>
             </Box>
@@ -83,14 +83,14 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
       <Box
         display="flex"
         alignItems="center"
-        gap={2}
+        gap={3}
         justifyContent={isMobile ? "space-between" : "flex-end"}
         flexGrow={1}
       >
         <Box
           display="flex"
           flexDirection="column"
-          gap={0.5}
+          gap={0.2}
           alignItems="center"
         >
           <Chip
@@ -118,14 +118,14 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
         <Box
           display="flex"
           flexDirection="column"
-          gap={1}
+          gap={0.5}
           alignItems="center"
         >
-          <Typography variant="h6" fontWeight="bold" color="primary.main">
-            {guest.guestData?.bill.toFixed(2)}$
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography fontSize="1rem" color="text.secondary">
             {tc("balance")}
+          </Typography>
+          <Typography fontSize="1.1rem" fontWeight="bold" color="primary.main">
+            {guest.guestData?.bill.toFixed(2)}$
           </Typography>
         </Box>
       </Box>

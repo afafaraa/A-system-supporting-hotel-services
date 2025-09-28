@@ -11,16 +11,15 @@ import {
   Select,
   MenuItem,
   CircularProgress,
-  useTheme,
-  useMediaQuery,
 } from "@mui/material";
 import { PersonOutline, Search } from "@mui/icons-material";
 import GuestCard from "./GuestCard";
-import { Guest, GuestStatusFilter } from "../../types/guest";
+import { Guest, GuestStatusFilter } from "../../types";
 import GuestDetailsModal from "./modals/GuestDetailsModal";
 import { SectionCard } from "../../theme/styled-components/SectionCard";
 import { useTranslation } from "react-i18next";
 import { axiosAuthApi } from '../../middleware/axiosApi';
+import SectionTitle from "../../components/ui/SectionTitle.tsx";
 
 
 function GuestsListPage() {
@@ -37,8 +36,6 @@ function GuestsListPage() {
 
   const [filterName, setFilterName] = useState("");
   const [filterStatus, setFilterStatus] = useState<GuestStatusFilter>("ALL");
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const fetchGuests = useCallback(async () => {
     setLoading(true)
@@ -128,55 +125,38 @@ function GuestsListPage() {
       <Box
         display="flex"
         alignItems="center"
-        justifyContent={isMobile ? "center" : "space-between"}
         flexWrap="wrap"
         gap={2}
         mb={3}
       >
-        <Box>
-          <Box display="flex" alignItems="flex-start" flexDirection="row">
-            <PersonOutline fontSize="large" />
-            <Typography variant="h5" fontWeight="bold" gutterBottom>
-              {tc("title")}
-            </Typography>
-          </Box>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            mb={3}
-            gutterBottom
-          >
-            {tc("subtitle")}
-          </Typography>
-        </Box>
-
+        <SectionTitle title={<><PersonOutline /> {tc("title")}</>}
+                      subtitle={tc("subtitle")} mb={0} />
         <Box
           display="flex"
           alignItems="center"
           flexWrap="wrap"
           gap={2}
-          justifyContent="center"
+          justifyContent="flex-end"
+          flexGrow={1}
         >
           <ClickAwayListener onClickAway={() => setSearchOpen(false)}>
-            <Box display="flex" alignItems="center" position="relative">
+            <Box display="grid" alignItems="center" position="relative"
+                 gridTemplateColumns={`auto ${searchOpen ? "1fr" : "0fr"}`} columnGap={searchOpen ? 1 : 0}
+                 sx={{transition: "grid-template-columns 0.3s ease, column-gap 0.3s ease, flex-wrap 0.3s ease"}}>
               <IconButton onClick={() => setSearchOpen(!searchOpen)}>
                 <Search />
               </IconButton>
-              {searchOpen && (
-                <TextField
-                  placeholder={tc("searchPlaceholder")}
-                  variant="outlined"
-                  size="small"
-                  value={filterName}
-                  onChange={(e) => setFilterName(e.target.value)}
-                  sx={{
-                    ml: 1,
-                    width: "12rem",
-                    transition: "width 0.3s ease",
-                  }}
-                  autoFocus
-                />
-              )}
+              <TextField
+                placeholder={tc("searchPlaceholder")}
+                variant="outlined"
+                size="small"
+                value={filterName}
+                onChange={(e) => setFilterName(e.target.value)}
+                sx={{
+                  visibility: searchOpen ? "visible" : "hidden",
+                }}
+                autoFocus
+              />
             </Box>
           </ClickAwayListener>
 
@@ -199,21 +179,22 @@ function GuestsListPage() {
             </Select>
           </FormControl>
         </Box>
-
-        <Grid container spacing={2} sx={{ width: "100%" }}>
-          {filteredGuests.map((guest) => (
-            <Grid key={guest.id} size={{ xs: 12 }} sx={{ display: "flex" }}>
-              <GuestCard
-                guest={guest}
-                onClick={() => {
-                  setSelectedGuest(guest);
-                  setModalOpen(true);
-                }}
-              />
-            </Grid>
-          ))}
-        </Grid>
       </Box>
+
+      <Grid container spacing={2} sx={{ width: "100%" }}>
+        {filteredGuests.map((guest) => (
+          <Grid key={guest.id} size={{ xs: 12 }} sx={{ display: "flex" }}>
+            <GuestCard
+              guest={guest}
+              onClick={() => {
+                setSelectedGuest(guest);
+                setModalOpen(true);
+              }}
+            />
+          </Grid>
+        ))}
+      </Grid>
+
       {selectedGuest && (
         <GuestDetailsModal
           open={modalOpen}

@@ -10,7 +10,7 @@ export const SectionCard = styled(Box, {
 })<SectionCardProps>(
   ({ theme, size = 4 }) => ({
     padding: theme.spacing(size),
-    borderRadius: `${theme.shape.borderRadius * size}px`,
+    borderRadius: "12px",
     [theme.breakpoints.down("sm")]: {
       padding: theme.spacing(size * 0.6),
     },

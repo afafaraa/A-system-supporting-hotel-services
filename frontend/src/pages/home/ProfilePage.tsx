@@ -14,7 +14,7 @@ import LanguageSwitcher from "../../components/ui/LanguageSwitcher.tsx";
 import ThemeToggleGroup from "../../components/ui/ThemeToggleGroup.tsx";
 import React from "react";
 import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
-import Title from "../../components/ui/Title.tsx";
+import SectionTitle from "../../components/ui/SectionTitle.tsx";
 import {useTranslation} from "react-i18next";
 
 function ProfilePage() {
@@ -63,8 +63,8 @@ function ProfilePage() {
 
   const PersonalInformation = () => (
     <SectionCard>
-      <Title title={<><PersonOutlineOutlinedIcon color="primary"/> {tc("personal_info")}</>}
-             subtitle={tc("personal_info_subtitle")} />
+      <SectionTitle smaller title={<><PersonOutlineOutlinedIcon color="primary"/> {tc("personal_info")}</>}
+                    subtitle={tc("personal_info_subtitle")} />
       <Stack direction="row" gap={4}>
         <Stack direction="column" gap={2} fontWeight="bold">
           <span>{tc("username")}</span>
@@ -87,8 +87,8 @@ function ProfilePage() {
 
   const StayInformation = () => (
     <SectionCard>
-        <Title title={<><CalendarTodayOutlinedIcon color="primary"/> {tc("stay_info")}</>}
-               subtitle={tc("stay_info_subtitle")} />
+        <SectionTitle smaller title={<><CalendarTodayOutlinedIcon color="primary"/> {tc("stay_info")}</>}
+                      subtitle={tc("stay_info_subtitle")} />
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Typography fontSize="inherit" fontWeight="bold">{tc("room_number")}</Typography>
           <Chip label={`${t("common.room")} ${userDetails?.guestData?.roomNumber ?? ''}`} size="small" color="primary" variant="outlined"/>
@@ -113,8 +113,8 @@ function ProfilePage() {
 
   const EmployeeCard = () => ( // TODO: employee stats (services handled, hours worked, etc.)
     <SectionCard>
-      <Title title={<><BadgeOutlinedIcon color="primary"/> {tc("employee_card")}</>}
-             subtitle={tc("employee_card_subtitle")} />
+      <SectionTitle smaller title={<><BadgeOutlinedIcon color="primary"/> {tc("employee_card")}</>}
+                    subtitle={tc("employee_card_subtitle")} />
       <Stack direction="row" gap={4}>
         <Stack direction="column" gap={2} fontWeight="bold">
           <span>{tc("position")}</span>
@@ -132,8 +132,8 @@ function ProfilePage() {
 
   const AccountBalance = () => (
     <SectionCard>
-      <Title title={tc("account_balance")}
-             subtitle={tc("account_balance_subtitle")}/>
+      <SectionTitle smaller title={tc("account_balance")}
+                    subtitle={tc("account_balance_subtitle")}/>
       <SectionCard sx={{backgroundColor: "primary.main"}} textAlign="center">
         <Typography color="background.default">{tc("current_bill")}</Typography>
         <Typography fontWeight="bold" color="background.default" fontSize="2.5rem">{userDetails?.guestData?.bill.toFixed(2)} PLN</Typography>
@@ -148,7 +148,7 @@ function ProfilePage() {
 
   const PageSettings = () => (
     <SectionCard>
-      <Title title={<><SettingsOutlinedIcon color="primary"/> {tc("page_settings")}</>} />
+      <SectionTitle smaller title={<><SettingsOutlinedIcon color="primary"/> {tc("page_settings")}</>} />
       <Stack gap={2}>
         <Typography component="div" display="flex" alignItems="center" gap={3}>
           {tc("page_language")}: <LanguageSwitcher />
@@ -172,8 +172,8 @@ function ProfilePage() {
 
   const AccountInformation = () => (
     <SectionCard>
-      <Title title={tc("account_info")}
-             subtitle={tc("account_info_subtitle")}/>
+      <SectionTitle smaller title={tc("account_info")}
+                    subtitle={tc("account_info_subtitle")}/>
       <Stack gap={2}>
         <CardWithSwitch title={tc("email_notifications")}
                         subtitle={tc("email_notifications_subtitle")}

@@ -9,7 +9,7 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import {Notification, NotificationVariant} from "../../types/notification.ts";
 import {formatDateFromTimestamp, formatTimeFromTimestamp} from "../../utils/dateFormatting.ts";
 import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
-import Title from "./Title.tsx";
+import SectionTitle from "./SectionTitle.tsx";
 
 function NotificationsContainer() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -28,9 +28,9 @@ function NotificationsContainer() {
 
   return (
     <SectionCard size={3}>
-      <Title title={<><NotificationsOutlinedIcon /> {tc("title")}</>}
-             subtitle={<>{notifications.length} {tc("unread")}</>}
-             mb={notifications.length === 0 ? 0 : 2} />
+      <SectionTitle title={<><NotificationsOutlinedIcon /> {tc("title")}</>}
+                    subtitle={<>{notifications.length} {tc("unread")}</>}
+                    mb={notifications.length === 0 ? 0 : 3} />
       {notifications.length !== 0 && notifications.map(n => {
         const { icon: Icon, color } = NotificationVariant[n.variant];
         return (

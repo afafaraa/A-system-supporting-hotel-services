@@ -312,7 +312,7 @@
         "no_schedules": "Brak usług zaplanowanych na dzisiaj."
       },
       "requested_schedules": {
-        "title": "Oczekujące i aktywny usługi",
+        "title": "Oczekujące i aktywne usługi",
         "subtitle": "usług oczekujących na potwierdzenie",
         "no_schedules": "Nie znaleziono usług do zaakceptowania."
       },

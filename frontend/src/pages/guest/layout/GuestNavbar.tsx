@@ -50,6 +50,7 @@ function GuestNavbar({ subpages }: { subpages: PageState[] }) {
         display: 'flex',
         gap: '1rem',
         overflow: 'hidden',
+        marginBottom: theme.spacing(3),
       }}
     >
       <div

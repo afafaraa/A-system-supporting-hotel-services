@@ -4,7 +4,6 @@ import {
   Box,
   Typography,
   Button,
-  Paper,
   TextField,
   FormControl,
   InputLabel,
@@ -23,12 +22,14 @@ import {
   MeetingRoom,
   RoomService,
 } from "@mui/icons-material";
+import RoomServiceOutlinedIcon from '@mui/icons-material/RoomServiceOutlined';
 import ServiceFormModal from "./modals/ServiceFormModal";
 import ServiceDeleteModal from "./modals/ServiceDeleteModal";
 import { Service } from "../../types";
 import { useTranslation } from "react-i18next";
 import { SectionCard } from "../../theme/styled-components/SectionCard";
 import { ServiceCard } from "../../theme/styled-components/ServiceCard";
+import SectionTitle from "../../components/ui/SectionTitle.tsx";
 
 function ServicesListPage() {
   const { t } = useTranslation();
@@ -98,46 +99,39 @@ function ServicesListPage() {
       <Box
         display="flex"
         alignItems="center"
-        justifyContent="space-between"
         flexWrap="wrap"
         gap={2}
         mb={3}
       >
-        <Box>
-          <Typography variant="h5" fontWeight="bold" gutterBottom>
-            {tc("title")}
-          </Typography>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            mb={3}
-            gutterBottom
-          >
-            {tc("subtitle")}
-          </Typography>
-        </Box>
+        <SectionTitle title={<><RoomServiceOutlinedIcon /> {tc("title")}</>}
+                      subtitle={tc("subtitle")} mb={0}/>
 
-        <Box display="flex" alignItems="center" flexWrap="wrap" gap={2}>
+        <Box
+          display="flex"
+          alignItems="center"
+          flexWrap="wrap"
+          gap={2}
+          justifyContent="flex-end"
+          flexGrow={1}
+        >
           <ClickAwayListener onClickAway={() => setSearchOpen(false)}>
-            <Box display="flex" alignItems="center" position="relative">
+            <Box display="grid" alignItems="center" position="relative"
+                 gridTemplateColumns={`auto ${searchOpen ? "1fr" : "0fr"}`} columnGap={searchOpen ? 1 : 0}
+                 sx={{transition: "grid-template-columns 0.3s ease, column-gap 0.3s ease"}}>
               <IconButton onClick={() => setSearchOpen(!searchOpen)}>
                 <Search />
               </IconButton>
-              {searchOpen && (
-                <TextField
-                  placeholder={tc("search_placeholder")}
-                  variant="outlined"
-                  size="small"
-                  value={filterName}
-                  onChange={(e) => setFilterName(e.target.value)}
-                  sx={{
-                    ml: 1,
-                    width: "12rem",
-                    transition: "width 0.3s ease",
-                  }}
-                  autoFocus
-                />
-              )}
+              <TextField
+                placeholder={tc("search_placeholder")}
+                variant="outlined"
+                size="small"
+                value={filterName}
+                onChange={(e) => setFilterName(e.target.value)}
+                sx={{
+                  visibility: searchOpen ? "visible" : "hidden",
+                }}
+                autoFocus
+              />
             </Box>
           </ClickAwayListener>
 
@@ -186,6 +180,7 @@ function ServicesListPage() {
           </FormControl>
 
           <Button
+            sx={{borderRadius: '12px'}}
             variant="contained"
             startIcon={<Add />}
             onClick={() => {
@@ -201,7 +196,7 @@ function ServicesListPage() {
       {filteredServices.map((s) => (
         <ServiceCard key={s.id}>
           <Box display="flex" alignItems="center" gap={2}>
-            <Paper
+            <Box
               sx={{
                 p: 1,
                 borderRadius: 2,
@@ -212,6 +207,7 @@ function ServicesListPage() {
                 width: 48,
                 height: 48,
                 overflow: "hidden",
+                flexShrink: 0,
               }}
             >
               {s.type == "GENERAL_SERVICE" ? (
@@ -219,7 +215,7 @@ function ServicesListPage() {
               ) : (
                 <RoomService color="primary" fontSize="large" />
               )}
-            </Paper>
+            </Box>
             <Box>
               <Typography fontWeight="bold">{s.name}</Typography>
               <Typography variant="body2" color="text.secondary">
@@ -242,7 +238,7 @@ function ServicesListPage() {
             </Box>
           </Box>
 
-          <Box display="flex" gap={1}>
+          <Box display="flex" gap={1} flexGrow={1} justifyContent="flex-end">
             <IconButton
               color="primary"
               onClick={() => {

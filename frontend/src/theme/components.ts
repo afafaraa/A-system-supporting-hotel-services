@@ -67,6 +67,22 @@ const components: Components<Omit<Theme, 'components'>> = {
       }),
     },
   },
+  MuiOutlinedInput: {
+    styleOverrides: {
+      root: {
+        borderRadius: '12px',
+      },
+    },
+  },
+  MuiRating: {
+    styleOverrides: {
+      root: ({theme}) => ({
+        "& .MuiRating-iconEmpty": {
+          color: theme.palette.text.disabled,
+        }
+      }),
+    }
+  }
 };
 
 export default components;
