@@ -10,7 +10,7 @@ function LoginDialog({
 }) {
   return (
     <Dialog
-      sx={{ borderRadius: '10%' }}
+      sx={{'& .MuiDialog-paper': {borderRadius: '15px'}}}
       open={open}
       onClose={() => setOpen(false)}
     >

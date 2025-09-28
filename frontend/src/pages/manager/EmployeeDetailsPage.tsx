@@ -11,9 +11,9 @@ import {
 } from '@mui/material';
 import { Employee } from '../../types';
 import { useTranslation } from 'react-i18next';
-import EmployeeCalendarPage from '../employee/EmployeeCalendarPage.tsx';
 import { ArrowBack } from '@mui/icons-material';
 import { SectionCard } from '../../theme/styled-components/SectionCard';
+import Calendar from "../../components/ui/calendar/Calendar.tsx";
 
 function EmployeeDetailsPage() {
   const { username } = useParams<{ username: string }>();
@@ -79,9 +79,9 @@ function EmployeeDetailsPage() {
   }
 
   return (
-    <SectionCard>
+    <SectionCard position="relative">
       <Button
-        variant="contained"
+        variant="text"
         startIcon={<ArrowBack />}
         onClick={() => {
           navigate('/employees');
@@ -90,29 +90,18 @@ function EmployeeDetailsPage() {
       >
         {t('buttons.back')}
       </Button>
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-        flexWrap="wrap"
-        gap={2}
+      <Typography variant="h5" fontWeight="bold">
+        {tc('title')}
+      </Typography>
+      <Typography
+        variant="subtitle1"
+        color="text.secondary"
         mb={3}
+        gutterBottom
       >
-        <Box>
-          <Typography variant="h5" fontWeight="bold">
-            {tc('title')}
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            color="text.secondary"
-            mb={3}
-            gutterBottom
-          >
-            {tc('subtitle')}
-          </Typography>
-        </Box>
-      </Box>
-      <Grid container spacing={2} sx={{ my: 2 }}>
+        {tc('subtitle')}
+      </Typography>
+      <Grid container spacing={2} sx={{ my: 3 }}>
         <Grid size={{ xs: 12, md: 6 }}>
           <Box display="flex" flexDirection="column">
             <Typography variant="h6" fontWeight="bold">
@@ -169,7 +158,10 @@ function EmployeeDetailsPage() {
         </Grid>
       </Grid>
 
-      <EmployeeCalendarPage />
+      <Calendar title={t("pages.employee.calendar.title")}
+                subtitle={tc("subtitle")}
+                fetchingUrl={`/management/employees/username/${username}/schedule?date=`}
+      />
     </SectionCard>
   );
 }

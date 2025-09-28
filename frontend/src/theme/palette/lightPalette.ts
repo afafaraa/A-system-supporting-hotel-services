@@ -4,15 +4,13 @@ export const lightPalette: PaletteOptions = {
   mode: 'light',
   primary: {
     light: 'hsl(256, 90%, 96%)',
-    medium: '#F5EEFE',
+    medium: 'hsl(256, 80%, 92%)',
     main: 'hsl(256, 80%, 60%)',
     dark: 'hsl(256, 50%, 40%)',
     contrastText: 'hsl(0, 0%, 95%)',
-    border: 'rgba(0, 0, 0, 0.25)'
   },
   secondary: {
     main: '#FFE921',
-    success: '#39D943',
   },
   background: {
     default: 'hsl(256, 20%, 95%)',
@@ -24,7 +22,13 @@ export const lightPalette: PaletteOptions = {
   },
   action: {
     active: 'rgba(0, 0, 0, 0.75)',
+    disabled: 'rgba(118, 111, 132, 1)',        // text.secondary
+    disabledBackground: 'hsl(256, 20%, 95%)',  // background.default
   },
+  success: {
+    main: 'hsl(124, 68%, 40%)'
+  },
+  divider: 'rgba(0, 0, 0, 0.25)',
   calendar: {
     AVAILABLE: "hsl(200 60% 60%)",
     REQUESTED: "hsl(270 60% 60%)",

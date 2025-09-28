@@ -4,6 +4,7 @@ import {Navigate} from "react-router-dom";
 import Button from '@mui/material/Button';
 import {Box, Typography, useTheme} from "@mui/material";
 import AppLink from "../../components/ui/AppLink.tsx";
+import {Link as RouterLink} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
 import {setUserData} from "../../components/auth/auth.tsx";
@@ -72,8 +73,8 @@ function LoginPage(){
           borderRadius: '10%'
         }} width={70} height={70}/>
 
-        <Box mt={2}>
-          <Typography variant="h1" fontWeight="regular" fontSize={fontSizes.md} color="primary.main">{tc("title")}</Typography>
+        <Box mt={1}>
+          <Typography component={RouterLink} to="/home" variant="h1" fontWeight="bold" fontSize={fontSizes.md} color="primary.main" sx={{textDecoration: "none"}}>{tc("title")}</Typography>
           <Typography variant="subtitle2" fontWeight="medium" color="text.secondary" mt={0.5} sx={{textWrap: "pretty"}}>{tc("subtitle")}</Typography>
         </Box>
 
@@ -102,7 +103,7 @@ function LoginPage(){
         }}>[admin] admin</button>
         <button onClick={() => {
           setUsername("employee1"); setPassword("password"); login();
-        }}>[manager] employee1</button>
+        }}>[employee] employee1</button>
         <button onClick={() => {
           setUsername("employee2"); setPassword("password123"); login();
         }}>[reception] employee2</button>

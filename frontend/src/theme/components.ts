@@ -14,25 +14,13 @@ const components: Components<Omit<Theme, 'components'>> = {
       root: ({ ownerState, theme }) => ({
         fontWeight: 'bold',
         textTransform: 'none',
-        ...(ownerState.variant === 'outlined'
-          ? ownerState.color === 'error'
-            ? {
-                border: `1px solid ${theme.palette.error.main}`,
-                backgroundColor: 'transparent',
-                '&:hover': {
-                  backgroundColor: theme.palette.error.main,
-                  border: `1px solid ${theme.palette.error.main}`,
-                  color: theme.palette.primary.contrastText,
-                },
-              }
-            : {}
-          : {}),
-        '&.Mui-disabled': {
-          backgroundColor: theme.palette.background.default,
-          color: theme.palette.text.secondary,
-          cursor: 'not-allowed',
-          border: 'none',
-        },
+        ...(ownerState.variant === 'outlined' && ownerState.color === 'error' && {
+          transition: theme.transitions.create(['background-color', 'color']),
+          '&:hover': {
+            backgroundColor: theme.palette.error.main,
+            color: theme.palette.error.contrastText,
+          },
+        }),
       }),
     },
   },
@@ -51,6 +39,7 @@ const components: Components<Omit<Theme, 'components'>> = {
         whiteSpace: 'normal',
         wordBreak: 'break-word',
         width: '100%',
+        borderRadius: '12px',
       },
     },
   },
@@ -59,6 +48,11 @@ const components: Components<Omit<Theme, 'components'>> = {
       root: {
         backgroundImage: 'none',
       },
+    },
+  },
+  MuiCard: {
+    defaultProps: {
+      variant: "outlined",
     },
   },
   MuiLink: {
@@ -73,6 +67,22 @@ const components: Components<Omit<Theme, 'components'>> = {
       }),
     },
   },
+  MuiOutlinedInput: {
+    styleOverrides: {
+      root: {
+        borderRadius: '12px',
+      },
+    },
+  },
+  MuiRating: {
+    styleOverrides: {
+      root: ({theme}) => ({
+        "& .MuiRating-iconEmpty": {
+          color: theme.palette.text.disabled,
+        }
+      }),
+    }
+  }
 };
 
 export default components;

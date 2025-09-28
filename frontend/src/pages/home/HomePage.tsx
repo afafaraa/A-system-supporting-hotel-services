@@ -1,4 +1,4 @@
-import { Box, Button, Typography, useTheme, Stack, Grid } from '@mui/material';
+import { Box, Button, Typography, Stack, Grid } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
@@ -11,6 +11,7 @@ import LoginDialog from './LoginDialog.tsx';
 import { useState } from 'react';
 import { Room } from '../../types/room.ts';
 import RoomCard from '../guest/hotel-booking/RoomCard.tsx';
+import {alpha} from "@mui/material/styles";
 
 export const roomOptions: Room[] = [
   {
@@ -60,7 +61,6 @@ export const roomOptions: Room[] = [
 ];
 
 function HomePage() {
-  const theme = useTheme();
   const { t } = useTranslation();
   const [openLoginDialog, setOpenLoginDialog] = useState<boolean>(false);
 
@@ -68,65 +68,73 @@ function HomePage() {
     <main style={{ padding: 0, width: '100%' }}>
       <LoginDialog open={openLoginDialog} setOpen={setOpenLoginDialog} />
       <Box
+        bgcolor="primary.main"
         sx={{
-          width: '100%',
-          backgroundColor: theme.palette.primary.main,
-          color: theme.palette.primary.contrastText,
-          textAlign: 'center',
-          padding: '100px 0px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '20px',
+          backgroundImage: 'url(/home_page_bg.jpg)',
+          backgroundPosition: '50% 75%',
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
         }}
       >
-        <Typography sx={{ fontWeight: '600' }} variant="h2">
-          {t('pages.home.welcomeTitle')}
-        </Typography>
-        <Typography
-          sx={{
-            fontWeight: '500',
-            fontSize: '20px',
-            padding: { xs: '0 10%', md: '0 20%' },
-          }}
+        <Box
+             color='primary.contrastText'
+             textAlign='center'
+             padding='100px 0px'
+             display='flex'
+             flexDirection='column'
+             gap='20px'
+             bgcolor={theme => alpha(theme.palette.primary.main, 0.70)}
+             sx={{backdropFilter: 'blur(2px)'}}
         >
-          {t('pages.home.welcomeSubtitle')}
-        </Typography>
-        <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-          <Button
+          <Typography sx={{ fontWeight: '600' }} variant="h2">
+            {t('pages.home.welcomeTitle')}
+          </Typography>
+          <Typography
             sx={{
-              backgroundColor: theme.palette.primary.dark,
-              color: theme.palette.primary.contrastText,
-              padding: '6px 14px',
+              fontWeight: '500',
+              fontSize: '20px',
+              padding: { xs: '0 10%', md: '0 20%' },
             }}
-            onClick={() =>
-              document
-                .getElementById('reserve-room')
-                ?.scrollIntoView({ behavior: 'smooth' })
-            }
           >
-            {t('pages.home.reserveRoom')}
-          </Button>
-          <Button
-            sx={{
-              padding: '6px 14px',
-            }}
-            variant="outlined"
-            color="secondary"
-            onClick={() =>
-              document
-                .getElementById('contact-us')
-                ?.scrollIntoView({ behavior: 'smooth' })
-            }
-          >
-            {t('pages.home.contactUs')}
-          </Button>
+            {t('pages.home.welcomeSubtitle')}
+          </Typography>
+          <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+            <Button
+              sx={{
+                backgroundColor: 'primary.dark',
+                color: 'primary.contrastText',
+                padding: '6px 14px',
+              }}
+              onClick={() =>
+                document
+                  .getElementById('reserve-room')
+                  ?.scrollIntoView({ behavior: 'smooth' })
+              }
+            >
+              {t('pages.home.reserveRoom')}
+            </Button>
+            <Button
+              sx={{
+                padding: '6px 14px',
+              }}
+              variant="outlined"
+              color="secondary"
+              onClick={() =>
+                document
+                  .getElementById('contact-us')
+                  ?.scrollIntoView({ behavior: 'smooth' })
+              }
+            >
+              {t('pages.home.contactUs')}
+            </Button>
+          </Box>
         </Box>
       </Box>
 
       <Box
         sx={{
           padding: '60px 20px',
-          backgroundColor: theme.palette.background.default,
+          backgroundColor: 'background.default',
         }}
         id="reserve-room"
       >
@@ -139,7 +147,7 @@ function HomePage() {
         </Typography>
         <Typography
           align="center"
-          sx={{ color: theme.palette.text.secondary, marginBottom: '40px' }}
+          sx={{ color: 'text.secondary', marginBottom: '40px' }}
         >
           {t('pages.home.roomsSubtitle')}
         </Typography>
@@ -159,10 +167,11 @@ function HomePage() {
       </Box>
 
       <Box
+        component="footer"
         sx={{
           backgroundColor: '#100D26',
-          color: theme.palette.primary.contrastText,
-          padding: '80px 0 40px 0',
+          color: 'primary.contrastText',
+          padding: '40px 20px 40px 20px',
         }}
         id="contact-us"
       >
@@ -178,7 +187,7 @@ function HomePage() {
                 component="span"
                 sx={{
                   display: 'inline-block',
-                  backgroundColor: theme.palette.primary.main,
+                  backgroundColor: 'primary.main',
                   p: 1,
                   borderRadius: '8px',
                 }}
@@ -187,7 +196,7 @@ function HomePage() {
               </Box>
               {t('pages.home.footerTitle')}
             </Typography>
-            <Typography sx={{ mt: 2, color: theme.palette.text.secondary }}>
+            <Typography sx={{ mt: 2, color: 'text.secondary' }}>
               {t('pages.home.footerDesc')}
             </Typography>
           </Grid>

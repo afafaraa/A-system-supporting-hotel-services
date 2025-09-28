@@ -27,9 +27,9 @@ import RequestedSchedulesPage from "./pages/employee/RequestedSchedulesPage.tsx"
 import EmployeeReservationsPage from "./pages/employee/ReservationsPage.tsx";
 import EmployeeReviewsPage from "./pages/employee/ReviewsPage.tsx";
 import FallbackPage from "./pages/user/FallbackPage.tsx";
+import GuestLayout from "./pages/guest/layout/GuestLayout.tsx";
 import AdminLayout from "./components/layout/AdminLayout.tsx";
 import GuestsListPage from './pages/manager/GuestsListPage.tsx';
-import GuestLayout from "./pages/guest/layout/GuestLayout.tsx";
 import AvailableServicesPage from './pages/guest/available-services/AvailableServicesPage.tsx';
 import BookedServicesPage from './pages/guest/booked-services/BookedServicesPage.tsx';
 import HotelBookingPage from './pages/guest/hotel-booking/HotelBookingPage.tsx';
@@ -41,9 +41,9 @@ function App(){
         <Routes>
           <Route element={<AuthenticatedLayout />}>
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
             <Route element={<ProtectedRoute allowedRoles={["ROLE_GUEST"]}/>}>
               <Route path="/service-schedule/:id" element={<OrderServicePage />} />
-              <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/guest" element={<GuestLayout />}>
                 <Route index element={<Navigate to="available" replace />} />
                 <Route path="available" element={<AvailableServicesPage />} />

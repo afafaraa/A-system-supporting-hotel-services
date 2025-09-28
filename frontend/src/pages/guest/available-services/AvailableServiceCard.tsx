@@ -4,7 +4,7 @@ import {
   Typography,
   Box,
   Button,
-  useTheme,
+  useTheme, Chip,
 } from '@mui/material';
 import StarRating from './StarRating.tsx';
 import { useNavigate } from 'react-router-dom';
@@ -29,9 +29,7 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
 
   return (
     <Card
-      elevation={0}
       sx={{
-        border: `1px solid ${theme.palette.primary.border}`,
         borderRadius: '10px',
         minHeight: '290px',
         display: 'flex',
@@ -90,6 +88,7 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
               display: 'flex',
               justifyContent: 'space-between',
               paddingTop: '10px',
+              alignItems: 'center',
             }}
           >
             <Box sx={{ fontWeight: 'bold', color: theme.palette.primary.main }}>
@@ -106,29 +105,22 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
               {service.duration} min
             </Box>
 
-            <Box
-              sx={{
-                fontWeight: 500,
-                color: theme.palette.primary.contrastText,
-                backgroundColor: service.disabled
-                  ? theme.palette.secondary.error
-                  : theme.palette.secondary.success,
-                padding: '3px 5px',
-                fontSize: '0.8em',
-                borderRadius: '5px',
-              }}
+            <Chip color={service.disabled ? 'error' : 'success'} size='small'
+                  sx={{borderRadius: '8px'}}
+                  label={service.disabled
+                    ? t('pages.available_services.unavailable')
+                    : t('pages.available_services.available')
+                  }
             >
-              {service.disabled
-                ? t('pages.available_services.unavailable')
-                : t('pages.available_services.available')}
-            </Box>
+            </Chip>
           </Box>
 
           <Button
-            onClick={() => navigate(`/service-schedule/${service.id}`)}
+            onClick={() => navigate(`/service-schedule/${service.id}`, { state: service })}
             fullWidth
-            sx={{ padding: '2px', marginTop: 2 }}
+            sx={{ marginTop: 2 }}
             variant="contained"
+            size="small"
           >
             {t('pages.available_services.bookNow')}
           </Button>
