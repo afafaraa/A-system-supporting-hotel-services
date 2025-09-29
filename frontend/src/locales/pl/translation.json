@@ -114,6 +114,12 @@
       "rate": "Oceń usługę",
       "cancel": "Anuluj usługę"
     },
+    "rate_service_dialog": {
+      "title": "Oceń usługę",
+      "addComment": "Dodaj komentarz",
+      "cancelComment": "Anuluj komentarz",
+      "commentInputPlaceholder": "Napisz swój komentarz tutaj"
+    },
     "home": {
       "welcomeTitle": "Witamy w Grand Hotelu",
       "welcomeSubtitle": "Doświadcz luksusu i komfortu w sercu miasta. Nasza obsługa na światowym poziomie i eleganckie pokoje czekają na Ciebie.",
@@ -121,12 +127,12 @@
       "contactUs": "Skontaktuj się z nami",
       "roomsTitle": "Nasze pokoje i apartamenty",
       "roomsSubtitle": "Wybierz spośród starannie zaprojektowanych pokoi, które oferują komfort, styl i nowoczesne udogodnienia.",
-      "standardRoomTitle": "Pokój Standard",
-      "standardRoomDesc": "Komfortowy pokój z podstawowymi udogodnieniami",
-      "deluxeRoomTitle": "Pokój Deluxe",
-      "deluxeRoomDesc": "Przestronny pokój z luksusowymi udogodnieniami i widokiem na miasto",
-      "exclusiveSuiteTitle": "Apartament Prezydencki",
-      "exclusiveSuiteDesc": "Luksusowy apartament z oddzielnym salonem i usługami premium",
+      "standardTitle": "Pokój Standard",
+      "standardDesc": "Komfortowy pokój z podstawowymi udogodnieniami",
+      "deluxeTitle": "Pokój Deluxe",
+      "deluxeDesc": "Przestronny pokój z luksusowymi udogodnieniami i widokiem na miasto",
+      "exclusiveTitle": "Apartament Prezydencki",
+      "exclusiveDesc": "Luksusowy apartament z oddzielnym salonem i usługami premium",
       "upToGuests": "Do {{count}} gości",
       "amenities": "Udogodnienia",
       "reserveNow": "Zarezerwuj teraz",
@@ -142,18 +148,6 @@
       "serviceSpa": "Spa i centrum odnowy biologicznej",
       "serviceRecreation": "Obiekty rekreacyjne",
       "rights": "© 2024 Grand Hotel. Wszelkie prawa zastrzeżone."
-    },
-    "past_services": {
-      "title": "Zrealizowane usługi",
-      "rateServiceDialog": "Oceń usługę",
-      "addComment": "Dodaj komentarz",
-      "cancelComment": "Anuluj komentarz",
-      "commentInputPlaceholder": "Napisz swój komentarz tutaj",
-      "rate": "Oceń",
-      "ACTIVE": "W trakcie realizacji",
-      "REQUESTED": "Oczekuje na akceptację",
-      "CANCELED": "Anulowana przez pracownika",
-      "COMPLETED": "Zakończona"
     },
     "shopping_cart": {
       "title": "Koszyk",
@@ -180,7 +174,7 @@
       "noSlotsAvailable": "Brak dostępnych terminów"
     },
     "manager": {
-        "navbar": {
+      "navbar": {
           "guests": "Goście",
           "services": "Usługi",
           "calendar": "Kalendarz",
@@ -233,6 +227,7 @@
         "search_placeholder": "Szukaj Usług...",
         "allowed_files_warning": "Dozwolone są tylko pliki JPG, PNG i WebP",
         "file_size_warning": "Plik nie może być większy niż 10MB",
+        "upload_error": "Błąd przesyłu",
         "edit_service": "Edytuj Usługę",
         "add_service": "Dodaj Usługę",
         "edit_subtitle": "Aktualizuj informacje o usłudze",
@@ -240,7 +235,6 @@
         "name": "Nazwa Usługi",
         "category": "Kategoria",
         "duration": "Czas trwania (w minutach)",
-        "descritption" : "Opis",
         "icon": "Ikona",
         "uploading": "Przesyłanie...",
         "upload_complete": "Przesyłanie Zakończone!",
@@ -342,8 +336,8 @@
         "no_reviews": "Brak dostępnych opinii.",
         "avg_rating": "Średnia ocena",
         "total_reviews": "Liczba opinii",
-        "5_star_reviews": "Opinie 5-gwiazdkowe",
-        "this_month": "W tym miesiącu",
+        "5_star_reviews": "5 gwiazdek",
+        "this_month": "Ten miesiąc",
         "unknown_service": "Nieznana usługa"
       },
       "schedule_details": {
@@ -399,7 +393,8 @@
       "employee_card": "Karta pracownika",
       "employee_card_subtitle": "Twoje dane dotyczące obecnego zatrudnienia",
       "position": "Stanowisko",
-      "occupation": "Zawód",
+      "department": "Dział",
+      "sectors": "Obszary działania",
       "hire_date": "Data zatrudnienia",
 
       "account_balance": "Saldo konta",
@@ -441,13 +436,16 @@
     "sectors": {
       "breakfast": "Śniadania",
       "lunch": "Lunch",
-      "dinner": "Obiady"
+      "dinner": "Obiady",
+      "room_service": "Usługi pokojowe",
+      "security": "Ochrona",
+      "spa_and_wellness": "Spa i Wellness"
     },
     "department": {
       "food_and_beverage": "Jedzenie & Napoje",
       "housekeeping": "Sprzątanie",
       "reception": "Recepcja",
-      "maintenance": "Servis",
+      "maintenance": "Serwis",
       "management": "Zarządzanie"
     }
   },
@@ -477,8 +475,8 @@
     "emptyFields": "Wszystkie pola muszą być wypełnione.",
     "invalidCredentials": "Nieprawidłowe dane logowania.",
     "upload_error": "Błąd podczas przesyłania pliku.",
-    "add_employee_failure": "Failed to add new employee",
-    "edit_employee_failure": "Failed to edit employee"
+    "add_employee_failure": "Błąd podczas dodawania nowego pracownika",
+    "edit_employee_failure": "Błąd podczas edytowania pracownika"
   },
   "order_status": {
     "AVAILABLE": "DOSTĘPNY",

@@ -10,7 +10,8 @@ export interface UserDetails {
 }
 
 interface EmployeeData {
-  occupation: string
+  department: string,
+  sectors: string[],
 }
 
 interface GuestData {

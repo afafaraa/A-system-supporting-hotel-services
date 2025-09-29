@@ -42,7 +42,6 @@ class ReservationsService(
         val parsedStatus = ReservationStatus.fromString(status)
         return reservationsRepository
             .findAllByStatus(parsedStatus)
-            .onEach { println("Data utworzenia: ${it.createdAt}") }
             .map { reservation ->
                 val guest = userService.getUserNameAndEmailById(reservation.guestId)
                 val room =

@@ -56,9 +56,7 @@ function ConfirmationWithReasonDialog({onCancel, onConfirm}: Props) {
             onChange={handleChange}
             error={error}
             sx={{
-              borderRadius: "12px",
-              bgcolor: "background.default",
-              '& .MuiOutlinedInput-notchedOutline': {borderColor: 'background.default', borderRadius: "12px"},
+              backgroundColor: "background.default",
               '& .MuiInputBase-input': { fontSize: "90%" },
             }}
           >

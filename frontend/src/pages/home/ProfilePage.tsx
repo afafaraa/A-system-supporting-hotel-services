@@ -118,12 +118,14 @@ function ProfilePage() {
       <Stack direction="row" gap={4}>
         <Stack direction="column" gap={2} fontWeight="bold">
           <span>{tc("position")}</span>
-          <span>{tc("occupation")}</span>
+          <span>{tc("department")}</span>
+          <span>{tc("sectors")}</span>
           <span>{tc("hire_date")}</span>
         </Stack>
         <Stack direction="column" gap={2}>
           <span>{user.role.split("_")[1].toLowerCase()}</span>
-          <span>{userDetails?.employeeData?.occupation ?? "—"}</span>
+          <span>{userDetails?.employeeData?.department?.toLowerCase() ?? "—"}</span>
+          <span>{userDetails?.employeeData?.sectors.map(s => s.toLowerCase()).join(", ") ?? "—"}</span>
           <span>—</span>
         </Stack>
       </Stack>

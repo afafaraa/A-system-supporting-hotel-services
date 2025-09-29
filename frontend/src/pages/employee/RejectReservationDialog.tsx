@@ -43,9 +43,7 @@ function RejectReservationDialog({opened, onClose, onConfirm, actionLoading}: Pr
                  error={dialogTextFieldError && rejectReason.trim() === ''}
                  value={rejectReason} onChange={handleChange}
                  sx={{
-                   borderRadius: "12px",
-                   bgcolor: "background.default",
-                   '& .MuiOutlinedInput-notchedOutline': {borderColor: 'background.default', borderRadius: "12px"},
+                   '& .MuiOutlinedInput-root': {backgroundColor: "background.default"},
                    '& .MuiInputBase-input': { fontSize: "90%" },
                  }}
       />

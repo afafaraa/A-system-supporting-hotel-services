@@ -11,7 +11,7 @@ import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import Box from "@mui/system/Box";
 import {
-  Button,
+  Button, Dialog,
   Typography
 } from "@mui/material";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
@@ -20,6 +20,8 @@ import RejectReservationDialog from "./RejectReservationDialog.tsx";
 import roomStandardIcon from "../../utils/roomStandardIcon.tsx";
 import Reservation from "../../types/reservation.ts";
 import Alert from "@mui/material/Alert";
+import Add from "@mui/icons-material/Add";
+import AddGuestPage from "../AddReservationPage.tsx";
 
 
 function ReservationsPage() {
@@ -30,6 +32,7 @@ function ReservationsPage() {
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
   const [pageLoading, setPageLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     axiosAuthApi.get("/reservations/requested")
@@ -73,8 +76,15 @@ function ReservationsPage() {
 
   return (
     <SectionCard>
-      <SectionTitle title={<><HotelIcon sx={{color: "primary.dark"}}/> {tc("title")}</>}
-             subtitle={tc("subtitle")} />
+      <Stack direction="row" alignItems="flex-start" flexWrap="wrap" columnGap={2}>
+        <SectionTitle title={<><HotelIcon sx={{color: "primary.dark"}}/> {tc("title")}</>}
+                      subtitle={tc("subtitle")} />
+        <Box flexGrow={1} display="flex" justifyContent="flex-end">
+          <Button variant="contained" startIcon={<Add />}
+                  onClick={() => setModalOpen(true)}>Register</Button>
+        </Box>
+
+      </Stack>
       {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
       {pageLoading ? <></> : reservations.length === 0 ? (
           <SectionCard mt={2}>
@@ -133,6 +143,11 @@ function ReservationsPage() {
         onConfirm={handleConfirm}
         actionLoading={actionLoading}
       />
+
+      <Dialog open={modalOpen} onClose={() => setModalOpen(false)}
+              sx={{"& .MuiDialog-paper": {p: {xs: 4, sm: 4}, borderRadius: 3, width: "min(95vw, 500px)"}}}>
+        <AddGuestPage />
+      </Dialog>
     </SectionCard>
   );
 }
