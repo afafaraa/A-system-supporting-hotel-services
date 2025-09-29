@@ -101,9 +101,11 @@ function EmployeeCard({ employee, onUpdated }: EmployeeCardProps) {
         open={editOpen}
         initial={employee}
         onClose={() => setEditOpen(false)}
-        onSaved={() => {
+        onSaved={(updatedEmployee) => {
+          if (updatedEmployee) {
+            onUpdated(updatedEmployee);
+          }
           setEditOpen(false);
-          onUpdated(employee);
         }}
       />
     </EmployeeCardPaper>

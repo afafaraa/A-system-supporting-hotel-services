@@ -39,7 +39,7 @@ interface Props {
   open: boolean;
   initial?: Employee;
   onClose: () => void;
-  onSaved: (employee?: Employee) => void;
+  onSaved: (employee: Employee) => void;
 }
 
 const departments: Department[] = [
@@ -104,7 +104,8 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
           username: `${form.name?.toLowerCase()}${form.surname?.toLowerCase()}`,
         });
       }
-      onSaved?.(res.data);
+      console.log(res.data)
+      onSaved(res.data);
       onClose();
     } catch (err) {
       console.error(err);
@@ -142,7 +143,7 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
             {isEditMode ? tc('edit') : tc('add')}
           </Typography>
         </Box>
-        <Typography variant="subtitle2" color="text.secondary">
+        <Typography variant="subtitle2" color="text.secondary" component="p">
           {isEditMode ? tc('edit_subtitle') : tc('add_subtitle')}
         </Typography>
       </DialogTitle>

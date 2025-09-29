@@ -8,20 +8,19 @@ const inputGlobalStyles = <GlobalStyles styles={{ html: { overflowY: 'scroll' } 
 
 function AdminLayout() {
     const { t } = useTranslation();
-    const tc = (key: string) => t(`pages.manager.navbar.${key}`);
 
     const tabs = useMemo(() => ([
-        { name: tc("guests"), link: "/management/guests" },
-        { name: tc("services"), link: "/management/services" },
-        { name: tc("calendar"), link: "/management/calendar" },
-        { name: tc("employees"), link: "/employees" },
-        { name: tc("statistics"), link: "/management/statistics" },
+        { name: t("pages.manager.navbar.guests"), link: "/management/guests" },
+        { name: t("pages.manager.navbar.services"), link: "/management/services" },
+        { name: t("pages.manager.navbar.calendar"), link: "/management/calendar" },
+        { name: t("pages.manager.navbar.employees"), link: "/employees" },
+        { name: t("pages.manager.navbar.statistics"), link: "/management/statistics" },
     ] as const), [t]);
 
     return (
         <>
             {inputGlobalStyles}
-            <DashboardNavbar tabs={tabs} />
+            <DashboardNavbar tabs={tabs} arrowButtons />
             <Outlet />
         </>
     );

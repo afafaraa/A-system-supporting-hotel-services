@@ -5,7 +5,6 @@ import {
   Button,
   CircularProgress,
   Typography,
-  Paper,
   ClickAwayListener,
   IconButton,
   TextField,
@@ -22,6 +21,7 @@ import { Employee, Role } from '../../types';
 import { useTranslation } from 'react-i18next';
 import EmployeeCard from './EmployeeCard.tsx';
 import EditEmployeeModal from './modals/EditEmployeeModal.tsx';
+import { SectionCard } from '../../theme/styled-components/SectionCard.ts';
 
 function EmployeeListPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -94,15 +94,7 @@ function EmployeeListPage() {
   }
 
   return (
-    <Paper
-      sx={{
-        p: 3,
-        borderRadius: 3,
-        mt: 5,
-        border: `1px solid`,
-        borderColor: 'divider',
-      }}
-    >
+    <SectionCard>
       <Box
         display="flex"
         alignItems="center"
@@ -195,14 +187,19 @@ function EmployeeListPage() {
       <EditEmployeeModal
         open={open}
         onClose={() => setOpen(false)}
-        onSaved={(newEmployee) => {
-          if (newEmployee) {
-            setEmployees((prev) => [newEmployee, ...prev]);
-            setOpen(false);
-          }
+        onSaved={(savedEmployee) => {
+          setEmployees((prev) => {
+            const exists = prev.some((emp) => emp.id === savedEmployee.id);
+            return exists
+              ? prev.map((emp) =>
+                emp.id === savedEmployee.id ? savedEmployee : emp
+              )
+              : [savedEmployee, ...prev];
+          });
+          setOpen(false);
         }}
       />
-    </Paper>
+    </SectionCard>
   );
 }
 
