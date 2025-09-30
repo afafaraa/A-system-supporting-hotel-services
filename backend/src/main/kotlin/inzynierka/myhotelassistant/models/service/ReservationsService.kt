@@ -58,7 +58,7 @@ class ReservationsService(
 
     fun createReservation(reservationDTO: ReservationsController.ReservationCreateDTO): ReservationEntity {
         if (!reservationDTO.checkIn.isBefore(reservationDTO.checkOut)) {
-            throw IllegalArgumentException("'from' must be after 'to' date")
+            throw IllegalArgumentException("Check-in date must be before check-out date")
         }
         if (reservationDTO.checkIn.isBefore(LocalDate.now())) {
             throw IllegalArgumentException("Check-in date must be in the future")
@@ -121,16 +121,12 @@ class ReservationsService(
     }
 
     fun approveGuestReservation(reservationId: String) {
-        println("Approving reservation with id $reservationId")
         val reservation = findByIdOrThrow(reservationId)
-        println("Found reservation: $reservation")
         if (reservation.status != ReservationStatus.REQUESTED) {
             throw IllegalArgumentException("Only reservations with status REQUESTED can be approved")
         }
-        println("Reservation status is REQUESTED")
         reservation.status = ReservationStatus.CONFIRMED
         reservationsRepository.save(reservation)
-        println("Reservation approved and saved")
     }
 
     fun checkInGuestReservation(

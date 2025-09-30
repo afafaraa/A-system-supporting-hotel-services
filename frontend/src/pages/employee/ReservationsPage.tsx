@@ -81,7 +81,7 @@ function ReservationsPage() {
                       subtitle={tc("subtitle")} />
         <Box flexGrow={1} display="flex" justifyContent="flex-end">
           <Button variant="contained" startIcon={<Add />}
-                  onClick={() => setModalOpen(true)}>Register</Button>
+                  onClick={() => setModalOpen(true)}>{t("buttons.register")}</Button>
         </Box>
 
       </Stack>
@@ -101,7 +101,7 @@ function ReservationsPage() {
                   <PersonOutlineOutlinedIcon fontSize="small"/> {reservation.guestFullName}
                 </span>
                 <span style={{display:"flex", alignItems:"center", gap: 4}}>
-                  <EmailOutlinedIcon fontSize="small"/> {reservation.guestFullName}
+                  <EmailOutlinedIcon fontSize="small"/> {reservation.guestEmail}
                 </span>
               </Stack>
             </Stack>

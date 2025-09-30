@@ -18,7 +18,7 @@ class RoomService(
         to: LocalDate,
     ): List<RoomEntity> {
         if (!from.isBefore(to)) {
-            throw IllegalArgumentException("'from' must be after 'to' date")
+            throw IllegalArgumentException("'from' must be before 'to' date")
         }
         return roomRepository
             .findAll()
