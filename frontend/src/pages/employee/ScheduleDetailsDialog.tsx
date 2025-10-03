@@ -60,7 +60,7 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
   const elementsSpacing = {xs: 2, sm: 3} as const;
 
   return (
-    <Dialog open={open} onClose={onClose} sx={{"& .MuiDialog-paper": {p: {xs: 0, sm: 2}, borderRadius: 3}}}>
+    <Dialog open={open} onClose={onClose} sx={{"& .MuiDialog-paper": {p: {xs: 0, sm: 2}, borderRadius: 3, width: "100%"}}}>
       <IconButton onClick={onClose} sx={{position: 'absolute', right: 16, top: 16}}><CloseIcon /></IconButton>
       <DialogTitle mb={1}>
         <ServiceIcon mb={1}>
@@ -97,8 +97,8 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
                 {new Date(schedule.orderTime).toLocaleString(t("date.locale"))}
               </DialogSection>
             }
-            <DialogSection title={<><CommentOutlinedIcon fontSize="small" /> {tc("special_requests")}</>}>
-                Nothing to show, not implemented yet. {/* TODO: implement special requests */}
+            <DialogSection title={<><CommentOutlinedIcon fontSize="small" /> {t("common.special_requests")}</>}>
+              {schedule.specialRequests ?? '—'}
             </DialogSection>
           </Stack>
         </>}

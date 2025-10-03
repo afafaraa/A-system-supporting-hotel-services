@@ -17,6 +17,7 @@ data class ScheduleDTO(
     val orderTime: String?,
     val price: Double? = null,
     val status: String,
+    val specialRequests: String? = null,
 ) {
     companion object {
         fun toDTO(
@@ -35,6 +36,7 @@ data class ScheduleDTO(
             orderTime = schedule.orderTime?.toString(),
             price = schedule.price,
             status = schedule.status.name,
+            specialRequests = schedule.specialRequests,
         )
     }
 }

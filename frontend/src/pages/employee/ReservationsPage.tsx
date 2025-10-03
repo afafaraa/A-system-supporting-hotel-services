@@ -120,7 +120,7 @@ function ReservationsPage() {
           </Stack>
           <SectionCard size={2} sx={{bgcolor: "background.default", borderWidth: 0, fontSize: "90%"}} mt={2}>
             <p style={{display:"flex", alignItems:"center", gap: 6}}>
-              <CommentOutlinedIcon sx={{fontSize: "130%", ml: -0.25}}/> {tc("special-requests")}
+              <CommentOutlinedIcon sx={{fontSize: "130%", ml: -0.25}}/> {t("common.special_requests")}
             </p>
             <Typography mt={0.5} fontSize="inherit" color="text.secondary">{reservation.specialRequests ?? "—"}</Typography>
           </SectionCard>

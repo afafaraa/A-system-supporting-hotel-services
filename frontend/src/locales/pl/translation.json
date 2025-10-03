@@ -324,7 +324,6 @@
         "people": "osób",
         "price": "Cena",
         "paid": "Opłacona",
-        "special-requests": "Specjalne życzenia",
         "reject-dialog": {
           "title": "Czy na pewno chcesz odrzucić tę rezerwację?",
           "rejection-reason": "Powód odrzucenia"
@@ -349,7 +348,6 @@
         "room_number": "Numer pokoju",
         "no_room": "Brak przypisanego pokoju",
         "order_time": "Czas zamówienia",
-        "special_requests": "Specjalne życzenia",
         "service_description": "Opis usługi",
         "duration": "Czas trwania",
         "minutes": "minuty",
@@ -381,7 +379,6 @@
       "full_name": "Imię i nazwisko",
       "email": "Email",
       "phone": "Telefon",
-      "special_requests": "Specjalne życzenia",
 
       "stay_info": "Informacje o pobycie",
       "stay_info_subtitle": "Szczegóły dotyczące twojego obecnego pobytu w hotelu",
@@ -447,7 +444,8 @@
       "reception": "Recepcja",
       "maintenance": "Serwis",
       "management": "Zarządzanie"
-    }
+    },
+    "special_requests": "Specjalne życzenia"
   },
   "ui": {
     "show_more": "Pokaż więcej ↓",

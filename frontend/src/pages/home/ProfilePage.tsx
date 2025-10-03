@@ -80,7 +80,7 @@ function ProfilePage() {
         </Stack>
       </Stack>
       <Divider sx={{ my: 3 }} />
-      <span style={{fontWeight: "bold"}}>{tc("special_requests")}</span>
+      <span style={{fontWeight: "bold"}}>{t("common.special_requests")}</span>
       <Typography fontSize="inherit" color="text.secondary" mt={1}>—</Typography>
     </SectionCard>
   )

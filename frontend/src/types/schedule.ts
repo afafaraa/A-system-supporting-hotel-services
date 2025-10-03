@@ -10,6 +10,7 @@ export interface Schedule {
   orderTime: string | undefined,
   price: number | undefined,
   status: OrderStatus,
+  specialRequests: string | undefined,
 }
 
 export enum OrderStatus {

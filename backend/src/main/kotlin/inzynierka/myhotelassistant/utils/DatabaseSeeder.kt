@@ -401,6 +401,9 @@ class DatabaseSeeder(
                 schedule.orderTime = now.minusHours(Random.nextLong(1, 48))
                 val service = serviceService.findByIdOrThrow(schedule.serviceId)
                 schedule.price = service.price
+                if (Random.nextInt(0, 10) == 0) {
+                    schedule.specialRequests = "Example special request for particular service. Request generated randomly."
+                }
                 guest.guestData?.let { data -> data.bill += schedule.price!! }
                 scheduleRepository.save(schedule)
             }

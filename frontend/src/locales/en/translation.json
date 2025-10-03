@@ -324,7 +324,6 @@
         "people": "people",
         "price": "Price",
         "paid": "Paid",
-        "special-requests": "Special requests",
         "reject-dialog": {
           "title": "Are you sure you want to reject this reservation?",
           "rejection-reason": "Rejection reason"
@@ -349,7 +348,6 @@
         "room_number": "Room number",
         "no_room": "No room assigned",
         "order_time": "Order time",
-        "special_requests": "Special requests",
         "service_description": "Service description",
         "duration": "Duration",
         "minutes": "minutes",
@@ -381,7 +379,6 @@
       "full_name": "Full Name",
       "email": "Email",
       "phone": "Phone",
-      "special_requests": "Special Requests",
 
       "stay_info": "Stay Information",
       "stay_info_subtitle": "Details about your current hotel stay",
@@ -447,7 +444,8 @@
       "reception": "Reception",
       "maintenance": "Maintenance",
       "management": "Management"
-    }
+    },
+    "special_requests": "Special requests"
   },
   "ui": {
     "show_more": "Show more ↓",
