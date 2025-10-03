@@ -94,12 +94,29 @@ class AuthController(
         val password: String,
     )
 
-    @PostMapping("/register")
+    data class CompleteRegistrationRequestNoCode(
+        val username: String,
+        val password: String,
+        val email: String,
+        val name: String,
+        val surname: String,
+    )
+
+    @PostMapping("/register/with-code")
     @ResponseStatus(HttpStatus.CREATED)
     fun completeRegistration(
         @RequestBody req: CompleteRegistrationRequest,
     ): LoginResponse {
         userService.completeRegistration(req)
+        return getToken(LoginRequest(req.username, req.password))
+    }
+
+    @PostMapping("/register/no-code")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun completeRegistrationNoCode(
+        @RequestBody req: CompleteRegistrationRequestNoCode,
+    ): LoginResponse {
+        userService.completeRegistrationNoCode(req)
         return getToken(LoginRequest(req.username, req.password))
     }
 }

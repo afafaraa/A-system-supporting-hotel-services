@@ -7,6 +7,7 @@ import ShadowCard from '../../../theme/styled-components/ShadowCard.ts';
 import dashboardDestination from '../../../utils/dashboardDestination.ts';
 import { selectUser } from '../../../redux/slices/userSlice.ts';
 import { SectionWrapper } from '../../../theme/styled-components/SectionWrapper.ts';
+import Logo from '../../../assets/hotel.svg?react';
 
 function RegisterPage() {
   const user = useSelector(selectUser);
@@ -57,12 +58,33 @@ function RegisterPage() {
   if (user) return <Navigate to={dashboardDestination(user.role)} replace />;
 
   return (
-    <ShadowCard>
+    <ShadowCard
+      style={{
+        minHeight: '70%',
+        width: 'fit-content',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '10px'
+      }}
+    >
+      <Logo
+        style={{
+          background: theme.palette.primary.main,
+          padding: '5px 10px',
+          color: theme.palette.background.default,
+          borderRadius: '10%',
+        }}
+        width={70}
+        height={70}
+      />
+
       <Typography
         variant="h1"
         fontWeight="regular"
         fontSize={28}
         color="primary.main"
+        sx={{width: '362px'}}
       >
         {tc('title')}
       </Typography>
@@ -70,14 +92,12 @@ function RegisterPage() {
       <SectionWrapper
         ref={containerRef}
         style={{
-          marginTop: '20px',
           position: 'relative',
-          width: '100%',
           padding: '4px',
           display: 'flex',
           gap: '1rem',
           overflow: 'hidden',
-          marginBottom: theme.spacing(3),
+          width: '362px',
         }}
       >
         <div

@@ -33,7 +33,7 @@ function RegisterWithCode() {
     }
     setLoading(true);
     try {
-      const res = await axiosApi.post('/open/register', {
+      const res = await axiosApi.post('/open/register/with-code', {
         code,
         username,
         password,
@@ -51,7 +51,7 @@ function RegisterWithCode() {
   };
 
   return (
-    <>
+    <div style={{maxWidth: '362px'}}>
       <InputLabel
         label={
           <>
@@ -59,7 +59,6 @@ function RegisterWithCode() {
           </>
         }
         htmlFor="code"
-        mt={4}
       />
       <StyledInput
         id="code"
@@ -109,31 +108,26 @@ function RegisterWithCode() {
         onClick={register}
         loading={loading}
         fullWidth
+        sx={{marginY: 2}}
         variant="contained"
-        sx={{ mt: 4 }}
       >
         {tc('registerButton')}
       </Button>
       {error && (
-        <Typography
-          component="p"
-          variant="caption"
-          color="error"
-          sx={{ mt: 2 }}
-        >
+        <Typography component="p" variant="caption" color="error">
           {t(error)}
         </Typography>
       )}
       <Button
         size="small"
-        sx={{ mt: 1, fontSize: '105%' }}
+        sx={{ fontSize: '105%' }}
         fullWidth
         onClick={() => navigate('/login')}
       >
         {'< '}
         {tc('goBack')}
       </Button>
-    </>
+    </div>
   );
 }
 
