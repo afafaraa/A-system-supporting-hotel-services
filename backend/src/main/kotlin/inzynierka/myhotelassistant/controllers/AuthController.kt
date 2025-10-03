@@ -116,6 +116,7 @@ class AuthController(
     fun completeRegistrationNoCode(
         @RequestBody req: CompleteRegistrationRequestNoCode,
     ): LoginResponse {
+        println("Received registration request: $req")
         userService.completeRegistrationNoCode(req)
         return getToken(LoginRequest(req.username, req.password))
     }

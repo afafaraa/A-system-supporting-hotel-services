@@ -5,7 +5,7 @@
 # Build and start the backend service in container
 build-backend:
 	docker-compose build backend
-	docker-compose up -d backend
+	docker-compose up backend
 
 # Build and start the MongoDB in container
 build-mongo:

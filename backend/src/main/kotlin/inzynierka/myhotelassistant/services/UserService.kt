@@ -132,8 +132,12 @@ class UserService(
     }
 
     fun completeRegistrationNoCode(req: AuthController.CompleteRegistrationRequestNoCode) {
-        userRepository.findByUsername(req.username) ?: throw EntityNotFoundException("Username is already taken")
-        userRepository.findByEmail(req.email) ?: throw EntityNotFoundException("User with that email already exists")
+        if (userRepository.findByUsername(req.username) != null) {
+            throw EntityNotFoundException("Username is already taken")
+        }
+        if (userRepository.findByEmail(req.email) != null) {
+            throw EntityNotFoundException("User with that email already exists")
+        }
         val user = UserEntity(
             username = req.username,
             password = passwordEncoder.encode(req.password),
@@ -142,6 +146,7 @@ class UserService(
             email = req.email,
             role = Role.GUEST,
         )
+        println("Creating user: $user")
         userRepository.save(user)
     }
 
