@@ -38,7 +38,7 @@
       "password": "Password",
       "loginButton": "Login",
       "resetPassword": "Forgot your password? Reset password.",
-      "registerWithCode": "Don't have an account? Register with a code."
+      "registerWithCode": "Don't have an account? Register today."
     },
     "register": {
       "title": "Register",

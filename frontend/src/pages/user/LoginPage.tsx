@@ -86,7 +86,7 @@ function LoginPage(){
                      slotProps={generatePasswordAdornment(showPassword, setShowPassword)}/>
 
         <AppLink to="/reset-password-email" color="text.secondary" mt={3}>{tc("resetPassword")}</AppLink>
-        <AppLink to="/register" color="text.primary" mt={0.8}>{tc("registerWithCode")}</AppLink>
+        <AppLink to="/register/no-code" color="text.primary" mt={0.8}>{tc("registerWithCode")}</AppLink>
         <Button disabled={disabled} fullWidth variant="contained" onClick={login} loading={loading} sx={{mt: 3}}>
           {tc("loginButton")}
         </Button>
