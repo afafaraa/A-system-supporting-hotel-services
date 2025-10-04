@@ -13,7 +13,6 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.time.temporal.TemporalAdjusters
 
@@ -29,26 +28,6 @@ class ScheduleService(
             .orElseThrow { EntityNotFoundException("Schedule not found") }
 
     fun save(schedule: ScheduleEntity): ScheduleEntity = scheduleRepository.save(schedule)
-
-    fun findScheduleForCurrentWeekById(
-        id: String,
-        date: String,
-    ): List<ScheduleEntity> {
-        val parsedDate: LocalDate
-        try {
-            parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-        } catch (_: DateTimeParseException) {
-            throw InvalidArgumentException("Invalid date format. Expected format is 'yyyy-MM-dd'.")
-        }
-
-        val (monday, sunday) = weekBounds(parsedDate)
-
-        return scheduleRepository.findByServiceIdAndServiceDateBetween(
-            serviceId = id,
-            startDate = monday.atStartOfDay(),
-            endDate = sunday.atTime(LocalTime.MAX),
-        )
-    }
 
     fun getTodayAvailableSchedulesByServiceId(
         serviceId: String,

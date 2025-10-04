@@ -79,9 +79,12 @@ function ProfilePage() {
           <span>—</span>
         </Stack>
       </Stack>
-      <Divider sx={{ my: 3 }} />
-      <span style={{fontWeight: "bold"}}>{tc("special_requests")}</span>
-      <Typography fontSize="inherit" color="text.secondary" mt={1}>—</Typography>
+      {user.role === "ROLE_GUEST" && <>
+        <Divider sx={{ my: 3 }} />
+        <span style={{fontWeight: "bold"}}>{t("common.special_requests")}</span>
+                {/* TODO: guest special requests */}
+        <Typography fontSize="inherit" color="text.secondary" mt={1}>—</Typography>
+      </>}
     </SectionCard>
   )
 
@@ -118,13 +121,15 @@ function ProfilePage() {
       <Stack direction="row" gap={4}>
         <Stack direction="column" gap={2} fontWeight="bold">
           <span>{tc("position")}</span>
-          <span>{tc("occupation")}</span>
+          <span>{tc("department")}</span>
+          <span>{tc("sectors")}</span>
           <span>{tc("hire_date")}</span>
         </Stack>
         <Stack direction="column" gap={2}>
           <span>{user.role.split("_")[1].toLowerCase()}</span>
-          <span>{userDetails?.employeeData?.occupation ?? "—"}</span>
-          <span>—</span>
+          <span>{userDetails?.employeeData?.department?.toLowerCase() ?? "—"}</span>
+          <span>{userDetails?.employeeData?.sectors.map(s => s.toLowerCase()).join(", ") ?? "—"}</span>
+          <span>{userDetails?.employeeData?.hireDate ? new Date(userDetails?.employeeData?.hireDate).toLocaleString(t("date.locale")) : "—"}</span>
         </Stack>
       </Stack>
     </SectionCard>

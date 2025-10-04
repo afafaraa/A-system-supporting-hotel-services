@@ -26,7 +26,7 @@ export const lightPalette: PaletteOptions = {
     disabledBackground: 'hsl(256, 20%, 95%)',  // background.default
   },
   success: {
-    main: 'hsl(124, 68%, 40%)'
+    main: '#20AC29'
   },
   divider: 'rgba(0, 0, 0, 0.25)',
   calendar: {

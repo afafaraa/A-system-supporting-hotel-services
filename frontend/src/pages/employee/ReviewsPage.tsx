@@ -16,6 +16,7 @@ import {Rating} from "../../types";
 
 interface RatingWithServiceName extends Rating {
   serviceName?: string;
+  serviceThumbnailUrl?: string | undefined;
 }
 
 function ReviewsPage() {
@@ -72,7 +73,7 @@ function ReviewsPage() {
           ratings.slice(0, visibleCount).map((rating, index) => (
           <SectionCard key={index} size={3}>
             <Stack direction="row" justifyContent="space-between" textAlign="center" sx={{mb: 2}} flexWrap="wrap" gap={1}>
-              <ServiceIcon>
+              <ServiceIcon imageUrl={rating.serviceThumbnailUrl} imageAlt={rating.serviceName}>
                 <Typography fontWeight="bold">{rating.serviceName ?? tc("unknown_service")}</Typography>
                 <Typography fontSize="12px" color="text.secondary">
                   {rating.fullName}{" | "}

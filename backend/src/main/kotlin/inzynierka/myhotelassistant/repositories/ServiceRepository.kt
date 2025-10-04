@@ -12,9 +12,10 @@ interface ServiceRepository : MongoRepository<ServiceEntity, String> {
 
     fun findFirstByNameIgnoreCase(name: String): ServiceEntity?
 
-    data class ServiceName(
+    data class ServiceDetails(
         val name: String,
+        val image: String?,
     )
 
-    fun findServiceNameById(id: String): ServiceName?
+    fun findServiceDetailsById(id: String): ServiceDetails?
 }

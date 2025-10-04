@@ -36,4 +36,12 @@ interface UserRepository : MongoRepository<UserEntity, String> {
     )
 
     fun findUserNameById(id: String): UserName?
+
+    data class UserNameAndEmail(
+        val name: String,
+        val surname: String,
+        val email: String,
+    )
+
+    fun getUserNameAndEmailById(id: String): UserNameAndEmail?
 }

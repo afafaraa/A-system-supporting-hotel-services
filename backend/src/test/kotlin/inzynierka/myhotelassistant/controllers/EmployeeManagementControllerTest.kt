@@ -1,5 +1,7 @@
 package inzynierka.myhotelassistant.controllers
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import inzynierka.myhotelassistant.configs.RSAKeyConfig
@@ -42,6 +44,8 @@ class EmployeeManagementControllerTest {
 
     @MockitoBean
     private lateinit var scheduleService: ScheduleService
+
+    private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModule(JavaTimeModule())
 
     @Test
     @WithMockUser(roles = ["GUEST", "EMPLOYEE", "RECEPTIONIST"])
@@ -112,11 +116,11 @@ class EmployeeManagementControllerTest {
                 .perform(
                     post("/management/employees")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jacksonObjectMapper().writeValueAsString(employeeDTO)),
+                        .content(objectMapper.writeValueAsString(employeeDTO)),
                 ).andExpect(status().isCreated)
                 .andReturn()
 
-        val map: Map<String, Any> = jacksonObjectMapper().readValue(result.response.contentAsString)
+        val map: Map<String, Any> = objectMapper.readValue(result.response.contentAsString)
         val actualEmployee =
             UserEntity(
                 username = map["username"] as String,
@@ -151,7 +155,7 @@ class EmployeeManagementControllerTest {
                 .andExpect(status().isOk)
                 .andReturn()
 
-        val map: Map<String, Any> = jacksonObjectMapper().readValue(result.response.contentAsString)
+        val map: Map<String, Any> = objectMapper.readValue(result.response.contentAsString)
         val actualEmployee =
             UserEntity(
                 username = map["username"] as String,

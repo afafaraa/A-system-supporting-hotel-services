@@ -2,9 +2,14 @@ package inzynierka.myhotelassistant.utils
 
 import inzynierka.myhotelassistant.models.notification.NotificationEntity
 import inzynierka.myhotelassistant.models.notification.NotificationVariant
+import inzynierka.myhotelassistant.models.reservation.ReservationEntity
+import inzynierka.myhotelassistant.models.reservation.ReservationStatus
+import inzynierka.myhotelassistant.models.room.RoomAmenity
 import inzynierka.myhotelassistant.models.room.RoomEntity
+import inzynierka.myhotelassistant.models.room.RoomStandard
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.service.RatingEntity
+import inzynierka.myhotelassistant.models.service.ReservationsService
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.models.service.ServiceType
 import inzynierka.myhotelassistant.models.service.WeekdayHour
@@ -28,6 +33,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.time.DayOfWeek
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.collections.forEach
@@ -50,6 +56,7 @@ class DatabaseSeeder(
     private val userService: UserService,
     private val schedulesGenerator: SchedulesGenerator,
     private val ratingRepository: RatingRepository,
+    private val reservationsService: ReservationsService,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -66,6 +73,7 @@ class DatabaseSeeder(
             addManager()
             addRatings()
             addTestNotifications()
+            createReservations()
         } catch (e: Exception) {
             logger.error(e.message, e)
             throw e
@@ -110,28 +118,127 @@ class DatabaseSeeder(
 
     private fun addTestRooms() {
         if (!roomRepo.existsById("001")) {
-            roomRepo.save(RoomEntity(number = "001", floor = 0, capacity = 2))
+            roomRepo.save(
+                RoomEntity(
+                    number = "001",
+                    floor = 0,
+                    capacity = 2,
+                    pricePerNight = 100.0,
+                    standard = RoomStandard.STANDARD,
+                    amenities = setOf(RoomAmenity.AIR_CONDITIONING, RoomAmenity.HAIR_DRYER, RoomAmenity.TV, RoomAmenity.WIFI),
+                ),
+            )
         }
         if (!roomRepo.existsById("002")) {
-            roomRepo.save(RoomEntity(number = "002", floor = 0, capacity = 3))
+            roomRepo.save(
+                RoomEntity(
+                    number = "002",
+                    floor = 0,
+                    capacity = 3,
+                    pricePerNight = 129.99,
+                    standard = RoomStandard.DELUXE,
+                    amenities =
+                        setOf(
+                            RoomAmenity.AIR_CONDITIONING,
+                            RoomAmenity.HAIR_DRYER,
+                            RoomAmenity.MINI_BAR,
+                            RoomAmenity.TV,
+                            RoomAmenity.WIFI,
+                            RoomAmenity.PET_FRIENDLY,
+                        ),
+                ),
+            )
         }
         if (!roomRepo.existsById("005")) {
-            roomRepo.save(RoomEntity(number = "005", floor = 0, capacity = 1))
+            roomRepo.save(
+                RoomEntity(
+                    number = "005",
+                    floor = 0,
+                    capacity = 1,
+                    pricePerNight = 80.0,
+                    standard = RoomStandard.BUDGET,
+                    amenities = setOf(RoomAmenity.HAIR_DRYER, RoomAmenity.TV, RoomAmenity.WIFI),
+                ),
+            )
         }
         if (!roomRepo.existsById("121")) {
-            roomRepo.save(RoomEntity(number = "121", floor = 1, capacity = 3))
+            roomRepo.save(
+                RoomEntity(
+                    number = "121",
+                    floor = 1,
+                    capacity = 3,
+                    pricePerNight = 210.0,
+                    standard = RoomStandard.SUITE,
+                    amenities =
+                        setOf(
+                            RoomAmenity.AIR_CONDITIONING,
+                            RoomAmenity.HAIR_DRYER,
+                            RoomAmenity.MINI_BAR,
+                            RoomAmenity.TV,
+                            RoomAmenity.WIFI,
+                            RoomAmenity.SAFE,
+                            RoomAmenity.BALCONY,
+                            RoomAmenity.PET_FRIENDLY,
+                            RoomAmenity.SEA_VIEW,
+                        ),
+                ),
+            )
         }
         if (!roomRepo.existsById("117")) {
-            roomRepo.save(RoomEntity(number = "117", floor = 1, capacity = 4))
+            roomRepo.save(
+                RoomEntity(
+                    number = "117",
+                    floor = 1,
+                    capacity = 4,
+                    pricePerNight = 199.99,
+                    standard = RoomStandard.DELUXE,
+                    amenities =
+                        setOf(
+                            RoomAmenity.AIR_CONDITIONING,
+                            RoomAmenity.HAIR_DRYER,
+                            RoomAmenity.MINI_BAR,
+                            RoomAmenity.TV,
+                            RoomAmenity.WIFI,
+                            RoomAmenity.SAFE,
+                        ),
+                ),
+            )
         }
         if (!roomRepo.existsById("316")) {
-            roomRepo.save(RoomEntity(number = "316", floor = 3, capacity = 5))
+            roomRepo.save(
+                RoomEntity(
+                    number = "316",
+                    floor = 3,
+                    capacity = 5,
+                    pricePerNight = 250.0,
+                    standard = RoomStandard.SUITE,
+                    amenities = setOf(RoomAmenity.AIR_CONDITIONING, RoomAmenity.TV, RoomAmenity.WIFI, RoomAmenity.BALCONY),
+                ),
+            )
         }
         if (!roomRepo.existsById("317")) {
-            roomRepo.save(RoomEntity(number = "317", floor = 3, capacity = 2))
+            roomRepo.save(
+                RoomEntity(
+                    number = "317",
+                    floor = 3,
+                    capacity = 2,
+                    pricePerNight = 120.0,
+                    standard = RoomStandard.STANDARD,
+                    amenities = setOf(RoomAmenity.TV, RoomAmenity.WIFI),
+                ),
+            )
         }
         if (!roomRepo.existsById("319")) {
-            roomRepo.save(RoomEntity(number = "319", floor = 3, capacity = 3))
+            roomRepo.save(
+                RoomEntity(
+                    number = "319",
+                    floor = 3,
+                    capacity = 3,
+                    pricePerNight = 180.0,
+                    standard = RoomStandard.DELUXE,
+                    amenities = setOf(RoomAmenity.AIR_CONDITIONING, RoomAmenity.TV, RoomAmenity.WIFI, RoomAmenity.MINI_BAR),
+                ),
+            )
         }
     }
 
@@ -294,6 +401,9 @@ class DatabaseSeeder(
                 schedule.orderTime = now.minusHours(Random.nextLong(1, 48))
                 val service = serviceService.findByIdOrThrow(schedule.serviceId)
                 schedule.price = service.price
+                if (Random.nextInt(0, 10) == 0) {
+                    schedule.specialRequests = "Example special request for particular service. Request generated randomly."
+                }
                 guest.guestData?.let { data -> data.bill += schedule.price!! }
                 scheduleRepository.save(schedule)
             }
@@ -407,6 +517,43 @@ class DatabaseSeeder(
             logger.info("Added test notification to user '${user.username}'")
         } else {
             logger.warn("Cannot add test notifications because 'user' was not found.")
+        }
+    }
+
+    private fun createReservations() {
+        val guests = userRepo.findByRole(Role.GUEST)
+        val rooms = roomRepo.findAll()
+        if (reservationsService.isAnyExist()) return
+        guests.plus(guests).forEach { guest ->
+            val room = rooms.random()
+            val now = LocalDate.now()
+            val checkIn = now.plus(Random.nextInt(-20, 30).toLong(), ChronoUnit.DAYS)
+            val checkOut = checkIn.plus(Random.nextInt(1, 14).toLong(), ChronoUnit.DAYS)
+            if (reservationsService.isRoomAvailable(room.number, checkIn, checkOut)) {
+                val reservation =
+                    ReservationEntity(
+                        roomNumber = room.number,
+                        guestId = guest.id!!,
+                        guestsCount = Random.nextInt(1, room.capacity + 1),
+                        checkIn = checkIn,
+                        checkOut = checkOut,
+                        reservationPrice = room.pricePerNight * ChronoUnit.DAYS.between(checkIn, checkOut),
+                    )
+                reservation.status =
+                    if (checkOut.isBefore(now)) {
+                        listOf(ReservationStatus.COMPLETED, ReservationStatus.CANCELED, ReservationStatus.REJECTED).random()
+                    } else if (checkIn.isAfter(now)) {
+                        ReservationStatus.REQUESTED
+                    } else {
+                        ReservationStatus.CONFIRMED
+                    }
+                reservationsService.save(reservation)
+                logger.info("Placed reservation for guest '${guest.username}' in room '${room.number}'")
+            } else {
+                logger.warn(
+                    "Cannot place reservation for guest '${guest.username}' in room '${room.number}' because the room is not available.",
+                )
+            }
         }
     }
 

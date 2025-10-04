@@ -12,3 +12,5 @@ type Amenity = {
   key: string;
   label: string;
 }
+
+export type RoomStandard = "Budget" | "Standard" | "Deluxe" | "Exclusive Suite";

@@ -32,6 +32,7 @@ const RateServiceDialog = ({
   const [comment, setComment] = useState<string>('');
   const user = useSelector(selectUser);
   const { t } = useTranslation();
+  const tc = (key: string) => t("pages.rate_service_dialog." + key);
 
   const handleSubmit = async () => {
     try {
@@ -61,7 +62,7 @@ const RateServiceDialog = ({
 
   return (
     <Dialog open={open} onClose={handleCancel} maxWidth="sm" fullWidth>
-      <DialogTitle>{t('pages.past_services.rateServiceDialog')}</DialogTitle>
+      <DialogTitle>{tc('title')}</DialogTitle>
       <DialogContent>
         <Box display="flex" flexDirection="column" gap={2} mt={1}>
           <Rating
@@ -78,14 +79,14 @@ const RateServiceDialog = ({
               variant="outlined"
               fullWidth
             >
-              {t('pages.past_services.addComment')}
+              {tc('addComment')}
             </Button>
           )}
 
           {commentOpen && (
             <Box display="flex" flexDirection="column" gap={1}>
               <TextField
-                placeholder={t('pages.past_services.commentInputPlaceholder')}
+                placeholder={tc('commentInputPlaceholder')}
                 multiline
                 rows={4}
                 value={comment}
@@ -94,10 +95,10 @@ const RateServiceDialog = ({
               />
               <Button
                 onClick={() => setCommentOpen(false)}
-                variant="outlined"
-                color="secondary"
+                variant='outlined'
+                sx={{color: 'text.secondary'}}
               >
-                {t('pages.past_services.cancelComment')}
+                {tc('cancelComment')}
               </Button>
             </Box>
           )}

@@ -26,7 +26,8 @@ export const darkPalette: PaletteOptions = {
     disabledBackground: 'hsl(256, 8%, 10%)',   // background.default
   },
   success: {
-    main: 'hsl(124, 68%, 40%)'
+    main: '#20AC29',
+    contrastText: '#000',
   },
   divider: 'rgba(146, 146, 146, 0.25)',
   calendar: {

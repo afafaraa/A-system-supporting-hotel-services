@@ -30,6 +30,9 @@ logging:
   level:
     inzynierka.myhotelassistant: DEBUG
 app:
+  reservations:
+    cancellation:
+      days-before: 7
   notification:
     expiration:
       days: 30
