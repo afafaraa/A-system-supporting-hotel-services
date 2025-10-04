@@ -8,7 +8,6 @@ import ResetPasswordPage from './pages/user/ResetPasswordPage.tsx';
 import AuthenticatedLayout from "./components/layout/AuthenticatedLayout.tsx";
 import PublicLayout from "./components/layout/PublicLayout.tsx";
 import RegisterPage from './pages/user/RegisterPage.tsx';
-import AddReservationPage from './pages/AddReservationPage.tsx'
 import EmployeeListPage from "./pages/manager/EmployeeListPage.tsx";
 import LogoutPage from "./pages/user/LogoutPage.tsx";
 import NotificationsPage from "./pages/guest/NotificationsPage.tsx";
@@ -60,9 +59,6 @@ function App(){
                 <Route path="/employee/reviews" element={<EmployeeReviewsPage />} />
               </Route>
             </Route>
-            <Route element={<ProtectedRoute allowedRoles={["ROLE_RECEPTIONIST", "ROLE_MANAGER", "ROLE_ADMIN"]} />}>
-              <Route path="/add-reservation" element={<AddReservationPage />} />
-            </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]} />}>
               <Route element={<AdminLayout />}>
                 <Route path="/management/calendar" element={<EmployeeCalendarPage />} />
@@ -95,6 +91,7 @@ function App(){
 }
 
 const publicPaths = [
+  '/home',
   '/login',
   '/logout',
   '/register',

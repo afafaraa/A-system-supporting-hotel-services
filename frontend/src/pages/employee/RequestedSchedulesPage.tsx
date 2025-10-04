@@ -16,6 +16,7 @@ import ConfirmationWithReasonDialog from "../../components/ui/ConfirmationWithRe
 import {styled} from "@mui/material/styles";
 import ServiceIcon from "../../components/ui/ServiceIcon.tsx";
 import OrderStatusChip from "../../components/ui/OrderStatusChip.tsx";
+import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
 
 type ConfirmationProps = {
   schedule: Schedule;
@@ -134,18 +135,28 @@ function RequestedSchedulesPage() {
         </SectionCard>
         :
         schedules.slice(0, visibleCount).map(schedule => (
-        <SectionCard clickable size={2} sx={{mt: 2, px: {xs: 1.5, sm: 4}}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
+        <SectionCard clickable size={2} sx={{mt: 2, px: {xs: 1.5, sm: 4}}} key={schedule.id}
                      onClick={() => setSelectedSchedule(schedule)} >
-          <ServiceIcon>
-            <Typography fontWeight="bold">{schedule.title}</Typography>
-            <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? t("common.guest_unknown")} | {t("common.room")} {schedule.room ?? t("common.unknown")}</Typography>
-            <Box mt={1} fontSize={{xs: 11, sm: 13}}>
-              {new Date(schedule.date).toLocaleDateString(t('date.locale'))} | {formatTimeRange(new Date(schedule.date), schedule.duration)}
-            </Box>
-          </ServiceIcon>
-          <Stack direction="row" alignItems="center">
-            {renderActions(schedule)}
-          </Stack>
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <ServiceIcon imageUrl={schedule.thumbnailUrl} imageAlt={schedule.title}>
+              <Typography fontWeight="bold">{schedule.title}</Typography>
+              <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? t("common.guest_unknown")} | {t("common.room")} {schedule.room ?? t("common.unknown")}</Typography>
+              <Box mt={1} fontSize={{xs: 11, sm: 13}}>
+                {new Date(schedule.date).toLocaleDateString(t('date.locale'))} | {formatTimeRange(new Date(schedule.date), schedule.duration)}
+              </Box>
+            </ServiceIcon>
+            <Stack direction="row" alignItems="center">
+              {renderActions(schedule)}
+            </Stack>
+          </Box>
+          {schedule.specialRequests &&
+            <SectionCard size={2} sx={{bgcolor: "background.default", borderWidth: 0, fontSize: "90%"}} mt={2}>
+              <p style={{display:"flex", alignItems:"center", gap: 6}}>
+                <CommentOutlinedIcon sx={{fontSize: "130%", ml: -0.25}}/> {t("common.special_requests")}
+              </p>
+              <Typography mt={0.5} fontSize="inherit" color="text.secondary">{schedule.specialRequests}</Typography>
+            </SectionCard>
+          }
         </SectionCard>
       ))}
 

@@ -22,15 +22,18 @@ class RatingController(
         @field:JsonUnwrapped
         val rating: Rating,
         val serviceName: String?,
+        val serviceThumbnailUrl: String? = null,
     ) {
         companion object {
             fun fromEntity(
                 entity: RatingEntity,
                 serviceName: String?,
+                serviceThumbnailUrl: String? = null,
             ): RatingWithServiceName =
                 RatingWithServiceName(
                     rating = Rating.fromEntity(entity),
                     serviceName = serviceName,
+                    serviceThumbnailUrl = serviceThumbnailUrl,
                 )
         }
     }
@@ -41,9 +44,11 @@ class RatingController(
         return ratingRepository
             .findAllByEmployeeId(employee.id!!)
             .map { rating ->
+                val serviceDetails = serviceRepository.findServiceDetailsById(rating.serviceId)
                 RatingWithServiceName.fromEntity(
                     entity = rating,
-                    serviceName = serviceRepository.findServiceNameById(rating.serviceId)?.name,
+                    serviceName = serviceDetails?.name,
+                    serviceThumbnailUrl = serviceDetails?.image,
                 )
             }
     }

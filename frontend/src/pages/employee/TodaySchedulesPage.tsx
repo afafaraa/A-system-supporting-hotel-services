@@ -11,6 +11,7 @@ import ScheduleDetailsDialog from "./ScheduleDetailsDialog.tsx";
 import {formatTimeRange} from "../../utils/dateFormatting.ts";
 import ServiceIcon from "../../components/ui/ServiceIcon.tsx";
 import OrderStatusChip from "../../components/ui/OrderStatusChip.tsx";
+import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
 
 function TodaySchedulesPage() {
   const {t} = useTranslation();
@@ -46,14 +47,24 @@ function TodaySchedulesPage() {
         </SectionCard>
         :
         schedules.slice(0, visibleCount).map(schedule => (
-        <SectionCard clickable size={2} sx={{mt: 2, px: {xs: 1.5, sm: 4}}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
+        <SectionCard clickable size={2} sx={{mt: 2, px: {xs: 1.5, sm: 4}}} key={schedule.id}
                      onClick={() => setSelectedSchedule(schedule)} >
-          <ServiceIcon>
-            <Typography fontWeight="bold">{schedule.title}</Typography>
-            <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? t("common.guest_unknown")} | {t("common.room")} {schedule.room ?? t("common.unknown")}</Typography>
-            <Typography fontSize="13px" sx={{mt: 1}}>{formatTimeRange(new Date(schedule.date), schedule.duration)}</Typography>
-          </ServiceIcon>
-          <OrderStatusChip size="big" status={schedule.status} />
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <ServiceIcon imageUrl={schedule.thumbnailUrl} imageAlt={schedule.title}>
+              <Typography fontWeight="bold">{schedule.title}</Typography>
+              <Typography fontSize="11px" color="text.secondary">{schedule.guestName ?? t("common.guest_unknown")} | {t("common.room")} {schedule.room ?? t("common.unknown")}</Typography>
+              <Typography fontSize="13px" sx={{mt: 1}}>{formatTimeRange(new Date(schedule.date), schedule.duration)}</Typography>
+            </ServiceIcon>
+            <OrderStatusChip size="big" status={schedule.status} />
+          </Box>
+          {schedule.specialRequests &&
+            <SectionCard size={2} sx={{bgcolor: "background.default", borderWidth: 0, fontSize: "90%"}} mt={2}>
+              <p style={{display:"flex", alignItems:"center", gap: 6}}>
+                <CommentOutlinedIcon sx={{fontSize: "130%", ml: -0.25}}/> {t("common.special_requests")}
+              </p>
+              <Typography mt={0.5} fontSize="inherit" color="text.secondary">{schedule.specialRequests}</Typography>
+            </SectionCard>
+          }
         </SectionCard>
       ))}
 

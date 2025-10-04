@@ -32,10 +32,7 @@ class UserService(
 ) : UserDetailsService {
     fun findByRole(role: Role): List<UserEntity> = userRepository.findByRole(role)
 
-    fun findById(id: String): UserEntity? {
-        val user = userRepository.findById(id)
-        return user.getOrNull()
-    }
+    fun findById(id: String): UserEntity? = userRepository.findById(id).getOrNull()
 
     override fun loadUserByUsername(username: String): UserDetails {
         val user =
@@ -48,6 +45,8 @@ class UserService(
             .roles(user.role.name)
             .build()
     }
+
+    fun getUserNameAndEmailById(id: String): UserRepository.UserNameAndEmail? = userRepository.getUserNameAndEmailById(id)
 
     fun save(user: UserEntity): UserEntity = userRepository.save(user)
 

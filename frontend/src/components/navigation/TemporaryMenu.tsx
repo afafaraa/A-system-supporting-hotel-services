@@ -1,10 +1,11 @@
 import LanguageSwitcher from "../ui/LanguageSwitcher.tsx";
+import Box from "@mui/system/Box";
 
 function TemporaryMenu() {
   return (
-    <div style={{ position: 'fixed', bottom: 4, left: 4 }}>
+    <Box position="fixed" bottom={4} left={4} sx={{opacity: 0.3, "&:hover": {opacity: 1}}}>
       <LanguageSwitcher />
-    </div>
+    </Box>
   );
 }
 

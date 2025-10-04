@@ -69,9 +69,12 @@ const components: Components<Omit<Theme, 'components'>> = {
   },
   MuiOutlinedInput: {
     styleOverrides: {
-      root: {
+      root: ({ theme }) => ({
         borderRadius: '12px',
-      },
+        "&:hover .MuiOutlinedInput-notchedOutline": {
+          borderColor: theme.palette.primary.main,
+        }
+      }),
     },
   },
   MuiRating: {

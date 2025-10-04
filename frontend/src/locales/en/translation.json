@@ -101,6 +101,25 @@
       "unavailable": "Unavailable",
       "bookNow": "Book now"
     },
+    "booked_services": {
+      "filterBookings": "Filter Bookings",
+      "searchPlaceholder": "Search for Booking",
+      "allBookings": "All Bookings",
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "inProgress": "In progress",
+      "canceled": "Canceled",
+      "completed": "Completed",
+      "noBookingsFound": "No bookings found.",
+      "rate": "Rate service",
+      "cancel": "Cancel service"
+    },
+    "rate_service_dialog": {
+      "title": "Rate service",
+      "addComment": "Add comment",
+      "cancelComment": "Cancel comment",
+      "commentInputPlaceholder": "Write your comment here"
+    },
     "home": {
       "welcomeTitle": "Welcome to Grand Hotel",
       "welcomeSubtitle": "Experience luxury and comfort in the heart of the city. Our world-class service and elegant accommodations await you.",
@@ -129,19 +148,6 @@
       "serviceSpa": "Spa & Wellness Center",
       "serviceRecreation": "Recreation Facilities",
       "rights": "© 2024 Grand Hotel. All rights reserved."
-    },
-    "booked_services": {
-      "filterBookings": "Filter Bookings",
-      "searchPlaceholder": "Search for Booking",
-      "allBookings": "All Bookings",
-      "pending": "Pending",
-      "confirmed": "Confirmed",
-      "inProgress": "In progress",
-      "canceled": "Canceled",
-      "completed": "Completed",
-      "noBookingsFound": "No bookings found.",
-      "rate": "Rate service",
-      "cancel": "Cancel service"
     },
     "shopping_cart": {
       "title": "Shopping cart",
@@ -218,7 +224,7 @@
         "price": "Price",
         "actions": "Actions",
         "edit": "Edit",
-        "searchPlaceholder": "Search Services...",
+        "search_placeholder": "Search Services...",
         "allowed_files_warning": "Files allowed only in JPG, PNG, and WebP format!",
         "file_size_warning": "File cannot be larger than 10MB",
         "upload_error": "Upload error",
@@ -317,7 +323,7 @@
         "today": "Today",
         "requested": "Requested",
         "calendar": "Calendar",
-        "reservations": "Reservation",
+        "reservations": "Reservations",
         "reviews": "Reviews"
       },
       "today_schedules": {
@@ -336,7 +342,18 @@
       },
       "reservations": {
         "title": "Pending room reservations",
-        "subtitle": "Room reservations requiring approval"
+        "subtitle": "Room reservations requiring approval",
+        "no_reservations": "No pending reservations.",
+        "date-of-stay": "Date of stay",
+        "creation-time": "Creation time",
+        "guests": "Guests",
+        "people": "people",
+        "price": "Price",
+        "paid": "Paid",
+        "reject-dialog": {
+          "title": "Are you sure you want to reject this reservation?",
+          "rejection-reason": "Rejection reason"
+        }
       },
       "reviews": {
         "title": "Service Reviews & Performance",
@@ -357,7 +374,6 @@
         "room_number": "Room number",
         "no_room": "No room assigned",
         "order_time": "Order time",
-        "special_requests": "Special requests",
         "service_description": "Service description",
         "duration": "Duration",
         "minutes": "minutes",
@@ -371,7 +387,6 @@
       "confirmation_dialog": {
         "title": "Action confirmation",
         "description": "Are you sure you want to cancel / reject this service?",
-        "select_reason": "Select a reason",
         "reason": "Reason",
         "reasons": {
           "overlapping_terms": "Overlapping terms",
@@ -390,7 +405,6 @@
       "full_name": "Full Name",
       "email": "Email",
       "phone": "Phone",
-      "special_requests": "Special Requests",
 
       "stay_info": "Stay Information",
       "stay_info_subtitle": "Details about your current hotel stay",
@@ -402,7 +416,8 @@
       "employee_card": "Employee Card",
       "employee_card_subtitle": "Your details about current employment",
       "position": "Position",
-      "occupation": "Occupation",
+      "department": "Department",
+      "sectors": "Sectors",
       "hire_date": "Hire Date",
 
       "account_balance": "Account Balance",
@@ -430,9 +445,17 @@
     }
   },
   "common": {
+    "yes": "Yes",
+    "no": "No",
     "room": "Room",
     "guest_unknown": "Guest unknown",
     "unknown": "unknown",
+    "room_standard": {
+      "Budget": "Budget",
+      "Standard": "Standard",
+      "Deluxe": "Deluxe",
+      "Exclusive Suite": "Exclusive Suite"
+    },
     "sectors": {
       "breakfast": "Breakfast",
       "lunch": "Lunch",
@@ -447,7 +470,8 @@
       "reception": "Reception",
       "maintenance": "Maintenance",
       "management": "Management"
-    }
+    },
+    "special_requests": "Special requests"
   },
   "ui": {
     "show_more": "Show more ↓",
@@ -462,11 +486,15 @@
     "submit": "Submit",
     "delete": "Delete",
     "deleteAll": "Delete all",
+    "confirm": "Confirm",
+    "approve": "Approve",
+    "reject": "Reject",
     "back": "Back",
     "update": "Update",
     "promote": "Promote",
     "remove": "Remove",
     "edit": "Edit"
+    "register": "Register"
   },
   "error": {
     "networkError": "Server connection error.",
@@ -477,6 +505,7 @@
     "upload_error": "Error during uploading file.",
     "add_employee_failure": "Failed to add new employee",
     "sameRoleError": "Employee already has this role."
+    "edit_employee_failure": "Failed to edit employee"
   },
   "order_status": {
     "AVAILABLE": "AVAILABLE",

@@ -17,4 +17,5 @@ data class ScheduleEntity(
     var price: Double? = null,
     var status: OrderStatus = OrderStatus.AVAILABLE,
     var cancellationReason: CancellationReason? = null,
+    var specialRequests: String? = null,
 )

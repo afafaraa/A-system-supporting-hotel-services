@@ -77,7 +77,7 @@ export default function AddGuestPage() {
     };
 
     return (
-        <Box sx={{ p: 4, maxWidth: 600, mx: 'auto' }}>
+        <Box>
             <Typography variant="h4" mb={3} textAlign="center">
                 {credentials ? 'Gość dodany!' : 'Dodaj Gościa'}
             </Typography>
@@ -140,8 +140,8 @@ export default function AddGuestPage() {
                         slotProps={{ inputLabel: { shrink: true } }}
                         required
                     />
-                    <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-                        <Button variant="outlined" color="secondary" onClick={() => {
+                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+                        <Button sx={{color: "text.disabled"}} variant="text" onClick={() => {
                             setFormData(defaultFormData);
                             setError(null);
                         }}>

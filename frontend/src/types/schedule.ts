@@ -2,6 +2,7 @@ export interface Schedule {
   id: string,
   serviceId: string,
   title: string | undefined,
+  serviceDescription: string | undefined,
   date: string | Date,
   duration: number | undefined,
   weekday: string,
@@ -10,6 +11,8 @@ export interface Schedule {
   orderTime: string | undefined,
   price: number | undefined,
   status: OrderStatus,
+  specialRequests: string | undefined,
+  thumbnailUrl: string | undefined,
 }
 
 export enum OrderStatus {
