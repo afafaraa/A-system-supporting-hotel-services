@@ -103,10 +103,11 @@ class EmployeeService(
         employee.surname = employeeDTO.surname.lowercase().replaceFirstChar { it.uppercase() }
 
         employeeDTO.employeeData?.let { newEmployeeData ->
-            employee.employeeData = EmployeeData(
-                department = newEmployeeData.department,
-                sectors = newEmployeeData.sectors.toList()
-            )
+            employee.employeeData =
+                EmployeeData(
+                    department = newEmployeeData.department,
+                    sectors = newEmployeeData.sectors.toList(),
+                )
         }
 
         return userRepository.save(employee)
