@@ -32,6 +32,7 @@ import GuestsListPage from './pages/manager/GuestsListPage.tsx';
 import AvailableServicesPage from './pages/guest/available-services/AvailableServicesPage.tsx';
 import BookedServicesPage from './pages/guest/booked-services/BookedServicesPage.tsx';
 import HotelBookingPage from './pages/guest/hotel-booking/HotelBookingPage.tsx';
+import HotelManagementPage from './pages/manager/HotelManagement/HotelManagementPage.tsx';
 
 function App(){
   return (
@@ -61,12 +62,12 @@ function App(){
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]} />}>
               <Route element={<AdminLayout />}>
-                <Route path="/management/calendar" element={<EmployeeCalendarPage />} />
                 <Route path="/employees" element={<EmployeeListPage />} />
                 <Route path="/employees/:username" element={<EmployeeDetailsPage />} />
                 <Route path="/management/services" element={<ServicesListPage />} />
                 <Route path="/management/statistics" element={<StatsPage />} />
                 <Route path="/management/guests" element={<GuestsListPage />} />
+                <Route path="/management/hotel" element={<HotelManagementPage />} />
               </Route>
             </Route>
           </Route>
