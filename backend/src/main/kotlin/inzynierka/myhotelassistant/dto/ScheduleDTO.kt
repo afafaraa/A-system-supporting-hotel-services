@@ -9,6 +9,7 @@ data class ScheduleDTO(
     val id: String,
     val serviceId: String,
     val title: String?,
+    val serviceDescription: String?,
     val date: String,
     val duration: Int?,
     val weekday: String,
@@ -18,6 +19,7 @@ data class ScheduleDTO(
     val price: Double? = null,
     val status: String,
     val specialRequests: String? = null,
+    val thumbnailUrl: String? = null,
 ) {
     companion object {
         fun toDTO(
@@ -28,6 +30,7 @@ data class ScheduleDTO(
             id = schedule.id!!,
             serviceId = schedule.serviceId,
             title = service?.name,
+            serviceDescription = service?.description,
             duration = service?.duration?.toInt(DurationUnit.MINUTES),
             date = schedule.serviceDate.toString(),
             weekday = schedule.serviceDate.dayOfWeek.name,
@@ -37,6 +40,7 @@ data class ScheduleDTO(
             price = schedule.price,
             status = schedule.status.name,
             specialRequests = schedule.specialRequests,
+            thumbnailUrl = service?.image,
         )
     }
 }

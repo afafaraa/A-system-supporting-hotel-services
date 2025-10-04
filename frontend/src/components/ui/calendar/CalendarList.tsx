@@ -19,7 +19,7 @@ function CalendarList(
     <SectionCard clickable size={3} sx={{mt: 1, bgcolor: "transparent"}}
                  onClick={() => setSelectedSchedule(schedule)}>
       <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1}>
-        <ServiceIcon>
+        <ServiceIcon imageUrl={schedule.thumbnailUrl} imageAlt={schedule.title}>
           <Typography fontSize="inherit" fontWeight="bold">{schedule.title}</Typography>
           <Typography fontSize="smaller" color="text.secondary">
             {schedule.guestName ?? t("common.guest_unknown")} | {t("common.room")} {schedule.room ?? t("common.unknown")}

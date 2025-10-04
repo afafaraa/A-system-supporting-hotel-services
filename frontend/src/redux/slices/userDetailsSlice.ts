@@ -12,6 +12,7 @@ export interface UserDetails {
 interface EmployeeData {
   department: string,
   sectors: string[],
+  hireDate: string | Date,
 }
 
 interface GuestData {

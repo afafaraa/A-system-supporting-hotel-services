@@ -63,7 +63,7 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
     <Dialog open={open} onClose={onClose} sx={{"& .MuiDialog-paper": {p: {xs: 0, sm: 2}, borderRadius: 3, width: "100%"}}}>
       <IconButton onClick={onClose} sx={{position: 'absolute', right: 16, top: 16}}><CloseIcon /></IconButton>
       <DialogTitle mb={1}>
-        <ServiceIcon mb={1}>
+        <ServiceIcon imageUrl={schedule.thumbnailUrl} imageAlt={schedule.title} mb={1}>
           <Typography fontWeight="bold" fontSize="21px">{schedule.title || tc("unknown_service")}</Typography>
         </ServiceIcon>
         <Typography fontSize="14px" color="text.secondary">{tc("subtitle")}</Typography>
@@ -105,8 +105,8 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
 
         <Box>
           <DialogSection title={tc("service_description")}>
-            <p>Some description for that particular service</p> {/* TODO: implement service mini description fetching */}
-            <p>{tc("duration")}: {schedule.duration ? schedule.duration + " " + tc("minutes") : "..."} • {tc("price")}: {schedule.price ?? tc("unset")}</p>
+            <p>{schedule.serviceDescription ?? '—'}</p>
+                        <p>{tc("duration")}: {schedule.duration ? schedule.duration + " " + tc("minutes") : "..."} • {tc("price")}: {schedule.price ? schedule.price + " $" : tc("unset")}</p>
           </DialogSection>
         </Box>
 
