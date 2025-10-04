@@ -493,7 +493,7 @@
     "update": "Update",
     "promote": "Promote",
     "remove": "Remove",
-    "edit": "Edit"
+    "edit": "Edit",
     "register": "Register"
   },
   "error": {
@@ -504,7 +504,7 @@
     "invalidCredentials": "Invalid login credentials.",
     "upload_error": "Error during uploading file.",
     "add_employee_failure": "Failed to add new employee",
-    "sameRoleError": "Employee already has this role."
+    "sameRoleError": "Employee already has this role.",
     "edit_employee_failure": "Failed to edit employee"
   },
   "order_status": {
