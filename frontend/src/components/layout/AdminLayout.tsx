@@ -19,7 +19,7 @@ function AdminLayout() {
 
     return (
         <>
-            {inputGlobalStyles}
+            {globalStyles}
             <DashboardNavbar tabs={tabs} arrowButtons />
             <Outlet />
         </>
