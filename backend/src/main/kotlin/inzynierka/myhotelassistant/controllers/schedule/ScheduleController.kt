@@ -45,23 +45,22 @@ class ScheduleController(
         val status: OrderStatus,
     )
 
-    @GetMapping("/get/week/id/{id}")
+    @GetMapping("/today/by-service-id/{serviceId}/available")
     @ResponseStatus(HttpStatus.OK)
-    fun getScheduleByServiceIdForWeek(
-        @PathVariable id: String,
+    fun getTodayAvailableSchedulesByServiceId(
+        @PathVariable serviceId: String,
         @RequestParam date: String,
     ): List<ScheduleForWeekResponse> =
         scheduleService
-            .findScheduleForCurrentWeekById(id, date)
+            .getTodayAvailableSchedulesByServiceId(serviceId, date)
             .map { schedule ->
-                val empId = schedule.employeeId
-                val emp = employeeService.findByIdOrThrow(empId)
+                val employeeFullName = employeeService.getEmployeeFullNameById(schedule.employeeId)
                 ScheduleForWeekResponse(
-                    schedule.id!!,
-                    "${emp.name} ${emp.surname}",
+                    id = schedule.id!!,
+                    employeeFullName,
                     schedule.serviceDate,
                     schedule.weekday,
-                    schedule.status != OrderStatus.AVAILABLE,
+                    isOrdered = false,
                     schedule.status,
                 )
             }

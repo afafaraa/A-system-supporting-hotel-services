@@ -5,13 +5,12 @@ import {
   Stack,
   Typography,
   useTheme,
-  Box,
+  Box, Button,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import Logo from '../../assets/hotel.svg?react';
 import { useTranslation } from 'react-i18next';
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
-
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
@@ -32,6 +31,7 @@ import {
 } from '../../redux/slices/notificationsCount.ts';
 import { selectShoppingCartCount } from '../../redux/slices/shoppingCartSlice.ts';
 import ShoppingCartPopup from '../../pages/guest/shopping-cart/ShoppingCartPopup.tsx';
+import dashboardDestination from "../../utils/dashboardDestination.ts";
 
 const drawerHeight = 64;
 
@@ -60,7 +60,6 @@ function Navbar() {
       .get<UserDetails>('/user')
       .then((res) => {
         dispatch(setUserDetails(res.data));
-        console.log('Navbar - fetched user details:', res.data);
       })
       .catch(() => null);
   }, [dispatch, user, userDetails]);
@@ -70,7 +69,7 @@ function Navbar() {
   };
 
   const AppLogo = () => (
-    <Link to="/home" style={{ textDecoration: 'none' }}>
+    <Link to={user?.role ? dashboardDestination(user.role) : '/home'} style={{ textDecoration: 'none' }}>
       <Stack direction="row" spacing={2} alignItems="center">
         <Logo
           style={{
@@ -156,8 +155,8 @@ function Navbar() {
           justifyContent: 'center',
           height: drawerHeight,
           py: 2,
-          px: "max(0.5rem, calc(13vw - 58.667px))",
-          borderBottom: `1px solid ${theme.palette.primary.border}`
+          px: "max(1rem, calc(13vw - 58.667px))",
+          borderBottom: `1px solid ${theme.palette.divider}`
         }}
       > {/* padding 16 px to 96 px (sm to xl) */}
         <Stack
@@ -198,9 +197,9 @@ function Navbar() {
           ) : (
             <Stack direction="row" spacing={2} alignItems="center">
               <ThemeSwitcher />
-              <IconButton onClick={() => navigate('/login')}>
-                <LoginOutlinedIcon />
-              </IconButton>
+              <Button variant="outlined" color="primary" onClick={() => navigate('/login')} endIcon={<LoginOutlinedIcon />}>
+                {tc("loginButton")}
+              </Button>
             </Stack>
           )}
         </Stack>

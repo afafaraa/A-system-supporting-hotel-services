@@ -12,6 +12,8 @@ import { OrderServiceProps } from './OrderServicePage.tsx';
 import { addItem } from '../../../redux/slices/shoppingCartSlice.ts';
 import { useDispatch } from 'react-redux';
 import { ServiceProps } from '../available-services/AvailableServiceCard.tsx';
+import TimelapseIcon from '@mui/icons-material/Timelapse';
+import Chip from "@mui/material/Chip";
 
 function ServiceDescription({
   service,
@@ -36,10 +38,8 @@ function ServiceDescription({
   return (
     <Grid sx={{ flexGrow: 1 }} size={1}>
       <Card
-        elevation={0}
         sx={{
           borderRadius: 2,
-          border: `1px solid ${theme.palette.primary.border}`,
           p: '15px 20px',
         }}
       >
@@ -69,23 +69,14 @@ function ServiceDescription({
               >
                 {service.name}
               </Typography>
-              <div
-                style={{
-                  fontSize: '0.8em',
-                  fontWeight: '600',
-                  borderRadius: '4px',
-                  backgroundColor: service.disabled
-                    ? theme.palette.secondary.error
-                    : theme.palette.primary.main,
-                  color: 'white',
-                  padding: '2px 4px',
-                  width: 'fit-content',
-                }}
+              <Chip color={service.disabled ? 'error' : 'primary'} size='small'
+                    sx={{borderRadius: '8px', width: 'fit-content'}}
+                    label={service.disabled
+                      ? t('pages.order_service.unavailable')
+                      : t('pages.order_service.available')
+                    }
               >
-                {service.disabled
-                  ? t('pages.order_service.unavailable')
-                  : t('pages.order_service.available')}
-              </div>
+              </Chip>
             </div>
           </Box>
 
@@ -122,7 +113,7 @@ function ServiceDescription({
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <p style={{ fontWeight: 500, fontSize: '24px' }}>%</p>
+              <p style={{ fontWeight: 500, fontSize: '24px' }}><TimelapseIcon fontSize='inherit' /></p>
               <div style={{ margin: '0 10px', textAlign: 'center' }}>
                 <p
                   style={{
@@ -138,6 +129,7 @@ function ServiceDescription({
             </div>
           </div>
           <Button
+            variant="contained"
             fullWidth
             onClick={() => {
               const slot = timeSlots.find((s) => s.id === selectedTime);

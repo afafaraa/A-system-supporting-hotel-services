@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
 import {
   Box, Checkbox, IconButton, Stack, Typography,
-  Tooltip, Alert, Divider, CircularProgress, Paper, Card
+  Tooltip, Alert, Divider, CircularProgress, Card
 } from "@mui/material";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
@@ -13,6 +13,8 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import {Notification, NotificationVariant} from "../../types/notification.ts";
 import {formatDateFromTimestamp, formatTimeFromTimestamp} from "../../utils/dateFormatting.ts";
 import {setNotificationsCount} from "../../redux/slices/notificationsCount.ts";
+import SectionTitle from "../../components/ui/SectionTitle.tsx";
+import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
 
 function NotificationsPage() {
   const [isLoading, setLoading] = useState<boolean>(true)
@@ -101,20 +103,9 @@ function NotificationsPage() {
   }, [dispatch, countUnread]);
 
   return (
-    <Paper variant="outlined" sx={{px: {xs: 2, sm: 5}, py: {xs: 3, sm: 5}, borderRadius: 5}}>
-      <Box mb={3}>
-        <Stack direction="row" alignItems="center" fontSize="1.8rem" spacing={1}>
-          <NotificationsOutlinedIcon fontSize="inherit"/>
-          <Typography fontSize="inherit" lineHeight="2rem">
-            {tc("title")}
-          </Typography>
-        </Stack>
-        {countUnread !== 0 &&
-          <Typography color="text.secondary" mt={1}>
-            {countUnread} {tc("unread")}
-          </Typography>
-        }
-      </Box>
+    <SectionCard>
+      <SectionTitle title={<><NotificationsOutlinedIcon /> {tc("title")}</>}
+                    subtitle={<>{notifications.length} {tc("unread")}</>} />
 
       {error && <Alert severity="error" sx={{mb: 3}}>{error}</Alert>}
 
@@ -173,7 +164,7 @@ function NotificationsPage() {
             )
           })
       }
-    </Paper>
+    </SectionCard>
   )
 }
 

@@ -5,6 +5,7 @@ import {Schedule} from "../../../types/schedule.ts";
 import {TFunction} from "i18next";
 import ServiceIcon from "../ServiceIcon.tsx";
 import {formatTimeRange} from "../../../utils/dateFormatting.ts";
+import OrderStatusChip from "../OrderStatusChip.tsx";
 
 function CalendarList(
   fullWeekdays: string[],
@@ -15,7 +16,7 @@ function CalendarList(
 ) {
 
   const ScheduleCard = ({schedule}: {schedule: Schedule}) => (
-    <SectionCard size={3} sx={{mt: 1, bgcolor: "transparent", cursor: "pointer"}}
+    <SectionCard clickable size={3} sx={{mt: 1, bgcolor: "transparent"}}
                  onClick={() => setSelectedSchedule(schedule)}>
       <Stack direction="row" justifyContent="space-between" alignItems="center" gap={1}>
         <ServiceIcon>
@@ -28,10 +29,7 @@ function CalendarList(
           <Typography fontSize="smaller" color="text.secondary">
             {formatTimeRange(new Date(schedule.date), schedule.duration)}
           </Typography>
-          <Box p={0.5} fontSize="smaller" fontWeight="bold" width="fit-content"
-               color={`calendar.text`} bgcolor={`calendar.${schedule.status}`} borderRadius={1.5} lineHeight={1}>
-            {t(`order_status.${schedule.status}`)}
-          </Box>
+          <OrderStatusChip size="small" status={schedule.status} />
         </Box>
       </Stack>
     </SectionCard>

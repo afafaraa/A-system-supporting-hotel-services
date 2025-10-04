@@ -29,4 +29,11 @@ interface UserRepository : MongoRepository<UserEntity, String> {
         role: Role,
         before: Instant,
     ): Long
+
+    data class UserName(
+        val name: String,
+        val surname: String,
+    )
+
+    fun findUserNameById(id: String): UserName?
 }

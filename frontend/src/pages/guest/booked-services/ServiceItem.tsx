@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { RequestedServiceProps } from './BookedServicesPage.tsx';
 import {
   Card,
-  CardContent,
   Typography,
   Box,
   Chip,
@@ -61,111 +60,106 @@ function ServiceItem({
     <>
       <Card
         key={index}
-        variant="outlined"
         sx={{
-          borderRadius: '10px',
-          mb: 1,
-          border: `1px solid ${theme.palette.primary.border}`,
-          p: '10px 15px 0 15px',
+          borderRadius: 3,
+          mt: 2,
+          p: 3,
         }}
       >
-        <CardContent>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="flex-start"
-          >
-            <Box>
-              <Typography variant="h6" fontWeight={600}>
-                {item.name}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Comforting {item.name.toLowerCase()} delivered straight to you
-              </Typography>
-            </Box>
-            <Chip
-              label={mapStatusToLabel(item.status)}
-              size="small"
-              sx={{
-                backgroundColor: badgeBg,
-                color: theme.palette.primary.contrastText,
-                fontWeight: 600,
-                borderRadius: '5px',
-              }}
-            />
-          </Box>
-
-          <Box
-            display="flex"
-            gap={3}
-            alignItems="center"
-            my={2}
-            color={theme.palette.primary.dark}
-          >
-            <Box display="flex" alignItems="center" gap={1}>
-              <CalendarToday fontSize="small" />
-              <Typography variant="body2">
-                {new Date(item.datetime).toLocaleDateString()}
-              </Typography>
-            </Box>
-            <Box display="flex" alignItems="center" gap={1}>
-              <AccessTime fontSize="small" />
-              <Typography variant="body2">
-                {new Date(item.datetime).toLocaleTimeString([], {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
-              </Typography>
-            </Box>
-            <Typography variant="body2">30 minutes</Typography>
-          </Box>
-
-          {item.specialRequests && (
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{ display: 'block', mb: 1 }}
-            >
-              <strong>{t('pages.booked_services.specialRequests')}:</strong>{' '}
-              {item.specialRequests}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="flex-start"
+        >
+          <Box>
+            <Typography variant="h6" fontWeight={600}>
+              {item.name}
             </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Comforting {item.name.toLowerCase()} delivered straight to you
+            </Typography>
+          </Box>
+          <Chip
+            label={mapStatusToLabel(item.status)}
+            size="small"
+            sx={{
+              backgroundColor: badgeBg,
+              color: theme.palette.primary.contrastText,
+              fontWeight: 600,
+              borderRadius: '5px',
+            }}
+          />
+        </Box>
+
+        <Box
+          display="flex"
+          gap={3}
+          alignItems="center"
+          my={2}
+          color={theme.palette.primary.dark}
+        >
+          <Box display="flex" alignItems="center" gap={1}>
+            <CalendarToday fontSize="small" />
+            <Typography variant="body2">
+              {new Date(item.datetime).toLocaleDateString()}
+            </Typography>
+          </Box>
+          <Box display="flex" alignItems="center" gap={1}>
+            <AccessTime fontSize="small" />
+            <Typography variant="body2">
+              {new Date(item.datetime).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </Typography>
+          </Box>
+          <Typography variant="body2">30 minutes</Typography>
+        </Box>
+
+        {item.specialRequests && (
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ display: 'block', mb: 1 }}
+          >
+            <strong>{t('pages.booked_services.specialRequests')}:</strong>{' '}
+            {item.specialRequests}
+          </Typography>
+        )}
+
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Typography
+            fontSize="20px"
+            fontWeight={700}
+            color={theme.palette.primary.main}
+          >
+            {item.price}$
+          </Typography>
+          {item.status === 'COMPLETED' && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setOpenRate(true)}
+              sx={{ padding: '10px 0px' }}
+            >
+              {t('pages.booked_services.rate')}
+            </Button>
           )}
-
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mb={2}
-          >
-            <Typography
-              fontSize="20px"
-              fontWeight={700}
-              color={theme.palette.primary.main}
+          {item.status === 'REQUESTED' && (
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => setOpenCancel(true)}
+              sx={{ padding: '5px 10px' }}
             >
-              {item.price}$
-            </Typography>
-            {item.status === 'COMPLETED' && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => setOpenRate(true)}
-                sx={{ padding: '10px 0px' }}
-              >
-                {t('pages.booked_services.rate')}
-              </Button>
-            )}
-            {item.status === 'REQUESTED' && (
-              <Button
-                variant="outlined"
-                color="error"
-                onClick={() => setOpenCancel(true)}
-                sx={{ padding: '5px 10px' }}
-              >
-                {t('pages.booked_services.cancel')}
-              </Button>
-            )}
-          </Box>
-        </CardContent>
+              {t('pages.booked_services.cancel')}
+            </Button>
+          )}
+        </Box>
       </Card>
 
       <CancelServiceDialog

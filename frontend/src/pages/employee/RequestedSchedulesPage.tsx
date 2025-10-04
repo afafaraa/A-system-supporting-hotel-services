@@ -1,4 +1,4 @@
-import Title from "../../components/ui/Title.tsx";
+import SectionTitle from "../../components/ui/SectionTitle.tsx";
 import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
 import ScheduleOutlinedIcon from "@mui/icons-material/ScheduleOutlined";
 import React, {useEffect, useState} from "react";
@@ -15,6 +15,7 @@ import {CancellationReason} from "../../types/cancellation_reasons.ts";
 import ConfirmationWithReasonDialog from "../../components/ui/ConfirmationWithReasonDialog.tsx";
 import {styled} from "@mui/material/styles";
 import ServiceIcon from "../../components/ui/ServiceIcon.tsx";
+import OrderStatusChip from "../../components/ui/OrderStatusChip.tsx";
 
 type ConfirmationProps = {
   schedule: Schedule;
@@ -75,8 +76,20 @@ function RequestedSchedulesPage() {
   };
 
   const StyledButton = styled(Button)(({theme}) => ({
-    fontWeight: "bold", textTransform: "none", height: 40, minWidth: 40,
-    [theme.breakpoints.down('md')]: {width: 40, "& .MuiButton-startIcon": {margin: 0}},
+    fontWeight: "bold",
+    textTransform: "none",
+    height: 40,
+    minWidth: 40,
+    borderRadius: 12,
+    padding: '0.8rem',
+    fontSize: "0.8rem",
+    "& .MuiSvgIcon-root": { fontSize: "18px" },
+    [theme.breakpoints.down('md')]: {
+      padding: '1.5rem',
+      width: 40,
+      "& .MuiButton-startIcon": { margin: 0 },
+      "& .MuiSvgIcon-root": { fontSize: "21px" },
+    },
   }));
 
   function renderActions(schedule: Schedule) {
@@ -105,26 +118,23 @@ function RequestedSchedulesPage() {
         </>;
       default:
         return (
-          <Typography fontSize="12px" fontWeight="bold" px={2} py={0.5} borderRadius={1}
-                      color="calendar.text" bgcolor={"calendar." + schedule.status}>
-            {t(`order_status.${schedule.status}`)}
-          </Typography>
+          <OrderStatusChip size="big" status={schedule.status} />
         );
     }
   }
 
   return (
     <SectionCard>
-      <Title title={<><ScheduleOutlinedIcon /> {tc("title")}</>}
-             subtitle={`${schedules.length} ${tc("subtitle")}`} />
-      {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
+      <SectionTitle title={<><ScheduleOutlinedIcon /> {tc("title")}</>}
+                    subtitle={`${schedules.length} ${tc("subtitle")}`} />
+      {error && <Alert severity="error" sx={{my: 2}}>{error}</Alert>}
       {pageLoading ? <></> : schedules.length === 0 ?
         <SectionCard size={4}>
           {tc("no_schedules")}
         </SectionCard>
         :
         schedules.slice(0, visibleCount).map(schedule => (
-        <SectionCard size={2} sx={{mt: 2, px: {xs: 1.5, sm: 4}, cursor: "pointer"}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
+        <SectionCard clickable size={2} sx={{mt: 2, px: {xs: 1.5, sm: 4}}} key={schedule.id} display="flex" alignItems="center" justifyContent="space-between"
                      onClick={() => setSelectedSchedule(schedule)} >
           <ServiceIcon>
             <Typography fontWeight="bold">{schedule.title}</Typography>
@@ -133,7 +143,7 @@ function RequestedSchedulesPage() {
               {new Date(schedule.date).toLocaleDateString(t('date.locale'))} | {formatTimeRange(new Date(schedule.date), schedule.duration)}
             </Box>
           </ServiceIcon>
-          <Stack direction="row">
+          <Stack direction="row" alignItems="center">
             {renderActions(schedule)}
           </Stack>
         </SectionCard>

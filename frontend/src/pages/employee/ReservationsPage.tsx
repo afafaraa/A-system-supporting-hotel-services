@@ -1,4 +1,4 @@
-import Title from "../../components/ui/Title.tsx";
+import SectionTitle from "../../components/ui/SectionTitle.tsx";
 import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
 import HotelIcon from '@mui/icons-material/Hotel';
 import {useTranslation} from "react-i18next";
@@ -10,8 +10,8 @@ function ReservationsPage() {
 
   return (
     <SectionCard>
-      <Title title={<><HotelIcon /> {tc("title")}</>}
-             subtitle={tc("subtitle")} />
+      <SectionTitle title={<><HotelIcon /> {tc("title")}</>}
+                    subtitle={tc("subtitle")} />
     </SectionCard>
   );
 }

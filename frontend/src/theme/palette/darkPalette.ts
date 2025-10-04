@@ -4,15 +4,13 @@ export const darkPalette: PaletteOptions = {
   mode: 'dark',
   primary: {
     light: 'hsl(256, 20%, 20%)',
-    medium: '#242426',
+    medium: 'hsl(256, 30%, 24%)',
     main: 'hsl(256, 80%, 60%)',
     dark: 'hsl(256, 50%, 40%)',
     contrastText: 'hsl(256, 95%, 95%)',
-    border: 'rgba(146, 146, 146, 0.25)',
   },
   secondary: {
     main: '#FFE921',
-    success: '#39D943',
   },
   background: {
     default: 'hsl(256, 8%, 10%)',
@@ -24,7 +22,13 @@ export const darkPalette: PaletteOptions = {
   },
   action: {
     active: 'hsl(0, 0%, 95%)',
+    disabled: 'rgba(140, 138, 144, 1)',        // text.secondary
+    disabledBackground: 'hsl(256, 8%, 10%)',   // background.default
   },
+  success: {
+    main: 'hsl(124, 68%, 40%)'
+  },
+  divider: 'rgba(146, 146, 146, 0.25)',
   calendar: {
     AVAILABLE: "hsl(200 60% 50%)",
     REQUESTED: "hsl(270 60% 50%)",

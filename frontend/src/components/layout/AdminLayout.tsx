@@ -4,7 +4,7 @@ import { GlobalStyles } from "@mui/material";
 import DashboardNavbar from "../navigation/DashboardNavbar";
 import { useTranslation } from "react-i18next";
 
-const inputGlobalStyles = <GlobalStyles styles={{ html: { overflowY: 'scroll' } }} />
+const globalStyles = <GlobalStyles styles={{ html: { overflowY: 'scroll' } }} />
 
 function AdminLayout() {
     const { t } = useTranslation();
