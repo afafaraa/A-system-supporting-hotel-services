@@ -180,12 +180,12 @@
       "noSlotsAvailable": "Brak dostępnych terminów"
     },
     "manager": {
-        "navbar": {
-          "guests": "Goście",
-          "services": "Usługi",
-          "calendar": "Kalendarz",
-          "employees": "Pracownicy",
-          "statistics": "Statystyki"
+      "navbar": {
+        "guests": "Goście",
+        "services": "Usługi",
+        "calendar": "Kalendarz",
+        "employees": "Pracownicy",
+        "statistics": "Statystyki"
       },
       "guests": {
         "title": "Zarządzanie gośćmi",
@@ -203,7 +203,7 @@
         "booked": "usług zamówionych",
         "contact_info": "Informacje kontaktowe",
         "language": "Polski",
-        "stay_info":"Informacje o pobycie",
+        "stay_info": "Informacje o pobycie",
         "date": "Data",
         "account_balance": "Saldo konta",
         "additional_info": "Dodatkowe Informacje",
@@ -240,7 +240,7 @@
         "name": "Nazwa Usługi",
         "category": "Kategoria",
         "duration": "Czas trwania (w minutach)",
-        "descritption" : "Opis",
+        "descritption": "Opis",
         "icon": "Ikona",
         "uploading": "Przesyłanie...",
         "upload_complete": "Przesyłanie Zakończone!",
@@ -275,10 +275,36 @@
         "edit_subtitle": "Aktualizuj informacje o pracowniku",
         "surname": "Nazwisko",
         "department": "Oddział",
-        "update":"Aktualizuj Pracownika",
+        "update": "Aktualizuj Pracownika",
         "add": "Dodaj nowego pracownika",
         "add_subtitle": "Uzupełnij dane nowego pracownika",
-        "sectors": "Obszary działania"
+        "sectors": "Obszary działania",
+        "changeRole": "Zmień Rolę",
+        "changeRoleSubtitle": "Zmień rolę dla",
+        "currentRole": "Obecna Rola",
+        "newRole": "Nowa Rola",
+        "current": "Obecna",
+        "promotion": "Awans",
+        "demotion": "Degradacja",
+        "willBePromoted": "zostanie awansowany(a) na",
+        "willBeDemoted": "zostanie zdegradowany(a) do",
+        "sameRoleError": "Proszę wybrać inną rolę",
+        "promoteError": "Nie udało się zmienić roli pracownika",
+        "changing": "Zmieniam...",
+        "confirmChange": "Potwierdź Zmianę",
+        "removeEmployeeTitle": "Usuń Pracownika",
+        "removeSubtitle": "Ta akcja nie może być cofnięta",
+        "warningTitle": "Ostrzeżenie",
+        "removeWarning": "Zamierzasz trwale usunąć tego pracownika z systemu. Ta akcja nie może być cofnięta.",
+        "employeeDetails": "Dane Pracownika",
+        "confirmRemoval": "Potwierdź Usunięcie",
+        "typeDelete": "Wpisz \"DELETE\" aby potwierdzić usunięcie",
+        "confirmTextError": "Proszę wpisać DELETE aby potwierdzić",
+        "confirmTextMismatch": "Tekst się nie zgadza",
+        "removeError": "Nie udało się usunąć pracownika",
+        "removing": "Usuwam...",
+        "confirmRemove": "Usuń Pracownika",
+        "removeEmployee": "Usuń Pracownika"
       },
       "statistics": {
         "bookings_today": "Dzisiejsze Rezerwacje",
@@ -446,7 +472,10 @@
     "delete": "Usuń",
     "deleteAll": "Usuń wszystko",
     "back": "Cofnij",
-    "update": "Aktualizuj Pracownika"
+    "update": "Aktualizuj Pracownika",
+    "promote": "Awansuj",
+    "remove": "Usuń",
+    "edit": "Edytuj"
   },
   "error": {
     "networkError": "Błąd połączenia z serwerem.",
@@ -456,7 +485,8 @@
     "invalidCredentials": "Nieprawidłowe dane logowania.",
     "upload_error": "Błąd podczas przesyłania pliku.",
     "add_employee_failure": "Failed to add new employee",
-    "edit_employee_failure": "Failde to edit employee"
+    "edit_employee_failure": "Failed to edit employee",
+    "sameRoleError": "Pracownik już posiada tę rolę."
   },
   "order_status": {
     "AVAILABLE": "DOSTĘPNY",

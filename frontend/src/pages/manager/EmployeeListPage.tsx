@@ -74,8 +74,14 @@ function EmployeeListPage() {
   }, [employees, filterName, filterPosition]);
 
   const handleEmployeeUpdated = (updated: Employee) => {
-    setEmployees((prev) => prev.map((emp) => (emp.id === updated.id ? updated : emp)))
-  }
+    setEmployees((prev) =>
+      prev.map((emp) => (emp.id === updated.id ? updated : emp))
+    );
+  };
+
+  const handleEmployeeRemoved = (employeeId: string) => {
+    setEmployees((prev) => prev.filter((emp) => emp.id !== employeeId));
+  };
 
   if (loading) {
     return (
@@ -176,9 +182,10 @@ function EmployeeListPage() {
               size={{ xs: 12, sm: 6, md: 4 }}
               sx={{ display: 'flex' }}
             >
-              <EmployeeCard 
-                employee={emp} 
+              <EmployeeCard
+                employee={emp}
                 onUpdated={handleEmployeeUpdated}
+                onRemoved={handleEmployeeRemoved}
               />
             </Grid>
           ))}
@@ -192,8 +199,8 @@ function EmployeeListPage() {
             const exists = prev.some((emp) => emp.id === savedEmployee.id);
             return exists
               ? prev.map((emp) =>
-                emp.id === savedEmployee.id ? savedEmployee : emp
-              )
+                  emp.id === savedEmployee.id ? savedEmployee : emp
+                )
               : [savedEmployee, ...prev];
           });
           setOpen(false);

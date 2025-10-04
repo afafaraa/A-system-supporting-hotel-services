@@ -22,7 +22,10 @@ function EmployeeDetailsPage() {
   const [error, setError] = useState<string | null>(null);
 
   const { t } = useTranslation();
-  const tc = useCallback((key: string) => t(`pages.manager.employee_details.${key}`), [t]);
+  const tc = useCallback(
+    (key: string) => t(`pages.manager.employee_details.${key}`),
+    [t]
+  );
   const navigate = useNavigate();
 
   const fetchDetails = useCallback(async () => {
@@ -73,7 +76,7 @@ function EmployeeDetailsPage() {
   if (!detail) {
     return (
       <Typography sx={{ textAlign: 'center', mt: 4 }}>
-        {tc("notFound")}
+        {tc('notFound')}
       </Typography>
     );
   }
@@ -126,7 +129,7 @@ function EmployeeDetailsPage() {
         <Grid size={{ xs: 12, md: 6 }}>
           <Box display="flex" flexDirection="column">
             <Typography variant="h6" fontWeight="bold">
-              {tc("email")}
+              {tc('email')}
             </Typography>
             <Typography variant="body1" color="text.secondary">
               {detail.email}
@@ -136,17 +139,19 @@ function EmployeeDetailsPage() {
         <Grid size={{ xs: 12, md: 6 }}>
           <Box display="flex" flexDirection="column">
             <Typography variant="h6" fontWeight="bold">
-              {tc("department")}
+              {tc('department')}
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              {t(`common.department.${(detail.employeeData?.department ?? "").toLowerCase()}`)}
+              {t(
+                `common.department.${(detail.employeeData?.department ?? '').toLowerCase()}`
+              )}
             </Typography>
           </Box>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <Box display="flex" flexDirection="column">
             <Typography variant="h6" fontWeight="bold">
-              {tc("assigned_services")}
+              {tc('assigned_services')}
             </Typography>
             <Box
               display="flex"
@@ -155,15 +160,17 @@ function EmployeeDetailsPage() {
               justifyContent="flex-start"
               mt={1}
             >
-              {detail.employeeData?.sectors?.map((area: string, idx: number) => (
-                <Chip
-                  key={idx}
-                  label={t(`common.sectors.${area.toLowerCase()}`)}
-                  size="small"
-                  color="primary"
-                  variant="outlined"
-                />
-              ))}
+              {detail.employeeData?.sectors?.map(
+                (area: string, idx: number) => (
+                  <Chip
+                    key={idx}
+                    label={t(`common.sectors.${area.toLowerCase()}`)}
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                  />
+                )
+              )}
             </Box>
           </Box>
         </Grid>
