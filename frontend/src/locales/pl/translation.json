@@ -494,7 +494,7 @@
     "update": "Aktualizuj Pracownika",
     "promote": "Awansuj",
     "remove": "Usuń",
-    "edit": "Edytuj"
+    "edit": "Edytuj",
     "register": "Zarejestruj"
   },
   "error": {
@@ -504,7 +504,7 @@
     "emptyFields": "Wszystkie pola muszą być wypełnione.",
     "invalidCredentials": "Nieprawidłowe dane logowania.",
     "upload_error": "Błąd podczas przesyłania pliku.",
-    "sameRoleError": "Pracownik już posiada tę rolę."
+    "sameRoleError": "Pracownik już posiada tę rolę.",
     "add_employee_failure": "Błąd podczas dodawania nowego pracownika",
     "edit_employee_failure": "Błąd podczas edytowania pracownika"
   },
