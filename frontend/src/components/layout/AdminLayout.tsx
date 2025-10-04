@@ -9,7 +9,7 @@ const globalStyles = <GlobalStyles styles={{ html: { overflowY: 'scroll' } }} />
 const tabs = [
   { key: "guests",     link: "/management/guests" },
   { key: "services",   link: "/management/services" },
-  { key: "calendar",   link: "/management/calendar" },
+  { key: "management",   link: "/management/hotel" },
   { key: "employees",  link: "/employees" },
   { key: "statistics", link: "/management/statistics" },
 ] as const;
