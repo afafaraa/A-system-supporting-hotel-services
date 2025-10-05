@@ -7,6 +7,7 @@ export interface UserDetails {
   guestData: GuestData | null,
   name: string,
   surname: string,
+  active: boolean,
 }
 
 interface EmployeeData {

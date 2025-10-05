@@ -150,6 +150,14 @@ class UserService(
         userRepository.save(user)
     }
 
+    fun activateWithCode(code: String) {
+        val rc: RegistrationCode = codeService.validateCode(code)
+        val user = userRepository.findByIdOrNull(rc.userId) ?: throw EntityNotFoundException("User not found")
+        user.active = true
+        userRepository.save(user)
+        codeService.markUsed(rc)
+    }
+
     fun createAdmin(request: AddUserController.NewAdminRequest): UserEntity =
         UserEntity(
             username = "admin_${request.name}",

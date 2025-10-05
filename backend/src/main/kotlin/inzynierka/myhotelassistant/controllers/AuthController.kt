@@ -120,4 +120,11 @@ class AuthController(
         userService.completeRegistrationNoCode(req)
         return getToken(LoginRequest(req.username, req.password))
     }
+
+    @PostMapping("/activate")
+    fun activateWithCode(
+        @RequestBody code: String,
+    ) {
+        userService.activateWithCode(code)
+    }
 }

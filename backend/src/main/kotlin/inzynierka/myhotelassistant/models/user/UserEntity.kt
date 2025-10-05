@@ -17,4 +17,5 @@ data class UserEntity(
     var surname: String,
     var guestData: GuestData? = null,
     var employeeData: EmployeeData? = null,
+    var active: Boolean = false,
 )

@@ -23,7 +23,10 @@ run:
 
 # Start backend and db in container
 start-backend:
-	docker-compose up
+	docker-compose build mongo
+	docker-compose up -d mongo
+	docker-compose build backend
+	docker-compose up backend
 
 # Clean backend containers and volumes
 clean-backend:
