@@ -76,7 +76,8 @@ function RemoveEmployeeModal({ open, employee, onClose, onRemoved }: Props) {
       fullWidth
       sx={{
         '& .MuiDialog-paper': {
-          p: 2,
+          px: 2,
+          py: 0,
           borderRadius: 3,
         },
       }}

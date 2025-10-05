@@ -87,7 +87,8 @@ function PromoteEmployeeModal({ open, employee, onClose, onPromoted }: Props) {
       fullWidth
       sx={{
         '& .MuiDialog-paper': {
-          p: 2,
+          px: 2,
+          py: 0,
           borderRadius: 3,
           transformOrigin: 'top center',
         },
@@ -105,8 +106,7 @@ function PromoteEmployeeModal({ open, employee, onClose, onPromoted }: Props) {
           </Typography>
         </Box>
         <Typography variant="subtitle2" color="text.secondary" component="p">
-          {tc('changeRoleSubtitle') ||
-            `Change role for ${employee.name} ${employee.surname}`}
+          {tc('changeRoleSubtitle')} {employee.name} {employee.surname}
         </Typography>
       </DialogTitle>
 
@@ -114,25 +114,25 @@ function PromoteEmployeeModal({ open, employee, onClose, onPromoted }: Props) {
         sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}
       >
         <Box>
-          <Typography variant="body2" color="text.secondary" gutterBottom>
+          <Typography variant="body1" fontWeight="bold" gutterBottom>
             {tc('currentRole') || 'Current Role'}
           </Typography>
           <Box
             sx={{
               p: 2,
-              bgcolor: 'grey.100',
+              bgcolor: 'background.paper',
               borderRadius: 2,
               border: 1,
               borderColor: 'divider',
             }}
           >
-            <Typography variant="h6" fontWeight="bold">
+            <Typography variant="body1">
               {tc(employee.role.toLowerCase())}
             </Typography>
           </Box>
         </Box>
 
-        <Box>
+        <FormControl fullWidth sx={{'& .MuiFormControlLabel-root': {marginX: 0}}}>
           <Typography variant="body1" fontWeight="bold" mb={1}>
             {tc('newRole') || 'New Role'}
           </Typography>
@@ -181,7 +181,7 @@ function PromoteEmployeeModal({ open, employee, onClose, onPromoted }: Props) {
               ))}
             </RadioGroup>
           </FormControl>
-        </Box>
+        </FormControl>
 
         {isPromotion && (
           <Box

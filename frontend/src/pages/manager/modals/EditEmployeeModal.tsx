@@ -14,7 +14,7 @@ import {
   FormControl,
   Chip,
   OutlinedInput,
-  FilledInputProps
+  FilledInputProps,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { Employee, Department, Sector } from '../../../types';
@@ -104,7 +104,7 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
           username: `${form.name?.toLowerCase()}${form.surname?.toLowerCase()}`,
         });
       }
-      console.log(res.data)
+      console.log(res.data);
       onSaved(res.data);
       onClose();
     } catch (err) {
@@ -125,7 +125,8 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
       fullWidth
       sx={{
         '& .MuiDialog-paper': {
-          p: 2,
+          px: 2,
+          py: 0,
           maxHeight: '85vh',
           position: 'relative',
           borderRadius: 3,
@@ -168,7 +169,7 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
                 },
               }}
               slotProps={{
-                input: { disableUnderline: true } as FilledInputProps
+                input: { disableUnderline: true } as FilledInputProps,
               }}
             />
           </Box>
@@ -248,7 +249,6 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
               ))}
             </Select>
           </Box>
-
         </Box>
         <Box>
           <Typography variant="body1" fontWeight="bold" mb={1}>
@@ -260,30 +260,24 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
               value={form.employeeData?.sectors || []}
               onChange={(e) => {
                 const value = e.target.value;
-                handleChange(
-                  'sectors',
-                  Array.isArray(value) ? value : [value]
-                );
+                handleChange('sectors', Array.isArray(value) ? value : [value]);
               }}
               input={<OutlinedInput />}
               renderValue={(selected) => (
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, p: 0.5 }}>
-                  {Array.isArray(selected) ?
-                    selected.map((value) => (
-                      <Chip
-                        key={value}
-                        label={t(`common.sectors.${value.toLowerCase()}`)}
-                        size="small"
-                        sx={{
-                          height: 24,
-                          fontSize: '0.75rem',
-                          '& .MuiChip-label': {
-                            px: 1
-                          }
-                        }}
-                      />
-                    )) : null
-                  }
+                <Box
+                  sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, p: 0.5 }}
+                >
+                  {Array.isArray(selected)
+                    ? selected.map((value) => (
+                        <Chip
+                          key={value}
+                          label={t(`common.sectors.${value.toLowerCase()}`)}
+                          size="small"
+                          color="primary"
+                          variant="outlined"
+                        />
+                      ))
+                    : null}
                 </Box>
               )}
               disableUnderline
@@ -298,7 +292,7 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
                     borderColor: 'divider',
                     '& .MuiList-root': {
                       py: 1,
-                    }
+                    },
                   },
                 },
                 anchorOrigin: {
@@ -340,7 +334,9 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
                   }}
                 >
                   <Checkbox
-                    checked={form.employeeData?.sectors?.includes(sector) || false}
+                    checked={
+                      form.employeeData?.sectors?.includes(sector) || false
+                    }
                     sx={{
                       color: 'primary.main',
                       '&.Mui-checked': {
@@ -353,7 +349,9 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
                     sx={{
                       '& .MuiListItemText-primary': {
                         fontSize: '0.95rem',
-                        fontWeight: form.employeeData?.sectors?.includes(sector) ? 600 : 400,
+                        fontWeight: form.employeeData?.sectors?.includes(sector)
+                          ? 600
+                          : 400,
                       },
                     }}
                   />
@@ -362,11 +360,18 @@ function EditEmployeeModal({ open, initial, onClose, onSaved }: Props) {
             </Select>
           </FormControl>
 
-          {form.employeeData?.sectors && form.employeeData.sectors.length > 0 && (
-            <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-              {form.employeeData.sectors.length} {form.employeeData.sectors.length === 1 ? 'sector' : 'sectors'} selected
-            </Typography>
-          )}
+          {form.employeeData?.sectors &&
+            form.employeeData.sectors.length > 0 && (
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ mt: 0.5, display: 'block' }}
+              >
+                {form.employeeData.sectors.length}{' '}
+                {form.employeeData.sectors.length === 1 ? 'sector' : 'sectors'}{' '}
+                selected
+              </Typography>
+            )}
         </Box>
         {error && (
           <Typography
