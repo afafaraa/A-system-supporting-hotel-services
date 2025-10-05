@@ -59,7 +59,6 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
     }
   }, [fetchCartData, open, shoppingCart]);
 
-
   const clearShoppingCart = () => {
     setCart([]);
     dispatch(clearCart());

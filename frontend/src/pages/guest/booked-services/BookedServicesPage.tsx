@@ -17,6 +17,7 @@ import { SectionWrapper } from '../../../theme/styled-components/SectionWrapper.
 import { SelectInput } from '../../../theme/styled-components/SelectInput.ts';
 import { StyledInput } from '../../../theme/styled-components/StyledInput.ts';
 import { useTranslation } from 'react-i18next';
+import { selectUserDetails } from '../../../redux/slices/userDetailsSlice.ts';
 
 export type RequestedServiceProps = {
   id: string;
@@ -41,6 +42,7 @@ const STATUS_OPTIONS: { key: string; labelKey: string }[] = [
 
 function BookedServicesPage() {
   const user = useSelector(selectUser);
+  const userDetails = useSelector(selectUserDetails);
   const [services, setServices] = useState<RequestedServiceProps[]>([]);
   const [filterStatus, setFilterStatus] = useState<string>('ALL');
   const [search, setSearch] = useState<string>('');
@@ -87,6 +89,15 @@ function BookedServicesPage() {
       return matchesSearch && matchesStatus;
     });
   }, [services, search, filterStatus]);
+
+  // Tooltip logic (same as AvailableServiceCard)
+  const isAccountInactive = !userDetails?.active;
+  const isNoRoom = !userDetails?.guestData?.roomNumber;
+  const tooltipMsg = isNoRoom
+    ? 'You need to have an active reservation to book services. Go to Book Hotel Room section to book a room.'
+    : isAccountInactive
+      ? 'Your account is not active. Scan code available on your reservation in hotel reception.'
+      : '';
 
   return (
     <main>
@@ -183,8 +194,8 @@ function BookedServicesPage() {
             />
           ))
         ) : (
-          <Typography color="text.secondary">
-            {t('pages.booked_services.noBookingsFound')}
+          <Typography sx={{padding: '0 30px'}} color="text.secondary">
+            {tooltipMsg || t('pages.booked_services.noBookingsFound')}
           </Typography>
         )}
       </Box>

@@ -6,63 +6,24 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import SpaIcon from '@mui/icons-material/Spa';
 import SportsTennisIcon from '@mui/icons-material/SportsTennis';
 import RoomServiceIcon from '@mui/icons-material/RoomService';
-import { useTranslation } from 'react-i18next';
 import LoginDialog from './LoginDialog.tsx';
-import { useState } from 'react';
-import { Room } from '../../types/room.ts';
+import { useState, useEffect } from 'react';
 import RoomCard from '../guest/hotel-booking/RoomCard.tsx';
 import {alpha} from "@mui/material/styles";
-
-export const roomOptions: Room[] = [
-  {
-    id: '1',
-    type: 'standard',
-    price: 120,
-    status: 'Available',
-    guestsTotal: 2,
-    description: 'A comfortable standard room with all the basic amenities for a pleasant stay.',
-    amenities: [
-      { key: 'wifi', label: 'Free Wi-Fi' },
-      { key: 'ac', label: 'Air Conditioning' },
-      { key: 'tv', label: 'Cable TV' },
-      { key: 'miniFridge', label: 'Mini Fridge' },
-    ],
-  },
-  {
-    id: '2',
-    type: 'deluxe',
-    price: 180,
-    status: 'Available',
-    guestsTotal: 3,
-    description: 'Spacious deluxe room with premium amenities and elegant furnishings for a luxurious experience.',
-    amenities: [
-      { key: 'wifi', label: 'Free Wi-Fi' },
-      { key: 'ac', label: 'Air Conditioning' },
-      { key: 'tv', label: 'Smart TV' },
-      { key: 'miniBar', label: 'Mini Bar' },
-      { key: 'more', label: '+2 more' },
-    ],
-  },
-  {
-    id: '3',
-    type: 'exclusive',
-    price: 350,
-    status: 'Available',
-    guestsTotal: 4,
-    description: 'A top-tier exclusive suite with premium facilities, ideal for a luxurious stay or business trip.',
-    amenities: [
-      { key: 'wifi', label: 'Free Wi-Fi' },
-      { key: 'ac', label: 'Air Conditioning' },
-      { key: 'tv', label: 'Smart TV' },
-      { key: 'miniBar', label: 'Full Bar' },
-      { key: 'more', label: '+4 more' },
-    ],
-  },
-];
+import axiosApi from '../../middleware/axiosApi.ts';
+import { Room } from '../../types/room.ts';
 
 function HomePage() {
-  const { t } = useTranslation();
   const [openLoginDialog, setOpenLoginDialog] = useState<boolean>(false);
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
+
+  useEffect(() => {
+    axiosApi.get('/rooms')
+      .then(res => setRooms(res.data))
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <main style={{ padding: 0, width: '100%' }}>
@@ -87,7 +48,7 @@ function HomePage() {
              sx={{backdropFilter: 'blur(2px)'}}
         >
           <Typography sx={{ fontWeight: '600' }} variant="h2">
-            {t('pages.home.welcomeTitle')}
+            Welcome to Our Hotel
           </Typography>
           <Typography
             sx={{
@@ -96,7 +57,7 @@ function HomePage() {
               padding: { xs: '0 10%', md: '0 20%' },
             }}
           >
-            {t('pages.home.welcomeSubtitle')}
+            Book your stay and enjoy our best rooms and services.
           </Typography>
           <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
             <Button
@@ -111,7 +72,7 @@ function HomePage() {
                   ?.scrollIntoView({ behavior: 'smooth' })
               }
             >
-              {t('pages.home.reserveRoom')}
+              Reserve Room
             </Button>
             <Button
               sx={{
@@ -125,7 +86,7 @@ function HomePage() {
                   ?.scrollIntoView({ behavior: 'smooth' })
               }
             >
-              {t('pages.home.contactUs')}
+              Contact Us
             </Button>
           </Box>
         </Box>
@@ -143,13 +104,13 @@ function HomePage() {
           align="center"
           sx={{ fontWeight: '600', marginBottom: '10px' }}
         >
-          {t('pages.home.roomsTitle')}
+          Rooms
         </Typography>
         <Typography
           align="center"
           sx={{ color: 'text.secondary', marginBottom: '40px' }}
         >
-          {t('pages.home.roomsSubtitle')}
+          Choose a room for your stay
         </Typography>
 
         <Grid
@@ -158,12 +119,23 @@ function HomePage() {
           columns={{ xs: 1, sm: 2, lg: 3 }}
           sx={{ maxWidth: '1000px', margin: '0 auto' }}
         >
-          {roomOptions.map((room, index) => (
-            <Grid sx={{ flexGrow: 1 }} size={1} key={index}>
-              <RoomCard room={room} onReserve={() => setOpenLoginDialog(true)} size="medium"/>
-            </Grid>
-          ))}
+          {loading ? (
+            <Typography>Loading rooms...</Typography>
+          ) : (
+            (showAll ? rooms : rooms.slice(0, 3)).map((room, index) => (
+              <Grid sx={{ flexGrow: 1 }} size={1} key={index}>
+                <RoomCard room={room} onReserve={() => setOpenLoginDialog(true)} size="medium"/>
+              </Grid>
+            ))
+          )}
         </Grid>
+        {!showAll && !loading && rooms.length > 3 && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+            <Button variant="contained" onClick={() => setShowAll(true)}>
+              View More
+            </Button>
+          </Box>
+        )}
       </Box>
 
       <Box
@@ -194,59 +166,56 @@ function HomePage() {
               >
                 <RoomServiceIcon />
               </Box>
-              {t('pages.home.footerTitle')}
+              Hotel Services
             </Typography>
             <Typography sx={{ mt: 2, color: 'text.secondary' }}>
-              {t('pages.home.footerDesc')}
+              Enjoy our dining, spa, and recreation facilities.
             </Typography>
           </Grid>
 
           <Grid size={1}>
-            <Typography>{t('pages.home.contactInfo')}</Typography>
+            <Typography>Contact Information</Typography>
             <Stack spacing={2} sx={{ mt: 2 }}>
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <LocationOnIcon color="secondary" /> {t('pages.home.address')}
+                <LocationOnIcon color="secondary" /> 123 Main St, City
               </Typography>
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <PhoneIcon color="secondary" /> {t('pages.home.phone')}
+                <PhoneIcon color="secondary" /> +48 123 456 789
               </Typography>
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <EmailIcon color="secondary" /> {t('pages.home.email')}
+                <EmailIcon color="secondary" /> info@hotel.com
               </Typography>
             </Stack>
           </Grid>
 
           <Grid size={1}>
-            <Typography>{t('pages.home.services')}</Typography>
+            <Typography>Services</Typography>
             <Stack spacing={2} sx={{ mt: 2 }}>
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <RoomServiceIcon color="secondary" />{' '}
-                {t('pages.home.serviceDining')}
+                <RoomServiceIcon color="secondary" /> Dining
               </Typography>
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <DirectionsCarIcon color="secondary" />{' '}
-                {t('pages.home.serviceTransport')}
+                <DirectionsCarIcon color="secondary" /> Transport
               </Typography>
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <SpaIcon color="secondary" /> {t('pages.home.serviceSpa')}
+                <SpaIcon color="secondary" /> Spa
               </Typography>
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <SportsTennisIcon color="secondary" />{' '}
-                {t('pages.home.serviceRecreation')}
+                <SportsTennisIcon color="secondary" /> Recreation
               </Typography>
             </Stack>
           </Grid>
@@ -260,7 +229,7 @@ function HomePage() {
           }}
         >
           <Typography color="text.secondary">
-            {t('pages.home.rights')}
+            © 2024 Hotel. All rights reserved.
           </Typography>
         </Box>
       </Box>

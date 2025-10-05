@@ -131,6 +131,33 @@ class UserService(
         codeService.markUsed(rc)
     }
 
+    fun completeRegistrationNoCode(req: AuthController.CompleteRegistrationRequestNoCode) {
+        if (userRepository.findByUsername(req.username) != null) {
+            throw EntityNotFoundException("Username is already taken")
+        }
+        if (userRepository.findByEmail(req.email) != null) {
+            throw EntityNotFoundException("User with that email already exists")
+        }
+        val user = UserEntity(
+            username = req.username,
+            password = passwordEncoder.encode(req.password),
+            name = req.name,
+            surname = req.surname,
+            email = req.email,
+            role = Role.GUEST,
+        )
+        println("Creating user: $user")
+        userRepository.save(user)
+    }
+
+    fun activateWithCode(code: String) {
+        val rc: RegistrationCode = codeService.validateCode(code)
+        val user = userRepository.findByIdOrNull(rc.userId) ?: throw EntityNotFoundException("User not found")
+        user.active = true
+        userRepository.save(user)
+        codeService.markUsed(rc)
+    }
+
     fun createAdmin(request: AddUserController.NewAdminRequest): UserEntity =
         UserEntity(
             username = "admin_${request.name}",

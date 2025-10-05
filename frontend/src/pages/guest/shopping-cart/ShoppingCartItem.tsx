@@ -4,10 +4,10 @@ import { CartProps } from './ShoppingCartPopup.tsx';
 import { useTranslation } from 'react-i18next';
 
 function ShoppingCartItem({
-                            item,
-                            index,
-                            removeItself,
-                          }: {
+  item,
+  index,
+  removeItself,
+}: {
   item: CartProps;
   index: number;
   removeItself: () => void;
