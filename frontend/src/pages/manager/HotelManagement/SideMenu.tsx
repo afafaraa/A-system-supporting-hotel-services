@@ -4,9 +4,9 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Tooltip,
   IconButton,
   Box,
+  Tooltip,
 } from '@mui/material';
 import {
   Hotel,
@@ -41,11 +41,11 @@ function SideMenu({ active, onSelect }: SideMenuProps) {
   ] as const;
 
   return (
-    <SectionCard
-      sx={{
-        borderLeft: 'none',
-        borderTop: 'none',
-        borderBottom: 'none',
+    <SectionCard 
+      sx={{ 
+        borderLeft: 'none', 
+        borderTop: 'none', 
+        borderBottom: 'none', 
         minWidth: collapsed ? 80 : 250,
         transition: 'all 0.3s ease',
         position: 'relative',
@@ -111,8 +111,9 @@ function SideMenu({ active, onSelect }: SideMenuProps) {
       <Box
         sx={{
           position: 'absolute',
-          top: 35,
-          right: 2,
+          top: '4.5%',
+          right: 5,
+          transform: 'translateY(-50%)',
           zIndex: 1,
         }}
       >
@@ -122,6 +123,9 @@ function SideMenu({ active, onSelect }: SideMenuProps) {
             bgcolor: 'background.paper',
             width: 32,
             height: 32,
+            '&:hover': {
+              bgcolor: 'action.hover',
+            },
           }}
         >
           {collapsed ? <ChevronRight /> : <ChevronLeft />}
