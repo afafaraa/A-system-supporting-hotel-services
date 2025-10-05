@@ -11,7 +11,7 @@ import { SectionCard } from '../../../theme/styled-components/SectionCard';
 
 function HotelManagementPage() {
   const [selectedSection, setSelectedSection] = useState<HotelSection | null>(
-    null
+    'rooms'
   );
 
   const renderSection = () => {
@@ -34,14 +34,12 @@ function HotelManagementPage() {
   return (
     <SectionCard
       sx={{
-        pt: 0,
-        pl: 0,
-        pb: 0,
+        p: 0,
       }}
     >
-      <Box display="flex" alignItems="center" flexWrap="wrap" gap={2} >
+      <Box display="flex" alignItems="stretch" height="100%">
         <SideMenu active={selectedSection} onSelect={setSelectedSection} />
-        <Box flexGrow={1} p={2}>
+        <Box flexGrow={1} p={3} minWidth={0}>
           {renderSection()}
         </Box>
       </Box>
