@@ -102,19 +102,12 @@ class EmployeeService(
         employee.name = employeeDTO.name.lowercase().replaceFirstChar { it.uppercase() }
         employee.surname = employeeDTO.surname.lowercase().replaceFirstChar { it.uppercase() }
 
-        if (!employeeDTO.role.isNullOrBlank()) {
-            val newRole = Role.convertFromString(employeeDTO.role.uppercase())
-            if (newRole == Role.GUEST) throw InvalidRoleNameException("Cannot assign GUEST role to an employee")
-            if (newRole == Role.ADMIN) throw InvalidRoleNameException("Cannot assign ADMIN role to an employee")
-            employee.role = newRole
-        }
-
         employeeDTO.employeeData?.let { newEmployeeData ->
-            if (employee.employeeData == null) {
-                employee.employeeData = EmployeeData()
-            }
-            employee.employeeData!!.department = newEmployeeData.department
-            employee.employeeData!!.sectors = newEmployeeData.sectors
+            employee.employeeData =
+                EmployeeData(
+                    department = newEmployeeData.department,
+                    sectors = newEmployeeData.sectors.toList(),
+                )
         }
 
         return userRepository.save(employee)

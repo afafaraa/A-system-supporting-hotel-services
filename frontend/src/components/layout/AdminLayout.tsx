@@ -6,27 +6,24 @@ import { useTranslation } from "react-i18next";
 
 const globalStyles = <GlobalStyles styles={{ html: { overflowY: 'scroll' } }} />
 
-const tabs = [
-  { key: "guests",     link: "/management/guests" },
-  { key: "services",   link: "/management/services" },
-  { key: "calendar",   link: "/management/calendar" },
-  { key: "employees",  link: "/employees" },
-  { key: "statistics", link: "/management/statistics" },
-] as const;
-
 function AdminLayout() {
-  const {t} = useTranslation();
-  const translatedTabs = useMemo(() =>
-    tabs.map(tab => ({ name: t(`pages.manager.navbar.${tab.key}`), link: tab.link })
-  ), [t]);
+    const { t } = useTranslation();
 
-  return (
-    <>
-      {globalStyles}
-      <DashboardNavbar tabs={translatedTabs} arrowButtons/>
-      <Outlet />
-    </>
-  );
-}
+    const tabs = useMemo(() => ([
+        { name: t("pages.manager.navbar.guests"), link: "/management/guests" },
+        { name: t("pages.manager.navbar.services"), link: "/management/services" },
+        { name: t("pages.manager.navbar.calendar"), link: "/management/calendar" },
+        { name: t("pages.manager.navbar.employees"), link: "/employees" },
+        { name: t("pages.manager.navbar.statistics"), link: "/management/statistics" },
+    ] as const), [t]);
+
+    return (
+        <>
+            {globalStyles}
+            <DashboardNavbar tabs={tabs} arrowButtons />
+            <Outlet />
+        </>
+    );
+};
 
 export default AdminLayout;

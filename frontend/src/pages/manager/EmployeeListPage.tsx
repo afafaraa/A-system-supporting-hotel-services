@@ -71,8 +71,14 @@ function EmployeeListPage() {
   }, [employees, filterName, filterPosition]);
 
   const handleEmployeeUpdated = (updated: Employee) => {
-    setEmployees((prev) => prev.map((emp) => (emp.id === updated.id ? updated : emp)))
-  }
+    setEmployees((prev) =>
+      prev.map((emp) => (emp.id === updated.id ? updated : emp))
+    );
+  };
+
+  const handleEmployeeRemoved = (employeeId: string) => {
+    setEmployees((prev) => prev.filter((emp) => emp.id !== employeeId));
+  };
 
   if (loading) {
     return (
@@ -169,6 +175,7 @@ function EmployeeListPage() {
             <EmployeeCard
               employee={emp}
               onUpdated={handleEmployeeUpdated}
+              onRemoved={handleEmployeeRemoved}
             />
           </Grid>
         ))}
@@ -176,11 +183,16 @@ function EmployeeListPage() {
       <EditEmployeeModal
         open={open}
         onClose={() => setOpen(false)}
-        onSaved={(newEmployee) => {
-          if (newEmployee) {
-            setEmployees((prev) => [newEmployee, ...prev]);
-            setOpen(false);
-          }
+        onSaved={(savedEmployee) => {
+          setEmployees((prev) => {
+            const exists = prev.some((emp) => emp.id === savedEmployee.id);
+            return exists
+              ? prev.map((emp) =>
+                  emp.id === savedEmployee.id ? savedEmployee : emp
+                )
+              : [savedEmployee, ...prev];
+          });
+          setOpen(false);
         }}
       />
     </SectionCard>

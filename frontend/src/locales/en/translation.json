@@ -175,11 +175,11 @@
     },
     "manager": {
       "navbar": {
-          "guests": "Guests",
-          "services": "Services",
-          "calendar": "Calendar",
-          "employees": "Personnel",
-          "statistics": "Statistics"
+        "guests": "Guests",
+        "services": "Services",
+        "calendar": "Calendar",
+        "employees": "Personnel",
+        "statistics": "Statistics"
       },
       "guests": {
         "title": "Guests Management",
@@ -187,7 +187,7 @@
         "searchPlaceholder": "Search guests...",
         "ALL": "All",
         "Checked-out": "Checked-out",
-        "Checked-in": "Checked-in"  ,
+        "Checked-in": "Checked-in",
         "Upcoming": "Upcoming",
         "room": "Room",
         "check_in": "Check-in",
@@ -197,7 +197,7 @@
         "booked": "services booked",
         "contact_info": "Contact Information",
         "language": "English",
-        "stay_info":"Stay Information",
+        "stay_info": "Stay Information",
         "date": "Date",
         "account_balance": "Account Balance",
         "additional_info": "Additional Information",
@@ -235,6 +235,7 @@
         "name": "Service Name",
         "category": "Category",
         "duration": "Duration (in minutes)",
+        "descritption": "Description",
         "icon": "Icon",
         "uploading": "Uploading...",
         "upload_complete": "Upload Complete!",
@@ -269,10 +270,35 @@
         "edit_subtitle": "Update employee information",
         "surname": "Surname",
         "department": "Department",
-        "update":"Update Employee",
+        "update": "Update Employee",
         "add": "Add New Employee",
         "add_subtitle": "Fill in the details of the new employee",
-        "sectors": "Sectors"
+        "sectors": "Sectors",
+        "changeRole": "Change Role",
+        "changeRoleSubtitle": "Change role for",
+        "currentRole": "Current Role",
+        "newRole": "New Role",
+        "current": "Current",
+        "promotion": "Promotion",
+        "demotion": "Demotion",
+        "willBePromoted": "will be promoted to",
+        "willBeDemoted": "will be demoted to",
+        "sameRoleError": "Please select a different role",
+        "promoteError": "Failed to change employee role",
+        "changing": "Changing...",
+        "confirmChange": "Confirm Change",
+        "removeEmployeeTitle": "Remove Employee",
+        "removeSubtitle": "This action cannot be undone",
+        "warningTitle": "Warning",
+        "removeWarning": "You are about to permanently remove this employee from the system. This action cannot be undone.",
+        "employeeDetails": "Employee Details",
+        "confirmRemoval": "Confirm Removal",
+        "typeDelete": "Type \"DELETE\" to confirm deletion",
+        "confirmTextError": "Please type DELETE to confirm",
+        "confirmTextMismatch": "Text does not match",
+        "removing": "Removing...",
+        "confirmRemove": "Remove Employee",
+        "removeEmployee": "Remove Employee"
       },
       "statistics": {
         "bookings_today": "Today's Bookings ",
@@ -465,6 +491,9 @@
     "reject": "Reject",
     "back": "Back",
     "update": "Update",
+    "promote": "Promote",
+    "remove": "Remove",
+    "edit": "Edit",
     "register": "Register"
   },
   "error": {
@@ -475,6 +504,7 @@
     "invalidCredentials": "Invalid login credentials.",
     "upload_error": "Error during uploading file.",
     "add_employee_failure": "Failed to add new employee",
+    "sameRoleError": "Employee already has this role.",
     "edit_employee_failure": "Failed to edit employee"
   },
   "order_status": {

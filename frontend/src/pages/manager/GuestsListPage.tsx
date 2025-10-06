@@ -106,17 +106,21 @@ function GuestsListPage() {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" p={4}>
-        <CircularProgress />
-      </Box>
+      <SectionCard>
+        <Box display="flex" justifyContent="center" p={4}>
+          <CircularProgress />
+        </Box>
+      </SectionCard>
     );
   }
 
   if (error) {
     return (
-      <Box display="flex" justifyContent="center" p={4}>
-        <Typography color="error">{error}</Typography>
-      </Box>
+      <SectionCard>
+        <Box display="flex" justifyContent="center" p={4}>
+          <Typography color="error">{error}</Typography>
+        </Box>
+      </SectionCard>
     );
   }
 
