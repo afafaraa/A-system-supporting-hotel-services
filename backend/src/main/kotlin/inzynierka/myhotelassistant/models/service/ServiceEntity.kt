@@ -10,7 +10,7 @@ data class ServiceEntity(
     var name: String,
     var description: String? = null,
     var price: Double,
-    var type: ServiceType,
+    var type: MutableList<ServiceTypeAttributes> = mutableListOf(),
     var disabled: Boolean,
     var duration: Duration,
     var maxAvailable: Int? = null,

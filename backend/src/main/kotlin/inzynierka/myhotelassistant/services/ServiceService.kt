@@ -86,4 +86,29 @@ class ServiceService(
             )
         return save(merged)
     }
+
+    fun getAttributes(serviceEntity: ServiceEntity): Map<String, Any> {
+        return serviceEntity.type
+            .flatMap { it.attributes.entries }
+            .associate { it.key to it.value }
+    }
+
+    fun updateAttribute(
+        serviceEntity: ServiceEntity,
+        attributeName: String,
+        newValue: Any
+    ): ServiceEntity {
+        val updatedTypes = serviceEntity.type.map { serviceTypeAttr ->
+            if (attributeName in serviceTypeAttr.attributes) {
+                val updatedAttributes = serviceTypeAttr.attributes.toMutableMap()
+                updatedAttributes[attributeName] = newValue
+                serviceTypeAttr.copy(attributes = updatedAttributes)
+            } else {
+                serviceTypeAttr
+            }
+        }.toMutableList()
+
+        return serviceEntity.copy(type = updatedTypes)
+    }
+
 }
