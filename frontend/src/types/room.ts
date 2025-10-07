@@ -14,3 +14,4 @@ type Amenity = {
 }
 
 export type RoomStandard = "Budget" | "Standard" | "Deluxe" | "Exclusive Suite";
+export type RoomStatus = 'booked' | 'open' | 'pending' | 'outOfService';
