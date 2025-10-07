@@ -12,3 +12,5 @@ type Amenity = {
   key: string;
   label: string;
 }
+
+export type RoomStatus = 'booked' | 'open' | 'pending' | 'outOfService';
