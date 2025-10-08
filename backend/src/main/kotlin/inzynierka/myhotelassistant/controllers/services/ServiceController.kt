@@ -94,7 +94,7 @@ class ServiceController(
     @PatchMapping("/{serviceId}/attributes")
     fun updateServiceAttributes(
         @PathVariable serviceId: String,
-        @RequestBody attributes: ServiceTypeAttributes
+        @RequestBody attributes: ServiceTypeAttributes,
     ): ServiceEntity {
         serviceService.updateServiceAttributes(serviceId, attributes)
         val service = serviceService.findByIdOrThrow(serviceId)

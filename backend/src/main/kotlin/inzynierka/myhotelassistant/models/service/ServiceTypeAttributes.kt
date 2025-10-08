@@ -21,14 +21,13 @@ sealed interface ServiceTypeAttributes {
     data class Selection(
         val multipleSelection: Boolean,
         val options: LinkedHashMap<String, List<OptionObject>>,
-    ): ServiceTypeAttributes {
+    ) : ServiceTypeAttributes {
         override fun getType(): ServiceType = ServiceType.SELECTION
     }
 
-
     data class Custom(
         var fields: LinkedHashMap<String, Any>,
-    ): ServiceTypeAttributes {
+    ) : ServiceTypeAttributes {
         override fun getType(): ServiceType = ServiceType.CUSTOM
     }
 }

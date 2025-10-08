@@ -570,57 +570,61 @@ class DatabaseSeeder(
     val serviceDataList =
         listOf(
             ServiceData(
-              "Food delivery from menu",
+                "Food delivery from menu",
                 "Order delicious meals and beverages from our extensive menu, delivered straight to your room.",
                 "https://i.pinimg.com/1200x/b5/1e/c0/b51ec055f32d175f1c1ae0db5cdaf4d0.jpg",
                 ServiceType.SELECTION,
                 ServiceTypeAttributes.Selection(
                     multipleSelection = true,
-                    options = linkedMapOf(
-                        "soups" to listOf(
-                            ServiceTypeAttributes.OptionObject(
-                                label = "Tomato Soup",
-                                description = "Fresh tomatoes blended into a creamy soup.",
-                                price = 5.99,
-                                image = "https://i.pinimg.com/1200x/dc/88/5e/dc885e424e2cc36080e3ffaee09b6dfb.jpg",
-                            ),
-                            ServiceTypeAttributes.OptionObject(
-                                label = "Chicken Noodle Soup",
-                                description = "Hearty chicken broth with noodles and vegetables.",
-                                price = 6.99,
-                                image = "https://i.pinimg.com/1200x/22/80/7c/22807cd7d1f29e5894b5ca68a557a8c1.jpg",
-                            ),
+                    options =
+                        linkedMapOf(
+                            "soups" to
+                                listOf(
+                                    ServiceTypeAttributes.OptionObject(
+                                        label = "Tomato Soup",
+                                        description = "Fresh tomatoes blended into a creamy soup.",
+                                        price = 5.99,
+                                        image = "https://i.pinimg.com/1200x/dc/88/5e/dc885e424e2cc36080e3ffaee09b6dfb.jpg",
+                                    ),
+                                    ServiceTypeAttributes.OptionObject(
+                                        label = "Chicken Noodle Soup",
+                                        description = "Hearty chicken broth with noodles and vegetables.",
+                                        price = 6.99,
+                                        image = "https://i.pinimg.com/1200x/22/80/7c/22807cd7d1f29e5894b5ca68a557a8c1.jpg",
+                                    ),
+                                ),
+                            "main_courses" to
+                                listOf(
+                                    ServiceTypeAttributes.OptionObject(
+                                        label = "Grilled Salmon",
+                                        description = "Fresh salmon fillet grilled to perfection, served with vegetables.",
+                                        price = 15.99,
+                                        image = "https://i.pinimg.com/1200x/a8/ac/21/a8ac21fd838e87e55e23589a826ecfff.jpg",
+                                    ),
+                                    ServiceTypeAttributes.OptionObject(
+                                        label = "Steak",
+                                        description = "Juicy steak cooked to your liking, served with fries and salad.",
+                                        price = 18.99,
+                                        image = "https://i.pinimg.com/736x/fa/74/a1/fa74a1051787c3d9ce707215be6eedd8.jpg",
+                                    ),
+                                ),
+                            "desserts" to
+                                listOf(
+                                    ServiceTypeAttributes.OptionObject(
+                                        label = "Cheesecake",
+                                        description = "Creamy cheesecake with a graham cracker crust.",
+                                        price = 6.49,
+                                        image = "https://i.pinimg.com/736x/93/09/62/930962eed0b30e9e861d5e097dfdfd14.jpg",
+                                    ),
+                                    ServiceTypeAttributes.OptionObject(
+                                        label = "Chocolate Lava Cake",
+                                        description = "Warm chocolate cake with a gooey center, served with vanilla ice cream.",
+                                        price = 6.99,
+                                        image = "https://i.pinimg.com/736x/ef/bc/8e/efbc8e27d543d6fa0c0559967c104896.jpg",
+                                    ),
+                                ),
                         ),
-                        "main_courses" to listOf(
-                            ServiceTypeAttributes.OptionObject(
-                                label = "Grilled Salmon",
-                                description = "Fresh salmon fillet grilled to perfection, served with vegetables.",
-                                price = 15.99,
-                                image = "https://i.pinimg.com/1200x/a8/ac/21/a8ac21fd838e87e55e23589a826ecfff.jpg",
-                            ),
-                            ServiceTypeAttributes.OptionObject(
-                                label = "Steak",
-                                description = "Juicy steak cooked to your liking, served with fries and salad.",
-                                price = 18.99,
-                                image = "https://i.pinimg.com/736x/fa/74/a1/fa74a1051787c3d9ce707215be6eedd8.jpg",
-                            ),
-                        ),
-                        "desserts" to listOf(
-                            ServiceTypeAttributes.OptionObject(
-                                label = "Cheesecake",
-                                description = "Creamy cheesecake with a graham cracker crust.",
-                                price = 6.49,
-                                image = "https://i.pinimg.com/736x/93/09/62/930962eed0b30e9e861d5e097dfdfd14.jpg",
-                            ),
-                            ServiceTypeAttributes.OptionObject(
-                                label = "Chocolate Lava Cake",
-                                description = "Warm chocolate cake with a gooey center, served with vanilla ice cream.",
-                                price = 6.99,
-                                image = "https://i.pinimg.com/736x/ef/bc/8e/efbc8e27d543d6fa0c0559967c104896.jpg",
-                            ),
-                        ),
-                    )
-                )
+                ),
             ),
             ServiceData(
                 "Room cleaning",

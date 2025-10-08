@@ -21,7 +21,7 @@ interface ServiceRepository : MongoRepository<ServiceEntity, String> {
     fun findServiceDetailsById(id: String): ServiceDetails?
 
     data class ServiceAttributes(
-        val attributes: ServiceTypeAttributes?
+        val attributes: ServiceTypeAttributes?,
     )
 
     fun findServiceAttributesById(id: String): ServiceAttributes?
