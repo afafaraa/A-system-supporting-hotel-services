@@ -1,6 +1,7 @@
 package inzynierka.myhotelassistant.repositories
 
 import inzynierka.myhotelassistant.models.service.ServiceEntity
+import inzynierka.myhotelassistant.models.service.ServiceTypeAttributes
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.mongodb.repository.MongoRepository
@@ -18,4 +19,10 @@ interface ServiceRepository : MongoRepository<ServiceEntity, String> {
     )
 
     fun findServiceDetailsById(id: String): ServiceDetails?
+
+    data class ServiceAttributes(
+        val attributes: ServiceTypeAttributes?
+    )
+
+    fun findServiceAttributesById(id: String): ServiceAttributes?
 }

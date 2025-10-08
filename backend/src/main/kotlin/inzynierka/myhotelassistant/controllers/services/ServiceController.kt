@@ -3,6 +3,8 @@ package inzynierka.myhotelassistant.controllers.services
 import inzynierka.myhotelassistant.dto.ServiceCreateRequestDTO
 import inzynierka.myhotelassistant.dto.ServiceCreateResponseDTO
 import inzynierka.myhotelassistant.models.service.RatingEntity
+import inzynierka.myhotelassistant.models.service.ServiceEntity
+import inzynierka.myhotelassistant.models.service.ServiceTypeAttributes
 import inzynierka.myhotelassistant.repositories.RatingRepository
 import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
@@ -81,6 +83,23 @@ class ServiceController(
         val entity = request.toEntity()
         val savedEntity = serviceService.save(entity)
         return ServiceCreateResponseDTO.from(savedEntity, emptyList())
+    }
+
+    @GetMapping("/{serviceId}/attributes")
+    @ResponseStatus(HttpStatus.OK)
+    fun getServiceAttributes(
+        @PathVariable serviceId: String,
+    ) = serviceService.getServiceAttributes(serviceId)
+
+    @PatchMapping("/{serviceId}/attributes")
+    fun updateServiceAttributes(
+        @PathVariable serviceId: String,
+        @RequestBody attributes: ServiceTypeAttributes
+    ): ServiceEntity {
+        serviceService.updateServiceAttributes(serviceId, attributes)
+        val service = serviceService.findByIdOrThrow(serviceId)
+        service.attributes = attributes
+        return serviceService.save(service)
     }
 
     @PatchMapping("/{id}")
