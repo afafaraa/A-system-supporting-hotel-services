@@ -1,7 +1,6 @@
 import {
   Card,
   CardContent,
-  Grid,
   MenuItem,
   TextField,
   Typography,
@@ -27,11 +26,11 @@ function ServiceCalendar({
   const { t } = useTranslation();
 
   return (
-    <Grid flexGrow={1} size={1}>
       <Card
         sx={{
           borderRadius: 2,
           p: '15px 20px',
+          flexShrink: 0,
         }}
       >
         <CardContent>
@@ -127,7 +126,6 @@ function ServiceCalendar({
           />
         </CardContent>
       </Card>
-    </Grid>
   );
 }
 
