@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   Typography,
-  Grid,
   Box,
   Button,
   useTheme,
@@ -36,7 +35,6 @@ function ServiceDescription({
   };
 
   return (
-    <Grid sx={{ flexGrow: 1 }} size={1}>
       <Card
         sx={{
           borderRadius: 2,
@@ -146,7 +144,6 @@ function ServiceDescription({
           </Button>
         </CardContent>
       </Card>
-    </Grid>
   );
 }
 

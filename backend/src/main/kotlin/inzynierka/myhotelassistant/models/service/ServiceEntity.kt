@@ -11,6 +11,7 @@ data class ServiceEntity(
     var description: String? = null,
     var price: Double,
     var type: ServiceType,
+    var attributes: ServiceTypeAttributes? = null,
     var disabled: Boolean,
     var duration: Duration,
     var maxAvailable: Int? = null,
