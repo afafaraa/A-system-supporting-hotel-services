@@ -138,14 +138,15 @@ class UserService(
         if (userRepository.findByEmail(req.email) != null) {
             throw EntityNotFoundException("User with that email already exists")
         }
-        val user = UserEntity(
-            username = req.username,
-            password = passwordEncoder.encode(req.password),
-            name = req.name,
-            surname = req.surname,
-            email = req.email,
-            role = Role.GUEST,
-        )
+        val user =
+            UserEntity(
+                username = req.username,
+                password = passwordEncoder.encode(req.password),
+                name = req.name,
+                surname = req.surname,
+                email = req.email,
+                role = Role.GUEST,
+            )
         println("Creating user: $user")
         userRepository.save(user)
     }

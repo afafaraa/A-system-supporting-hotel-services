@@ -27,5 +27,4 @@ class RoomController(
     fun getRoomByNumber(
         @PathVariable("id") id: String,
     ): RoomEntity = roomService.findRoomById(id)
-
 }
