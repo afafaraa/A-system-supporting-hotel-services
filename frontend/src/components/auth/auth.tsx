@@ -3,7 +3,7 @@ import axiosApi from "../../middleware/axiosApi";
 import { jwtDecode } from "jwt-decode";
 import {AppDispatch} from "../../redux/store.ts";
 import {clearUserDetails} from "../../redux/slices/userDetailsSlice.ts";
-import {setItems} from "../../redux/slices/shoppingCartSlice.ts";
+import { setItems, ShoppingCartProps } from '../../redux/slices/shoppingCartSlice.ts';
 
 interface CustomJwtPayload {
     iat: number,
@@ -22,7 +22,7 @@ function initializeShoppingCartFromLocalStorage(dispatch: AppDispatch) {
     const cart = localStorage.getItem('SHOPPING_CART');
     if (!cart) return;
     try {
-        const parsedCart: string[] = JSON.parse(cart);
+        const parsedCart: ShoppingCartProps[] = JSON.parse(cart);
         dispatch(setItems(parsedCart));
     } catch (error) {
         console.log("Error parsing shopping cart from localStorage:", error);

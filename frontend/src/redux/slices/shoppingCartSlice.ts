@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store.ts';
 
-type ShoppingCartProps = {
+export type ShoppingCartProps = {
   id: string;
   type: 'RESERVATION' | 'SERVICE';
   // if it's a reservation, include these fields
