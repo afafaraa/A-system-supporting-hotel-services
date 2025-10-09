@@ -3,6 +3,7 @@ package inzynierka.myhotelassistant.controllers
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.services.RoomService
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -21,4 +22,10 @@ class RoomController(
         @RequestParam("from") from: LocalDate,
         @RequestParam("to") to: LocalDate,
     ): List<RoomEntity> = roomService.findAllAvailableRoomsForDate(from, to)
+
+    @GetMapping("/by/number/{id}")
+    fun getRoomByNumber(
+        @PathVariable("id") id: String,
+    ): RoomEntity = roomService.findRoomById(id)
+
 }

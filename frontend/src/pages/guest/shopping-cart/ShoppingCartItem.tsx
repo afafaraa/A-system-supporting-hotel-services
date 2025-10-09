@@ -15,6 +15,7 @@ function ShoppingCartItem({
   const { t } = useTranslation();
   const theme = useTheme();
 
+  console.log(item)
   return (
     <div
       key={index}
@@ -31,7 +32,7 @@ function ShoppingCartItem({
     >
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>
-          {item.name}
+          {item.type === "SERVICE" ? item.name : item.standard + " room"}
         </Typography>
         <div
           style={{
@@ -42,8 +43,8 @@ function ShoppingCartItem({
           }}
         >
           <div>{item.price}$</div>
-          <div>{new Date(item.datetime).toLocaleDateString()}</div>
-          <div>{new Date(item.datetime).toLocaleTimeString().slice(0, 5)}</div>
+          <div>{new Date(item.datetime ?? "").toLocaleDateString()}</div>
+          <div>{new Date(item.datetime ?? "").toLocaleTimeString().slice(0, 5)}</div>
         </div>
       </div>
 

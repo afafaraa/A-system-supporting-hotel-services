@@ -17,6 +17,7 @@ export default function HotelBookingPage() {
     const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
     const [dialogOpen, setDialogOpen] = useState(false);
 
+    console.log(selectedRoom)
     useEffect(() => {
         axiosApi.get('/rooms')
             .then(res => setRooms(res.data))

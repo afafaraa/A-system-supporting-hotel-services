@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -8,32 +8,50 @@ import {
   Button,
   Typography,
   Box,
-  Alert
-} from "@mui/material";
-import { Room } from "../../../types/room";
-import { axiosAuthApi } from "../../../middleware/axiosApi";
+  Alert,
+} from '@mui/material';
+import { Room } from '../../../types/room';
+import { axiosAuthApi } from '../../../middleware/axiosApi';
+import { useDispatch } from 'react-redux';
+import { addItem } from '../../../redux/slices/shoppingCartSlice.ts';
 
-interface Props {
+function ReservationDialog({
+  open,
+  onClose,
+  room,
+}: {
   open: boolean;
   onClose: () => void;
   room: Room | null;
-  onAddToCart?: (room: Room, from: string, to: string) => void; // optional handler
-}
-
-const ReservationDialog: React.FC<Props> = ({ open, onClose, room, onAddToCart }) => {
-  const [checkIn, setCheckIn] = useState("");
-  const [checkOut, setCheckOut] = useState("");
-  const [status, setStatus] = useState<"idle" | "checking" | "available" | "unavailable">("idle");
+}) {
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
+  const [status, setStatus] = useState<
+    'idle' | 'checking' | 'available' | 'unavailable'
+  >('idle');
   const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch();
+  console.log(JSON.stringify(room));
+
+  const handleAddToCart = (room: Room) => {
+    dispatch(
+      addItem({
+        id: room.number,
+        type: 'RESERVATION',
+        checkIn: checkIn,
+        checkOut: checkOut,
+      })
+    );
+  };
 
   useEffect(() => {
     if (!checkIn || !checkOut || !room) {
-      setStatus("idle");
+      setStatus('idle');
       return;
     }
 
     const fetchAvailability = async () => {
-      setStatus("checking");
+      setStatus('checking');
       setError(null);
       try {
         const res = await axiosAuthApi.get(`/rooms/available`, {
@@ -41,13 +59,15 @@ const ReservationDialog: React.FC<Props> = ({ open, onClose, room, onAddToCart }
         });
 
         const availableRooms: Room[] = res.data;
-        const isAvailable = availableRooms.some(r => r.id === room.id);
+        const isAvailable = availableRooms.some(
+          (r) => r.number === room.number
+        );
 
-        setStatus(isAvailable ? "available" : "unavailable");
+        setStatus(isAvailable ? 'available' : 'unavailable');
       } catch (err) {
         console.error(err);
-        setError("Failed to check availability.");
-        setStatus("idle");
+        setError('Failed to check availability.');
+        setStatus('idle');
       }
     };
 
@@ -58,13 +78,19 @@ const ReservationDialog: React.FC<Props> = ({ open, onClose, room, onAddToCart }
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ fontWeight: 600 }}>Complete Your Reservation</DialogTitle>
+      <DialogTitle sx={{ fontWeight: 600 }}>
+        Complete Your Reservation
+      </DialogTitle>
       <DialogContent dividers>
         <Typography variant="subtitle2" sx={{ mb: 2 }}>
-          {room.standard.replace(/_/g, " ").toLowerCase().replace(/^\w/, c => c.toUpperCase())} – ${room.pricePerNight} per night
+          {room.standard
+            .replace(/_/g, ' ')
+            .toLowerCase()
+            .replace(/^\w/, (c) => c.toUpperCase())}{' '}
+          – ${room.pricePerNight} per night
         </Typography>
 
-        <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+        <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
           <TextField
             label="Check-in Date"
             type="date"
@@ -91,26 +117,34 @@ const ReservationDialog: React.FC<Props> = ({ open, onClose, room, onAddToCart }
           fullWidth
         />
 
-        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-        {status === "available" && (
-          <Alert severity="success" sx={{ mt: 2 }}>This room is available ✅</Alert>
+        {error && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {error}
+          </Alert>
         )}
-        {status === "unavailable" && (
-          <Alert severity="warning" sx={{ mt: 2 }}>This room is not available for selected dates ❌</Alert>
+        {status === 'available' && (
+          <Alert severity="success" sx={{ mt: 2 }}>
+            This room is available ✅
+          </Alert>
+        )}
+        {status === 'unavailable' && (
+          <Alert severity="warning" sx={{ mt: 2 }}>
+            This room is not available for selected dates ❌
+          </Alert>
         )}
       </DialogContent>
 
-      <DialogActions sx={{ justifyContent: "space-between", px: 3, pb: 2 }}>
+      <DialogActions sx={{ justifyContent: 'space-between', px: 3, pb: 2 }}>
         <Button variant="outlined" onClick={onClose}>
           Cancel
         </Button>
         <Button
           variant="contained"
           color="primary"
-          disabled={status !== "available"}
+          disabled={status !== 'available'}
           onClick={() => {
-            if (room && checkIn && checkOut && onAddToCart) {
-              onAddToCart(room, checkIn, checkOut);
+            if (room && checkIn && checkOut) {
+              handleAddToCart(room);
               onClose();
             }
           }}
@@ -120,6 +154,6 @@ const ReservationDialog: React.FC<Props> = ({ open, onClose, room, onAddToCart }
       </DialogActions>
     </Dialog>
   );
-};
+}
 
 export default ReservationDialog;

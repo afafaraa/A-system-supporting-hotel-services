@@ -3,12 +3,12 @@
 .PHONY: build start-backend stop start-frontend run clear-backend
 
 # Build and start the backend service in container
-build-backend:
+run-backend-only:
 	docker-compose build backend
 	docker-compose up backend
 
 # Build and start the MongoDB in container
-build-mongo:
+run-mongo-only:
 	docker-compose build mongo
 	docker-compose up -d mongo
 
@@ -16,19 +16,16 @@ build-mongo:
 start-frontend:
 	cd frontend && npm run dev
 
-# Run both backend and frontend services
-run:
-	docker-compose up -d backend
-	cd frontend && npm run dev
-
 # Start backend and db in container
-start-backend:
-	docker-compose build mongo
-	docker-compose up -d mongo
-	docker-compose build backend
-	docker-compose up backend
+start-backend: run-mongo-only run-backend-only
+
+# Run both backend and frontend services
+run: start-backend start-frontend
 
 # Clean backend containers and volumes
-clean-backend:
-	docker-compose down -v
+clean:
+	docker-compose down -v --rmi all --remove-orphans
 
+clean-all:
+	docker-compose down -v --rmi all --remove-orphans
+	cd frontend && rm -rf node_modules

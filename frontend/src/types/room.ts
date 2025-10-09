@@ -1,5 +1,5 @@
 export type Room = {
-  id: string;
+  number: string;
   type: 'standard' | 'deluxe' | 'exclusive';
   pricePerNight: number;
   status: string;

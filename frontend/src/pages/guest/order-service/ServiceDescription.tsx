@@ -30,7 +30,7 @@ function ServiceDescription({
   const dispatch = useDispatch();
 
   const handleAddToCart = (slot: OrderServiceProps) => {
-    dispatch(addItem(slot.id));
+    dispatch(addItem({ id: slot.id, type: 'SERVICE' }));
     setSelectedTime(slot.id);
   };
 

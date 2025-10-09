@@ -91,6 +91,7 @@ class DatabaseSeeder(
                     email = "test_user@user.test",
                     name = "Test",
                     surname = "User",
+                    active = true,
                     guestData =
                         GuestData(
                             roomNumber = "002",
@@ -110,6 +111,7 @@ class DatabaseSeeder(
                     role = Role.ADMIN,
                     email = "test_admin@admin.test",
                     name = "Test",
+                    active = true,
                     surname = "Admin",
                 ),
             )
@@ -252,6 +254,7 @@ class DatabaseSeeder(
                     password = passwordEncoder.encode("password"),
                     email = "employee1@gmail.com",
                     name = "Joe",
+                    active = true,
                     surname = "Doe",
                     employeeData = EmployeeData(Department.HOUSEKEEPING, listOf(Sector.SECURITY)),
                 ),
@@ -266,6 +269,7 @@ class DatabaseSeeder(
                     email = "ann.smith@mymail.com",
                     name = "Anna",
                     surname = "Smith",
+                    active = true,
                     employeeData = EmployeeData(Department.RECEPTION, listOf(Sector.SPA_AND_WELLNESS)),
                 ),
             )
@@ -278,6 +282,7 @@ class DatabaseSeeder(
                     password = passwordEncoder.encode("easy"),
                     email = "c.brown@yahoo.com",
                     name = "Charlie",
+                    active = true,
                     surname = "Brown",
                     employeeData = EmployeeData(Department.FOOD_AND_BEVERAGE, listOf(Sector.BREAKFAST, Sector.LUNCH, Sector.DINNER)),
                 ),
@@ -294,6 +299,7 @@ class DatabaseSeeder(
                     username = "guest1",
                     password = passwordEncoder.encode("guest1"),
                     name = "Alice",
+                    active = true,
                     surname = "Johnson",
                     guestData =
                         GuestData(
@@ -313,6 +319,7 @@ class DatabaseSeeder(
                     password = passwordEncoder.encode("guest2"),
                     name = "Bob",
                     surname = "Smith",
+                    active = true,
                     guestData =
                         GuestData(
                             roomNumber = "002",
@@ -331,6 +338,7 @@ class DatabaseSeeder(
                     password = passwordEncoder.encode("guest3"),
                     name = "Charlie",
                     surname = "Brown",
+                    active = true,
                     guestData =
                         GuestData(
                             roomNumber = "316",
@@ -462,6 +470,7 @@ class DatabaseSeeder(
                     password = passwordEncoder.encode("password"),
                     email = "manager@gmail.com",
                     name = "Jim",
+                    active = true,
                     surname = "Brown",
                     employeeData = EmployeeData(Department.MANAGEMENT),
                 ),

@@ -10,15 +10,25 @@ import {
   clearCart,
 } from '../../../redux/slices/shoppingCartSlice.ts';
 import { axiosAuthApi } from '../../../middleware/axiosApi.ts';
+import { RoomStandard } from '../../../types/room.ts';
 
 export type CartProps = {
   id: string;
-  name: string;
-  employeeId: string;
-  employeeFullName: string;
-  imageUrl: string;
-  price: number;
-  datetime: string;
+  type: 'SERVICE' | 'RESERVATION';
+  // for services
+  name?: string;
+  employeeId?: string;
+  employeeFullName?: string;
+  imageUrl?: string;
+  price?: number; // either service price or total room price
+  datetime?: string;
+  // for reservation
+  standard?: RoomStandard;
+  pricePerNight?: number;
+  checkIn?: string;
+  checkOut?: string;
+  guestCount?: number;
+  roomNumber?: number;
 };
 
 type ShoppingCartPopupProps = {
@@ -37,27 +47,43 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   const fetchCartData = useCallback(async () => {
     const cartList: CartProps[] = [];
     if (shoppingCart.length > 0) {
-      for (const id of shoppingCart) {
-        try {
-          const response = await axiosAuthApi.get(
-            `/schedule/get/cart/id/${id}`
-          );
-          const cartItem: CartProps = response.data;
-          if (cartItem) cartList.push(cartItem);
-        } catch (e) {
-          dispatch(removeItem(id));
-          console.error(e);
-        }
+      for (const item of shoppingCart) {
+          if (item.type === 'SERVICE') {
+            try {
+              const response = await axiosAuthApi.get(
+                `/schedule/get/cart/id/${item.id}`
+              );
+              const cartItem: CartProps = response.data;
+              if (cartItem) cartList.push(cartItem);
+            } catch (e) {
+              console.error(e);
+            }
+          }
+          else if (item.type === 'RESERVATION') {
+            try {
+              const response = await axiosAuthApi.get(
+                `/rooms/by/number/${item.id}`
+              );
+              console.log(response.data)
+              const cartItem: CartProps = response.data;
+              cartItem.checkIn = item.checkIn;
+              cartItem.checkOut = item.checkOut;
+              cartItem.guestCount = item.guestCount;
+              if (cartItem) cartList.push(cartItem);
+            } catch (e) {
+              console.error(e);
+            }
+          }
       }
     }
     setCart(cartList);
-  }, [dispatch, shoppingCart]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (open) {
       fetchCartData();
     }
-  }, [fetchCartData, open, shoppingCart]);
+  }, [shoppingCart, open]);
 
   const clearShoppingCart = () => {
     setCart([]);
@@ -79,8 +105,8 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
     }
   };
 
-  const removeShoppingCartItem = (itemId: string) => {
-    dispatch(removeItem(itemId));
+  const removeShoppingCartItem = (itemId: string, type: 'SERVICE' | 'RESERVATION') => {
+    dispatch(removeItem({ id: itemId, type: type }));
     setCart(cart.filter((item) => item.id !== itemId));
   };
 
@@ -137,7 +163,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
                 key={index}
                 index={index}
                 item={item}
-                removeItself={() => removeShoppingCartItem(item.id)}
+                removeItself={() => removeShoppingCartItem(item.id, item.type)}
               />
             ))
           ) : (
@@ -165,7 +191,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
             <Typography variant="body1">Total price:</Typography>
             <Typography variant="body1" fontWeight="700">
               {cart.length > 0
-                ? cart.reduce((acc, curr) => acc + curr.price, 0).toFixed(2)
+                ? cart.reduce((acc, curr) => acc + (curr.price ?? 0), 0).toFixed(2)
                 : 0}{' '}
               $
             </Typography>
