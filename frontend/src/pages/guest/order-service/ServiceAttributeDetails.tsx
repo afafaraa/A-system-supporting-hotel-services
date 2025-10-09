@@ -3,21 +3,11 @@ import {useEffect, useState} from "react";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import {SectionCard} from "../../../theme/styled-components/SectionCard.ts";
 import ServiceSelectionCard from "./ServiceSelectionCard.tsx";
-import {Selection} from "./ServiceSelectionCard.tsx";
+import {ServiceDetails, SelectionAttributes} from "../../../types/service_type_attributes.ts"
+
 
 interface Props {
   service: ServiceProps
-}
-
-type ServiceDetails = { type: string } & (Selection)
-
-const renderTypeDetails = (details: ServiceDetails) => {
-  switch (details.type) {
-    case 'SELECTION':
-      return <ServiceSelectionCard type={details.type} details={details as Selection} />;
-    default:
-      return <SectionCard> <p>Nieobsługiwany typ usługi: {details.type}</p> </SectionCard>;
-  }
 }
 
 function ServiceAttributeDetails({service}: Props) {
@@ -43,7 +33,12 @@ function ServiceAttributeDetails({service}: Props) {
     return <SectionCard> <p>Błąd pobierania danych</p> </SectionCard>;
   }
 
-  return renderTypeDetails(serviceDetails);
+  switch (serviceDetails.type) {
+    case 'SELECTION':
+      return <ServiceSelectionCard details={serviceDetails as SelectionAttributes} />;
+    default:
+      return <SectionCard> <p>Nieobsługiwany typ usługi: {serviceDetails.type}</p> </SectionCard>;
+  }
 }
 
 export default ServiceAttributeDetails;

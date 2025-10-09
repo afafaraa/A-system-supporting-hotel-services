@@ -2,30 +2,66 @@ import {SectionCard} from "../../../theme/styled-components/SectionCard.ts";
 import Box from "@mui/system/Box";
 import {Button, ButtonGroup, Grid, MenuItem, Select, SelectChangeEvent, Stack, Typography} from "@mui/material";
 import {Dispatch, SetStateAction, useState} from "react";
+import {OptionObject, SelectionAttributes, SelectionAttributesResponse} from "../../../types/service_type_attributes.ts"
 
-interface OptionObject {
-  label: string;
-  description: string;
-  price: number;
-  image?: string;
-}
-
-export interface Selection {
-  multipleSelection: boolean;
-  options: Record<string, OptionObject[]>
-}
 
 interface OrderItem {
   option: OptionObject;
+  group: string;
   quantity: number;
 }
 
-function OptionCardButtons({option, setOrder}: {option: OptionObject, setOrder: Dispatch<SetStateAction<OrderItem[]>>}) {
+interface Props {
+  details: SelectionAttributes
+}
+
+function ServiceSelectionCard({details}: Props) {
+  const [order, setOrder] = useState<OrderItem[]>([]);
+
+  return (<>
+    <SelectionCard details={details} setOrder={setOrder} />
+    <OrderSummary details={details} order={order} setOrder={setOrder} />
+  </>)
+}
+
+const SelectionCard = ({details, setOrder}: {details: SelectionAttributes, setOrder: Dispatch<SetStateAction<OrderItem[]>>}) => {
+  return (
+    <SectionCard>
+      <p>Type: {details.type}</p>
+      <p>{details.multipleSelection ? 'Multiple selection allowed' : 'Single selection only'}</p>
+      {Object.entries(details.options).map(([key, options]) => (
+        <Box key={key} mt={2}>
+          <Typography fontSize="120%" fontWeight="bold">{key}</Typography>
+          <Grid container gap={2} columns={{xs: 1, md: 2}} mt={1}>
+            {options.map((option, index) => (
+              <Grid key={option.label} size="grow">
+                <SectionCard clickable size={1} key={index} width="100%" display="flex" alignItems="center" justifyContent="space-between">
+                  <Box p={1}>
+                    <Typography fontSize="110%" fontWeight="500">{option.label}</Typography>
+                    <Typography fontSize="90%" color="text.secondary">{option.description}</Typography>
+                    {details.multipleSelection ?
+                      <OptionCardButtons group={key} option={option} setOrder={setOrder}/> :
+                      <OptionCardSingleButton group={key} option={option} setOrder={setOrder}/>
+                    }
+                  </Box>
+                  <Box width="120px" height="120px" overflow="hidden" flexShrink={0} borderRadius="inherit">
+                    <img src={option.image} alt={option.label + " image"} style={{objectFit: 'cover', width: "100%", height: "100%"}} />
+                  </Box>
+                </SectionCard>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      ))}
+    </SectionCard>
+  );
+}
+
+function OptionCardButtons({group, option, setOrder}: {group: string, option: OptionObject, setOrder: Dispatch<SetStateAction<OrderItem[]>>}) {
   const [quantity, setQuantity] = useState(1);
 
-  const handleQuantityChange = (event: SelectChangeEvent) => {
+  const handleQuantityChange = (event: SelectChangeEvent) =>
     setQuantity(parseInt(event.target.value));
-  };
 
   const handleAddToOrder = () => {
     setOrder(prev => {
@@ -35,7 +71,7 @@ function OptionCardButtons({option, setOrder}: {option: OptionObject, setOrder: 
         updatedOrder[itemIndex].quantity += quantity;
         return updatedOrder;
       } else {
-        return [...prev, {option: option, quantity}];
+        return [...prev, {option, group, quantity}];
       }
     })
     setQuantity(1);
@@ -51,14 +87,15 @@ function OptionCardButtons({option, setOrder}: {option: OptionObject, setOrder: 
   )
 }
 
-function OptionCardSingleButton({option, setOrder}: {
+function OptionCardSingleButton({group, option, setOrder}: {
+  group: string,
   option: OptionObject;
   setOrder: Dispatch<SetStateAction<OrderItem[]>>
 }) {
   const handleAddToOrder = () => {
     setOrder(prev => {
       const itemIndex = prev.findIndex(item => item.option.label === option.label);
-      if (itemIndex === -1) return [...prev, {option: option, quantity: 1}];
+      if (itemIndex === -1) return [...prev, {option, group, quantity: 1}];
       return prev;
     })
   }
@@ -69,13 +106,7 @@ function OptionCardSingleButton({option, setOrder}: {
   );
 }
 
-interface Props {
-  type: string;
-  details: Selection
-}
-
-function ServiceSelectionCard({type, details}: Props) {
-  const [order, setOrder] = useState<OrderItem[]>([]);
+const OrderSummary = ({details, order, setOrder}: {details: SelectionAttributes, order: OrderItem[], setOrder: Dispatch<SetStateAction<OrderItem[]>>}) => {
 
   const handleAddQuantityButton = (option: OptionObject, value: number) => {
     setOrder(prev => {
@@ -93,38 +124,15 @@ function ServiceSelectionCard({type, details}: Props) {
 
   const handleOrderButton = () => {
     // TODO: implement adding to main order
-    setOrder([]);
+    const packedOrder: SelectionAttributesResponse = {
+      type: details.type,
+      selectedOptions: Object.fromEntries(order.map(item => [item.group + '.' + item.option.label, item.quantity])),
+    }
+    console.log("Order:", packedOrder)
+    // setOrder([]);
   }
 
-  return (<>
-    <SectionCard>
-      <p>Type: {type}</p>
-      <p>{details.multipleSelection ? 'Multiple selection allowed' : 'Single selection only'}</p>
-      {Object.entries(details.options).map(([key, options]) => (
-        <Box key={key} mt={2}>
-          <Typography fontSize="120%" fontWeight="bold">{key}</Typography>
-          <Grid container gap={2} columns={{xs: 1, md: 2}} mt={1}>
-            {options.map((option, index) => (
-              <Grid key={option.label} size="grow">
-                <SectionCard clickable size={1} key={index} width="100%" display="flex" alignItems="center" justifyContent="space-between">
-                  <Box p={1}>
-                    <Typography fontSize="110%" fontWeight="500">{option.label}</Typography>
-                    <Typography fontSize="90%" color="text.secondary">{option.description}</Typography>
-                    {details.multipleSelection ?
-                      <OptionCardButtons option={option} setOrder={setOrder}/> :
-                      <OptionCardSingleButton option={option} setOrder={setOrder}/>
-                    }
-                  </Box>
-                  <Box width="120px" height="120px" overflow="hidden" flexShrink={0} borderRadius="inherit">
-                    <img src={option.image} alt={option.label + " image"} style={{objectFit: 'cover', width: "100%", height: "100%"}} />
-                  </Box>
-                </SectionCard>
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      ))}
-    </SectionCard>
+  return (
     <SectionCard mt="inherit">
       {order.length === 0 ? <Typography fontSize="110%">Brak wybranych opcji</Typography> : (
         <Stack gap={2}>
@@ -157,7 +165,7 @@ function ServiceSelectionCard({type, details}: Props) {
         </Stack>
       )}
     </SectionCard>
-  </>)
+  );
 }
 
 export default ServiceSelectionCard;
