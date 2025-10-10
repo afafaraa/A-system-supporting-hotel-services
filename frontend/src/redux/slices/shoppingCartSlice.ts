@@ -42,15 +42,21 @@ const shoppingCartSlice = createSlice({
     ) => {
       state.shoppingCart = state.shoppingCart.filter((item) => {
         if (item.type === 'RESERVATION') {
-          return !(
-            item.id === action.payload.id &&
-            item.checkIn === (action.payload.checkIn ?? '') &&
-            item.checkOut === (action.payload.checkOut ?? '')
-          );
+            console.log(item.checkIn)
+            console.log(item.checkOut)
+            console.log(action.payload.checkIn)
+            console.log(action.payload.checkOut)
+            console.log(action.payload)
+            const sameRoom = item.id === action.payload.id;
+            const sameDates =
+                (!item.checkIn || !action.payload.checkIn || item.checkIn === action.payload.checkIn) &&
+                (!item.checkOut || !action.payload.checkOut || item.checkOut === action.payload.checkOut);
+            return !(sameRoom && sameDates);
         } else {
-          return !(item.id === action.payload.id);
+          return item.id !== action.payload.id;
         }
       });
+      console.log(state.shoppingCart)
       localStorage.setItem('SHOPPING_CART', JSON.stringify(state.shoppingCart));
     },
 

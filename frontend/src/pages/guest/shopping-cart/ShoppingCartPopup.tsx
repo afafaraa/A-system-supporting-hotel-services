@@ -6,7 +6,6 @@ import ShoppingCartItem from './ShoppingCartItem.tsx';
 import { selectUser } from '../../../redux/slices/userSlice.ts';
 import {
   selectShoppingCart,
-  removeItem,
   clearCart,
 } from '../../../redux/slices/shoppingCartSlice.ts';
 import { axiosAuthApi } from '../../../middleware/axiosApi.ts';
@@ -64,8 +63,8 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
               const response = await axiosAuthApi.get(
                 `/rooms/by/number/${item.id}`
               );
-              console.log(response.data)
               const cartItem: CartProps = response.data;
+              cartItem.id = response.data.number;
               cartItem.checkIn = item.checkIn;
               cartItem.checkOut = item.checkOut;
               cartItem.guestCount = item.guestCount;
@@ -77,13 +76,13 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
       }
     }
     setCart(cartList);
-  }, [dispatch]);
+  }, [shoppingCart]);
 
   useEffect(() => {
     if (open) {
       fetchCartData();
     }
-  }, [shoppingCart, open]);
+  }, [shoppingCart, open, fetchCartData]);
 
   const clearShoppingCart = () => {
     setCart([]);
@@ -105,12 +104,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
     }
   };
 
-  const removeShoppingCartItem = (itemId: string, type: 'SERVICE' | 'RESERVATION') => {
-    dispatch(removeItem({ id: itemId, type: type }));
-    setCart(cart.filter((item) => item.id !== itemId));
-  };
-
-  if (!open) return null;
+    if (!open) return null;
 
   return (
     <>
@@ -163,7 +157,8 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
                 key={index}
                 index={index}
                 item={item}
-                removeItself={() => removeShoppingCartItem(item.id, item.type)}
+                cart={cart}
+                setCart={setCart}
               />
             ))
           ) : (
