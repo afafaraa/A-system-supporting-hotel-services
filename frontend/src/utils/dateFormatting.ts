@@ -26,6 +26,12 @@ export const formatTimeRange = (date: Date, duration: number | undefined): strin
   return endTime ? `${startTime} - ${endTime}` : startTime;
 }
 
+export const formatDateRange = (start: string | Date, end: string | Date): string => {
+  const startDateStr = new Date(start).toLocaleDateString(t('date.locale'));
+  const endDateStr = new Date(end).toLocaleDateString(t('date.locale'));
+  return startDateStr + " - " + endDateStr;
+}
+
 export const formatNumericDayMonth = (date: Date): string => {
   return date.toLocaleDateString(t('date.locale'), { day: '2-digit', month: '2-digit' })
 }

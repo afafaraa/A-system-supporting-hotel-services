@@ -7,10 +7,11 @@ interface SectionTitleProps {
   subtitle?: React.ReactNode;
   mb?: number | string;
   smaller?: boolean;
+  sx?: object;
 }
 
-const SectionTitle: React.FC<SectionTitleProps> = ({ title, subtitle, mb=3, smaller=false }) => (
-  <Box mb={mb}>
+const SectionTitle: React.FC<SectionTitleProps> = ({ title, subtitle, mb=3, smaller=false, sx }) => (
+  <Box mb={mb} sx={sx}>
     <Typography fontSize={smaller ? "1.2rem" : "1.4rem"} display="flex" alignItems="center" gap={1} noWrap>{title}</Typography>
     <Typography fontSize="inherit" color="text.secondary" mt="3px">{subtitle}</Typography>
   </Box>

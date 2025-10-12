@@ -1,5 +1,5 @@
 import {ChangeEvent, FormEvent, useEffect, useState} from 'react';
-import {axiosAuthApi} from '../middleware/axiosApi';
+import {axiosAuthApi} from '../../middleware/axiosApi.ts';
 import {Box, FormControl, TextField, Typography, Button, MenuItem, Alert} from '@mui/material';
 import {AxiosError} from "axios";
 
@@ -77,7 +77,7 @@ export default function AddGuestPage() {
     };
 
     return (
-        <Box>
+        <Box width="min(95%, 500px)" mx="auto">
             <Typography variant="h4" mb={3} textAlign="center">
                 {credentials ? 'Gość dodany!' : 'Dodaj Gościa'}
             </Typography>

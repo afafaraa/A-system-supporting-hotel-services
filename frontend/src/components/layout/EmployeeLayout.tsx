@@ -10,7 +10,6 @@ const tabs = [
   { key: "today",        link: "/employee/today-schedules" },
   { key: "requested",    link: "/employee/requested-schedules" },
   { key: "calendar",     link: "/employee/calendar" },
-  { key: "reservations", link: "/employee/reservations" },
   { key: "reviews",      link: "/employee/reviews" },
 ] as const;
 

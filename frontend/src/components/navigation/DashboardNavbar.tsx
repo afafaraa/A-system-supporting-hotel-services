@@ -98,7 +98,7 @@ function DashboardNavbar({ tabs, arrowButtons=false }: DashboardNavbarProps) {
         {tabs.map((tab) => (
           <Box key={tab.link} display="flex" flex="1 0 0" px={3} justifyContent="center" alignItems="center" zIndex={1}
                fontWeight={600} fontSize="14px" color={activeLink === tab.link ? "primary.contrastText" : "text.primary"}
-               sx={{cursor: "pointer", userSelect: "none"}}
+               sx={{cursor: "pointer", userSelect: "none", textWrap: "nowrap"}}
                onClick={() => navigate(tab.link)}
           >
             {tab.name}

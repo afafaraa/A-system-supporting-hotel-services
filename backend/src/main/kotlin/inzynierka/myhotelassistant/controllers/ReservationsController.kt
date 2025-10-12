@@ -95,15 +95,51 @@ class ReservationsController(
     fun checkInGuestReservation(
         @PathVariable reservationId: String,
         @RequestParam paid: Boolean,
-    ) {
-        reservationsService.checkInGuestReservation(reservationId, paid)
-    }
+    ): ReservationDTO = reservationsService.checkInGuestReservation(reservationId, paid)
 
     @PatchMapping("/{reservationId}/check-out")
     @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).EMPLOYEE.name)")
     fun checkOutGuestReservation(
         @PathVariable reservationId: String,
-    ) {
-        reservationsService.checkOutGuestReservation(reservationId)
-    }
+    ): ReservationDTO = reservationsService.checkOutGuestReservation(reservationId)
+
+    @GetMapping("/today-check-ins")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun getTodayCheckIns(
+        @RequestParam(required = false) date: LocalDate = LocalDate.now(),
+    ): List<ReservationDTO> = reservationsService.getCheckInsFromDay(date)
+
+    @GetMapping("/today-check-outs")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun getTodayCheckOuts(
+        @RequestParam(required = false) date: LocalDate = LocalDate.now(),
+    ): List<ReservationDTO> = reservationsService.getCheckOutsFromDay(date)
+
+    @GetMapping("/upcoming-check-ins")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun getUpcomingCheckIns(): List<ReservationDTO> = reservationsService.getUpcomingCheckIns()
+
+    @GetMapping("/upcoming-check-outs")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun getUpcomingCheckOuts(): List<ReservationDTO> = reservationsService.getUpcomingCheckOuts()
+
+    data class CountDTO(
+        val count: Long,
+    )
+
+    @GetMapping("/overdue-check-ins")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun getOverdueCheckIns(): List<ReservationDTO> = reservationsService.getOverdueCheckIns()
+
+    @GetMapping("/overdue-check-ins/count")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun countOverdueCheckIns() = CountDTO(reservationsService.countOverdueCheckIns())
+
+    @GetMapping("/overdue-check-outs")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun getOverdueCheckOuts(): List<ReservationDTO> = reservationsService.getOverdueCheckOuts()
+
+    @GetMapping("/overdue-check-outs/count")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun countOverdueCheckOuts() = CountDTO(reservationsService.countOverdueCheckOuts())
 }

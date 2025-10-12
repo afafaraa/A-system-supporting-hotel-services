@@ -523,9 +523,9 @@ class DatabaseSeeder(
     }
 
     private fun createReservations() {
+        if (reservationsService.isAnyExist()) return
         val guests = userRepo.findByRole(Role.GUEST)
         val rooms = roomRepo.findAll()
-        if (reservationsService.isAnyExist()) return
         guests.plus(guests).forEach { guest ->
             val room = rooms.random()
             val now = LocalDate.now()

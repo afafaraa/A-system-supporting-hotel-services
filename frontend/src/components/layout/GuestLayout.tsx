@@ -1,13 +1,8 @@
 import Box from "@mui/system/Box";
 import { Outlet } from "react-router-dom";
-import GuestNavbar from "./GuestNavbar.tsx";
-import NotificationsContainer from "../../../components/ui/NotificationsContainer.tsx"
+import NotificationsContainer from "../ui/NotificationsContainer.tsx"
 import GlobalStyles from "@mui/material/GlobalStyles";
-
-export type PageState = {
-  label: string;
-  path: string;
-};
+import DashboardNavbar from "../navigation/DashboardNavbar.tsx";
 
 const subpages = [
   { label: "Available Services", path: "available" },
@@ -22,7 +17,7 @@ function GuestLayout() {
     <div style={{ display: "flex", gap: "1rem" }}>
       <Box width={{ xs: "100%", md: "70%" }}>
         {globalStyles}
-        <GuestNavbar subpages={subpages} />
+        <DashboardNavbar tabs={subpages.map(s => ({name: s.label, link: "/guest/" + s.path}))} />
         <Outlet />
       </Box>
       <Box width="30%" display={{ xs: "none", md: "block" }}>
