@@ -31,7 +31,6 @@ function ReservationDialog({
   >('idle');
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
-  console.log(JSON.stringify(room));
 
   const handleAddToCart = (room: Room) => {
     dispatch(
@@ -94,7 +93,6 @@ function ReservationDialog({
           <TextField
             label="Check-in Date"
             type="date"
-            InputLabelProps={{ shrink: true }}
             fullWidth
             value={checkIn}
             onChange={(e) => setCheckIn(e.target.value)}
@@ -102,7 +100,6 @@ function ReservationDialog({
           <TextField
             label="Check-out Date"
             type="date"
-            InputLabelProps={{ shrink: true }}
             fullWidth
             value={checkOut}
             onChange={(e) => setCheckOut(e.target.value)}

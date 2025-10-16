@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Typography, Box, IconButton, useTheme } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -14,14 +14,12 @@ import { RoomStandard } from '../../../types/room.ts';
 export type CartProps = {
   id: string;
   type: 'SERVICE' | 'RESERVATION';
-  // for services
   name?: string;
   employeeId?: string;
   employeeFullName?: string;
   imageUrl?: string;
-  price?: number; // either service price or total room price
+  price?: number;
   datetime?: string;
-  // for reservation
   standard?: RoomStandard;
   pricePerNight?: number;
   checkIn?: string;
@@ -43,41 +41,52 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
 
   const [cart, setCart] = useState<CartProps[]>([]);
 
+  const calculateReservationPrice = (checkIn?: string, checkOut?: string, pricePerNight?: number): number => {
+    console.log(checkIn, checkOut, pricePerNight);
+    if (!checkIn || !checkOut || !pricePerNight) return 0;
+
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+    const nights = Math.max(
+      1,
+      Math.floor(
+        (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24)
+      )
+    );
+
+    return nights * pricePerNight;
+  };
+
   const fetchCartData = useCallback(async () => {
     const cartList: CartProps[] = [];
     if (shoppingCart.length > 0) {
       for (const item of shoppingCart) {
+        let cartItem: CartProps;
+        try {
           if (item.type === 'SERVICE') {
-            try {
-              const response = await axiosAuthApi.get(
-                `/schedule/get/cart/id/${item.id}`
-              );
-              const cartItem: CartProps = response.data;
-              if (cartItem) cartList.push(cartItem);
-            } catch (e) {
-              console.error(e);
-            }
+            const response = await axiosAuthApi.get(`/schedule/get/cart/id/${item.id}`);
+            cartItem = response.data;
+            cartItem.type = item.type
+            if (cartItem) cartList.push(cartItem);
+          } else if (item.type === 'RESERVATION') {
+            const response = await axiosAuthApi.get(`/rooms/by/number/${item.id}`);
+            cartItem = response.data;
+            cartItem.id = response.data.number;
+            cartItem.checkIn = item.checkIn;
+            cartItem.checkOut = item.checkOut;
+            cartItem.guestCount = item.guestCount;
+            cartItem.type = item.type
+            if (cartItem) cartList.push(cartItem);
           }
-          else if (item.type === 'RESERVATION') {
-            try {
-              const response = await axiosAuthApi.get(
-                `/rooms/by/number/${item.id}`
-              );
-              const cartItem: CartProps = response.data;
-              cartItem.id = response.data.number;
-              cartItem.checkIn = item.checkIn;
-              cartItem.checkOut = item.checkOut;
-              cartItem.guestCount = item.guestCount;
-              if (cartItem) cartList.push(cartItem);
-            } catch (e) {
-              console.error(e);
-            }
-          }
+        } catch (e) {
+          console.error(e);
+        }
       }
     }
     setCart(cartList);
   }, [shoppingCart]);
 
+  console.log(cart)
   useEffect(() => {
     if (open) {
       fetchCartData();
@@ -104,8 +113,18 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
     }
   };
 
-    if (!open) return null;
+  const totalPrice = useMemo(() => cart.reduce((acc, curr) => {
+    console.log(curr)
+    if (curr.type === 'SERVICE') {
+      return acc + (curr.price ?? 0);
+    }
+    if (curr.type === 'RESERVATION') {
+      return acc + calculateReservationPrice(curr.checkIn, curr.checkOut, curr.pricePerNight);
+    }
+    return acc;
+  }, 0), [cart]);
 
+  if (!open) return null;
   return (
     <>
       <Box
@@ -185,10 +204,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
           >
             <Typography variant="body1">Total price:</Typography>
             <Typography variant="body1" fontWeight="700">
-              {cart.length > 0
-                ? cart.reduce((acc, curr) => acc + (curr.price ?? 0), 0).toFixed(2)
-                : 0}{' '}
-              $
+              {totalPrice.toFixed(2)} $
             </Typography>
           </div>
         </Box>

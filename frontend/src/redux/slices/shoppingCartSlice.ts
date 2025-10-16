@@ -42,11 +42,6 @@ const shoppingCartSlice = createSlice({
     ) => {
       state.shoppingCart = state.shoppingCart.filter((item) => {
         if (item.type === 'RESERVATION') {
-            console.log(item.checkIn)
-            console.log(item.checkOut)
-            console.log(action.payload.checkIn)
-            console.log(action.payload.checkOut)
-            console.log(action.payload)
             const sameRoom = item.id === action.payload.id;
             const sameDates =
                 (!item.checkIn || !action.payload.checkIn || item.checkIn === action.payload.checkIn) &&
@@ -56,7 +51,6 @@ const shoppingCartSlice = createSlice({
           return item.id !== action.payload.id;
         }
       });
-      console.log(state.shoppingCart)
       localStorage.setItem('SHOPPING_CART', JSON.stringify(state.shoppingCart));
     },
 

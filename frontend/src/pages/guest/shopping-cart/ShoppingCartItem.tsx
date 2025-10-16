@@ -21,7 +21,6 @@ function ShoppingCartItem({
   const theme = useTheme();
   const dispatch = useDispatch();
 
-  console.log(item);
   const removeShoppingCartItem = () => {
     dispatch(
       removeItem({
@@ -34,7 +33,7 @@ function ShoppingCartItem({
     setCart(cart.filter((c) => !(c.id === item.id)));
   };
 
-  const calculateTotalPrice = useMemo(() => {
+   const calculateTotalPrice = useMemo(() => {
     if (!item.checkIn || !item.checkOut || !item.pricePerNight) return 0;
     const checkInDate = new Date(item.checkIn);
     const checkOutDate = new Date(item.checkOut);
