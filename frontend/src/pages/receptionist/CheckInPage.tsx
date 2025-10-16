@@ -121,10 +121,8 @@ function CheckInPage() {
       specialRequests: specialRequests.trim() || null,
       withCheckIn: withCheckIn,
     }
-    console.log("Wysyłany payload:", payload)
     axiosAuthApi.post<ReservationWithUserAccount>("/reservations/with-new-guest", payload)
       .then(res => {
-        console.log(res);
         setSuccessModalData(res.data)
       })
       .catch(err => {

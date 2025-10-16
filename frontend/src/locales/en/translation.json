@@ -444,6 +444,11 @@
       "go_home": "Go back to Home Page"
     },
     "receptionist": {
+      "navbar": {
+        "arrival-departures": "Arrival and Departures",
+        "reservations": "Reservations",
+        "guest-service": "Guest service"
+      },
       "guest-service": {
         "title": "Guest Service",
         "subtitle": "Perform an action related to guest service",

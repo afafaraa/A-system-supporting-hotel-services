@@ -445,6 +445,11 @@
       "go_home": "Wróć do strony głównej"
     },
     "receptionist": {
+      "navbar": {
+        "arrival-departures": "Meldunki i wymeldowania",
+        "reservations": "Rezerwacje",
+        "guest-service": "Obsługa gości"
+      },
       "guest-service": {
         "title": "Obsługa gości",
         "subtitle": "Wykonaj akcję związaną z obsługą gości",

@@ -268,12 +268,9 @@ class ReservationsService(
         val savedReservation = reservationsRepository.save(reservation)
         val refreshedReservation = findByIdOrThrow(savedReservation.id!!)
 
-        val returnedObject =
-            ReservationsController.ReservationCreateWithNewGuestResponseDTO(
-                reservation = transformToDTO(refreshedReservation),
-                userAccount = addUserResponse,
-            )
-        println("Zwracamy do klienta: $refreshedReservation, status: ${refreshedReservation.status}")
-        return returnedObject
+        return ReservationsController.ReservationCreateWithNewGuestResponseDTO(
+            reservation = transformToDTO(refreshedReservation),
+            userAccount = addUserResponse,
+        )
     }
 }
