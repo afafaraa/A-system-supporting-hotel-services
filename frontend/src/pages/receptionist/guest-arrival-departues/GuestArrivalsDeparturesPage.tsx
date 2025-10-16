@@ -19,6 +19,7 @@ import {styled} from "@mui/material/styles";
 import {formatDateRange} from "../../../utils/dateFormatting.ts";
 import CheckInReservationDialog from "./CheckInReservationDialog.tsx";
 import CheckOutReservationDialog from "./CheckOutReservationDialog.tsx";
+import useTranslationWithPrefix from "../../../locales/useTranslationWithPrefix.tsx";
 
 const StyledBadge = styled(Badge)<BadgeProps>({'& .MuiBadge-badge': {right: -18, top: 11}});
 type ReservationLists = "OVERDUE" | "TODAY" | "UPCOMING";
@@ -26,6 +27,8 @@ type OverdueProps = {count: number, open: boolean, list: Reservation[], fetched:
 const initialOverdue: OverdueProps = {count: 0, open: false, list: [], fetched: false, error: null};
 
 function GuestArrivalsDeparturesPage() {
+  const {t: tc} = useTranslationWithPrefix("pages.receptionist.guest-arrival-departures");
+
   const [checkIns, setCheckIns] = useState<Reservation[]>([]);
   const [checkInsError, setCheckInsError] = useState<string | null>(null);
   const [selectedCheckIn, setSelectedCheckIn] = useState<{reservation: Reservation | null, list: ReservationLists}>({reservation: null, list: "TODAY"});
@@ -83,8 +86,8 @@ function GuestArrivalsDeparturesPage() {
 
   return (
     <SectionCard>
-      <SectionTitle title={<><LuggageOutlinedIcon /> Przyjazdy i wyjazdy gości</>}
-                    subtitle={"Lista gości przyjeżdżających i wyjeżdżających dzisiaj"}/>
+      <SectionTitle title={<><LuggageOutlinedIcon /> {tc("title")}</>}
+                    subtitle={tc("subtitle")}/>
 
       <Stack direction={{xs: "column", md: "row"}} columnGap={2} rowGap={4} alignItems="flex-start">
 
@@ -96,7 +99,7 @@ function GuestArrivalsDeparturesPage() {
             if (!selectedCheckIn.reservation) setOverdueCheckIns(prev => ({...prev, open: false}))}}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
               <StyledBadge badgeContent={overdueCheckIns.count} color="secondary" showZero>
-                <Typography>Overdue check-ins</Typography>
+                <Typography>{tc("overdue-check-ins")}</Typography>
               </StyledBadge>
               <IconButton onClick={() => setOverdueCheckIns(prev => ({...prev, open: !prev.open}))}
               sx={{transform: overdueCheckIns.open ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.3s ease"}}>
@@ -109,7 +112,7 @@ function GuestArrivalsDeparturesPage() {
               {overdueCheckIns.list.map((reservation) => (
                 <ReservationCard key={reservation.id} reservation={reservation} onClick={() => setSelectedCheckIn({list: "OVERDUE", reservation})}>
                   {reservation.status !== "CHECKED_IN" &&
-                      <Button variant="outlined" startIcon={<HowToRegOutlinedIcon />}>Zamelduj</Button>}
+                      <Button variant="outlined" startIcon={<HowToRegOutlinedIcon />}>{tc("check-in-button")}</Button>}
                 </ReservationCard>
               ))}
             </Box>
@@ -117,18 +120,18 @@ function GuestArrivalsDeparturesPage() {
 
           {/* TODAY CHECK-INS */}
           <SectionCard size={2} mb={2}>
-            <SectionTitle smaller title={"Today check-ins"} mb={0.3}/>
+            <SectionTitle smaller title={tc("today-check-ins")} mb={0.3}/>
             <Box overflow="auto" minHeight={200} maxHeight={600}>
               {checkInsError !== null ?
                 <Alert severity="error" sx={{mt: 1, mb: 0.3}}>{checkInsError}</Alert>
                 :
                 checkIns.length === 0 ?
-                  <p>Brak potwierdzonych przyjazdów na dzisiaj.</p>
+                  <p>{tc("no-check-ins-today")}</p>
                   : (
                     checkIns.map((reservation) => (
                       <ReservationCard key={reservation.id} reservation={reservation} onClick={() => setSelectedCheckIn({list: "TODAY", reservation})}>
                         {reservation.status !== "CHECKED_IN" &&
-                            <Button variant="outlined" startIcon={<HowToRegOutlinedIcon />}>Zamelduj</Button>}
+                            <Button variant="outlined" startIcon={<HowToRegOutlinedIcon />}>{tc("check-in-button")}</Button>}
                       </ReservationCard>
                     ))
                   )
@@ -138,18 +141,18 @@ function GuestArrivalsDeparturesPage() {
 
           {/* UPCOMING CHECK-INS */}
           <SectionCard size={2} sx={{backgroundColor: "background.default"}}>
-            <SectionTitle smaller title={"Upcoming check-ins"} mb={0.3}/>
+            <SectionTitle smaller title={tc("upcoming-check-ins")} mb={0.3}/>
             <Box overflow="auto" minHeight={400} maxHeight={600}>
               {upcomingCheckInsError !== null ?
                 <Alert severity="error" sx={{mt: 1, mb: 0.3}}>{upcomingCheckInsError}</Alert>
                 :
                 upcomingCheckIns.length === 0 ?
-                  <p>Brak nadchodzących przyjazdów.</p>
+                  <p>{tc("no-upcoming-check-ins")}</p>
                   : (
                     upcomingCheckIns.map((reservation) => (
                       <ReservationCard key={reservation.id} reservation={reservation} onClick={() => setSelectedCheckIn({list: "UPCOMING", reservation})}>
                         {reservation.status !== "CHECKED_IN" &&
-                            <Button variant="outlined" startIcon={<HowToRegOutlinedIcon />}>Zamelduj</Button>}
+                            <Button variant="outlined" startIcon={<HowToRegOutlinedIcon />}>{tc("check-in-button")}</Button>}
                       </ReservationCard>
                     ))
                   )
@@ -167,7 +170,7 @@ function GuestArrivalsDeparturesPage() {
             if (!selectedCheckOut.reservation) setOverdueCheckOuts(prev => ({...prev, open: false}))}}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
               <StyledBadge badgeContent={overdueCheckOuts.count} color="secondary" showZero>
-                <Typography>Overdue check-outs</Typography>
+                <Typography>{tc("overdue-check-outs")}</Typography>
               </StyledBadge>
               <IconButton onClick={() => setOverdueCheckOuts(prev => ({...prev, open: !prev.open}))}
                           sx={{transform: overdueCheckOuts.open ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.3s ease"}}>
@@ -180,7 +183,7 @@ function GuestArrivalsDeparturesPage() {
               {overdueCheckOuts.list.map((reservation) => (
                 <ReservationCard key={reservation.id} reservation={reservation} onClick={() => setSelectedCheckOut({list: "OVERDUE", reservation})}>
                   {reservation.status !== "CHECKED_IN" &&
-                      <Button variant="outlined" startIcon={<HowToRegOutlinedIcon />}>Zamelduj</Button>}
+                      <Button variant="outlined" startIcon={<HowToRegOutlinedIcon />}>{tc("check-out-button")}</Button>}
                 </ReservationCard>
               ))}
             </Box>
@@ -188,18 +191,18 @@ function GuestArrivalsDeparturesPage() {
 
           {/* TODAY CHECK-OUTS */}
           <SectionCard  size={2} mb={2}>
-            <SectionTitle smaller title={"Today check-outs"} mb={0.3}/>
+            <SectionTitle smaller title={tc("today-check-outs")} mb={0.3}/>
             <Box overflow="auto" minHeight={200} maxHeight={600}>
               {checkOutsError !== null ?
                 <Alert severity="error" sx={{mt: 1, mb: 0.3}}>{checkOutsError}</Alert>
                 :
                 checkOuts.length === 0 ?
-                  <p>Brak wyjazdów zaplanowanych na dzisiaj.</p>
+                  <p>{tc("no-check-outs-today")}</p>
                   : (
                     checkOuts.map((reservation) => (
                       <ReservationCard key={reservation.id} reservation={reservation} onClick={() => setSelectedCheckOut({list: "TODAY", reservation})}>
                         {reservation.status !== "COMPLETED" &&
-                            <Button variant="outlined" startIcon={<HowToRegOutlinedIcon />}>Wymelduj</Button>}
+                            <Button variant="outlined" startIcon={<HowToRegOutlinedIcon />}>{tc("check-out-button")}</Button>}
                       </ReservationCard>
                     ))
                   )
@@ -209,18 +212,18 @@ function GuestArrivalsDeparturesPage() {
 
           {/* UPCOMING CHECK-OUTS */}
           <SectionCard size={2} sx={{backgroundColor: "background.default"}}>
-            <SectionTitle smaller title={"Upcoming check-outs"} mb={0.3}/>
+            <SectionTitle smaller title={tc("upcoming-check-outs")} mb={0.3}/>
             <Box overflow="auto" minHeight={400} maxHeight={600}>
               {upcomingCheckOutsError !== null ?
                 <Alert severity="error" sx={{mt: 1, mb: 0.3}}>{upcomingCheckOutsError}</Alert>
                 :
                 upcomingCheckOuts.length === 0 ?
-                  <p>Brak nadchodzących wyjazdów.</p>
+                  <p>{tc("no-upcoming-check-outs")}</p>
                   : (
                     upcomingCheckOuts.map((reservation) => (
                       <ReservationCard key={reservation.id} reservation={reservation} onClick={() => setSelectedCheckOut({list: "UPCOMING", reservation})}>
                         {reservation.status !== "COMPLETED" &&
-                            <Button variant="outlined" startIcon={<HowToRegOutlinedIcon />}>Wymelduj</Button>}
+                            <Button variant="outlined" startIcon={<HowToRegOutlinedIcon />}>{tc("check-out-button")}</Button>}
                       </ReservationCard>
                     ))
                   )
@@ -279,20 +282,24 @@ const colorFromStatus: Record<string, string> = {
   "CANCELLED": "text.primary"
 } as const;
 
-const ReservationCard = ({reservation, onClick, children}: {reservation: Reservation, onClick: () => void, children?: ReactNode}) => (
-  <SectionCard size={2} mt={2} sx={{bgcolor: "transparent"}}
-               clickable onClick={onClick}
-               display="flex" alignItems="center" justifyContent="space-between" gap={2}>
-    <ServiceIcon icon={roomStandardIcon(reservation.roomStandard)}>
-      <Typography fontSize="16px" fontWeight={500}>Room {reservation.roomNumber} | {reservation.roomStandard}</Typography>
-      <Typography fontSize="12px" color="text.secondary">Gość: {reservation.guestFullName}</Typography>
-      <Typography fontSize="12px" color="text.secondary">{formatDateRange(reservation.checkIn, reservation.checkOut)}</Typography>
-      <Typography fontSize="14px" mt={0.5} color={colorFromStatus[reservation.status] || "text.primary"} borderRadius="9px">
-        {reservation.status}
-      </Typography>
-    </ServiceIcon>
-    <Box>{children}</Box>
-  </SectionCard>
-);
+const ReservationCard = ({reservation, onClick, children}: {reservation: Reservation, onClick: () => void, children?: ReactNode}) => {
+  const {t: tc} = useTranslationWithPrefix("pages.receptionist.guest-arrival-departures");
+
+  return (
+    <SectionCard size={2} mt={2} sx={{bgcolor: "transparent"}}
+                 clickable onClick={onClick}
+                 display="flex" alignItems="center" columnGap={2} rowGap={1} flexWrap="wrap">
+      <ServiceIcon icon={roomStandardIcon(reservation.roomStandard)}>
+        <Typography fontSize="16px" fontWeight={500}>{tc("room-label")} {reservation.roomNumber} | {reservation.roomStandard}</Typography>
+        <Typography fontSize="12px" color="text.secondary">{tc("guest-label")}: {reservation.guestFullName}</Typography>
+        <Typography fontSize="12px" color="text.secondary">{formatDateRange(reservation.checkIn, reservation.checkOut)}</Typography>
+        <Typography fontSize="14px" mt={0.5} color={colorFromStatus[reservation.status] || "text.primary"} borderRadius="9px">
+          {reservation.status}
+        </Typography>
+      </ServiceIcon>
+      <Box display="flex" justifyContent="flex-end" flexGrow={1}>{children}</Box>
+    </SectionCard>
+  );
+};
 
 export default GuestArrivalsDeparturesPage;

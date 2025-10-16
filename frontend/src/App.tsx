@@ -35,7 +35,6 @@ import HotelBookingPage from './pages/guest/hotel-booking/HotelBookingPage.tsx';
 import ReceptionistLayout from "./components/layout/ReceptionistLayout.tsx";
 import GuestArrivalsDeparturesPage from "./pages/receptionist/guest-arrival-departues/GuestArrivalsDeparturesPage.tsx";
 import ReceptionistCheckInPage from "./pages/receptionist/CheckInPage.tsx";
-import ReceptionistCheckOutPage from "./pages/receptionist/CheckOutPage.tsx";
 import ReceptionistGuestService from "./pages/receptionist/GuestService.tsx";
 
 function App(){
@@ -69,7 +68,6 @@ function App(){
                 <Route path="reservations" element={<EmployeeReservationsPage />} />
                 <Route path="guest-service" element={<ReceptionistGuestService />}>
                   <Route path="check-in" element={<ReceptionistCheckInPage />} />
-                  <Route path="check-out" element={<ReceptionistCheckOutPage />} />
                 </Route>
               </Route>
             </Route>

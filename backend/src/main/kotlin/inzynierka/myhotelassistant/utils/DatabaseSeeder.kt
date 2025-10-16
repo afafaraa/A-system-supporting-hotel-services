@@ -526,35 +526,35 @@ class DatabaseSeeder(
         if (reservationsService.isAnyExist()) return
         val guests = userRepo.findByRole(Role.GUEST)
         val rooms = roomRepo.findAll()
-        guests.plus(guests).forEach { guest ->
-            val room = rooms.random()
-            val now = LocalDate.now()
-            val checkIn = now.plus(Random.nextInt(-20, 30).toLong(), ChronoUnit.DAYS)
-            val checkOut = checkIn.plus(Random.nextInt(1, 14).toLong(), ChronoUnit.DAYS)
-            if (reservationsService.isRoomAvailable(room.number, checkIn, checkOut)) {
-                val reservation =
-                    ReservationEntity(
-                        roomNumber = room.number,
-                        guestId = guest.id!!,
-                        guestsCount = Random.nextInt(1, room.capacity + 1),
-                        checkIn = checkIn,
-                        checkOut = checkOut,
-                        reservationPrice = room.pricePerNight * ChronoUnit.DAYS.between(checkIn, checkOut),
+        repeat(8) {
+            guests.forEach { guest ->
+                val now = LocalDate.now()
+                val checkIn = now.plusDays(Random.nextInt(-4, 2).toLong())
+                val checkOut = checkIn.plusDays(Random.nextInt(1, 4).toLong())
+                val room = rooms.shuffled().find { room -> reservationsService.isRoomAvailable(room.number, checkIn, checkOut) }
+                if (room != null) {
+                    val reservation =
+                        ReservationEntity(
+                            roomNumber = room.number,
+                            guestId = guest.id!!,
+                            guestsCount = Random.nextInt(1, room.capacity + 1),
+                            checkIn = checkIn,
+                            checkOut = checkOut,
+                            reservationPrice = room.pricePerNight * ChronoUnit.DAYS.between(checkIn, checkOut),
+                        )
+                    reservation.status =
+                        if (checkOut.isBefore(now)) {
+                            listOf(ReservationStatus.COMPLETED, ReservationStatus.CANCELED, ReservationStatus.REJECTED).random()
+                        } else {
+                            listOf(ReservationStatus.REQUESTED, ReservationStatus.CONFIRMED, ReservationStatus.CHECKED_IN).random()
+                        }
+                    reservationsService.save(reservation)
+                    logger.info("Placed reservation for guest '${guest.username}' in room '${room.number}'")
+                } else {
+                    logger.warn(
+                        "Cannot place reservation for guest '${guest.username}' because there wasn't any available room.",
                     )
-                reservation.status =
-                    if (checkOut.isBefore(now)) {
-                        listOf(ReservationStatus.COMPLETED, ReservationStatus.CANCELED, ReservationStatus.REJECTED).random()
-                    } else if (checkIn.isAfter(now)) {
-                        ReservationStatus.REQUESTED
-                    } else {
-                        ReservationStatus.CONFIRMED
-                    }
-                reservationsService.save(reservation)
-                logger.info("Placed reservation for guest '${guest.username}' in room '${room.number}'")
-            } else {
-                logger.warn(
-                    "Cannot place reservation for guest '${guest.username}' in room '${room.number}' because the room is not available.",
-                )
+                }
             }
         }
     }

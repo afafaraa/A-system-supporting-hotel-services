@@ -16,8 +16,12 @@ import java.util.UUID
 @Service
 class FileStorageService(
     @Value("\${app.upload.dir:./uploads}") uploadDir: String,
+    @Value("\${app.upload.max-file-size:10MB}") maxFileSizeString: String,
+    @param:Value("#{'\${app.upload.allowed-image-types:image/jpeg,image/jpg,image/png,image/webp}'.split(',')}")
+    private val allowedImageTypes: List<String>,
 ) {
     private val fileStorageLocation: Path = Paths.get(uploadDir).toAbsolutePath().normalize()
+    private val maxFileBytes: Long = parseBytes(maxFileSizeString)
 
     init {
         try {
@@ -25,6 +29,26 @@ class FileStorageService(
         } catch (e: Exception) {
             throw RuntimeException("Could not create the directory where the uploaded files will be stored.", e)
         }
+    }
+
+    private fun parseBytes(size: String): Long {
+        try {
+            val number = size.dropLast(2).toLong()
+            return when (size.takeLast(2).uppercase()) {
+                "KB" -> number * 1024
+                "MB" -> number * 1024 * 1024
+                "GB" -> number * 1024 * 1024 * 1024
+                else -> number
+            }
+        } catch (_: Exception) {
+            return 10 * 1024 * 1024L // 10MB
+        }
+    }
+
+    fun verifyFile(file: MultipartFile) {
+        if (file.isEmpty) throw IllegalArgumentException("Error: File is empty")
+        if (file.contentType !in allowedImageTypes) throw IllegalArgumentException("Error: Illegal file format, try jpg/jpeg/png/webp")
+        if (file.size > maxFileBytes) throw IllegalArgumentException("Error: File cannot be larger than 10MB")
     }
 
     fun storeFile(file: MultipartFile): String {
@@ -62,7 +86,7 @@ class FileStorageService(
         try {
             val filePath = this.fileStorageLocation.resolve(fileName).normalize()
             Files.deleteIfExists(filePath)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             false
         }
 }

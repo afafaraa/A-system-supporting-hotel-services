@@ -10,6 +10,7 @@ import {Stack} from "@mui/material";
 import {formatDateRange} from "../../../utils/dateFormatting.ts";
 import {SectionCard} from "../../../theme/styled-components/SectionCard.ts";
 import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
+import useTranslationWithPrefix from "../../../locales/useTranslationWithPrefix.tsx";
 
 const DialogSection = ({title, children}: {title: ReactElement | string, children: ReactNode}) => (
   <Box fontSize="14px" flexBasis="calc(50% - 8px)">
@@ -18,37 +19,41 @@ const DialogSection = ({title, children}: {title: ReactElement | string, childre
   </Box>
 )
 
-const ReservationTitle = ({reservation}: {reservation: Reservation}) => (
-  <ServiceIcon icon={roomStandardIcon(reservation.roomStandard)}>
-    <Typography fontWeight="600" fontSize="21px" lineHeight={1.6}>Rezerwacja pokoju {reservation.roomNumber}</Typography>
-    <Typography fontWeight="500" fontSize="16px" lineHeight={1.6} color="text.secondary" display="flex" alignItems="center" gap={1} sx={{ml: "-2px"}}><PersonOutlineOutlinedIcon /> {reservation.guestFullName}</Typography>
-  </ServiceIcon>
-)
+const ReservationTitle = ({reservation}: {reservation: Reservation}) => {
+  const {t: tc} = useTranslationWithPrefix("pages.receptionist.reservation-dialog.common");
+  return (
+    <ServiceIcon icon={roomStandardIcon(reservation.roomStandard)}>
+      <Typography fontWeight="600" fontSize="21px" lineHeight={1.6}>{tc("reservation-title", {room: reservation.roomNumber})}</Typography>
+      <Typography fontWeight="500" fontSize="16px" lineHeight={1.6} color="text.secondary" display="flex" alignItems="center" gap={1} sx={{ml: "-2px"}}><PersonOutlineOutlinedIcon /> {reservation.guestFullName}</Typography>
+    </ServiceIcon>
+  );
+}
 
 const ReservationDetails = ({reservation}: {reservation: Reservation}) => {
   const {t} = useTranslation();
+  const {t: tc} = useTranslationWithPrefix("pages.receptionist.reservation-dialog.common");
   return <>
     <Stack mt={1} direction="row" flexWrap="wrap" gap={2} mb={2}>
-      <DialogSection title={"ID rezerwacji"}>
+      <DialogSection title={tc("reservation-id")}>
         {reservation.id}
       </DialogSection>
-      <DialogSection title={"Reservation status"}>
+      <DialogSection title={tc("reservation-status")}>
         {reservation.status}
       </DialogSection>
-      <DialogSection title={"Data pobytu"}>
+      <DialogSection title={tc("stay-dates")}>
         {formatDateRange(reservation.checkIn, reservation.checkOut)}
       </DialogSection>
-      <DialogSection title={"Room standard"}>
+      <DialogSection title={tc("room-standard")}>
         {reservation.roomStandard}
       </DialogSection>
-      <DialogSection title={"Email gościa"}>
+      <DialogSection title={tc("guest-email")}>
         {reservation.guestEmail}
       </DialogSection>
-      <DialogSection title={"Liczba gości"}>
+      <DialogSection title={tc("guest-count")}>
         {reservation.guestsCount}
       </DialogSection>
-      <DialogSection title={"Reservation price"}>
-        {reservation.reservationPrice} $ {reservation.paid && " | Opłacona"}
+      <DialogSection title={tc("reservation-price")}>
+        {reservation.reservationPrice} $ {reservation.paid && " | " + tc("paid")}
       </DialogSection>
     </Stack>
     <SectionCard size={2} sx={{bgcolor: "background.default", borderWidth: 0, fontSize: "90%"}}>

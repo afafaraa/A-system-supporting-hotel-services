@@ -30,6 +30,8 @@ logging:
   level:
     inzynierka.myhotelassistant: DEBUG
 app:
+  security:
+    password-length: 10
   reservations:
     cancellation:
       days-before: 7

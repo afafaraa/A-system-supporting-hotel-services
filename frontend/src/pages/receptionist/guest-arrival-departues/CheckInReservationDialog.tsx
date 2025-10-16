@@ -4,9 +4,11 @@ import {ChangeEvent, useState} from "react";
 import Reservation from "../../../types/reservation.ts";
 import {ReservationDetails, ReservationTitle} from "./CommonReservationDialogComponents.tsx";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
+import useTranslationWithPrefix from "../../../locales/useTranslationWithPrefix.tsx";
 
 
 function CheckInReservationDialog({reservation, onSuccess, onClose}: {reservation: Reservation | null, onSuccess: (reservation: Reservation) => void, onClose: () => void}) {
+  const {t: tc} = useTranslationWithPrefix("pages.receptionist.reservation-dialog.check-in");
   const [paymentChecked, setPaymentChecked] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,7 +26,7 @@ function CheckInReservationDialog({reservation, onSuccess, onClose}: {reservatio
     setError(null);
     axiosAuthApi.patch(`/reservations/${reservation.id}/check-in?11paid=${paymentChecked}`)
       .then(res => onSuccess(res.data))
-      .catch((error) => setError("Error during check-in: " + error.message));
+      .catch((error) => setError(tc("error-during-check-in") + ": " + error.message));
   }
 
   return (
@@ -36,10 +38,10 @@ function CheckInReservationDialog({reservation, onSuccess, onClose}: {reservatio
         </DialogTitle>
         <DialogContent>
           <ReservationDetails reservation={reservation}/>
-          {!reservation.paid &&
+          {!reservation.paid && reservation.status === "CONFIRMED" &&
               <FormControlLabel sx={{"& .MuiTypography-root": {fontSize: "14px"}, mt: 1}}
                                 control={<Checkbox value={paymentChecked} onChange={handlePaymentChange}/>}
-                                label="Potwierdzam, że płatność za pokój została dokonana"
+                                label={tc("confirm-payment-label")}
               />
           }
         </DialogContent>
@@ -48,14 +50,14 @@ function CheckInReservationDialog({reservation, onSuccess, onClose}: {reservatio
             <>
               {error && <Typography variant="caption" color="error"
                                     sx={{mr: 1, textWrap: "balance"}}>{error}</Typography>}
-              <Button onClick={handleClose} sx={{color: "text.disabled"}}>Anuluj</Button>
-              <Button onClick={handleCheckIn} disabled={!reservation.paid && !paymentChecked} color="primary" variant="contained" startIcon={<HowToRegOutlinedIcon />}>Zamelduj</Button>
+              <Button onClick={handleClose} sx={{color: "text.disabled"}}>{tc("cancel")}</Button>
+              <Button onClick={handleCheckIn} disabled={!reservation.paid && !paymentChecked} color="primary" variant="contained" startIcon={<HowToRegOutlinedIcon />}>{tc("check-in-button")}</Button>
             </>
             :
             reservation.status === "CHECKED_IN" ?
-              <Alert severity="success">You successfully checked-in the reservation</Alert>
+              <Alert severity="success">{tc("success-message")}</Alert>
               :
-              <Alert severity="error">Only confirmed reservations can be checked-in</Alert>
+              <Alert severity="error">{tc("only-confirmed-error")}</Alert>
           }
         </DialogActions>
       </>}

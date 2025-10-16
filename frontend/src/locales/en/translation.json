@@ -442,6 +442,83 @@
       "title": "Oops! Something went wrong.",
       "subtitle": "This is a fallback page for undefined routes.",
       "go_home": "Go back to Home Page"
+    },
+    "receptionist": {
+      "guest-service": {
+        "title": "Guest Service",
+        "subtitle": "Perform an action related to guest service",
+        "Main": "Main",
+        "Check-In": "Check-In"
+      },
+      "check-in": {
+        "title": "Add a guest to the hotel",
+        "subtitle": "Page where you can add a guest to the hotel who didn't have a prior reservation",
+        "date-range": "Stay period",
+        "available-rooms-in-range": "Available rooms in the selected period:",
+        "room-option": "Room {{number}} - {{standard}}, {{capacity}} ppl, {{price}} $/night",
+        "reservation-price": "Reservation price",
+        "guest-info": "Guest information",
+        "guest-count": "Number of guests",
+        "name": "Name",
+        "surname": "Surname",
+        "email": "Email",
+        "with-check-in": "I want to perform guest check-in at the same time",
+        "payment-confirmed": "I confirm that payment has been made",
+        "add-reservation": "Add reservation",
+        "and-check-in": "and check in the guest",
+        "loading-available-rooms": "Loading available rooms...",
+        "available-rooms-found": "Found {{count}} available rooms",
+        "error-loading-available-rooms": "Failed to fetch available rooms",
+        "loading-reservation-price": "Loading reservation price...",
+        "error-loading-reservation-price": "Failed to fetch reservation price",
+        "error-unable-to-add-reservation": "Unable to add reservation",
+        "reservation-added-success": "Reservation added successfully",
+        "reservation-data": "Reservation details:",
+        "user-login-data": "User login details:",
+        "username": "Username",
+        "password": "Password"
+            },
+            "reservation-dialog": {
+              "common": {
+                "reservation-title": "Room reservation {{room}}",
+                "reservation-id": "Reservation ID",
+                "reservation-status": "Reservation status",
+                "stay-dates": "Stay dates",
+                "room-standard": "Room standard",
+                "guest-email": "Guest email",
+                "guest-count": "Number of guests",
+                "reservation-price": "Reservation price",
+                "paid": "Paid"
+              },
+              "check-in": {
+                "confirm-payment-label": "I confirm that the room payment has been made",
+                "cancel": "Cancel",
+                "check-in-button": "Check in",
+                "success-message": "You successfully checked-in the reservation",
+                "only-confirmed-error": "Only confirmed reservations can be checked-in",
+                "error-during-check-in": "Error during check-in"
+              }
+      },
+      "guest-arrival-departures": {
+        "title": "Guest Arrivals and Departures",
+        "subtitle": "List of guests arriving and departing today",
+        "overdue-check-ins": "Overdue check-ins",
+        "overdue-check-outs": "Overdue check-outs",
+        "today-check-ins": "Today check-ins",
+        "today-check-outs": "Today check-outs",
+        "upcoming-check-ins": "Upcoming check-ins",
+        "upcoming-check-outs": "Upcoming check-outs",
+        "check-in-button": "Check in",
+        "check-out-button": "Check out",
+        "no-check-ins-today": "No confirmed arrivals for today.",
+        "no-check-outs-today": "No departures scheduled for today.",
+        "no-upcoming-check-ins": "No upcoming arrivals.",
+        "no-upcoming-check-outs": "No upcoming departures.",
+        "error-overdue-check-ins-count": "Error fetching overdue check-ins count",
+        "error-overdue-check-outs-count": "Error fetching overdue check-outs count",
+        "room-label": "Room",
+        "guest-label": "Guest"
+      }
     }
   },
   "common": {

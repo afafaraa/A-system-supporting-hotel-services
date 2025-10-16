@@ -1,6 +1,7 @@
 package inzynierka.myhotelassistant.models.service
 
 import inzynierka.myhotelassistant.controllers.ReservationsController
+import inzynierka.myhotelassistant.controllers.user.AddUserController
 import inzynierka.myhotelassistant.models.reservation.ReservationEntity
 import inzynierka.myhotelassistant.models.reservation.ReservationStatus
 import inzynierka.myhotelassistant.repositories.ReservationsRepository
@@ -237,5 +238,42 @@ class ReservationsService(
             checkOutDate = today,
             statuses = listOf(ReservationStatus.CHECKED_IN),
         )
+    }
+
+    fun createReservationWithNewGuest(
+        dto: ReservationsController.ReservationCreateWithNewGuestDTO,
+    ): ReservationsController.ReservationCreateWithNewGuestResponseDTO {
+        val (guestId, addUserResponse) =
+            userService.createAndSaveGuest(
+                AddUserController.AddUserRequest(
+                    email = dto.email,
+                    name = dto.name,
+                    surname = dto.surname,
+                    roomNumber = dto.roomNumber,
+                    checkInDate = dto.checkInDate,
+                    checkOutDate = dto.checkOutDate,
+                ),
+            )
+        val reservation =
+            ReservationEntity(
+                roomNumber = dto.roomNumber,
+                guestId = guestId,
+                guestsCount = dto.guestCount,
+                checkIn = dto.checkInDate,
+                checkOut = dto.checkOutDate,
+                reservationPrice = calculateReservationPrice(dto.roomNumber, dto.checkInDate, dto.checkOutDate),
+                specialRequests = dto.specialRequests,
+            )
+        reservation.status = if (dto.withCheckIn) ReservationStatus.CHECKED_IN else ReservationStatus.CONFIRMED
+        val savedReservation = reservationsRepository.save(reservation)
+        val refreshedReservation = findByIdOrThrow(savedReservation.id!!)
+
+        val returnedObject =
+            ReservationsController.ReservationCreateWithNewGuestResponseDTO(
+                reservation = transformToDTO(refreshedReservation),
+                userAccount = addUserResponse,
+            )
+        println("Zwracamy do klienta: $refreshedReservation, status: ${refreshedReservation.status}")
+        return returnedObject
     }
 }

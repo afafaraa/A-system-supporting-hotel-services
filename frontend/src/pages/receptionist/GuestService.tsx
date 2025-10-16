@@ -4,25 +4,30 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import SectionTitle from "../../components/ui/SectionTitle.tsx";
 import Stack from "@mui/material/Stack";
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
-import {Typography} from "@mui/material";
-import {useMemo} from "react";
+import {IconButton, Typography, useMediaQuery} from "@mui/material";
+import {useMemo, useState} from "react";
 import {styled} from "@mui/material/styles";
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
-import GroupRemoveOutlinedIcon from '@mui/icons-material/GroupRemoveOutlined';
+import RoomServiceOutlinedIcon from '@mui/icons-material/RoomServiceOutlined';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import useTranslationWithPrefix from "../../locales/useTranslationWithPrefix.tsx";
 
 const tabs = [
   { name: "Main",      icon: DashboardOutlinedIcon,   link: "/receptionist/guest-service" },
   { name: "Check-In",  icon: GroupAddOutlinedIcon,    link: "/receptionist/guest-service/check-in" },
-  { name: "Check-Out", icon: GroupRemoveOutlinedIcon, link: "/receptionist/guest-service/check-out" },
+  { name: "Service for guest (not implemented)", icon: RoomServiceOutlinedIcon, link: null }
 ] as const;
 
 function GuestService() {
+  const {t: tc} = useTranslationWithPrefix("pages.receptionist.guest-service");
   const navigate = useNavigate();
   const location = useLocation();
+  const isMobile = useMediaQuery(theme => theme.breakpoints.down("sm"));
+  const [expanded, setExpanded] = useState<boolean>(!isMobile);
 
   const activeLinkIndex = useMemo(() => {
-    return tabs.findIndex(t => t.link.startsWith(location.pathname));
+    return tabs.findIndex(t => t.link?.startsWith(location.pathname));
   }, [location.pathname]);
 
   const TabButton = styled(Box)(({ theme }) => ({
@@ -53,17 +58,35 @@ function GuestService() {
 
   return (
     <SectionCard size={0} display="flex" flexDirection="row" alignItems="flex-start">
-      <Box p={2} width="20%" alignSelf="stretch" bgcolor="background.default" borderRight="1px solid" borderColor="divider">
-        <SectionTitle smaller mb={0} title={<><PersonOutlineOutlinedIcon /> Obsługa gości</>}
-                      sx={{display: "flex", flexDirection: "column", alignItems: "center", mt: 1}}/>
+      <Box py={2} px={expanded ? 2 : 1} width={expanded ? "250px" : "56.8px"} alignSelf="stretch" bgcolor="background.default" borderRight="1px solid" borderColor="divider"
+           sx={{transition: "width 0.5s ease, padding 0.5s ease"}} flexShrink={0}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between">
+          <Box sx={{
+            display: "grid",
+            gridTemplateColumns: expanded ? "1fr" : "0fr",
+            transition: "grid-template-columns 0.5s ease",
+            overflow: "hidden",
+            fontSize: "1.2rem",
+            textWrap: "nowrap",
+          }}>
+            <Box component="span" display="flex" alignItems="center" gap={1}><PersonOutlineOutlinedIcon /> {tc("title")}</Box>
+
+          </Box>
+          <IconButton onClick={() => setExpanded(prev => !prev)}
+                      sx={{transform: expanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.5s ease"}}>
+            <ChevronRightIcon />
+          </IconButton>
+        </Stack>
         <Stack spacing={1} my={2}>
           {tabs.map((tab, index) => {
             const Icon = tab.icon;
             return (
-              <TabButton key={tab.name} onClick={() => navigate(tab.link)}
+              <TabButton key={tab.name} onClick={() => tab.link && navigate(tab.link)}
                          className={activeLinkIndex === index ? "active" : ""}>
-                <Icon sx={{fontSize: "150%", color: "var(--icon-color)"}} />
-                <Typography fontSize="15px" fontWeight="inherit">{tab.name}</Typography>
+                <Icon sx={{fontSize: "24px", color: "var(--icon-color)"}} />
+                <div style={{overflow: "hidden", textWrap: "nowrap"}}>
+                  <Typography fontSize="15px" fontWeight="inherit">{tc(tab.name, {defaultValue: tab.name})}</Typography>
+                </div>
               </TabButton>
             );
           })}
@@ -78,9 +101,30 @@ function GuestService() {
 }
 
 function GuestServiceMainPage() {
+  const navigate = useNavigate();
+  const {t: tc} = useTranslationWithPrefix(("pages.receptionist.guest-service"));
+
+  const NavBlock = ({label, icon, onClick}: {label: string, icon: typeof tabs[0]["icon"], onClick: () => void}) => {
+    const Icon = icon;
+    return (
+      <SectionCard clickable size={2} onClick={onClick} minWidth="200px">
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={1}>
+          <Icon sx={{fontSize: "300%"}} color="primary" />
+          <Typography fontSize="18px" fontWeight={500} color="text.primary" textAlign="center">{label}</Typography>
+        </Box>
+      </SectionCard>
+    );
+  }
+
   return (<>
-    <SectionTitle title={<><PersonOutlineOutlinedIcon /> Obsługa gości</>}
-                  subtitle={"Wykonaj akcję związaną z obsługą gości"} />
+    <SectionTitle title={<><PersonOutlineOutlinedIcon /> {tc("title")}</>}
+                  subtitle={tc("subtitle")} />
+    <Stack mt={1} direction="row" flexWrap="wrap" gap={2} mb={2} justifyContent="center"
+           display="grid" gridTemplateColumns="repeat(auto-fit, minmax(200px, 1fr))">
+      {tabs.map(tab => (
+        <NavBlock key={tab.name} label={tc(tab.name, {defaultValue: tab.name})} icon={tab.icon} onClick={() => tab.link && navigate(tab.link)} />
+      ))}
+    </Stack>
   </>);
 }
 

@@ -1,8 +1,11 @@
 package inzynierka.myhotelassistant.controllers
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped
+import inzynierka.myhotelassistant.controllers.user.AddUserController
 import inzynierka.myhotelassistant.models.reservation.ReservationEntity
 import inzynierka.myhotelassistant.models.service.ReservationsService
+import jakarta.validation.Valid
+import jakarta.validation.constraints.Email
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
@@ -142,4 +145,29 @@ class ReservationsController(
     @GetMapping("/overdue-check-outs/count")
     @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
     fun countOverdueCheckOuts() = CountDTO(reservationsService.countOverdueCheckOuts())
+
+    data class ReservationCreateWithNewGuestDTO(
+        @field:Email(message = "Email should be valid")
+        val email: String,
+        val name: String,
+        val surname: String,
+        val roomNumber: String,
+        val checkInDate: LocalDate,
+        val checkOutDate: LocalDate,
+        val guestCount: Int,
+        val specialRequests: String?,
+        val withCheckIn: Boolean,
+    )
+
+    data class ReservationCreateWithNewGuestResponseDTO(
+        val reservation: ReservationDTO,
+        val userAccount: AddUserController.AddUserResponse,
+    )
+
+    @PostMapping("/with-new-guest")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun createReservationWithNewGuest(
+        @RequestBody @Valid reservationWithGuestDTO: ReservationCreateWithNewGuestDTO,
+    ): ReservationCreateWithNewGuestResponseDTO = reservationsService.createReservationWithNewGuest(reservationWithGuestDTO)
 }
