@@ -71,7 +71,6 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
                 height: 50,
                 borderRadius: 10,
                 marginTop: 5,
-                objectFit: 'cover',
               }}
               src={service.image}
               alt={service.name}
