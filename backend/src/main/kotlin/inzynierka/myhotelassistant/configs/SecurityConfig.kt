@@ -70,14 +70,12 @@ class SecurityConfig {
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers(
-                        "/",
                         "/index.html",
                         "/static/**",
                         "/images/**",
                         "/css/**",
                         "/js/**",
                         "/Coffee.jpg",
-                        "/favicon.ico",
                         "/open/**",
                         "/uploads/files/**",
                         "/rooms/**",
