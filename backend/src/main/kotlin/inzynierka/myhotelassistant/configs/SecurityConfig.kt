@@ -70,6 +70,14 @@ class SecurityConfig {
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers(
+                        "/",
+                        "/index.html",
+                        "/static/**",
+                        "/images/**",
+                        "/css/**",
+                        "/js/**",
+                        "/Coffee.jpg",
+                        "/favicon.ico",
                         "/open/**",
                         "/uploads/files/**",
                         "/rooms/**",
@@ -78,20 +86,19 @@ class SecurityConfig {
                         "/v3/api-docs/**",
                         "/v3/api-docs.yaml",
                         "/swagger-resources/**",
-                        "/webjars/**",
+                        "/webjars/**"
                     ).permitAll()
-                    .requestMatchers("/secured/**")
-                    .hasAnyRole(Role.ADMIN.name)
-                    .requestMatchers("/management/**")
-                    .hasAnyRole(Role.MANAGER.name)
-                    .requestMatchers("/employee/**")
-                    .hasAnyRole(Role.EMPLOYEE.name)
-                    .anyRequest()
-                    .authenticated()
-            }.sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+
+                    .requestMatchers("/secured/**").hasAnyRole(Role.ADMIN.name)
+                    .requestMatchers("/management/**").hasAnyRole(Role.MANAGER.name)
+                    .requestMatchers("/employee/**").hasAnyRole(Role.EMPLOYEE.name)
+                    .anyRequest().authenticated()
+            }
+            .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .oauth2ResourceServer { oauth2 ->
                 oauth2.jwt { it.jwtAuthenticationConverter(jwtAuthenticationConverter()) }
-            }.build()
+            }
+            .build()
 
     @Bean
     fun jwtAuthenticationConverter(): Converter<Jwt, AbstractAuthenticationToken> {

@@ -576,6 +576,62 @@ class DatabaseSeeder(
         val attributes: ServiceTypeAttributes? = null,
     )
 
+    val serviceDataList = listOf(
+        ServiceData(
+            "Room cleaning",
+            "Thorough cleaning of your room, including dusting, vacuuming, and sanitizing surfaces.",
+            "http://localhost:8080/Coffee.jpg",
+            ServiceType.GENERAL_SERVICE,
+        ),
+        ServiceData(
+            "Laundry",
+            "Professional washing, drying, and folding of your clothes using eco-friendly detergents.",
+            "http://localhost:8080/Coffee.jpg",
+            ServiceType.GENERAL_SERVICE,
+        ),
+        ServiceData(
+            "Spa access",
+            "Relax in our luxury spa with sauna, jacuzzi, and massage services.",
+            "http://localhost:8080/Coffee.jpg",
+            ServiceType.PLACE_RESERVATION,
+        ),
+        ServiceData(
+            "Gym session",
+            "Access to a fully equipped fitness center with personal trainers available.",
+            "http://localhost:8080/Coffee.jpg",
+            ServiceType.PLACE_RESERVATION,
+        ),
+        ServiceData(
+            "Airport shuttle",
+            "Convenient transport to and from the airport with comfortable seating and AC.",
+            "http://localhost:8080/Coffee.jpg",
+            ServiceType.GENERAL_SERVICE,
+        ),
+        ServiceData(
+            "Breakfast delivery",
+            "Enjoy a fresh breakfast delivered straight to your room every morning.",
+            "http://localhost:8080/Coffee.jpg",
+            ServiceType.GENERAL_SERVICE,
+        ),
+        ServiceData(
+            "City tour",
+            "Guided tour of the city's main attractions, history, and local culture.",
+            "http://localhost:8080/Coffee.jpg",
+            ServiceType.GENERAL_SERVICE,
+        ),
+        ServiceData(
+            "Valet parking",
+            "Fast and secure valet parking service available 24/7.",
+            "http://localhost:8080/Coffee.jpg",
+            ServiceType.GENERAL_SERVICE,
+        ),
+        ServiceData(
+            "Tennis court",
+            "Access to our outdoor tennis court, including equipment rental.",
+            "http://localhost:8080/Coffee.jpg",
+            ServiceType.PLACE_RESERVATION,
+        ),
+    )
     val serviceDataList =
         listOf(
             ServiceData(
