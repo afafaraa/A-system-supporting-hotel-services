@@ -111,6 +111,7 @@ class AuthController(
         return getToken(LoginRequest(req.username, req.password))
     }
 
+    // todo add validation with email and token
     @PostMapping("/register/no-code")
     @ResponseStatus(HttpStatus.CREATED)
     fun completeRegistrationNoCode(
@@ -121,6 +122,7 @@ class AuthController(
         return getToken(LoginRequest(req.username, req.password))
     }
 
+    // todo add validation with token
     @PostMapping("/activate")
     fun activateWithCode(
         @RequestBody code: String,
