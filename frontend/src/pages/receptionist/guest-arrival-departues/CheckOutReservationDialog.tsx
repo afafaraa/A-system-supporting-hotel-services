@@ -4,9 +4,11 @@ import Reservation from "../../../types/reservation.ts";
 import {ReservationDetails, ReservationTitle} from "./CommonReservationDialogComponents.tsx";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import {useState} from "react";
+import useTranslationWithPrefix from "../../../locales/useTranslationWithPrefix.tsx";
 
 
 function CheckOutReservationDialog({reservation, onSuccess, onClose}: {reservation: Reservation | null, onSuccess: (reservation: Reservation) => void, onClose: () => void}) {
+  const {t: tc} = useTranslationWithPrefix("pages.receptionist.reservation-dialog.check-out");
   const [error, setError] = useState<string | null>(null);
 
   const handleClose = () => {
@@ -19,7 +21,7 @@ function CheckOutReservationDialog({reservation, onSuccess, onClose}: {reservati
     setError(null);
     axiosAuthApi.patch(`/reservations/${reservation.id}/check-out`)
       .then(res => onSuccess(res.data))
-      .catch((error) => setError("Error during check-out: " + error.message));
+      .catch((error) => setError(tc("error-during-check-out") + ": " + error.message));
   }
 
   return (
@@ -34,19 +36,34 @@ function CheckOutReservationDialog({reservation, onSuccess, onClose}: {reservati
         </DialogContent>
 
         <DialogActions>
-          {reservation.status === "CHECKED_IN" ?
+          {reservation.status === "CHECKED_IN" ? (
             <>
-              {error && <Typography variant="caption" color="error"
-                                    sx={{mr: 1, textWrap: "balance"}}>{error}</Typography>}
-              <Button onClick={handleClose} sx={{color: "text.disabled"}}>Anuluj</Button>
-              <Button onClick={handleCheckOut} color="primary" variant="contained" startIcon={<HowToRegOutlinedIcon />}>Wymelduj</Button>
+              {error && (
+                <Typography
+                  variant="caption"
+                  color="error"
+                  sx={{ mr: 1, textWrap: "balance" }}
+                >
+                  {error}
+                </Typography>
+              )}
+              <Button onClick={handleClose} sx={{ color: "text.disabled" }}>
+                {tc("cancel")}
+              </Button>
+              <Button
+                onClick={handleCheckOut}
+                color="primary"
+                variant="contained"
+                startIcon={<HowToRegOutlinedIcon />}
+              >
+                {tc("check-out-button")}
+              </Button>
             </>
-            :
-            reservation.status === "COMPLETED" ?
-              <Alert severity="success">You successfully checked-out the reservation</Alert>
-              :
-              <Alert severity="error">Only checked-in reservations can be checked-out</Alert>
-          }
+          ) : reservation.status === "COMPLETED" ? (
+            <Alert severity="success">{tc("success-message")}</Alert>
+          ) : (
+            <Alert severity="error">{tc("only-checked-in-error")}</Alert>
+          )}
         </DialogActions>
       </>}
     </Dialog>

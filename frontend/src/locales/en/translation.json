@@ -482,27 +482,34 @@
         "user-login-data": "User login details:",
         "username": "Username",
         "password": "Password"
-            },
-            "reservation-dialog": {
-              "common": {
-                "reservation-title": "Room reservation {{room}}",
-                "reservation-id": "Reservation ID",
-                "reservation-status": "Reservation status",
-                "stay-dates": "Stay dates",
-                "room-standard": "Room standard",
-                "guest-email": "Guest email",
-                "guest-count": "Number of guests",
-                "reservation-price": "Reservation price",
-                "paid": "Paid"
-              },
-              "check-in": {
-                "confirm-payment-label": "I confirm that the room payment has been made",
-                "cancel": "Cancel",
-                "check-in-button": "Check in",
-                "success-message": "You successfully checked-in the reservation",
-                "only-confirmed-error": "Only confirmed reservations can be checked-in",
-                "error-during-check-in": "Error during check-in"
-              }
+      },
+      "reservation-dialog": {
+        "common": {
+          "reservation-title": "Room reservation {{room}}",
+          "reservation-id": "Reservation ID",
+          "reservation-status": "Reservation status",
+          "stay-dates": "Stay dates",
+          "room-standard": "Room standard",
+          "guest-email": "Guest email",
+          "guest-count": "Number of guests",
+          "reservation-price": "Reservation price",
+          "paid": "Paid"
+        },
+        "check-in": {
+          "confirm-payment-label": "I confirm that the room payment has been made",
+          "cancel": "Cancel",
+          "check-in-button": "Check in",
+          "success-message": "You successfully checked-in the reservation",
+          "only-confirmed-error": "Only confirmed reservations can be checked-in",
+          "error-during-check-in": "Error during check-in"
+        },
+        "check-out": {
+          "cancel": "Cancel",
+          "check-out-button": "Check out",
+          "success-message": "You successfully checked-out the reservation",
+          "only-checked-in-error": "Only checked-in reservations can be checked-out",
+          "error-during-check-out": "Error during check-out"
+        }
       },
       "guest-arrival-departures": {
         "title": "Guest Arrivals and Departures",

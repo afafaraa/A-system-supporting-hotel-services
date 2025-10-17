@@ -55,10 +55,10 @@ function GuestArrivalsDeparturesPage() {
 
     axiosAuthApi.get("/reservations/overdue-check-ins/count")
       .then(response => setOverdueCheckIns(prev => ({...prev, count: response.data.count})))
-      .catch(() => setOverdueCheckIns(prev => ({...prev, error: "Error fetching overdue check-ins count"})));
+      .catch(() => setOverdueCheckIns(prev => ({...prev, error: tc("error-overdue-check-ins-count")})));
     axiosAuthApi.get("/reservations/overdue-check-outs/count")
       .then(response => setOverdueCheckOuts(prev => ({...prev, count: response.data.count})))
-      .catch(() => setOverdueCheckOuts(prev => ({...prev, error: "Error fetching overdue check-outs count"})));
+      .catch(() => setOverdueCheckOuts(prev => ({...prev, error: tc("error-overdue-check-outs-count")})));
 
     axiosAuthApi.get("/reservations/upcoming-check-ins")
       .then(response => setUpcomingCheckIns(response.data))
@@ -66,7 +66,7 @@ function GuestArrivalsDeparturesPage() {
     axiosAuthApi.get("/reservations/upcoming-check-outs")
       .then(response => setUpcomingCheckOuts(response.data))
       .catch(error => setUpcomingCheckOutsError(error.message));
-  }, []);
+  }, [tc]);
 
   useEffect(() => {
     if (overdueCheckIns.fetched || !overdueCheckIns.open || overdueCheckIns.count === 0) return;
@@ -182,7 +182,7 @@ function GuestArrivalsDeparturesPage() {
                  sx={{transition: "height 0.3s ease"}}>
               {overdueCheckOuts.list.map((reservation) => (
                 <ReservationCard key={reservation.id} reservation={reservation} onClick={() => setSelectedCheckOut({list: "OVERDUE", reservation})}>
-                  {reservation.status !== "CHECKED_IN" &&
+                  {reservation.status === "CHECKED_IN" &&
                       <Button variant="outlined" startIcon={<HowToRegOutlinedIcon />}>{tc("check-out-button")}</Button>}
                 </ReservationCard>
               ))}
@@ -279,7 +279,7 @@ const colorFromStatus: Record<string, string> = {
   "REQUESTED": "error",
   "CONFIRMED": "info",
   "CHECKED_IN": "success",
-  "CANCELLED": "text.primary"
+  "CANCELED": "text.primary"
 } as const;
 
 const ReservationCard = ({reservation, onClick, children}: {reservation: Reservation, onClick: () => void, children?: ReactNode}) => {

@@ -108,7 +108,7 @@ class UserService(
         "${user.name.take(4).lowercase()}-${user.surname.take(4).lowercase()}-${user.checkInDate}"
 
     fun generateRandomString(length: Int): String {
-        val chars = ('a'..'z') + (0..9)
+        val chars = ('a'..'z') + ('0'..'9')
         return (1..length)
             .map { chars.random() }
             .joinToString("")

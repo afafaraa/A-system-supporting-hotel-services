@@ -483,27 +483,34 @@
         "user-login-data": "Dane logowania użytkownika do systemu:",
         "username": "Nazwa użytkownika",
         "password": "Hasło"
-            },
-            "reservation-dialog": {
-              "common": {
-                "reservation-title": "Rezerwacja pokoju {{room}}",
-                "reservation-id": "ID rezerwacji",
-                "reservation-status": "Status rezerwacji",
-                "stay-dates": "Data pobytu",
-                "room-standard": "Standard pokoju",
-                "guest-email": "Email gościa",
-                "guest-count": "Liczba gości",
-                "reservation-price": "Cena rezerwacji",
-                "paid": "Opłacona"
-              },
-              "check-in": {
-                "confirm-payment-label": "Potwierdzam, że płatność za pokój została dokonana",
-                "cancel": "Anuluj",
-                "check-in-button": "Zamelduj",
-                "success-message": "Pomyślnie zameldowano rezerwację",
-                "only-confirmed-error": "Tylko potwierdzone rezerwacje mogą zostać zameldowane",
-                "error-during-check-in": "Błąd podczas meldunku"
-              }
+      },
+      "reservation-dialog": {
+        "common": {
+          "reservation-title": "Rezerwacja pokoju {{room}}",
+          "reservation-id": "ID rezerwacji",
+          "reservation-status": "Status rezerwacji",
+          "stay-dates": "Data pobytu",
+          "room-standard": "Standard pokoju",
+          "guest-email": "Email gościa",
+          "guest-count": "Liczba gości",
+          "reservation-price": "Cena rezerwacji",
+          "paid": "Opłacona"
+        },
+        "check-in": {
+          "confirm-payment-label": "Potwierdzam, że płatność za pokój została dokonana",
+          "cancel": "Anuluj",
+          "check-in-button": "Zamelduj",
+          "success-message": "Pomyślnie zameldowano rezerwację",
+          "only-confirmed-error": "Tylko potwierdzone rezerwacje mogą zostać zameldowane",
+          "error-during-check-in": "Błąd podczas meldunku"
+        },
+        "check-out": {
+          "cancel": "Anuluj",
+          "check-out-button": "Wymelduj",
+          "success-message": "Pomyślnie wymeldowano rezerwację",
+          "only-checked-in-error": "Tylko zameldowane rezerwacje mogą zostać wymeldowane",
+          "error-during-check-out": "Błąd podczas wymeldowania"
+        }
       },
       "guest-arrival-departures": {
         "title": "Przyjazdy i wyjazdy gości",

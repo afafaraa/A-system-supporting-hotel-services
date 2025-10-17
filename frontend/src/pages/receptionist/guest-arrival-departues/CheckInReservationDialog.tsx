@@ -24,7 +24,7 @@ function CheckInReservationDialog({reservation, onSuccess, onClose}: {reservatio
   const handleCheckIn = () => {
     if (!reservation) return;
     setError(null);
-    axiosAuthApi.patch(`/reservations/${reservation.id}/check-in?11paid=${paymentChecked}`)
+    axiosAuthApi.patch(`/reservations/${reservation.id}/check-in?paid=${paymentChecked}`)
       .then(res => onSuccess(res.data))
       .catch((error) => setError(tc("error-during-check-in") + ": " + error.message));
   }
@@ -40,7 +40,7 @@ function CheckInReservationDialog({reservation, onSuccess, onClose}: {reservatio
           <ReservationDetails reservation={reservation}/>
           {!reservation.paid && reservation.status === "CONFIRMED" &&
               <FormControlLabel sx={{"& .MuiTypography-root": {fontSize: "14px"}, mt: 1}}
-                                control={<Checkbox value={paymentChecked} onChange={handlePaymentChange}/>}
+                                control={<Checkbox required checked={paymentChecked} onChange={handlePaymentChange}/>}
                                 label={tc("confirm-payment-label")}
               />
           }

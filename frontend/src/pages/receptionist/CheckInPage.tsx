@@ -107,7 +107,7 @@ function CheckInPage() {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setGuestDetails(prev => ({ ...prev, [name]: value }));
+    setGuestDetails(prev => ({ ...prev, [name]: name === "guestCount" ? Number(value) : value }));
   };
 
   const handleSubmit = (e: FormEvent) => {
