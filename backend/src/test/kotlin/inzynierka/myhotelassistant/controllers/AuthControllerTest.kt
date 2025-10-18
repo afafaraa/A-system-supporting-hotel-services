@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import inzynierka.myhotelassistant.configs.RSAKeyConfig
 import inzynierka.myhotelassistant.configs.SecurityConfig
+import inzynierka.myhotelassistant.services.EmailVerificationService
 import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.services.UserService
 import inzynierka.myhotelassistant.utils.email.EmailSender
@@ -39,6 +40,9 @@ class AuthControllerTest {
 
     @MockitoBean
     private lateinit var emailSender: EmailSender
+
+    @MockitoBean
+    private lateinit var emailVerificationService: EmailVerificationService
 
     @BeforeEach
     fun setup() {

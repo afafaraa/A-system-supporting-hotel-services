@@ -77,7 +77,6 @@ class SecurityConfig {
                         "/js/**",
                         "/Coffee.jpg",
                         "/open/**",
-                        "/api/auth/**",
                         "/uploads/files/**",
                         "/rooms/**",
                         "/swagger-ui.html",

@@ -28,7 +28,7 @@ const VerifyAccount = () => {
 
     const verify = async () => {
       try {
-        const res = await axiosApi.get(`/api/auth/verify/account?token=${token}`);
+        const res = await axiosApi.get(`/open/verify/account?token=${token}`);
 
         if (res.status === 200) {
           setStatus("success");

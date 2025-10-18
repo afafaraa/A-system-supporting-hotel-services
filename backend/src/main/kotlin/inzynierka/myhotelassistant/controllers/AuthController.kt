@@ -19,8 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-// expose controller under both /open and /api/auth to match frontend requests
-@RequestMapping(value = ["/open", "/api/auth"])
+@RequestMapping(value = ["/open"])
 class AuthController(
     private val tokenService: TokenService,
     private val authManager: AuthenticationManager,
@@ -133,9 +132,9 @@ class AuthController(
         @RequestParam token: String,
     ): ResponseEntity<String> =
         if (emailVerificationService.verifyEmailToken(token)) {
-            ResponseEntity.ok("✅ Email verified successfully. You can now log in.")
+            ResponseEntity.ok("Email verified successfully. You can now log in.")
         } else {
-            ResponseEntity.badRequest().body("❌ Invalid or expired verification link.")
+            ResponseEntity.badRequest().body("Invalid or expired verification link.")
         }
 
     @PostMapping("/activate")
