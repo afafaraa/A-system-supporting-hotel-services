@@ -1,0 +1,99 @@
+openapi: 3.0.3
+info:
+  title: My Hotel Assistant API - Ratings
+  description: Rating management endpoints
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@myhotelassistant.com
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.myhotelassistant.com
+    description: Production server
+
+tags:
+  - name: Ratings
+    description: Employee rating endpoints
+
+paths:
+  /ratings/my-ratings:
+    get:
+      tags:
+        - Ratings
+      summary: Get employee ratings
+      description: Retrieve all ratings for the authenticated employee
+      operationId: getEmployeeRating
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successfully retrieved ratings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RatingWithServiceName'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    RatingWithServiceName:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "rating123"
+        employeeId:
+          type: string
+          example: "emp456"
+        serviceId:
+          type: string
+          example: "service789"
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 4
+        comment:
+          type: string
+          nullable: true
+          example: "Great service!"
+        createdAt:
+          type: string
+          format: date-time
+        serviceName:
+          type: string
+          nullable: true
+          example: "Room Cleaning"
+        serviceThumbnailUrl:
+          type: string
+          nullable: true
+          example: "https://example.com/images/cleaning.jpg"
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Error message"
+        status:
+          type: integer
+          example: 400
+        timestamp:
+          type: string
+          format: date-time
+

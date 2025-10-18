@@ -1,0 +1,70 @@
+openapi: 3.0.3
+info:
+  title: My Hotel Assistant API
+  description: API for hotel service management system
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@myhotelassistant.com
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.myhotelassistant.com
+    description: Production server
+
+tags:
+  - name: Home
+    description: Home endpoints
+
+paths:
+  /:
+    get:
+      tags:
+        - Home
+      summary: Home endpoint for authenticated users
+      description: Returns a greeting to the authenticated user.
+      operationId: home
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Hello, user!"
+        '401':
+          description: Unauthorized
+  /secured:
+    get:
+      tags:
+        - Home
+      summary: Secured endpoint
+      description: A secured endpoint.
+      operationId: secure
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "This is secured!"
+        '401':
+          description: Unauthorized
+  /open:
+    get:
+      tags:
+        - Home
+      summary: Open endpoint
+      description: An open endpoint that does not require authentication.
+      operationId: open
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "This is open for everyone without authentication!"
+

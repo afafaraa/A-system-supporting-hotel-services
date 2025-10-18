@@ -1,0 +1,113 @@
+openapi: 3.0.3
+info:
+  title: My Hotel Assistant API
+  description: API for hotel service management system
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@myhotelassistant.com
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.myhotelassistant.com
+    description: Production server
+tags:
+  - name: User Management
+    description: Endpoints for adding users
+paths:
+  /secured/add/guest:
+    post:
+      tags:
+        - User Management
+      summary: Add a new guest
+      description: Creates a new guest user.
+      operationId: addGuest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddUserRequest'
+      responses:
+        '201':
+          description: Guest created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddUserResponse'
+        '400':
+          description: Invalid request data
+  /secured/admin:
+    post:
+      tags:
+        - User Management
+      summary: Add a new admin
+      description: Creates a new admin user.
+      operationId: addAdmin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewAdminRequest'
+      responses:
+        '201':
+          description: Admin created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddUserResponse'
+        '400':
+          description: Invalid request data
+components:
+  schemas:
+    AddUserRequest:
+      type: object
+      required:
+        - email
+        - name
+        - surname
+        - roomNumber
+        - checkInDate
+        - checkOutDate
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        surname:
+          type: string
+        roomNumber:
+          type: string
+        checkInDate:
+          type: string
+          format: date-time
+        checkOutDate:
+          type: string
+          format: date-time
+    AddUserResponse:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    NewAdminRequest:
+      type: object
+      required:
+        - email
+        - name
+        - surname
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        surname:
+          type: string
+        password:
+          type: string
+

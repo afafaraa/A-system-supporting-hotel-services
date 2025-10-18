@@ -1,0 +1,113 @@
+openapi: 3.0.3
+info:
+  title: My Hotel Assistant API
+  description: API for hotel service management system
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@myhotelassistant.com
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.myhotelassistant.com
+    description: Production server
+tags:
+  - name: Uploads
+    description: File upload and download endpoints
+paths:
+  /uploads/image:
+    post:
+      tags:
+        - Uploads
+      summary: Upload an image
+      description: Uploads an image file.
+      operationId: uploadImage
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful upload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+        '400':
+          description: Bad request
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Error: File is empty"
+  /uploads/files/{fileName}:
+    get:
+      tags:
+        - Uploads
+      summary: Download a file
+      description: Downloads a file by its name.
+      operationId: downloadFile
+      parameters:
+        - name: fileName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful download
+          content:
+            image/jpeg: {}
+            image/png: {}
+            image/webp: {}
+            application/octet-stream: {}
+        '404':
+          description: File not found
+    delete:
+      tags:
+        - Uploads
+      summary: Delete a file
+      description: Deletes a file by its name.
+      operationId: deleteFile
+      parameters:
+        - name: fileName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: File deleted successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "File deleted"
+        '400':
+          description: Could not delete file
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Could not delete file"
+components:
+  schemas:
+    UploadResponse:
+      type: object
+      properties:
+        fileName:
+          type: string
+        downloadUri:
+          type: string
+        fileType:
+          type: string
+        size:
+          type: integer
+          format: int64
+
