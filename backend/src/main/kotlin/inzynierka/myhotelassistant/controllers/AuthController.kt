@@ -42,8 +42,9 @@ class AuthController(
     fun getToken(
         @RequestBody userLogin: LoginRequest,
     ): LoginResponse {
-        val user = userService.findByUsername(userLogin.username)
-            ?: throw UnauthorizedException("User not found")
+        val user =
+            userService.findByUsername(userLogin.username)
+                ?: throw UnauthorizedException("User not found")
 
         if (!user.authorized) {
             throw UnauthorizedException("Please verify your email address before logging in")
