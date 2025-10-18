@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import axiosApi from "../../../middleware/axiosApi";
 
 const VerifyAccount = () => {
   const [searchParams] = useSearchParams();
@@ -27,18 +28,14 @@ const VerifyAccount = () => {
 
     const verify = async () => {
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL || "http://localhost:8080"}/api/auth/verify/account?token=${token}`
-        );
+        const res = await axiosApi.get(`/api/auth/verify/account?token=${token}`);
 
-        const text = await res.text();
-
-        if (res.ok) {
+        if (res.status === 200) {
           setStatus("success");
-          setMessage(text || "Email verified successfully! You can now log in.");
+          setMessage("Email verified successfully! You can now log in.");
         } else {
           setStatus("error");
-          setMessage(text || "Invalid or expired verification link.");
+          setMessage("Invalid or expired verification link.");
         }
       } catch (err) {
         console.error(err);
@@ -57,15 +54,17 @@ const VerifyAccount = () => {
         alignItems: "center",
         justifyContent: "center",
         height: "100vh",
-        bgcolor: "#f4f6f8",
+        bgcolor: "background.default",
       }}
     >
       <Card
         sx={{
           maxWidth: 400,
-          p: 4,
+          p: { xs: 3, sm: 5 },
           borderRadius: 3,
-          boxShadow: 3,
+          boxShadow: (theme) => `0px 0px 20px 2px ${theme.palette.primary.medium}`,
+          border: (theme) => `2px solid ${theme.palette.primary.medium}`,
+          bgcolor: "background.paper",
           textAlign: "center",
         }}
       >
@@ -82,7 +81,7 @@ const VerifyAccount = () => {
           {status === "success" && (
             <>
               <CheckCircleOutlineIcon color="success" sx={{ fontSize: 64 }} />
-              <Typography mt={2} variant="h5" color="success.main">
+              <Typography mt={2} variant="h5" color="success.main" fontWeight="medium">
                 Verification successful
               </Typography>
               <Typography mt={1} color="text.secondary">
@@ -93,6 +92,7 @@ const VerifyAccount = () => {
                 variant="contained"
                 color="primary"
                 href="/login"
+                fullWidth
               >
                 Go to Login
               </Button>
@@ -102,7 +102,7 @@ const VerifyAccount = () => {
           {status === "error" && (
             <>
               <ErrorOutlineIcon color="error" sx={{ fontSize: 64 }} />
-              <Typography mt={2} variant="h5" color="error.main">
+              <Typography mt={2} variant="h5" color="error.main" fontWeight="medium">
                 Verification failed
               </Typography>
               <Typography mt={1} color="text.secondary">
@@ -113,6 +113,7 @@ const VerifyAccount = () => {
                 variant="outlined"
                 color="error"
                 href="/"
+                fullWidth
               >
                 Return Home
               </Button>
