@@ -121,12 +121,12 @@ function ReservationDialog({
         )}
         {status === 'available' && (
           <Alert severity="success" sx={{ mt: 2 }}>
-            This room is available ✅
+            This room is available
           </Alert>
         )}
         {status === 'unavailable' && (
           <Alert severity="warning" sx={{ mt: 2 }}>
-            This room is not available for selected dates ❌
+            This room is not available for selected dates
           </Alert>
         )}
       </DialogContent>

@@ -131,7 +131,7 @@ class UserService(
         codeService.markUsed(rc)
     }
 
-    fun completeRegistrationNoCode(req: AuthController.CompleteRegistrationRequestNoCode) {
+    fun completeRegistrationNoCode(req: AuthController.CompleteRegistrationRequestNoCode): UserEntity {
         if (userRepository.findByUsername(req.username) != null) {
             throw EntityNotFoundException("Username is already taken")
         }
@@ -148,7 +148,7 @@ class UserService(
                 role = Role.GUEST,
             )
         println("Creating user: $user")
-        userRepository.save(user)
+        return userRepository.save(user)
     }
 
     fun activateWithCode(code: String) {

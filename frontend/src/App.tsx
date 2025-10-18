@@ -34,6 +34,7 @@ import BookedServicesPage from './pages/guest/booked-services/BookedServicesPage
 import HotelBookingPage from './pages/guest/hotel-booking/HotelBookingPage.tsx';
 import RegisterNoCode from './pages/user/register/RegisterNoCode.tsx';
 import RegisterWithCode from './pages/user/register/RegisterWithCode.tsx';
+import VerifyAccount from './pages/user/verify/VerifyAccount.tsx';
 
 function App(){
   return (
@@ -85,6 +86,7 @@ function App(){
               <Route path="with-code" element={<RegisterWithCode />}/>
               <Route path="no-code" element={<RegisterNoCode />}/>
             </Route>
+            <Route path="/verify/account" element={<VerifyAccount />} />
             <Route path="*" element={<Navigate to="/home" replace />} />
             <Route path="/fallback" element={<FallbackPage />} />
           </Route>
@@ -101,6 +103,7 @@ const publicPaths = [
   '/logout',
   '/register',
   '/reset-password',
+  '/verify',
   '/fallback',
 ];
 

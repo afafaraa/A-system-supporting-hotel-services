@@ -6,7 +6,7 @@ import inzynierka.myhotelassistant.configs.RSAKeyConfig
 import inzynierka.myhotelassistant.configs.SecurityConfig
 import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.services.UserService
-import inzynierka.myhotelassistant.utils.EmailSender
+import inzynierka.myhotelassistant.utils.email.EmailSender
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given

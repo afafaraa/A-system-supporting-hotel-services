@@ -45,9 +45,11 @@ function RegisterNoCode() {
         setUserData(res.data.accessToken, res.data.refreshToken, dispatch);
       }
     } catch (err) {
-      if (isAxiosError(err) && err.response && err.response.status === 400)
+      if (isAxiosError(err) && err.response && err.response.status === 400) {
         setError('pages.register.invalidCodeError');
-      else setError('error.unknownError');
+      } else if (isAxiosError(err) && err?.response?.data?.message) {
+        setError(isAxiosError(err) && err?.response?.data?.message);
+      } else setError('error.unknownError');
     } finally {
       setLoading(false);
     }
