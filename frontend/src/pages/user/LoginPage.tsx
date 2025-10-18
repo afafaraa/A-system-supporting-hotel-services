@@ -57,6 +57,7 @@ function LoginPage(){
         if (!isAxiosError(e) || (!e.response && e.code !== "ERR_NETWORK")) { setError("error.unknownError"); return; }
         if (!e.response) { setError(e.code === "ERR_NETWORK" ? "error.networkError" : "error.unknownError"); return; }
         if (e.response.status === 401) setError("error.invalidCredentials");
+        else if (e.response.status === 403) setError("error.emailNotVerified");
         else if (e.response.status >= 500) setError("error.serverError");
         else setError("error.unknownError");
       })
@@ -119,3 +120,4 @@ function LoginPage(){
 }
 
 export default LoginPage;
+

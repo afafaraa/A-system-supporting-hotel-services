@@ -92,6 +92,7 @@ class DatabaseSeeder(
                     name = "Test",
                     surname = "User",
                     active = true,
+                    authorized = true,
                     guestData =
                         GuestData(
                             roomNumber = "002",
@@ -112,6 +113,7 @@ class DatabaseSeeder(
                     email = "test_admin@admin.test",
                     name = "Test",
                     active = true,
+                    authorized = true,
                     surname = "Admin",
                 ),
             )
@@ -255,6 +257,7 @@ class DatabaseSeeder(
                     email = "employee1@gmail.com",
                     name = "Joe",
                     active = true,
+                    authorized = true,
                     surname = "Doe",
                     employeeData = EmployeeData(Department.HOUSEKEEPING, listOf(Sector.SECURITY)),
                 ),
@@ -270,6 +273,7 @@ class DatabaseSeeder(
                     name = "Anna",
                     surname = "Smith",
                     active = true,
+                    authorized = true,
                     employeeData = EmployeeData(Department.RECEPTION, listOf(Sector.SPA_AND_WELLNESS)),
                 ),
             )
@@ -283,6 +287,7 @@ class DatabaseSeeder(
                     email = "c.brown@yahoo.com",
                     name = "Charlie",
                     active = true,
+                    authorized = true,
                     surname = "Brown",
                     employeeData = EmployeeData(Department.FOOD_AND_BEVERAGE, listOf(Sector.BREAKFAST, Sector.LUNCH, Sector.DINNER)),
                 ),
@@ -300,6 +305,7 @@ class DatabaseSeeder(
                     password = passwordEncoder.encode("guest1"),
                     name = "Alice",
                     active = true,
+                    authorized = true,
                     surname = "Johnson",
                     guestData =
                         GuestData(
@@ -320,6 +326,7 @@ class DatabaseSeeder(
                     name = "Bob",
                     surname = "Smith",
                     active = true,
+                    authorized = true,
                     guestData =
                         GuestData(
                             roomNumber = "002",
@@ -339,6 +346,7 @@ class DatabaseSeeder(
                     name = "Charlie",
                     surname = "Brown",
                     active = true,
+                    authorized = true,
                     guestData =
                         GuestData(
                             roomNumber = "316",
@@ -471,6 +479,7 @@ class DatabaseSeeder(
                     email = "manager@gmail.com",
                     name = "Jim",
                     active = true,
+                    authorized = true,
                     surname = "Brown",
                     employeeData = EmployeeData(Department.MANAGEMENT),
                 ),

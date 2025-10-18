@@ -1,5 +1,6 @@
 package inzynierka.myhotelassistant.controllers
 
+import inzynierka.myhotelassistant.exceptions.UnauthorizedException
 import inzynierka.myhotelassistant.services.EmailVerificationService
 import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.services.UserService
@@ -41,6 +42,13 @@ class AuthController(
     fun getToken(
         @RequestBody userLogin: LoginRequest,
     ): LoginResponse {
+        val user = userService.findByUsername(userLogin.username)
+            ?: throw UnauthorizedException("User not found")
+
+        if (!user.authorized) {
+            throw UnauthorizedException("Please verify your email address before logging in")
+        }
+
         val authToken = UsernamePasswordAuthenticationToken(userLogin.username, userLogin.password)
         val authentication = authManager.authenticate(authToken)
         return LoginResponse(
@@ -124,6 +132,7 @@ class AuthController(
         println("Received registration request: $req")
         val savedUser = userService.completeRegistrationNoCode(req)
         println("Saved user: $savedUser")
+        // todo add err message for frontend if email sending fails
         emailVerificationService.sendVerificationLink(savedUser.id!!, savedUser.email)
     }
 

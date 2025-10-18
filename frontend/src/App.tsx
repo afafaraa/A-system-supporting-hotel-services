@@ -35,6 +35,8 @@ import HotelBookingPage from './pages/guest/hotel-booking/HotelBookingPage.tsx';
 import RegisterNoCode from './pages/user/register/RegisterNoCode.tsx';
 import RegisterWithCode from './pages/user/register/RegisterWithCode.tsx';
 import VerifyAccount from './pages/user/verify/VerifyAccount.tsx';
+import PaymentSuccessPage from './pages/guest/payment/PaymentSuccessPage.tsx';
+import PaymentCancelPage from './pages/guest/payment/PaymentCancelPage.tsx';
 
 function App(){
   return (
@@ -46,6 +48,8 @@ function App(){
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route element={<ProtectedRoute allowedRoles={["ROLE_GUEST"]}/>}>
               <Route path="/service-schedule/:id" element={<OrderServicePage />} />
+              <Route path="/payment/success" element={<PaymentSuccessPage />} />
+              <Route path="/payment/cancel" element={<PaymentCancelPage />} />
               <Route path="/guest" element={<GuestLayout />}>
                 <Route index element={<Navigate to="available" replace />} />
                 <Route path="available" element={<AvailableServicesPage />} />

@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Typography, Box, IconButton, useTheme } from '@mui/material';
+import { Button, Typography, Box, IconButton, useTheme, CircularProgress, Alert } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ShoppingCartItem from './ShoppingCartItem.tsx';
-import { selectUser } from '../../../redux/slices/userSlice.ts';
+import { selectUserDetails } from '../../../redux/slices/userDetailsSlice.ts';
 import {
   selectShoppingCart,
   clearCart,
@@ -35,11 +35,13 @@ type ShoppingCartPopupProps = {
 
 const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);
+  const userDetails = useSelector(selectUserDetails);
   const shoppingCart = useSelector(selectShoppingCart);
   const theme = useTheme();
 
   const [cart, setCart] = useState<CartProps[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const calculateReservationPrice = (checkIn?: string, checkOut?: string, pricePerNight?: number): number => {
     console.log(checkIn, checkOut, pricePerNight);
@@ -98,18 +100,50 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
     dispatch(clearCart());
   };
 
-  const orderServices = async () => {
+  const initiateCheckout = async () => {
+    setIsProcessing(true);
+    setError(null);
     try {
-      for (const item of cart) {
-        await axiosAuthApi.post(`/guest/order/services`, {
-          id: item.id,
-          username: user?.username,
-        });
+      if (cart.length === 0) {
+        setError('Your cart is empty');
+        setIsProcessing(false);
+        return;
       }
-      clearShoppingCart();
-      await fetchCartData();
+
+      const amountCents = Math.round(totalPrice * 100);
+
+      if (amountCents <= 0) {
+        setError('Invalid cart total');
+        setIsProcessing(false);
+        return;
+      }
+
+      // Prepare cart items metadata
+      const cartItems = cart.map(item => ({
+        id: item.id,
+        type: item.type,
+        name: item.name || `Room ${item.roomNumber}`,
+        price: item.type === 'SERVICE' ? item.price : calculateReservationPrice(item.checkIn, item.checkOut, item.pricePerNight)
+      }));
+
+      const response = await axiosAuthApi.post('/payment/create-checkout-session', {
+        amountCents,
+        currency: 'usd',
+        successUrl: `${window.location.origin}/payment/success`,
+        cancelUrl: `${window.location.origin}/payment/cancel`,
+        orderDescription: `Hotel Services Order (${cart.length} item${cart.length > 1 ? 's' : ''})`,
+        customerEmail: userDetails?.email,
+        cartItems: JSON.stringify(cartItems)
+      });
+
+      if (response.data?.url) {
+        window.location.href = response.data.url;
+      } else {
+        throw new Error('No checkout URL received');
+      }
     } catch (e) {
-      console.error(e);
+      console.error('Failed to create checkout session:', e);
+      setIsProcessing(false);
     }
   };
 
@@ -169,6 +203,12 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
           </IconButton>
         </Box>
 
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
+            {error}
+          </Alert>
+        )}
+
         <Box sx={{ flex: 1, overflowY: 'auto', mb: 2 }}>
           {cart.length > 0 ? (
             cart.map((item, index) => (
@@ -208,14 +248,20 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
             </Typography>
           </div>
         </Box>
-        <Button fullWidth sx={{ mb: 1 }} onClick={orderServices}>
-          Add to Tab
+        <Button
+          fullWidth
+          sx={{ mb: 1 }}
+          onClick={initiateCheckout}
+          disabled={cart.length === 0 || isProcessing}
+        >
+          {isProcessing ? <CircularProgress size={24} /> : 'Proceed to Payment'}
         </Button>
         <Button
           fullWidth
           variant="outlined"
           color="error"
           onClick={clearShoppingCart}
+          disabled={isProcessing}
         >
           Clear Cart
         </Button>

@@ -172,4 +172,6 @@ class UserService(
     fun getCurrentUser(username: String) = findByUsernameOrThrow(username)
 
     fun getAllGuests(pageable: Pageable): List<UserEntity> = userRepository.findByRoleIn(listOf(Role.GUEST), pageable).content
+
+    fun findByUsername(username: String): UserEntity? = userRepository.findByUsername(username)
 }

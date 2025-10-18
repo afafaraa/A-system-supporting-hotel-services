@@ -23,9 +23,14 @@ start-backend: run-mongo-only run-backend-only
 run: start-backend start-frontend
 
 # Clean backend containers and volumes
-clean:
+clean-backend:
 	docker-compose down -v --rmi all --remove-orphans
 
+# Clean db
+clean-mongo:
+	docker-compose down -v --remove-orphans mongo
+
+# Cean all containers, volumes, images, and frontend node modules
 clean-all:
 	docker-compose down -v --rmi all --remove-orphans
 	cd frontend && rm -rf node_modules

@@ -29,6 +29,9 @@ spring:
 logging:
   level:
     inzynierka.myhotelassistant: DEBUG
+stripe:
+  api:
+    key: ${STRIPE_SECRET_KEY:paste_api_key_here}
 app:
   reservations:
     cancellation:
