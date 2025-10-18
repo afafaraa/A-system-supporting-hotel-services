@@ -12,7 +12,7 @@ function AdminLayout() {
     const tabs = useMemo(() => ([
         { name: t("pages.manager.navbar.guests"), link: "/management/guests" },
         { name: t("pages.manager.navbar.services"), link: "/management/services" },
-        { name: t("pages.manager.navbar.calendar"), link: "/management/calendar" },
+        { name: t("pages.manager.navbar.management"), link: "/management/hotel" },
         { name: t("pages.manager.navbar.employees"), link: "/employees" },
         { name: t("pages.manager.navbar.statistics"), link: "/management/statistics" },
     ] as const), [t]);

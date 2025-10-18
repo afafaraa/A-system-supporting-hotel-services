@@ -316,6 +316,36 @@
         "no_services": "Brak przypisanych usług",
         "error_fetch": "Nie udało się pobrać danych pracownika.",
         "not_found": "Nie znaleziono pracownika."
+      },
+      "hotel_management": {
+        "title": "Hotel Management",
+        "subtitle": "Manage hotel structure and settings",
+        "rooms_subtitle": "View and manage hotel rooms, edit prices and standards",
+        "rooms_title": "Rooms Management",
+        "structure_title": "Hotel Structure",
+        "menu_title": "Daily Menu",
+        "maintenance_title": "Maintenance",
+        "finance_title": "Billings & Payments",
+        "settings_title": "Administration Settings",
+        "add_room": "Add Room",
+        "room_number": "Room Number",
+        "standard": "Standard",
+        "room_standard": "Room Standard",
+        "rooms_list": "Rooms List",
+        "standards_list" : "Room Standards List",
+        "price": "Price",
+        "search_placeholder": "Search Rooms...",
+        "room_no": "Room No.",
+        "room_type": "Room Type",
+        "capacity": "Capacity",
+        "floor": "Floor",
+        "base_price": "Base Price",
+        "name": "Name",
+        "edit": "Edit Room",
+        "add_new": "Add New Room",
+        "guests": "guests",
+        "edit_standard": "Edit Room Standard",
+        "add_new_standard": "Add New Room Standard"
       }
     },
     "employee": {
@@ -450,11 +480,22 @@
     "room": "Room",
     "guest_unknown": "Guest unknown",
     "unknown": "unknown",
+    "all": "All",
+    "status": "Status",
+    "actions": "Actions",
+    "page": "Page",
+    "description": "Description",
     "room_standard": {
       "Budget": "Budget",
       "Standard": "Standard",
       "Deluxe": "Deluxe",
-      "Exclusive Suite": "Exclusive Suite"
+      "Exclusive": "Exclusive"
+    },
+    "room_status": {
+      "open": "Open",
+      "booked": "Booked",
+      "pending": "Pending",
+      "out_of_service": "Out of Service"
     },
     "sectors": {
       "breakfast": "Breakfast",
@@ -494,7 +535,8 @@
     "promote": "Promote",
     "remove": "Remove",
     "edit": "Edit",
-    "register": "Register"
+    "register": "Register",
+    "add":"Add"
   },
   "error": {
     "networkError": "Server connection error.",

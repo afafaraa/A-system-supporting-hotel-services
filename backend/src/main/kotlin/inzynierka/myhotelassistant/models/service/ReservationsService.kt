@@ -45,13 +45,13 @@ class ReservationsService(
             .map { reservation ->
                 val guest = userService.getUserNameAndEmailById(reservation.guestId)
                 val room =
-                    roomRepository.getRoomStandardByNumber(reservation.roomNumber)
+                    roomRepository.findByNumber(reservation.roomNumber)
                         ?: throw IllegalArgumentException("Room with number ${reservation.roomNumber} not found")
                 ReservationsController.ReservationDTO(
                     reservation,
                     "${guest?.name} ${guest?.surname}",
                     guest?.email,
-                    room.standard.displayName,
+                    room.standard.name,
                 )
             }
     }
@@ -159,7 +159,7 @@ class ReservationsService(
         val room =
             roomRepository.findByNumber(roomNumber)
                 ?: throw IllegalArgumentException("Room with number $roomNumber not found")
-        return room.pricePerNight * days // TODO: apply discounts, seasonal prices, etc.
+        return room.pricePerNight?.times(days) ?: room.standard.basePrice.times(days) // TODO: apply discounts, seasonal prices, etc.
     }
 
     fun findAllReservations(): List<ReservationEntity> = reservationsRepository.findAll()

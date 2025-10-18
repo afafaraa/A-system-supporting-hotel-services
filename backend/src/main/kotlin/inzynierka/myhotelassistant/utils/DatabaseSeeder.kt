@@ -4,9 +4,7 @@ import inzynierka.myhotelassistant.models.notification.NotificationEntity
 import inzynierka.myhotelassistant.models.notification.NotificationVariant
 import inzynierka.myhotelassistant.models.reservation.ReservationEntity
 import inzynierka.myhotelassistant.models.reservation.ReservationStatus
-import inzynierka.myhotelassistant.models.room.RoomAmenity
-import inzynierka.myhotelassistant.models.room.RoomEntity
-import inzynierka.myhotelassistant.models.room.RoomStandard
+import inzynierka.myhotelassistant.models.room.*
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.service.RatingEntity
 import inzynierka.myhotelassistant.models.service.ReservationsService
@@ -19,11 +17,7 @@ import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.Sector
 import inzynierka.myhotelassistant.models.user.UserEntity
-import inzynierka.myhotelassistant.repositories.NotificationRepository
-import inzynierka.myhotelassistant.repositories.RatingRepository
-import inzynierka.myhotelassistant.repositories.RoomRepository
-import inzynierka.myhotelassistant.repositories.ScheduleRepository
-import inzynierka.myhotelassistant.repositories.UserRepository
+import inzynierka.myhotelassistant.repositories.*
 import inzynierka.myhotelassistant.services.ServiceService
 import inzynierka.myhotelassistant.services.UserService
 import jakarta.annotation.PostConstruct
@@ -57,6 +51,7 @@ class DatabaseSeeder(
     private val schedulesGenerator: SchedulesGenerator,
     private val ratingRepository: RatingRepository,
     private val reservationsService: ReservationsService,
+    private val roomStandardRepository: RoomStandardRepository
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -74,6 +69,7 @@ class DatabaseSeeder(
             addRatings()
             addTestNotifications()
             createReservations()
+            addTestRoomStandards()
         } catch (e: Exception) {
             logger.error(e.message, e)
             throw e
@@ -116,6 +112,36 @@ class DatabaseSeeder(
         }
     }
 
+    private fun addTestRoomStandards() {
+        if (!roomStandardRepository.existsByName("Standard")) {
+            roomStandardRepository.save(
+                RoomStandardEntity(
+                    name = "Standard",
+                    capacity = 2,
+                    basePrice = 50.00,
+                )
+            )
+        }
+        if (!roomStandardRepository.existsByName("Deluxe")) {
+            roomStandardRepository.save(
+                RoomStandardEntity(
+                    name = "Deluxe",
+                    capacity = 3,
+                    basePrice = 180.00,
+                )
+            )
+        }
+        if (!roomStandardRepository.existsByName("Exclusive")) {
+            roomStandardRepository.save(
+                RoomStandardEntity(
+                    name = "Exclusive",
+                    capacity = 4,
+                    basePrice = 350.00,
+                )
+            )
+        }
+    }
+
     private fun addTestRooms() {
         if (!roomRepo.existsById("001")) {
             roomRepo.save(
@@ -124,7 +150,8 @@ class DatabaseSeeder(
                     floor = 0,
                     capacity = 2,
                     pricePerNight = 100.0,
-                    standard = RoomStandard.STANDARD,
+                    roomStatus = RoomStatus.BOOKED,
+                    standard = RoomStandardEntity(name = "Standard", capacity = 2, basePrice = 120.00),
                     amenities = setOf(RoomAmenity.AIR_CONDITIONING, RoomAmenity.HAIR_DRYER, RoomAmenity.TV, RoomAmenity.WIFI),
                 ),
             )
@@ -136,7 +163,7 @@ class DatabaseSeeder(
                     floor = 0,
                     capacity = 3,
                     pricePerNight = 129.99,
-                    standard = RoomStandard.DELUXE,
+                    standard = RoomStandardEntity(name = "Deluxe", capacity = 3, basePrice = 180.00),
                     amenities =
                         setOf(
                             RoomAmenity.AIR_CONDITIONING,
@@ -154,9 +181,9 @@ class DatabaseSeeder(
                 RoomEntity(
                     number = "005",
                     floor = 0,
-                    capacity = 1,
-                    pricePerNight = 80.0,
-                    standard = RoomStandard.BUDGET,
+                    capacity = 4,
+                    pricePerNight = 380.0,
+                    standard = RoomStandardEntity(name = "Exclusive", capacity = 4, basePrice = 350.00),
                     amenities = setOf(RoomAmenity.HAIR_DRYER, RoomAmenity.TV, RoomAmenity.WIFI),
                 ),
             )
@@ -168,7 +195,7 @@ class DatabaseSeeder(
                     floor = 1,
                     capacity = 3,
                     pricePerNight = 210.0,
-                    standard = RoomStandard.SUITE,
+                    standard = RoomStandardEntity(name = "Deluxe", capacity = 2, basePrice = 100.00),
                     amenities =
                         setOf(
                             RoomAmenity.AIR_CONDITIONING,
@@ -191,7 +218,7 @@ class DatabaseSeeder(
                     floor = 1,
                     capacity = 4,
                     pricePerNight = 199.99,
-                    standard = RoomStandard.DELUXE,
+                    standard = RoomStandardEntity(name = "Deluxe", capacity = 2, basePrice = 100.00),
                     amenities =
                         setOf(
                             RoomAmenity.AIR_CONDITIONING,
@@ -211,8 +238,9 @@ class DatabaseSeeder(
                     floor = 3,
                     capacity = 5,
                     pricePerNight = 250.0,
-                    standard = RoomStandard.SUITE,
+                    standard = RoomStandardEntity(name = "Standard", capacity = 2, basePrice = 100.00),
                     amenities = setOf(RoomAmenity.AIR_CONDITIONING, RoomAmenity.TV, RoomAmenity.WIFI, RoomAmenity.BALCONY),
+                    roomStatus = RoomStatus.OUT_OF_SERVICE
                 ),
             )
         }
@@ -223,8 +251,9 @@ class DatabaseSeeder(
                     floor = 3,
                     capacity = 2,
                     pricePerNight = 120.0,
-                    standard = RoomStandard.STANDARD,
+                    standard = RoomStandardEntity(name = "Standard", capacity = 2, basePrice = 100.00),
                     amenities = setOf(RoomAmenity.TV, RoomAmenity.WIFI),
+                    roomStatus = RoomStatus.BOOKED
                 ),
             )
         }
@@ -235,8 +264,9 @@ class DatabaseSeeder(
                     floor = 3,
                     capacity = 3,
                     pricePerNight = 180.0,
-                    standard = RoomStandard.DELUXE,
+                    standard = RoomStandardEntity(name = "Standard", capacity = 2, basePrice = 100.00),
                     amenities = setOf(RoomAmenity.AIR_CONDITIONING, RoomAmenity.TV, RoomAmenity.WIFI, RoomAmenity.MINI_BAR),
+                    roomStatus = RoomStatus.BOOKED
                 ),
             )
         }
@@ -537,7 +567,7 @@ class DatabaseSeeder(
                         guestsCount = Random.nextInt(1, room.capacity + 1),
                         checkIn = checkIn,
                         checkOut = checkOut,
-                        reservationPrice = room.pricePerNight * ChronoUnit.DAYS.between(checkIn, checkOut),
+                        reservationPrice = room.pricePerNight?.times(ChronoUnit.DAYS.between(checkIn, checkOut)) ?: room.standard.basePrice.times(ChronoUnit.DAYS.between(checkIn, checkOut))
                     )
                 reservation.status =
                     if (checkOut.isBefore(now)) {

@@ -12,7 +12,7 @@ import {
   Hotel,
   AccountTree,
   RestaurantMenu,
-  Spa,
+  Settings,
   Build,
   Payments,
   ChevronLeft,
@@ -22,6 +22,7 @@ import { HotelSection } from '../../../types/hotel_sections';
 import SectionTitle from '../../../components/ui/SectionTitle.tsx';
 import { HomeOutlined } from '@mui/icons-material';
 import { SectionCard } from '../../../theme/styled-components/SectionCard';
+import { useTranslation } from 'react-i18next';
 
 interface SideMenuProps {
   active: HotelSection | null;
@@ -30,22 +31,24 @@ interface SideMenuProps {
 
 function SideMenu({ active, onSelect }: SideMenuProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const { t } = useTranslation();
+  const tc = (key: string) => t(`pages.manager.hotel_management.${key}`);
 
   const items = [
-    { key: 'rooms', label: 'Rooms Management', icon: <Hotel /> },
-    { key: 'structure', label: 'Hotel Structure', icon: <AccountTree /> },
-    { key: 'menu', label: 'Daily Menu', icon: <RestaurantMenu /> },
-    { key: 'facilities', label: 'Hotel Facilities', icon: <Spa /> },
-    { key: 'maintenance', label: 'Maintenance', icon: <Build /> },
-    { key: 'billing', label: 'Billings & Payments', icon: <Payments /> },
+    { key: 'rooms', label: tc('rooms_title'), icon: <Hotel /> },
+    { key: 'structure', label: tc('structure_title'), icon: <AccountTree /> },
+    { key: 'menu', label: tc('menu_title'), icon: <RestaurantMenu /> },
+    { key: 'maintenance', label: tc('maintenance_title'), icon: <Build /> },
+    { key: 'finance', label: tc('finance_title'), icon: <Payments /> },
+    { key: 'settings', label: tc('settings_title'), icon: <Settings /> },
   ] as const;
 
   return (
-    <SectionCard 
-      sx={{ 
-        borderLeft: 'none', 
-        borderTop: 'none', 
-        borderBottom: 'none', 
+    <SectionCard
+      sx={{
+        borderLeft: 'none',
+        borderTop: 'none',
+        borderBottom: 'none',
         minWidth: collapsed ? 80 : 250,
         transition: 'all 0.3s ease',
         position: 'relative',
@@ -55,10 +58,10 @@ function SideMenu({ active, onSelect }: SideMenuProps) {
         <SectionTitle
           title={
             <>
-              <HomeOutlined /> Hotel Management
+              <HomeOutlined /> {tc('title')}
             </>
           }
-          subtitle="Manage Hotel Structures"
+          subtitle={tc('subtitle')}
           mb={5}
         />
       )}
@@ -71,9 +74,9 @@ function SideMenu({ active, onSelect }: SideMenuProps) {
 
       <List>
         {items.map((item) => (
-          <Tooltip 
-            key={item.key} 
-            title={collapsed ? item.label : ''} 
+          <Tooltip
+            key={item.key}
+            title={collapsed ? item.label : ''}
             placement="right"
           >
             <ListItemButton
@@ -94,8 +97,8 @@ function SideMenu({ active, onSelect }: SideMenuProps) {
                 },
               }}
             >
-              <ListItemIcon 
-                sx={{ 
+              <ListItemIcon
+                sx={{
                   minWidth: collapsed ? 'auto' : 56,
                   justifyContent: 'center',
                 }}

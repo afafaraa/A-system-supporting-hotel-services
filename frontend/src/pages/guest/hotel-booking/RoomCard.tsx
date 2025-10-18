@@ -64,10 +64,10 @@ export default function RoomCard({
               variant="h6"
               sx={{ fontWeight: 600, fontSize: `${fontSize + 4}px` }}
             >
-              {t(`pages.home.${room.type}Title`)}
+              {t(`pages.home.${room.standard.name}Title`)}
             </Typography>
             <Chip
-              label={`${room.price}/night`}
+              label={`${room.pricePerNight}/night`}
               color="secondary"
               sx={{
                 fontWeight: 'bold',
@@ -84,7 +84,7 @@ export default function RoomCard({
               fontSize: `${fontSize}px`,
             }}
           >
-            {t(`pages.home.${room.type}Desc`)}
+            {t(`pages.home.${room.standard.name}Desc`)}
           </Typography>
 
           <Typography
@@ -94,7 +94,7 @@ export default function RoomCard({
               color: theme.palette.text.secondary,
             }}
           >
-            Up to {room.guestsTotal} guests
+            Up to {room.capacity} guests
           </Typography>
         </div>
 

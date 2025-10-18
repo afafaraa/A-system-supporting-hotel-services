@@ -1,1 +1,1 @@
-export type HotelSection = "rooms" | "structure" | "menu" | "facilities" | "maintenance" | "billing";
+export type HotelSection = "rooms" | "structure" | "menu" | "finance" | "maintenance" | "settings";

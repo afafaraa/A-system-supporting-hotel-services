@@ -9,17 +9,17 @@ import RoomServiceIcon from '@mui/icons-material/RoomService';
 import { useTranslation } from 'react-i18next';
 import LoginDialog from './LoginDialog.tsx';
 import { useState } from 'react';
-import { Room } from '../../types/room.ts';
+import { Room, RoomStatus } from '../../types/room.ts';
 import RoomCard from '../guest/hotel-booking/RoomCard.tsx';
 import {alpha} from "@mui/material/styles";
 
 export const roomOptions: Room[] = [
   {
-    id: '1',
-    type: 'standard',
-    price: 120,
-    status: 'Available',
-    guestsTotal: 2,
+    number: '1',
+    standard: { id: '1', name: 'standard', capacity: 2, basePrice: 120 },
+    pricePerNight: 120,
+    roomStatus: RoomStatus.OPEN,
+    capacity: 2,
     description: 'A comfortable standard room with all the basic amenities for a pleasant stay.',
     amenities: [
       { key: 'wifi', label: 'Free Wi-Fi' },
@@ -29,11 +29,11 @@ export const roomOptions: Room[] = [
     ],
   },
   {
-    id: '2',
-    type: 'deluxe',
-    price: 180,
-    status: 'Available',
-    guestsTotal: 3,
+    number: '2',
+    standard: { id: '2', name: 'deluxe', capacity: 3, basePrice: 180 },
+    pricePerNight: 180,
+    roomStatus: RoomStatus.OPEN,
+    capacity: 3,
     description: 'Spacious deluxe room with premium amenities and elegant furnishings for a luxurious experience.',
     amenities: [
       { key: 'wifi', label: 'Free Wi-Fi' },
@@ -44,11 +44,11 @@ export const roomOptions: Room[] = [
     ],
   },
   {
-    id: '3',
-    type: 'exclusive',
-    price: 350,
-    status: 'Available',
-    guestsTotal: 4,
+    number: '3',
+    standard: { id: '3', name: 'exclusive', capacity: 4, basePrice: 350 },
+    pricePerNight: 350,
+    roomStatus: RoomStatus.OPEN,
+    capacity: 4,
     description: 'A top-tier exclusive suite with premium facilities, ideal for a luxurious stay or business trip.',
     amenities: [
       { key: 'wifi', label: 'Free Wi-Fi' },

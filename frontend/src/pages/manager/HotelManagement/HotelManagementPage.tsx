@@ -4,10 +4,11 @@ import SideMenu from './SideMenu';
 import RoomsManagementPage from './RoomsManagementPage';
 import HotelStructurePage from './HotelStructurePage';
 import MenuPage from './MenuPage';
-import HotelFacilitiesPage from './HotelFacilitesPage';
 import MaintenancePage from './MaintenancePage';
+import FinancePage from './FinancePage';
 import { HotelSection } from '../../../types/hotel_sections';
 import { SectionCard } from '../../../theme/styled-components/SectionCard';
+import AdministrationSettingsPage from './AdministrationSettingsPage';
 
 function HotelManagementPage() {
   const [selectedSection, setSelectedSection] = useState<HotelSection | null>(
@@ -22,10 +23,12 @@ function HotelManagementPage() {
         return <HotelStructurePage />;
       case 'menu':
         return <MenuPage />;
-      case 'facilities':
-        return <HotelFacilitiesPage />;
       case 'maintenance':
         return <MaintenancePage />;
+      case 'finance':
+        return <FinancePage />;
+      case 'settings':
+        return <AdministrationSettingsPage />;
       default:
         return null;
     }
