@@ -394,7 +394,8 @@
         "assignIssue": "Przydziel zgłoszenie",
         "issue": "Zgłoszenie",
         "assignTo": "Przydziel do",
-        "reportedDate": "Zgłoszone w"
+        "reportedDate": "Zgłoszone w",
+        "close": "Zamknij zgłoszenie"
       }
     },
     "employee": {

@@ -393,7 +393,8 @@
         "assignIssue": "Assign Issue",
         "issue": "Issue",
         "assignTo": "Assign to",
-        "reportedDate": "Reported at"
+        "reportedDate": "Reported at",
+        "close": "Close"
       }
     },
     "employee": {

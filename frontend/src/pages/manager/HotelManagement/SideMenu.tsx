@@ -35,11 +35,11 @@ function SideMenu({ active, onSelect }: SideMenuProps) {
 
   const items = [
     { key: 'rooms', label: tc('rooms_title'), icon: <Hotel /> },
+    { key: 'maintenance', label: tc('maintenance_title'), icon: <Build /> },
+    { key: 'settings', label: tc('settings_title'), icon: <Settings /> },
     { key: 'structure', label: tc('structure_title'), icon: <AccountTree /> },
     { key: 'menu', label: tc('menu_title'), icon: <RestaurantMenu /> },
-    { key: 'maintenance', label: tc('maintenance_title'), icon: <Build /> },
     { key: 'finance', label: tc('finance_title'), icon: <Payments /> },
-    { key: 'settings', label: tc('settings_title'), icon: <Settings /> },
   ] as const;
 
   return (
@@ -48,7 +48,7 @@ function SideMenu({ active, onSelect }: SideMenuProps) {
         borderLeft: 'none',
         borderTop: 'none',
         borderBottom: 'none',
-        minWidth: collapsed ? 80 : 250,
+        minWidth: collapsed ? 80 : 330,
         transition: 'all 0.3s ease',
         position: 'relative',
       }}
