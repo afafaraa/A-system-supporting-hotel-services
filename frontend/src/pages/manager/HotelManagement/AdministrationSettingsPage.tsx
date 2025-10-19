@@ -46,7 +46,7 @@ function AdministrationSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
-    message: String;
+    message: string;
     severity: 'success' | 'error' | 'info';
   }>({ open: false, message: '', severity: 'success' });
 
