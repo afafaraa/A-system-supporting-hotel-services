@@ -12,7 +12,7 @@ import java.time.LocalDate
 class RoomService(
     private val roomRepository: RoomRepository,
     private val reservationsService: ReservationsService,
-    private val roomStandardRepository: RoomStandardRepository
+    private val roomStandardRepository: RoomStandardRepository,
 ) {
     fun findAllRooms(): List<RoomEntity> = roomRepository.findAll()
 
@@ -37,7 +37,10 @@ class RoomService(
         return roomRepository.save(room)
     }
 
-    fun updateRoom(number: String, room: RoomEntity): RoomEntity {
+    fun updateRoom(
+        number: String,
+        room: RoomEntity,
+    ): RoomEntity {
         require((roomRepository.existsById(room.number))) {
             throw IllegalArgumentException("room with id ${room.number} not found")
         }
@@ -63,7 +66,10 @@ class RoomService(
         return roomStandardRepository.save(standard)
     }
 
-    fun updateStandard(id: String, standard: RoomStandardEntity): RoomStandardEntity {
+    fun updateStandard(
+        id: String,
+        standard: RoomStandardEntity,
+    ): RoomStandardEntity {
         require((roomStandardRepository.existsById(id))) {
             throw IllegalArgumentException("room with id $id not found")
         }

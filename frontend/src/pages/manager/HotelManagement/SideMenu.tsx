@@ -16,7 +16,6 @@ import {
   Build,
   Payments,
   ChevronLeft,
-  ChevronRight,
 } from '@mui/icons-material';
 import { HotelSection } from '../../../types/hotel_sections';
 import SectionTitle from '../../../components/ui/SectionTitle.tsx';
@@ -68,7 +67,15 @@ function SideMenu({ active, onSelect }: SideMenuProps) {
 
       {collapsed && (
         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3, mt: 1 }}>
-          <HomeOutlined sx={{ color: 'primary.main' }} />
+          <IconButton
+            onClick={() => setCollapsed(false)}
+            sx={{
+              transition: 'transform 0.3s ease',
+              '&:hover': { transform: 'scale(1.1)' },
+            }}
+          >
+            <HomeOutlined sx={{ color: 'primary.main' }} />
+          </IconButton>
         </Box>
       )}
 
@@ -110,30 +117,31 @@ function SideMenu({ active, onSelect }: SideMenuProps) {
           </Tooltip>
         ))}
       </List>
-
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '4.5%',
-          right: 5,
-          transform: 'translateY(-50%)',
-          zIndex: 1,
-        }}
-      >
-        <IconButton
-          onClick={() => setCollapsed(!collapsed)}
+      {!collapsed && (
+        <Box
           sx={{
-            bgcolor: 'background.paper',
-            width: 32,
-            height: 32,
-            '&:hover': {
-              bgcolor: 'action.hover',
-            },
+            position: 'absolute',
+            top: '8%',
+            right: 5,
+            transform: 'translateY(-50%)',
+            zIndex: 1,
           }}
         >
-          {collapsed ? <ChevronRight /> : <ChevronLeft />}
-        </IconButton>
-      </Box>
+          <IconButton
+            onClick={() => setCollapsed(true)}
+            sx={{
+              bgcolor: 'background.paper',
+              width: 32,
+              height: 32,
+              '&:hover': {
+                bgcolor: 'action.hover',
+              },
+            }}
+          >
+            <ChevronLeft />
+          </IconButton>
+        </Box>
+      )}
     </SectionCard>
   );
 }

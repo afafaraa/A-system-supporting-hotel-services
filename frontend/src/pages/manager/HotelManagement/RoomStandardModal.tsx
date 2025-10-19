@@ -157,7 +157,7 @@ function RoomStandardModal({
             inputProps={{ min: 1, step: 1 }}
           />
           <TextField
-            label={tc('base_price') + ' ($)'} 
+            label={tc('base_price') + ' ($)'}
             type="number"
             value={isNaN(formData.basePrice) ? '' : formData.basePrice}
             onChange={handlePriceChange}

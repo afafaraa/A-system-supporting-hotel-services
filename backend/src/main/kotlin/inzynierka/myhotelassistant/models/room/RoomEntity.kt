@@ -1,7 +1,6 @@
 package inzynierka.myhotelassistant.models.room
 
 import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "rooms")
@@ -13,5 +12,5 @@ data class RoomEntity(
     val standard: RoomStandardEntity,
     val description: String? = null,
     val amenities: Set<RoomAmenity> = emptySet(),
-    val roomStatus: RoomStatus = RoomStatus.OPEN    
+    val roomStatus: RoomStatus = RoomStatus.OPEN,
 )

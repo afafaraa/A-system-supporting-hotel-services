@@ -19,16 +19,16 @@ function HotelManagementPage() {
     switch (selectedSection) {
       case 'rooms':
         return <RoomsManagementPage />;
+      case 'maintenance':
+        return <MaintenancePage />;
+      case 'settings':
+        return <AdministrationSettingsPage />;
       case 'structure':
         return <HotelStructurePage />;
       case 'menu':
         return <MenuPage />;
-      case 'maintenance':
-        return <MaintenancePage />;
       case 'finance':
         return <FinancePage />;
-      case 'settings':
-        return <AdministrationSettingsPage />;
       default:
         return null;
     }

@@ -4,7 +4,10 @@ import inzynierka.myhotelassistant.models.notification.NotificationEntity
 import inzynierka.myhotelassistant.models.notification.NotificationVariant
 import inzynierka.myhotelassistant.models.reservation.ReservationEntity
 import inzynierka.myhotelassistant.models.reservation.ReservationStatus
-import inzynierka.myhotelassistant.models.room.*
+import inzynierka.myhotelassistant.models.room.RoomAmenity
+import inzynierka.myhotelassistant.models.room.RoomEntity
+import inzynierka.myhotelassistant.models.room.RoomStandardEntity
+import inzynierka.myhotelassistant.models.room.RoomStatus
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.service.RatingEntity
 import inzynierka.myhotelassistant.models.service.ReservationsService
@@ -17,7 +20,12 @@ import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.Sector
 import inzynierka.myhotelassistant.models.user.UserEntity
-import inzynierka.myhotelassistant.repositories.*
+import inzynierka.myhotelassistant.repositories.NotificationRepository
+import inzynierka.myhotelassistant.repositories.RatingRepository
+import inzynierka.myhotelassistant.repositories.RoomRepository
+import inzynierka.myhotelassistant.repositories.RoomStandardRepository
+import inzynierka.myhotelassistant.repositories.ScheduleRepository
+import inzynierka.myhotelassistant.repositories.UserRepository
 import inzynierka.myhotelassistant.services.ServiceService
 import inzynierka.myhotelassistant.services.UserService
 import jakarta.annotation.PostConstruct
@@ -51,7 +59,7 @@ class DatabaseSeeder(
     private val schedulesGenerator: SchedulesGenerator,
     private val ratingRepository: RatingRepository,
     private val reservationsService: ReservationsService,
-    private val roomStandardRepository: RoomStandardRepository
+    private val roomStandardRepository: RoomStandardRepository,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -119,7 +127,7 @@ class DatabaseSeeder(
                     name = "Standard",
                     capacity = 2,
                     basePrice = 50.00,
-                )
+                ),
             )
         }
         if (!roomStandardRepository.existsByName("Deluxe")) {
@@ -128,7 +136,7 @@ class DatabaseSeeder(
                     name = "Deluxe",
                     capacity = 3,
                     basePrice = 180.00,
-                )
+                ),
             )
         }
         if (!roomStandardRepository.existsByName("Exclusive")) {
@@ -137,7 +145,7 @@ class DatabaseSeeder(
                     name = "Exclusive",
                     capacity = 4,
                     basePrice = 350.00,
-                )
+                ),
             )
         }
     }
@@ -240,7 +248,7 @@ class DatabaseSeeder(
                     pricePerNight = 250.0,
                     standard = RoomStandardEntity(name = "Standard", capacity = 2, basePrice = 100.00),
                     amenities = setOf(RoomAmenity.AIR_CONDITIONING, RoomAmenity.TV, RoomAmenity.WIFI, RoomAmenity.BALCONY),
-                    roomStatus = RoomStatus.OUT_OF_SERVICE
+                    roomStatus = RoomStatus.OUT_OF_SERVICE,
                 ),
             )
         }
@@ -253,7 +261,7 @@ class DatabaseSeeder(
                     pricePerNight = 120.0,
                     standard = RoomStandardEntity(name = "Standard", capacity = 2, basePrice = 100.00),
                     amenities = setOf(RoomAmenity.TV, RoomAmenity.WIFI),
-                    roomStatus = RoomStatus.BOOKED
+                    roomStatus = RoomStatus.BOOKED,
                 ),
             )
         }
@@ -266,7 +274,7 @@ class DatabaseSeeder(
                     pricePerNight = 180.0,
                     standard = RoomStandardEntity(name = "Standard", capacity = 2, basePrice = 100.00),
                     amenities = setOf(RoomAmenity.AIR_CONDITIONING, RoomAmenity.TV, RoomAmenity.WIFI, RoomAmenity.MINI_BAR),
-                    roomStatus = RoomStatus.BOOKED
+                    roomStatus = RoomStatus.BOOKED,
                 ),
             )
         }
@@ -567,7 +575,9 @@ class DatabaseSeeder(
                         guestsCount = Random.nextInt(1, room.capacity + 1),
                         checkIn = checkIn,
                         checkOut = checkOut,
-                        reservationPrice = room.pricePerNight?.times(ChronoUnit.DAYS.between(checkIn, checkOut)) ?: room.standard.basePrice.times(ChronoUnit.DAYS.between(checkIn, checkOut))
+                        reservationPrice =
+                            room.pricePerNight?.times(ChronoUnit.DAYS.between(checkIn, checkOut))
+                                ?: room.standard.basePrice.times(ChronoUnit.DAYS.between(checkIn, checkOut)),
                     )
                 reservation.status =
                     if (checkOut.isBefore(now)) {

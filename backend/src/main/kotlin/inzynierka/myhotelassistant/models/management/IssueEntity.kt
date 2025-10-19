@@ -1,9 +1,7 @@
 package inzynierka.myhotelassistant.models.management
 
-import inzynierka.myhotelassistant.models.user.UserEntity
-import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.DBRef
+import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 
 @Document(collection = "issues")
@@ -16,5 +14,5 @@ data class IssueEntity(
     var assignedTo: String? = null,
     var reportedBy: String? = null,
     var reportedDate: LocalDateTime = LocalDateTime.now(),
-    var resolvedDate: LocalDateTime? = null
+    var resolvedDate: LocalDateTime? = null,
 )

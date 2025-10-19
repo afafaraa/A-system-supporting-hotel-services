@@ -1,4 +1,4 @@
 package inzynierka.myhotelassistant.controllers.management
 
-class BillingController {
-}
+class BillingController
+// TODO

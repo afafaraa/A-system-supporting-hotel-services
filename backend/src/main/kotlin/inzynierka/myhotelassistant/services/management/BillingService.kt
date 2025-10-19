@@ -1,4 +1,4 @@
 package inzynierka.myhotelassistant.services.management
 
-class BillingService {
-}
+class BillingService
+// TODO
