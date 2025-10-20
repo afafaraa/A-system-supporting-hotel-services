@@ -53,15 +53,14 @@ function ReservationDialog({
       setStatus('checking');
       setError(null);
       try {
-        const res = await axiosAuthApi.get(`/rooms/available`, {
-          params: { from: checkIn, to: checkOut },
-        });
-
-        const availableRooms: Room[] = res.data;
-        const isAvailable = availableRooms.some(
-          (r) => r.number === room.number
+        const res = await axiosAuthApi.get(
+          `/rooms/${room.number}/availability`,
+          {
+            params: { from: checkIn, to: checkOut },
+          }
         );
 
+        const isAvailable = res.data.available;
         setStatus(isAvailable ? 'available' : 'unavailable');
       } catch (err) {
         console.error(err);

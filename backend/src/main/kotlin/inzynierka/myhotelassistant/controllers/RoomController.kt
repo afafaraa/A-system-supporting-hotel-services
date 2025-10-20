@@ -27,4 +27,11 @@ class RoomController(
     fun getRoomByNumber(
         @PathVariable("id") id: String,
     ): RoomEntity = roomService.findRoomById(id)
+
+    @GetMapping("/{roomNumber}/availability")
+    fun checkRoomAvailability(
+        @PathVariable("roomNumber") roomNumber: String,
+        @RequestParam("from") from: LocalDate,
+        @RequestParam("to") to: LocalDate,
+    ): Map<String, Boolean> = mapOf("available" to roomService.isRoomAvailable(roomNumber, from, to))
 }
