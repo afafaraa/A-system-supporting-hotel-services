@@ -3,15 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Box, Typography, Button } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { clearCart } from '../../../redux/slices/shoppingCartSlice.ts';
+import { clearServicesCart } from '../../../redux/slices/servicesCartSlice.ts';
+import { clearReservationsCart } from '../../../redux/slices/reservationsCartSlice.ts';
 
 const PaymentSuccessPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Clear the cart after successful payment
-    dispatch(clearCart());
+    // Clear both carts after successful payment
+    dispatch(clearServicesCart());
+    dispatch(clearReservationsCart());
   }, [dispatch]);
 
   return (
@@ -48,4 +50,3 @@ const PaymentSuccessPage = () => {
 };
 
 export default PaymentSuccessPage;
-

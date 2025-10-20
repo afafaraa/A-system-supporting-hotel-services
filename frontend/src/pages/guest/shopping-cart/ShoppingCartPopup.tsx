@@ -185,7 +185,6 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
         }
       );
 
-      clearShoppingCart();
     } catch (e) {
       console.error('Failed to create checkout session:', e);
       setError(t('error.failedToCreateSession'));
