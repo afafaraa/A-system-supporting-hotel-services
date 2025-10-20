@@ -2,6 +2,7 @@ package inzynierka.myhotelassistant.controllers
 
 import inzynierka.myhotelassistant.configs.AppProperties
 import inzynierka.myhotelassistant.exceptions.UnauthorizedException
+import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.EmailVerificationService
 import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.services.UserService
@@ -131,16 +132,23 @@ class AuthController(
     @ResponseStatus(HttpStatus.CREATED)
     fun completeRegistrationNoCode(
         @RequestBody req: CompleteRegistrationRequestNoCode,
-    ) {
+    ): ResponseEntity<String> {
+        var savedUser: UserEntity;
         try {
             println("Received registration request: $req")
-            val savedUser = userService.completeRegistrationNoCode(req)
+            savedUser = userService.completeRegistrationNoCode(req)
             println("Saved user: $savedUser")
+        } catch (e: Exception) {
+            println("Error during registration: ${e.message}")
+            return ResponseEntity.internalServerError().body(e.message)
+        }
+        try {
             emailVerificationService.sendVerificationLink(savedUser.id!!, savedUser.email)
         } catch (e: Exception) {
             println("Error during registration: ${e.message}")
-            throw RuntimeException("Couldn't create account or send verification email. Make sure your email is correct and try again.", e)
+            return ResponseEntity.internalServerError().body("Couldn't send verification email. Make sure your email is correct and try again.")
         }
+        return ResponseEntity.ok("A verification email has been sent to ${savedUser.email}. Please verify your email to complete the registration.")
     }
 
     @GetMapping("/verify/account")

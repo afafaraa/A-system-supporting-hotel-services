@@ -1,8 +1,6 @@
 import axiosApi from '../../../middleware/axiosApi.ts';
-import { setUserData } from '../../../components/auth/auth.tsx';
 import { isAxiosError } from 'axios';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Button, Grid, Typography } from '@mui/material';
 import StyledInput from '../../../theme/styled-components/StyledInput.ts';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +12,7 @@ import InputLabel from '../../../components/ui/InputLabel.tsx';
 
 function RegisterNoCode() {
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [username, setUsername] = useState('');
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
@@ -21,7 +20,6 @@ function RegisterNoCode() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.register.${key}`);
   const navigate = useNavigate();
@@ -41,15 +39,19 @@ function RegisterNoCode() {
         surname,
         email,
       });
-      if (res.data.accessToken && res.data.refreshToken) {
-        setUserData(res.data.accessToken, res.data.refreshToken, dispatch);
-      }
+      console.log(res)
+      setSuccess(res.data)
     } catch (err) {
-      if (isAxiosError(err) && err.response && err.response.status === 400) {
-        setError('pages.register.invalidCodeError');
-      } else if (isAxiosError(err) && err?.response?.data?.message) {
-        setError(isAxiosError(err) && err?.response?.data?.message);
-      } else setError('error.unknownError');
+      console.log(err);
+      if (isAxiosError(err)) {
+        if (err.response?.data?.message) {
+          setError(err.response?.data?.message)
+        } else if (typeof err.response?.data === 'string') {
+          setError(err.response?.data);
+        } else {
+          setError('error.unknownError');
+        }
+      }
     } finally {
       setLoading(false);
     }
@@ -152,12 +154,13 @@ function RegisterNoCode() {
         {tc('registerButton')}
       </Button>
       {error && (
-        <Typography
-          component="p"
-          variant="caption"
-          color="error"
-        >
+        <Typography component="p" variant="caption" color="error">
           {t(error)}
+        </Typography>
+      )}
+      {success && (
+        <Typography component="p" variant="caption" color="success.main">
+          {t(success)}
         </Typography>
       )}
       <Button
