@@ -18,12 +18,10 @@ function ServiceDescription({
   service,
   timeSlots,
   selectedTime,
-  setSelectedTime,
 }: {
   service: ServiceProps;
   timeSlots: OrderServiceProps[];
   selectedTime: string;
-  setSelectedTime: (x: string) => void;
 }) {
   const theme = useTheme();
   const { t } = useTranslation();

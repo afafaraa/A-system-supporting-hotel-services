@@ -88,7 +88,6 @@ function OrderServicePage() {
             service={service}
             timeSlots={timeSlots}
             selectedTime={selectedTime}
-            setSelectedTime={setSelectedTime}
           />
           <ServiceAttributeDetails service={service} />
         </Stack>
