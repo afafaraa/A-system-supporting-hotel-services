@@ -1,5 +1,6 @@
 package inzynierka.myhotelassistant.controllers
 
+import inzynierka.myhotelassistant.configs.AppProperties
 import inzynierka.myhotelassistant.exceptions.UnauthorizedException
 import inzynierka.myhotelassistant.services.EmailVerificationService
 import inzynierka.myhotelassistant.services.TokenService
@@ -27,6 +28,7 @@ class AuthController(
     private val userService: UserService,
     private val emailSender: EmailSender,
     private val emailVerificationService: EmailVerificationService,
+    private val appProperties: AppProperties,
 ) {
     data class LoginResponse(
         val accessToken: String?,
@@ -84,7 +86,7 @@ class AuthController(
             val token = tokenService.generateResetPasswordToken(10, req.email)
             emailSender.sendResetPasswordLink(
                 email = req.email,
-                link = "http://localhost:5173/reset-password/$token",
+                link = "${appProperties.frontend.url}/reset-password/$token",
             )
         }
     }
@@ -130,11 +132,15 @@ class AuthController(
     fun completeRegistrationNoCode(
         @RequestBody req: CompleteRegistrationRequestNoCode,
     ) {
-        println("Received registration request: $req")
-        val savedUser = userService.completeRegistrationNoCode(req)
-        println("Saved user: $savedUser")
-        // todo add err message for frontend if email sending fails
-        emailVerificationService.sendVerificationLink(savedUser.id!!, savedUser.email)
+        try {
+            println("Received registration request: $req")
+            val savedUser = userService.completeRegistrationNoCode(req)
+            println("Saved user: $savedUser")
+            emailVerificationService.sendVerificationLink(savedUser.id!!, savedUser.email)
+        } catch (e: Exception) {
+            println("Error during registration: ${e.message}")
+            throw RuntimeException("Couldn't create account or send verification email. Make sure your email is correct and try again.", e)
+        }
     }
 
     @GetMapping("/verify/account")

@@ -1,5 +1,6 @@
 package inzynierka.myhotelassistant.utils.email
 
+import inzynierka.myhotelassistant.configs.AppProperties
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Service
@@ -10,6 +11,7 @@ import java.time.Instant
 @Service
 class EmailSender(
     private val mailSender: JavaMailSender,
+    private val appProperties: AppProperties,
 ) {
     private val sendEmailAddress = "hello@demomailtrap.co"
 
@@ -73,7 +75,7 @@ class EmailSender(
         token: String,
     ) {
         val encodedToken = URLEncoder.encode(token, StandardCharsets.UTF_8.toString())
-        val link = "http://localhost:5173/verify/account?token=$encodedToken"
+        val link = "${appProperties.frontend.url}/verify/account?token=$encodedToken"
 
         val text = """
             Hello,

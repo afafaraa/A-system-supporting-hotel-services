@@ -1,5 +1,6 @@
 package inzynierka.myhotelassistant.utils.email
 
+import inzynierka.myhotelassistant.configs.AppProperties
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -19,11 +20,15 @@ class EmailSenderTest {
     private lateinit var mailSender: JavaMailSender
 
     private lateinit var emailSender: EmailSender
+    private lateinit var appProperties: AppProperties
 
     @BeforeEach
     fun setup() {
         MockitoAnnotations.openMocks(this)
-        emailSender = EmailSender(mailSender)
+        appProperties = AppProperties().apply {
+            frontend.url = "http://localhost:5273"
+        }
+        emailSender = EmailSender(mailSender, appProperties)
     }
 
     @Test
@@ -53,7 +58,7 @@ class EmailSenderTest {
     fun `sendResetPasswordLink should send email with correct content`() {
         // Given
         val email = "test@example.com"
-        val link = "http://localhost:5173/reset-password?token=abc123"
+        val link = "http://localhost:5273/reset-password?token=abc123"
 
         val messageCaptor = ArgumentCaptor.forClass(SimpleMailMessage::class.java)
 
@@ -88,7 +93,7 @@ class EmailSenderTest {
         assertEquals("hello@demomailtrap.co", sentMessage.from)
         assertArrayEquals(arrayOf(email), sentMessage.to)
         assertEquals("Confirm your MyHotelAssistant account", sentMessage.subject)
-        assertTrue(sentMessage.text?.contains("http://localhost:5173/verify/account?token=") == true)
+        assertTrue(sentMessage.text?.contains("${appProperties.frontend.url}/verify/account?token=") == true)
         assertTrue(sentMessage.text?.contains("24 hours") == true)
     }
 

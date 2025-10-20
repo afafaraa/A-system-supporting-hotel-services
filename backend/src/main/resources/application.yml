@@ -33,6 +33,8 @@ stripe:
   api:
     key: ${STRIPE_SECRET_KEY:paste_api_key_here}
 app:
+  frontend:
+    url: http://localhost:5173
   reservations:
     cancellation:
       days-before: 7
