@@ -12,4 +12,3 @@ data class AppProperties(
         var url: String = "http://localhost:5273",
     )
 }
-

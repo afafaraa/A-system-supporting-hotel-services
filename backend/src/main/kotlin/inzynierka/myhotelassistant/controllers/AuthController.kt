@@ -134,7 +134,7 @@ class AuthController(
     fun completeRegistrationNoCode(
         @RequestBody @Valid req: CompleteRegistrationRequestNoCode,
     ): ResponseEntity<String> {
-        var savedUser: UserEntity;
+        var savedUser: UserEntity
         try {
             savedUser = userService.completeRegistrationNoCode(req)
         } catch (e: Exception) {
@@ -145,9 +145,13 @@ class AuthController(
             emailVerificationService.sendVerificationLink(savedUser.id!!, savedUser.email)
         } catch (e: Exception) {
             println("Error during registration: ${e.message}")
-            return ResponseEntity.internalServerError().body("Couldn't send verification email. Make sure your email is correct and try again.")
+            return ResponseEntity.internalServerError().body(
+                "Couldn't send verification email. Make sure your email is correct and try again.",
+            )
         }
-        return ResponseEntity.ok("A verification email has been sent to ${savedUser.email}. Please verify your email to complete the registration.")
+        return ResponseEntity.ok(
+            "A verification email has been sent to ${savedUser.email}. Please verify your email to complete the registration.",
+        )
     }
 
     @GetMapping("/verify/account")

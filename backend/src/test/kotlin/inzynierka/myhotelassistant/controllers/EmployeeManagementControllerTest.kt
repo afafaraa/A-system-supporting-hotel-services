@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import inzynierka.myhotelassistant.configs.AppProperties
 import inzynierka.myhotelassistant.configs.RSAKeyConfig
 import inzynierka.myhotelassistant.configs.SecurityConfig
 import inzynierka.myhotelassistant.controllers.user.EmployeeManagementController
@@ -31,7 +32,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import kotlin.test.assertEquals
 
 @WebMvcTest(EmployeeManagementController::class)
-@Import(SecurityConfig::class, RSAKeyConfig::class)
+@Import(SecurityConfig::class, RSAKeyConfig::class, AppProperties::class)
 class EmployeeManagementControllerTest {
     @Autowired
     lateinit var mvc: MockMvc

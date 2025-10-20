@@ -2,6 +2,7 @@ package inzynierka.myhotelassistant.controllers
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import inzynierka.myhotelassistant.configs.AppProperties
 import inzynierka.myhotelassistant.configs.RSAKeyConfig
 import inzynierka.myhotelassistant.configs.SecurityConfig
 import inzynierka.myhotelassistant.models.user.Role
@@ -29,7 +30,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.lang.Thread.sleep
 
 @WebMvcTest(HomeController::class, AuthController::class)
-@Import(SecurityConfig::class, RSAKeyConfig::class, TokenService::class, UserService::class)
+@Import(SecurityConfig::class, RSAKeyConfig::class, TokenService::class, UserService::class, AppProperties::class)
 class AuthControllerTest {
     @Autowired lateinit var mvc: MockMvc
 
