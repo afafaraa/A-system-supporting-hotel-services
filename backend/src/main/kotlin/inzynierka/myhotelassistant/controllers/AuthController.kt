@@ -137,7 +137,6 @@ class AuthController(
         var savedUser: UserEntity;
         try {
             savedUser = userService.completeRegistrationNoCode(req)
-            println("Saved user: $savedUser")
         } catch (e: Exception) {
             println("Error during registration: ${e.message}")
             return ResponseEntity.internalServerError().body(e.message)

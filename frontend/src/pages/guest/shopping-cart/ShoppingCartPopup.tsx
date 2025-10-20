@@ -58,7 +58,6 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
     checkOut?: string,
     pricePerNight?: number
   ): number => {
-    console.log(checkIn, checkOut, pricePerNight);
     if (!checkIn || !checkOut || !pricePerNight) return 0;
 
     const checkInDate = new Date(checkIn);
@@ -106,7 +105,6 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
     setCart(cartList);
   }, [shoppingCart]);
 
-  console.log(cart);
   useEffect(() => {
     if (open) {
       fetchCartData();
@@ -192,7 +190,6 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   const totalPrice = useMemo(
     () =>
       cart.reduce((acc, curr) => {
-        console.log(curr);
         if (curr.type === 'SERVICE') {
           return acc + (curr.price ?? 0);
         }

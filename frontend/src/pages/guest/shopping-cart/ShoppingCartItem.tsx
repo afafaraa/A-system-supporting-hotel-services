@@ -25,7 +25,7 @@ function ShoppingCartItem({
     dispatch(
       removeItem({
         id: item.id,
-        type: 'RESERVATION',
+        type: item.type,
         checkIn: item.checkIn,
         checkOut: item.checkOut,
       })

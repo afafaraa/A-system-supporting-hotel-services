@@ -24,7 +24,20 @@ const shoppingCartSlice = createSlice({
   initialState,
   reducers: {
     addItem: (state, action: PayloadAction<ShoppingCartProps>) => {
-      if (!state.shoppingCart.includes(action.payload)) {
+      const isDuplicate = state.shoppingCart.some((item) => {
+        if (item.type === 'RESERVATION' && action.payload.type === 'RESERVATION') {
+          return (
+            item.id === action.payload.id &&
+            item.checkIn === action.payload.checkIn &&
+            item.checkOut === action.payload.checkOut
+          );
+        } else if (item.type === 'SERVICE' && action.payload.type === 'SERVICE') {
+          return item.id === action.payload.id;
+        }
+        return false;
+      });
+
+      if (!isDuplicate) {
         state.shoppingCart.push(action.payload);
         localStorage.setItem(
           'SHOPPING_CART',

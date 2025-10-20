@@ -50,7 +50,7 @@ function OrderServicePage() {
       .then(response => {
         const scheduleItems = response.data.map((s: OrderServiceProps) => ({
           ...s,
-          inCart: cartItems.includes({ id: s.id, type: 'SERVICE' }),
+          inCart: cartItems.some(item => item.id === s.id && item.type === 'SERVICE'),
         }));
         setTimeSlots(scheduleItems);
       })

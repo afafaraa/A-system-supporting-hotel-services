@@ -30,7 +30,7 @@ function RegisterPage() {
       { label: tc('registerNoCodeNavButton'), path: '/register/no-code' },
       { label: tc('registerWithCodeNavButton'), path: '/register/with-code' },
     ],
-    []
+    [tc]
   );
   const updateIndicator = useCallback(() => {
     if (!containerRef.current) return;
