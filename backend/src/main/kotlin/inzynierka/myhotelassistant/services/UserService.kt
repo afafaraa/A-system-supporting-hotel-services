@@ -4,6 +4,7 @@ import inzynierka.myhotelassistant.controllers.AuthController
 import inzynierka.myhotelassistant.controllers.user.AddUserController
 import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserRequest
 import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserResponse
+import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.RegistrationCode
@@ -13,7 +14,6 @@ import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.security.authentication.DisabledException
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -40,7 +40,7 @@ class UserService(
             userRepository.findByUsername(username)
                 ?: throw UsernameNotFoundException("User with username $username not found")
         if (!user.emailAuthorized) {
-            throw DisabledException("This users email is not verified")
+            throw HttpException.NoPermissionException("This users email is not verified")
         }
         return User
             .builder()
@@ -176,6 +176,4 @@ class UserService(
     fun getCurrentUser(username: String) = findByUsernameOrThrow(username)
 
     fun getAllGuests(pageable: Pageable): List<UserEntity> = userRepository.findByRoleIn(listOf(Role.GUEST), pageable).content
-
-    fun findByUsername(username: String): UserEntity? = userRepository.findByUsername(username)
 }
