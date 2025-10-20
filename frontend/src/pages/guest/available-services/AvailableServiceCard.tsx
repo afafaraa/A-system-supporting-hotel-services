@@ -4,7 +4,11 @@ import {
   Typography,
   Box,
   Button,
-  useTheme, Chip, Tooltip,
+  useTheme,
+  Chip,
+  Tooltip,
+  Alert,
+  useMediaQuery,
 } from '@mui/material';
 import StarRating from './StarRating.tsx';
 import { useNavigate } from 'react-router-dom';
@@ -27,6 +31,7 @@ export type ServiceProps = {
 function AvailableServiceCard({ service }: { service: ServiceProps }) {
   const navigate = useNavigate();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
   const userDetails = useSelector(selectUserDetails);
 
@@ -44,6 +49,8 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
   } else if (isServiceDisabled) {
     tooltipMsg = t('pages.available_services.tooltip.serviceDisabled');
   }
+
+  const showInlineMsg = isDisabled && isMobile;
 
   return (
     <Card
@@ -95,6 +102,16 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
           >
             {service.description}
           </Typography>
+
+          {showInlineMsg && (
+            <Alert
+              severity="warning"
+              variant="outlined"
+              sx={{ mb: 2, fontSize: '0.9em', borderRadius: '8px' }}
+            >
+              {tooltipMsg}
+            </Alert>
+          )}
         </Box>
 
         <Box>
@@ -122,14 +139,16 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
               {service.duration} min
             </Box>
 
-            <Chip color={service.disabled ? 'error' : 'success'} size='small'
-                  sx={{borderRadius: '8px'}}
-                  label={service.disabled
-                    ? t('pages.available_services.unavailable')
-                    : t('pages.available_services.available')
-                  }
-            >
-            </Chip>
+            <Chip
+              color={service.disabled ? 'error' : 'success'}
+              size="small"
+              sx={{ borderRadius: '8px' }}
+              label={
+                service.disabled
+                  ? t('pages.available_services.unavailable')
+                  : t('pages.available_services.available')
+              }
+            />
           </Box>
 
           <Tooltip title={isDisabled ? tooltipMsg : ''} disableHoverListener={!isDisabled}>
