@@ -86,7 +86,7 @@ function ReservationDialog({
             .replace(/_/g, ' ')
             .toLowerCase()
             .replace(/^\w/, (c) => c.toUpperCase())}{' '}
-          – ${room.pricePerNight} per night
+         Room – ${room.pricePerNight} per night
         </Typography>
 
         <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
@@ -96,6 +96,7 @@ function ReservationDialog({
             fullWidth
             value={checkIn}
             onChange={(e) => setCheckIn(e.target.value)}
+            InputLabelProps={{ shrink: true }}
           />
           <TextField
             label="Check-out Date"
@@ -103,6 +104,7 @@ function ReservationDialog({
             fullWidth
             value={checkOut}
             onChange={(e) => setCheckOut(e.target.value)}
+            InputLabelProps={{ shrink: true }}
           />
         </Box>
 

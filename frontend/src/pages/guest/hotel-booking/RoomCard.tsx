@@ -67,7 +67,7 @@ export default function RoomCard({
                 .replace(/^\w/, c => c.toUpperCase())}
             </Typography>
             <Chip
-              label={`${room.pricePerNight}/night`}
+              label={`${room.pricePerNight}$/night`}
               color="secondary"
               sx={{
                 fontWeight: 'bold',
@@ -86,7 +86,6 @@ export default function RoomCard({
           >
             {room.description}
           </Typography>
-
           <Typography
             sx={{
               marginTop: '8px',

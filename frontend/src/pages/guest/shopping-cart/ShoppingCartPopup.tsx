@@ -1,6 +1,14 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Typography, Box, IconButton, useTheme, CircularProgress, Alert } from '@mui/material';
+import {
+  Button,
+  Typography,
+  Box,
+  IconButton,
+  useTheme,
+  CircularProgress,
+  Alert,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ShoppingCartItem from './ShoppingCartItem.tsx';
 import { selectUserDetails } from '../../../redux/slices/userDetailsSlice.ts';
@@ -10,6 +18,7 @@ import {
 } from '../../../redux/slices/shoppingCartSlice.ts';
 import { axiosAuthApi } from '../../../middleware/axiosApi.ts';
 import { RoomStandard } from '../../../types/room.ts';
+import { selectUser } from '../../../redux/slices/userSlice.ts';
 
 export type CartProps = {
   id: string;
@@ -35,6 +44,7 @@ type ShoppingCartPopupProps = {
 
 const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   const dispatch = useDispatch();
+  const user = useSelector(selectUser);
   const userDetails = useSelector(selectUserDetails);
   const shoppingCart = useSelector(selectShoppingCart);
   const theme = useTheme();
@@ -43,7 +53,11 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const calculateReservationPrice = (checkIn?: string, checkOut?: string, pricePerNight?: number): number => {
+  const calculateReservationPrice = (
+    checkIn?: string,
+    checkOut?: string,
+    pricePerNight?: number
+  ): number => {
     console.log(checkIn, checkOut, pricePerNight);
     if (!checkIn || !checkOut || !pricePerNight) return 0;
 
@@ -66,18 +80,22 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
         let cartItem: CartProps;
         try {
           if (item.type === 'SERVICE') {
-            const response = await axiosAuthApi.get(`/schedule/get/cart/id/${item.id}`);
+            const response = await axiosAuthApi.get(
+              `/schedule/get/cart/id/${item.id}`
+            );
             cartItem = response.data;
-            cartItem.type = item.type
+            cartItem.type = item.type;
             if (cartItem) cartList.push(cartItem);
           } else if (item.type === 'RESERVATION') {
-            const response = await axiosAuthApi.get(`/rooms/by/number/${item.id}`);
+            const response = await axiosAuthApi.get(
+              `/rooms/by/number/${item.id}`
+            );
             cartItem = response.data;
             cartItem.id = response.data.number;
             cartItem.checkIn = item.checkIn;
             cartItem.checkOut = item.checkOut;
             cartItem.guestCount = item.guestCount;
-            cartItem.type = item.type
+            cartItem.type = item.type;
             if (cartItem) cartList.push(cartItem);
           }
         } catch (e) {
@@ -88,7 +106,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
     setCart(cartList);
   }, [shoppingCart]);
 
-  console.log(cart)
+  console.log(cart);
   useEffect(() => {
     if (open) {
       fetchCartData();
@@ -119,22 +137,32 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
       }
 
       // Prepare cart items metadata
-      const cartItems = cart.map(item => ({
+      const cartItems = cart.map((item) => ({
         id: item.id,
         type: item.type,
         name: item.name || `Room ${item.roomNumber}`,
-        price: item.type === 'SERVICE' ? item.price : calculateReservationPrice(item.checkIn, item.checkOut, item.pricePerNight)
+        price:
+          item.type === 'SERVICE'
+            ? item.price
+            : calculateReservationPrice(
+                item.checkIn,
+                item.checkOut,
+                item.pricePerNight
+              ),
       }));
 
-      const response = await axiosAuthApi.post('/payment/create-checkout-session', {
-        amountCents,
-        currency: 'usd',
-        successUrl: `${window.location.origin}/payment/success`,
-        cancelUrl: `${window.location.origin}/payment/cancel`,
-        orderDescription: `Hotel Services Order (${cart.length} item${cart.length > 1 ? 's' : ''})`,
-        customerEmail: userDetails?.email,
-        cartItems: JSON.stringify(cartItems)
-      });
+      const response = await axiosAuthApi.post(
+        '/payment/create-checkout-session',
+        {
+          amountCents,
+          currency: 'usd',
+          successUrl: `${window.location.origin}/payment/success`,
+          cancelUrl: `${window.location.origin}/payment/cancel`,
+          orderDescription: `Hotel Services Order (${cart.length} item${cart.length > 1 ? 's' : ''})`,
+          customerEmail: userDetails?.email,
+          cartItems: JSON.stringify(cartItems),
+        }
+      );
 
       if (response.data?.url) {
         window.location.href = response.data.url;
@@ -146,17 +174,42 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
       setIsProcessing(false);
     }
   };
+  const orderServices = async () => {
+    try {
+      for (const item of cart) {
+        await axiosAuthApi.post(`/guest/order/services`, {
+          id: item.id,
+          username: user?.username,
+        });
+      }
+      clearShoppingCart();
+      await fetchCartData();
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
-  const totalPrice = useMemo(() => cart.reduce((acc, curr) => {
-    console.log(curr)
-    if (curr.type === 'SERVICE') {
-      return acc + (curr.price ?? 0);
-    }
-    if (curr.type === 'RESERVATION') {
-      return acc + calculateReservationPrice(curr.checkIn, curr.checkOut, curr.pricePerNight);
-    }
-    return acc;
-  }, 0), [cart]);
+  const totalPrice = useMemo(
+    () =>
+      cart.reduce((acc, curr) => {
+        console.log(curr);
+        if (curr.type === 'SERVICE') {
+          return acc + (curr.price ?? 0);
+        }
+        if (curr.type === 'RESERVATION') {
+          return (
+            acc +
+            calculateReservationPrice(
+              curr.checkIn,
+              curr.checkOut,
+              curr.pricePerNight
+            )
+          );
+        }
+        return acc;
+      }, 0),
+    [cart]
+  );
 
   if (!open) return null;
   return (
@@ -248,14 +301,28 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
             </Typography>
           </div>
         </Box>
-        <Button
-          fullWidth
-          sx={{ mb: 1 }}
-          onClick={initiateCheckout}
-          disabled={cart.length === 0 || isProcessing}
-        >
-          {isProcessing ? <CircularProgress size={24} /> : 'Proceed to Payment'}
-        </Button>
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+          <Button
+            fullWidth
+            sx={{ mb: 1 }}
+            onClick={orderServices}
+            disabled={cart.length === 0 || isProcessing}
+          >
+            Add to Tab
+          </Button>
+          <Button
+            fullWidth
+            sx={{ mb: 1 }}
+            onClick={initiateCheckout}
+            disabled={cart.length === 0 || isProcessing}
+          >
+            {isProcessing ? (
+              <CircularProgress size={24} />
+            ) : (
+              'Proceed to Payment'
+            )}
+          </Button>
+        </div>
         <Button
           fullWidth
           variant="outlined"
