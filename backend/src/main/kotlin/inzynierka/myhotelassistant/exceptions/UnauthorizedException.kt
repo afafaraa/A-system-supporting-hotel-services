@@ -6,4 +6,4 @@ import org.springframework.web.bind.annotation.ResponseStatus
 @ResponseStatus(HttpStatus.FORBIDDEN)
 class UnauthorizedException(
     message: String,
-) : RuntimeException(message)
+) : HttpException(httpStatus = HttpStatus.FORBIDDEN, message = message)

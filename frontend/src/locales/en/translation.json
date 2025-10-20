@@ -502,6 +502,7 @@
     "unknownError": "Unknown error occurred.",
     "emptyFields": "All fields must be filled.",
     "invalidCredentials": "Invalid login credentials.",
+    "emailNotVerified": "Email nie został zweryfikowany. Sprawdź swoją skrzynkę odbiorczą lub spróbuj zarejestrować się ponownie.",
     "upload_error": "Error during uploading file.",
     "add_employee_failure": "Failed to add new employee",
     "sameRoleError": "Employee already has this role.",

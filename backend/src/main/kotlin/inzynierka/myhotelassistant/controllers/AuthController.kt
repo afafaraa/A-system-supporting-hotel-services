@@ -114,6 +114,7 @@ class AuthController(
     data class CompleteRegistrationRequestNoCode(
         val username: String,
         val password: String,
+        @field:Email(message = "Email should be valid")
         val email: String,
         val name: String,
         val surname: String,
@@ -131,11 +132,10 @@ class AuthController(
     @PostMapping("/register/no-code")
     @ResponseStatus(HttpStatus.CREATED)
     fun completeRegistrationNoCode(
-        @RequestBody req: CompleteRegistrationRequestNoCode,
+        @RequestBody @Valid req: CompleteRegistrationRequestNoCode,
     ): ResponseEntity<String> {
         var savedUser: UserEntity;
         try {
-            println("Received registration request: $req")
             savedUser = userService.completeRegistrationNoCode(req)
             println("Saved user: $savedUser")
         } catch (e: Exception) {

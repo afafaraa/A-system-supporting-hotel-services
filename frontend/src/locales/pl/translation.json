@@ -503,6 +503,7 @@
     "unknownError": "Wystąpił nieznany błąd.",
     "emptyFields": "Wszystkie pola muszą być wypełnione.",
     "invalidCredentials": "Nieprawidłowe dane logowania.",
+    "emailNotVerified": "Email nie został zweryfikowany. Sprawdź swoją skrzynkę odbiorczą lub spróbuj zarejestrować się ponownie.",
     "upload_error": "Błąd podczas przesyłania pliku.",
     "sameRoleError": "Pracownik już posiada tę rolę.",
     "add_employee_failure": "Błąd podczas dodawania nowego pracownika",
