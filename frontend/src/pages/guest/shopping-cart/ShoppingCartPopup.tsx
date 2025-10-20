@@ -149,42 +149,33 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
         return;
       }
 
-      const amountCents = Math.round(totalPrice * 100);
-
-      if (amountCents <= 0) {
-        setError('Invalid cart total');
-        setIsProcessing(false);
-        return;
-      }
-
-      // Prepare cart items metadata
       const cartItems = allCartItems.map((item) => ({
         id: item.id,
         type: item.type,
-        name: item.name || `Room ${item.roomNumber}`,
-        price:
-          item.type === 'SERVICE'
-            ? item.price
-            : calculateReservationPrice(
-                item.checkIn,
-                item.checkOut,
-                item.pricePerNight
-              ),
+        ...(item.type === 'RESERVATION' && {
+          checkIn: item.checkIn,
+          checkOut: item.checkOut,
+          guestCount: item.guestCount,
+        }),
       }));
 
-      await axiosAuthApi.post(
+      const response = await axiosAuthApi.post(
         '/payment/create-checkout-session',
         {
-          amountCents,
+          cartItems,
           currency: 'eur',
           successUrl: `${window.location.origin}/payment/success`,
           cancelUrl: `${window.location.origin}/payment/cancel`,
-          orderDescription: `Hotel Services Order (${totalCartItems} item${totalCartItems > 1 ? 's' : ''})`,
           customerEmail: userDetails?.email,
-          cartItems: JSON.stringify(cartItems),
         }
       );
 
+      if (response.data.url) {
+        window.location.href = response.data.url;
+      } else {
+        console.error('Checkout session URL not found:', response.data);
+        setError(t('error.failedToCreateSession'));
+      }
     } catch (e) {
       console.error('Failed to create checkout session:', e);
       setError(t('error.failedToCreateSession'));

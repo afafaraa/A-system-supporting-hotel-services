@@ -25,9 +25,9 @@ class RoomService(
             .filter { room -> reservationsService.isRoomAvailable(room.number, from, to) }
     }
 
-    fun findRoomById(id: String): RoomEntity =
-        roomRepository.findByNumber(id)
-            ?: throw NoSuchElementException("Room with id $id not found")
+    fun findRoomByNumber(number: String): RoomEntity =
+        roomRepository.findByNumber(number)
+            ?: throw NoSuchElementException("Room with number $number not found")
 
     fun isRoomAvailable(
         roomNumber: String,

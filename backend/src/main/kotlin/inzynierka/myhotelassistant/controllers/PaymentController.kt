@@ -4,6 +4,7 @@ import com.stripe.Stripe
 import com.stripe.model.checkout.Session
 import com.stripe.param.checkout.SessionCreateParams
 import inzynierka.myhotelassistant.exceptions.HttpException
+import inzynierka.myhotelassistant.services.PaymentService
 import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/payment")
-class PaymentController {
+class PaymentController(
+    private val paymentService: PaymentService,
+) {
     @Value("\${stripe.api.key:}")
     private lateinit var stripeApiKey: String
 
@@ -23,16 +26,6 @@ class PaymentController {
     fun init() {
         Stripe.apiKey = stripeApiKey
     }
-
-    data class CreateCheckoutSessionRequest(
-        val amountCents: Long,
-        val currency: String = "usd",
-        val successUrl: String,
-        val cancelUrl: String,
-        val customerEmail: String? = null,
-        val orderDescription: String = "Hotel Services Order",
-        val cartItems: String? = null,
-    )
 
     data class CreateCheckoutSessionResponse(
         val url: String,
@@ -42,11 +35,15 @@ class PaymentController {
     @PostMapping("/create-checkout-session")
     @ResponseStatus(HttpStatus.CREATED)
     fun createCheckoutSession(
-        @RequestBody req: CreateCheckoutSessionRequest,
+        @RequestBody req: CheckoutRequest,
     ): CreateCheckoutSessionResponse {
         try {
-            // Validate amount
-            if (req.amountCents <= 0) {
+            val checkoutData = paymentService.createCheckoutSession(req)
+
+            val amountCents = checkoutData["amountCents"] as Int
+            val orderDescription = checkoutData["orderDescription"] as String
+
+            if (amountCents <= 0) {
                 throw HttpException.InvalidArgumentException("Amount must be greater than zero")
             }
 
@@ -64,24 +61,18 @@ class PaymentController {
                                 SessionCreateParams.LineItem.PriceData
                                     .builder()
                                     .setCurrency(req.currency)
-                                    .setUnitAmount(req.amountCents)
+                                    .setUnitAmount(amountCents.toLong())
                                     .setProductData(
                                         SessionCreateParams.LineItem.PriceData.ProductData
                                             .builder()
-                                            .setName(req.orderDescription)
+                                            .setName(orderDescription)
                                             .build(),
                                     ).build(),
                             ).build(),
                     )
 
-            // Add customer email if provided
             req.customerEmail?.let { email ->
                 paramsBuilder.setCustomerEmail(email)
-            }
-
-            // Add cart items as metadata if provided
-            req.cartItems?.let { items ->
-                paramsBuilder.putMetadata("cart_items", items)
             }
 
             val params = paramsBuilder.build()
@@ -95,4 +86,20 @@ class PaymentController {
             throw HttpException.InvalidArgumentException("Failed to create checkout session: ${e.message}")
         }
     }
+
+    data class CartItemDTO(
+        val id: String,
+        val type: String,
+        val checkIn: String? = null,
+        val checkOut: String? = null,
+        val guestCount: Int? = null,
+    )
+
+    data class CheckoutRequest(
+        val cartItems: List<CartItemDTO>,
+        val currency: String = "eur",
+        val successUrl: String,
+        val cancelUrl: String,
+        val customerEmail: String?,
+    )
 }
