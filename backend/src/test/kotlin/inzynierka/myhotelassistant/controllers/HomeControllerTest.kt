@@ -5,8 +5,6 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import inzynierka.myhotelassistant.configs.AppProperties
 import inzynierka.myhotelassistant.configs.RSAKeyConfig
 import inzynierka.myhotelassistant.configs.SecurityConfig
-import inzynierka.myhotelassistant.models.user.Role
-import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.EmailVerificationService
 import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.services.UserService
@@ -54,21 +52,6 @@ class HomeControllerTest {
                 .roles("USER")
                 .build()
         BDDMockito.given(userService.loadUserByUsername("user")).willReturn(user)
-
-        // Mock the UserEntity for findByUsername
-        val userEntity =
-            UserEntity(
-                id = "test-id",
-                role = Role.GUEST,
-                email = "user@test.com",
-                username = "user",
-                password = passwordEncoder.encode("password"),
-                name = "Test",
-                surname = "User",
-                emailAuthorized = true,
-                active = true,
-            )
-        BDDMockito.given(userService.findByUsername("user")).willReturn(userEntity)
     }
 
     @Test

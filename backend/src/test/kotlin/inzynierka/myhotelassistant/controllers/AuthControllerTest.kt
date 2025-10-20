@@ -5,8 +5,6 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import inzynierka.myhotelassistant.configs.AppProperties
 import inzynierka.myhotelassistant.configs.RSAKeyConfig
 import inzynierka.myhotelassistant.configs.SecurityConfig
-import inzynierka.myhotelassistant.models.user.Role
-import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.EmailVerificationService
 import inzynierka.myhotelassistant.services.TokenService
 import inzynierka.myhotelassistant.services.UserService
@@ -56,20 +54,6 @@ class AuthControllerTest {
                 .roles("USER")
                 .build()
         given(userService.loadUserByUsername("user")).willReturn(user)
-
-        val userEntity =
-            UserEntity(
-                id = "test-user-id",
-                username = "user",
-                password = passwordEncoder.encode("password"),
-                email = "user@example.com",
-                name = "Test",
-                surname = "User",
-                role = Role.GUEST,
-                emailAuthorized = true,
-                active = true,
-            )
-        given(userService.findByUsername("user")).willReturn(userEntity)
     }
 
     @Test

@@ -13,6 +13,7 @@ import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.authentication.DisabledException
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -38,6 +39,9 @@ class UserService(
         val user =
             userRepository.findByUsername(username)
                 ?: throw UsernameNotFoundException("User with username $username not found")
+        if (!user.emailAuthorized) {
+            throw DisabledException("This users email is not verified")
+        }
         return User
             .builder()
             .username(user.username)
