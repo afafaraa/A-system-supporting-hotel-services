@@ -18,18 +18,17 @@ function RegisterNoCode() {
   const [surname, setSurname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [repeatPassword, setRepeatPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.register.${key}`);
   const navigate = useNavigate();
 
-  const disabled = username === '' || password === '';
+  const passwordsMatch = password === repeatPassword;
+  const disabled = username === '' || password === '' || repeatPassword === '' || name === '' || surname === '' || email === '' || !passwordsMatch;
   const register = async () => {
-    if (disabled) {
-      setError('error.emptyFields');
-      return;
-    }
     setLoading(true);
     try {
       const res = await axiosApi.post('/open/register/no-code', {
@@ -98,6 +97,28 @@ function RegisterNoCode() {
         <InputLabel
           label={
             <>
+              <LockIcon sx={{ fontSize: '120%' }} /> {tc('repeatPassword')}
+            </>
+          }
+          htmlFor="repeatPassword"
+        />
+        <StyledInput
+          id="repeatPassword"
+          name="repeatPassword"
+          type={showRepeatPassword ? 'text' : 'password'}
+          value={repeatPassword}
+          onChange={(e) => setRepeatPassword(e.target.value)}
+          placeholder="************"
+          autoComplete="new-password"
+          slotProps={generatePasswordAdornment(showRepeatPassword, setShowRepeatPassword)}
+          error={repeatPassword !== '' && !passwordsMatch}
+        />
+
+      </Grid>
+      <Grid sx={{ flexGrow: 1 }} size={1}>
+        <InputLabel
+          label={
+            <>
               <LockIcon sx={{ fontSize: '120%' }} /> {tc('email')}
             </>
           }
@@ -110,8 +131,7 @@ function RegisterNoCode() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder={tc('email')}
         />
-      </Grid>
-      <Grid sx={{ flexGrow: 1 }} size={1}>
+        
         <InputLabel
           label={
             <>
@@ -153,6 +173,11 @@ function RegisterNoCode() {
       >
         {tc('registerButton')}
       </Button>
+      {!passwordsMatch && repeatPassword !== '' && (
+        <Typography component="p" variant="caption" color="error">
+          {tc('passwordsDoNotMatch')}
+        </Typography>
+      )}
       {error && (
         <Typography component="p" variant="caption" color="error">
           {t(error)}

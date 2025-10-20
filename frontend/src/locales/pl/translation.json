@@ -50,8 +50,13 @@
       "invalidCodeError": "Nieprawidłowy kod rejestracyjny.",
       "newPassword": "Nowe hasło",
       "repeatPassword": "Powtórz hasło",
+      "email": "Adres email",
+      "name": "Imię",
+      "surname": "Nazwisko",
       "passwordsDoNotMatch": "Hasła nie pasują do siebie.",
-      "resetPasswordButton": "Zresetuj hasło"
+      "resetPasswordButton": "Zresetuj hasło",
+      "registerNoCodeNavButton": "Zarejestruj się",
+      "registerWithCodeNavButton": "Zarejestruj się z kodem"
     },
     "reset-password": {
       "title": "Resetowanie hasła",

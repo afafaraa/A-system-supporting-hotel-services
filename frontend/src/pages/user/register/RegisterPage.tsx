@@ -27,8 +27,8 @@ function RegisterPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const subpages = useMemo(
     () => [
-      { label: 'Register', path: '/register/no-code' },
-      { label: 'Register with code', path: '/register/with-code' },
+      { label: tc('registerNoCodeNavButton'), path: '/register/no-code' },
+      { label: tc('registerWithCodeNavButton'), path: '/register/with-code' },
     ],
     []
   );

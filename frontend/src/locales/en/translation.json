@@ -50,8 +50,13 @@
       "invalidCodeError": "Invalid registration code.",
       "newPassword": "New Password",
       "repeatPassword": "Repeat Password",
+      "email": "Email address",
+      "name": "Name",
+      "surname": "Surname",
       "passwordsDoNotMatch": "Passwords do not match.",
-      "resetPasswordButton": "Reset Password"
+      "resetPasswordButton": "Reset Password",
+      "registerNoCodeNavButton": "Register",
+      "registerWithCodeNavButton": "Register with Code"
     },
     "reset-password": {
       "title": "Reset Password",
