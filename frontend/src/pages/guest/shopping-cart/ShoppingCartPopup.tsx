@@ -7,7 +7,6 @@ import {
   IconButton,
   useTheme,
   CircularProgress,
-  Alert,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ShoppingCartItem from './ShoppingCartItem.tsx';
@@ -19,6 +18,7 @@ import {
 import { axiosAuthApi } from '../../../middleware/axiosApi.ts';
 import { RoomStandard } from '../../../types/room.ts';
 import { selectUser } from '../../../redux/slices/userSlice.ts';
+import { useTranslation } from 'react-i18next';
 
 export type CartProps = {
   id: string;
@@ -48,6 +48,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   const userDetails = useSelector(selectUserDetails);
   const shoppingCart = useSelector(selectShoppingCart);
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const [cart, setCart] = useState<CartProps[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -169,6 +170,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
       }
     } catch (e) {
       console.error('Failed to create checkout session:', e);
+      setError(t('error.failedToCreateSession'));
       setIsProcessing(false);
     }
   };
@@ -254,9 +256,9 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
         </Box>
 
         {error && (
-          <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
-            {error}
-          </Alert>
+          <Typography component="p" variant="caption" color="error">
+            {t(error)}
+          </Typography>
         )}
 
         <Box sx={{ flex: 1, overflowY: 'auto', mb: 2 }}>

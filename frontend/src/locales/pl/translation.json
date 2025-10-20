@@ -512,7 +512,8 @@
     "upload_error": "Błąd podczas przesyłania pliku.",
     "sameRoleError": "Pracownik już posiada tę rolę.",
     "add_employee_failure": "Błąd podczas dodawania nowego pracownika",
-    "edit_employee_failure": "Błąd podczas edytowania pracownika"
+    "edit_employee_failure": "Błąd podczas edytowania pracownika",
+    "failedToCreateSession": "Nie udało się utworzyć sesji płatności"
   },
   "order_status": {
     "AVAILABLE": "DOSTĘPNY",

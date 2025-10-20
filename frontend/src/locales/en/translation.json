@@ -511,7 +511,8 @@
     "upload_error": "Error during uploading file.",
     "add_employee_failure": "Failed to add new employee",
     "sameRoleError": "Employee already has this role.",
-    "edit_employee_failure": "Failed to edit employee"
+    "edit_employee_failure": "Failed to edit employee",
+    "failedToCreateSession": "Failed to create checkout session"
   },
   "order_status": {
     "AVAILABLE": "AVAILABLE",
