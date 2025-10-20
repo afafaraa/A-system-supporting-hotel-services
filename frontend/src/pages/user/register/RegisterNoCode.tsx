@@ -9,6 +9,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import generatePasswordAdornment from '../../../components/ui/generatePasswordAdornment.tsx';
 import { useNavigate } from 'react-router-dom';
 import InputLabel from '../../../components/ui/InputLabel.tsx';
+import EmailIcon from '@mui/icons-material/Email';
 
 function RegisterNoCode() {
   const [error, setError] = useState<string | null>(null);
@@ -119,7 +120,7 @@ function RegisterNoCode() {
         <InputLabel
           label={
             <>
-              <LockIcon sx={{ fontSize: '120%' }} /> {tc('email')}
+              <EmailIcon sx={{ fontSize: '120%' }} /> {tc('email')}
             </>
           }
           htmlFor="email"
@@ -135,7 +136,7 @@ function RegisterNoCode() {
         <InputLabel
           label={
             <>
-              <LockIcon sx={{ fontSize: '120%' }} /> {tc('name')}
+              <PersonIcon sx={{ fontSize: '120%' }} /> {tc('name')}
             </>
           }
           htmlFor="name"
@@ -151,7 +152,7 @@ function RegisterNoCode() {
         <InputLabel
           label={
             <>
-              <LockIcon sx={{ fontSize: '120%' }} /> {tc('surname')}
+              <PersonIcon sx={{ fontSize: '120%' }} /> {tc('surname')}
             </>
           }
           htmlFor="surname"

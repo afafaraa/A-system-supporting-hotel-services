@@ -27,10 +27,10 @@ function RegisterPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const subpages = useMemo(
     () => [
-      { label: tc('registerNoCodeNavButton'), path: '/register/no-code' },
-      { label: tc('registerWithCodeNavButton'), path: '/register/with-code' },
+      { label: t('pages.register.registerNoCodeNavButton'), path: '/register/no-code' },
+      { label: t('pages.register.registerWithCodeNavButton'), path: '/register/with-code' },
     ],
-    [tc]
+    [t]
   );
   const updateIndicator = useCallback(() => {
     if (!containerRef.current) return;
