@@ -65,7 +65,7 @@ class AuthControllerTest {
                 name = "Test",
                 surname = "User",
                 role = Role.GUEST,
-                authorized = true,
+                emailAuthorized = true,
                 active = true,
             )
         given(userService.findByUsername("user")).willReturn(userEntity)

@@ -49,7 +49,7 @@ class AuthController(
             userService.findByUsername(userLogin.username)
                 ?: throw UnauthorizedException("User not found")
 
-        if (!user.authorized) {
+        if (!user.emailAuthorized) {
             throw UnauthorizedException("Please verify your email address before logging in")
         }
 

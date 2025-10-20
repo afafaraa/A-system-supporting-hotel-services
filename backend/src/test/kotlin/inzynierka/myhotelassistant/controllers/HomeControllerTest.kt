@@ -64,7 +64,7 @@ class HomeControllerTest {
                 password = passwordEncoder.encode("password"),
                 name = "Test",
                 surname = "User",
-                authorized = true,
+                emailAuthorized = true,
                 active = true,
             )
         BDDMockito.given(userService.findByUsername("user")).willReturn(userEntity)

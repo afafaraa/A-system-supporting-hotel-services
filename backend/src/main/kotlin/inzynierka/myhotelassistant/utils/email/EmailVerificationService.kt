@@ -28,7 +28,7 @@ class EmailVerificationService(
         val user = userRepository.findById(userId).orElse(null) ?: return false
         if (user.email != email) return false
 
-        user.authorized = true
+        user.emailAuthorized = true
         userRepository.save(user)
         return true
     }

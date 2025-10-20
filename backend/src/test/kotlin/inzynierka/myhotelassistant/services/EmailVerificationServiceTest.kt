@@ -74,7 +74,7 @@ class EmailVerificationServiceTest {
                 password = "hashedpassword",
                 name = "Test",
                 surname = "User",
-                authorized = false,
+                emailAuthorized = false,
             )
 
         `when`(tokenUtil.validateVerificationToken(token)).thenReturn(mockJwt)
@@ -86,7 +86,7 @@ class EmailVerificationServiceTest {
 
         // Then
         assertTrue(result)
-        assertTrue(user.authorized)
+        assertTrue(user.emailAuthorized)
         verify(userRepository).save(user)
     }
 
@@ -147,7 +147,7 @@ class EmailVerificationServiceTest {
                 password = "hashedpassword",
                 name = "Test",
                 surname = "User",
-                authorized = false,
+                emailAuthorized = false,
             )
 
         `when`(tokenUtil.validateVerificationToken(token)).thenReturn(mockJwt)
@@ -158,7 +158,7 @@ class EmailVerificationServiceTest {
 
         // Then
         assertFalse(result)
-        assertFalse(user.authorized)
+        assertFalse(user.emailAuthorized)
         verify(userRepository, never()).save(any(UserEntity::class.java))
     }
 }
