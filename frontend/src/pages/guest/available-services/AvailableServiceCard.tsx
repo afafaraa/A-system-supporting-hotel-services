@@ -38,11 +38,11 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
 
   let tooltipMsg = '';
   if (isNoRoom) {
-    tooltipMsg = 'You need to have an active reservation to book services. Go to Book Hotel Room section to book a room.';
+    tooltipMsg = t('pages.available_services.tooltip.noRoom');
   } else if (isAccountInactive) {
-    tooltipMsg = 'Your account is not active. Scan code available on your reservation in hotel reception.';
+    tooltipMsg = t('pages.available_services.tooltip.accountInactive');
   } else if (isServiceDisabled) {
-    tooltipMsg = 'This service is not available right now. Sorry for the inconvenience';
+    tooltipMsg = t('pages.available_services.tooltip.serviceDisabled');
   }
 
   return (

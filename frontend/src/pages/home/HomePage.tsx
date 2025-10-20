@@ -12,8 +12,10 @@ import RoomCard from '../guest/hotel-booking/RoomCard.tsx';
 import {alpha} from "@mui/material/styles";
 import axiosApi from '../../middleware/axiosApi.ts';
 import { Room } from '../../types/room.ts';
+import { useTranslation } from 'react-i18next';
 
 function HomePage() {
+  const { t } = useTranslation();
   const [openLoginDialog, setOpenLoginDialog] = useState<boolean>(false);
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,7 +50,7 @@ function HomePage() {
              sx={{backdropFilter: 'blur(2px)'}}
         >
           <Typography sx={{ fontWeight: '600' }} variant="h2">
-            Welcome to Our Hotel
+            {t('pages.home.welcomeTitle')}
           </Typography>
           <Typography
             sx={{
@@ -57,7 +59,7 @@ function HomePage() {
               padding: { xs: '0 10%', md: '0 20%' },
             }}
           >
-            Book your stay and enjoy our best rooms and services.
+            {t('pages.home.welcomeSubtitle')}
           </Typography>
           <Box sx={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
             <Button
@@ -72,7 +74,7 @@ function HomePage() {
                   ?.scrollIntoView({ behavior: 'smooth' })
               }
             >
-              Reserve Room
+              {t('pages.home.reserveRoom')}
             </Button>
             <Button
               sx={{
@@ -86,7 +88,7 @@ function HomePage() {
                   ?.scrollIntoView({ behavior: 'smooth' })
               }
             >
-              Contact Us
+              {t('pages.home.contactUs')}
             </Button>
           </Box>
         </Box>
@@ -104,13 +106,13 @@ function HomePage() {
           align="center"
           sx={{ fontWeight: '600', marginBottom: '10px' }}
         >
-          Rooms
+          {t('pages.home.roomsTitle')}
         </Typography>
         <Typography
           align="center"
           sx={{ color: 'text.secondary', marginBottom: '40px' }}
         >
-          Choose a room for your stay
+          {t('pages.home.roomsSubtitle')}
         </Typography>
 
         <Grid
@@ -120,7 +122,7 @@ function HomePage() {
           sx={{ maxWidth: '1000px', margin: '0 auto' }}
         >
           {loading ? (
-            <Typography>Loading rooms...</Typography>
+            <Typography>{t('pages.reservations.loadingRooms')}</Typography>
           ) : (
             (showAll ? rooms : rooms.slice(0, 3)).map((room, index) => (
               <Grid sx={{ flexGrow: 1 }} size={1} key={index}>
@@ -132,7 +134,7 @@ function HomePage() {
         {!showAll && !loading && rooms.length > 3 && (
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
             <Button variant="contained" onClick={() => setShowAll(true)}>
-              View More
+              {t('pages.home.viewMore')}
             </Button>
           </Box>
         )}
@@ -166,56 +168,56 @@ function HomePage() {
               >
                 <RoomServiceIcon />
               </Box>
-              Hotel Services
+              {t('pages.home.footerHotelServices')}
             </Typography>
             <Typography sx={{ mt: 2, color: 'text.secondary' }}>
-              Enjoy our dining, spa, and recreation facilities.
+              {t('pages.home.footerHotelServicesDesc')}
             </Typography>
           </Grid>
 
           <Grid size={1}>
-            <Typography>Contact Information</Typography>
+            <Typography>{t('pages.home.contactInfo')}</Typography>
             <Stack spacing={2} sx={{ mt: 2 }}>
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <LocationOnIcon color="secondary" /> 123 Main St, City
+                <LocationOnIcon color="secondary" /> {t('pages.home.address')}
               </Typography>
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <PhoneIcon color="secondary" /> +48 123 456 789
+                <PhoneIcon color="secondary" /> {t('pages.home.phone')}
               </Typography>
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <EmailIcon color="secondary" /> info@hotel.com
+                <EmailIcon color="secondary" /> {t('pages.home.email')}
               </Typography>
             </Stack>
           </Grid>
 
           <Grid size={1}>
-            <Typography>Services</Typography>
+            <Typography>{t('pages.home.services')}</Typography>
             <Stack spacing={2} sx={{ mt: 2 }}>
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <RoomServiceIcon color="secondary" /> Dining
+                <RoomServiceIcon color="secondary" /> {t('pages.home.dining')}
               </Typography>
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <DirectionsCarIcon color="secondary" /> Transport
+                <DirectionsCarIcon color="secondary" /> {t('pages.home.transport')}
               </Typography>
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <SpaIcon color="secondary" /> Spa
+                <SpaIcon color="secondary" /> {t('pages.home.spa')}
               </Typography>
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <SportsTennisIcon color="secondary" /> Recreation
+                <SportsTennisIcon color="secondary" /> {t('pages.home.recreation')}
               </Typography>
             </Stack>
           </Grid>
@@ -229,7 +231,7 @@ function HomePage() {
           }}
         >
           <Typography color="text.secondary">
-            © 2024 Hotel. All rights reserved.
+            {t('pages.home.rights')}
           </Typography>
         </Box>
       </Box>

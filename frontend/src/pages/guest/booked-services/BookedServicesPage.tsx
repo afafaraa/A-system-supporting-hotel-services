@@ -94,9 +94,9 @@ function BookedServicesPage() {
   const isAccountInactive = !userDetails?.active;
   const isNoRoom = !userDetails?.guestData?.roomNumber;
   const tooltipMsg = isNoRoom
-    ? 'You need to have an active reservation to book services. Go to Book Hotel Room section to book a room.'
+    ? t('pages.available_services.tooltip.noRoom')
     : isAccountInactive
-      ? 'Your account is not active. Scan code available on your reservation in hotel reception.'
+      ? t('pages.available_services.tooltip.accountInactive')
       : '';
 
   return (
