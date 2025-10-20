@@ -1,7 +1,10 @@
 package inzynierka.myhotelassistant.controllers.user
 
+import inzynierka.myhotelassistant.controllers.ReservationsController
 import inzynierka.myhotelassistant.exceptions.HttpException
+import inzynierka.myhotelassistant.models.reservation.ReservationEntity
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
+import inzynierka.myhotelassistant.models.service.ReservationsService
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.OrderService
 import inzynierka.myhotelassistant.services.ScheduleService
@@ -26,6 +29,7 @@ class GuestController(
     private val scheduleService: ScheduleService,
     private val serviceService: ServiceService,
     private val orderService: OrderService,
+    private val reservationsService: ReservationsService,
 ) {
     data class EmployeeNameResponse(
         val name: String,
@@ -34,6 +38,11 @@ class GuestController(
 
     data class OrderServicesRequestBody(
         val id: String,
+        val username: String,
+    )
+
+    data class OrderServicesBatchRequest(
+        val ids: List<String>,
         val username: String,
     )
 
@@ -78,6 +87,34 @@ class GuestController(
     ) {
         val guest = userService.findByUsernameOrThrow(req.username)
         orderService.order(guest, req.id)
+    }
+
+    @PostMapping("/order/services/add-to-tab")
+    @ResponseStatus(HttpStatus.OK)
+    fun addServicesToTab(
+        @RequestBody req: OrderServicesBatchRequest,
+    ) {
+        val guest = userService.findByUsernameOrThrow(req.username)
+        req.ids.forEach { scheduleId ->
+            orderService.order(guest, scheduleId)
+        }
+    }
+
+    @PostMapping("/reservation/add-to-tab")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun addReservationToTab(
+        @RequestBody req: ReservationsController.ReservationCreateDTO,
+    ) {
+        try {
+            val reservation: ReservationEntity = reservationsService.createReservation(req)
+            val guest = userService.findByUsernameOrThrow(req.guestUsername)
+            guest.guestData?.let { data ->
+                data.bill += reservation.reservationPrice ?: 0.0
+            }
+            userService.save(guest)
+        } catch (e: IllegalArgumentException) {
+            throw HttpException.InvalidArgumentException(e.message ?: "Invalid reservation data")
+        }
     }
 
     @GetMapping("/order/get/all/requested/{username}")

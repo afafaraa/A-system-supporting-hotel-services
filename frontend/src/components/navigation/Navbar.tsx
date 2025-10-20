@@ -29,7 +29,8 @@ import {
   selectNotificationsCount,
   setNotificationsCount,
 } from '../../redux/slices/notificationsCount.ts';
-import { selectShoppingCartCount } from '../../redux/slices/shoppingCartSlice.ts';
+import { selectServicesCartCount } from '../../redux/slices/servicesCartSlice.ts';
+import { selectReservationsCartCount } from '../../redux/slices/reservationsCartSlice.ts';
 import ShoppingCartPopup from '../../pages/guest/shopping-cart/ShoppingCartPopup.tsx';
 import dashboardDestination from "../../utils/dashboardDestination.ts";
 
@@ -39,7 +40,9 @@ function Navbar() {
   const user = useSelector(selectUser);
   const userDetails = useSelector(selectUserDetails);
   const notificationsCount = useSelector(selectNotificationsCount);
-  const shoppingCartCount = useSelector(selectShoppingCartCount);
+  const servicesCartCount = useSelector(selectServicesCartCount);
+  const reservationsCartCount = useSelector(selectReservationsCartCount);
+  const shoppingCartCount = servicesCartCount + reservationsCartCount;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const theme = useTheme();

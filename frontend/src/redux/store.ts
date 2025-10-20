@@ -1,15 +1,17 @@
 import {configureStore} from "@reduxjs/toolkit";
 import userReducer from "./slices/userSlice.ts";
 import userDetailsReducer from "./slices/userDetailsSlice.ts";
-import shoppingCartReducer from "./slices/shoppingCartSlice.ts";
 import notificationsCountReducer from "./slices/notificationsCount.ts";
+import servicesCartReducer from './slices/servicesCartSlice.ts';
+import reservationsCartReducer from './slices/reservationsCartSlice.ts';
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
     userDetails: userDetailsReducer,
-    shoppingCart: shoppingCartReducer,
     notificationsCount: notificationsCountReducer,
+    servicesCart: servicesCartReducer,
+    reservationsCart: reservationsCartReducer,
   },
 });
 

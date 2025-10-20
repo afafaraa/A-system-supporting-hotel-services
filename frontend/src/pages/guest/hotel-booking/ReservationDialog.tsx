@@ -13,7 +13,7 @@ import {
 import { Room } from '../../../types/room';
 import { axiosAuthApi } from '../../../middleware/axiosApi';
 import { useDispatch } from 'react-redux';
-import { addItem } from '../../../redux/slices/shoppingCartSlice.ts';
+import { addReservation } from '../../../redux/slices/reservationsCartSlice.ts';
 
 function ReservationDialog({
   open,
@@ -26,6 +26,7 @@ function ReservationDialog({
 }) {
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
+  const [guestCount, setGuestCount] = useState(1);
   const [status, setStatus] = useState<
     'idle' | 'checking' | 'available' | 'unavailable'
   >('idle');
@@ -34,11 +35,11 @@ function ReservationDialog({
 
   const handleAddToCart = (room: Room) => {
     dispatch(
-      addItem({
+      addReservation({
         id: room.number,
-        type: 'RESERVATION',
         checkIn: checkIn,
         checkOut: checkOut,
+        guestCount: guestCount,
       })
     );
   };
@@ -106,6 +107,16 @@ function ReservationDialog({
             InputLabelProps={{ shrink: true }}
           />
         </Box>
+
+        <TextField
+          label="Number of Guests"
+          type="number"
+          fullWidth
+          value={guestCount}
+          onChange={(e) => setGuestCount(parseInt(e.target.value) || 1)}
+          inputProps={{ min: 1 }}
+          sx={{ mb: 2 }}
+        />
 
         <TextField
           label="Special Requests"

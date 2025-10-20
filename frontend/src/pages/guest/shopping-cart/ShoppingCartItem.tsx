@@ -3,7 +3,8 @@ import { Delete } from '@mui/icons-material';
 import { CartProps } from './ShoppingCartPopup.tsx';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
-import { removeItem } from '../../../redux/slices/shoppingCartSlice.ts';
+import { removeService } from '../../../redux/slices/servicesCartSlice.ts';
+import { removeReservation } from '../../../redux/slices/reservationsCartSlice.ts';
 import { useMemo } from 'react';
 
 function ShoppingCartItem({
@@ -22,14 +23,18 @@ function ShoppingCartItem({
   const dispatch = useDispatch();
 
   const removeShoppingCartItem = () => {
-    dispatch(
-      removeItem({
-        id: item.id,
-        type: item.type,
-        checkIn: item.checkIn,
-        checkOut: item.checkOut,
-      })
-    );
+    if (item.type === 'SERVICE') {
+      dispatch(removeService({ id: item.id }));
+    } else {
+      dispatch(
+        removeReservation({
+          id: item.id,
+          checkIn: item.checkIn!,
+          checkOut: item.checkOut!,
+          guestCount: item.guestCount!,
+        })
+      );
+    }
     setCart(cart.filter((c) => !(c.id === item.id)));
   };
 
