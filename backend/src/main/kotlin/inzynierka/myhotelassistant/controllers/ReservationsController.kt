@@ -2,6 +2,7 @@ package inzynierka.myhotelassistant.controllers
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped
 import inzynierka.myhotelassistant.models.reservation.ReservationEntity
+import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.models.service.ReservationsService
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
@@ -28,6 +29,16 @@ class ReservationsController(
         val guestFullName: String?,
         val guestEmail: String?,
         val roomStandard: String,
+    )
+
+    data class ReservationGuest(
+        val id: String,
+        val room: RoomEntity,
+        val checkIn: String,
+        val checkOut: String,
+        val guestCount: Int,
+        val reservationPrice: Double,
+        val status: String,
     )
 
     @GetMapping

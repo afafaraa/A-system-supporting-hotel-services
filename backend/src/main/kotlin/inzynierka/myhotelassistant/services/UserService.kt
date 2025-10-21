@@ -4,6 +4,7 @@ import inzynierka.myhotelassistant.controllers.AuthController
 import inzynierka.myhotelassistant.controllers.user.AddUserController
 import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserRequest
 import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserResponse
+import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.RegistrationCode
@@ -38,6 +39,9 @@ class UserService(
         val user =
             userRepository.findByUsername(username)
                 ?: throw UsernameNotFoundException("User with username $username not found")
+        if (!user.emailAuthorized) {
+            throw HttpException.NoPermissionException("This users email is not verified")
+        }
         return User
             .builder()
             .username(user.username)
@@ -127,6 +131,34 @@ class UserService(
         val user = userRepository.findByIdOrNull(rc.userId) ?: throw EntityNotFoundException("User not found")
         user.username = req.username
         user.password = passwordEncoder.encode(req.password)
+        userRepository.save(user)
+        codeService.markUsed(rc)
+    }
+
+    fun completeRegistrationNoCode(req: AuthController.CompleteRegistrationRequestNoCode): UserEntity {
+        if (userRepository.findByUsername(req.username) != null) {
+            throw EntityNotFoundException("Username is already taken")
+        }
+        if (userRepository.findByEmail(req.email) != null) {
+            throw EntityNotFoundException("User with that email already exists")
+        }
+        val user =
+            UserEntity(
+                username = req.username,
+                password = passwordEncoder.encode(req.password),
+                name = req.name,
+                surname = req.surname,
+                email = req.email,
+                role = Role.GUEST,
+            )
+        println("Creating user: $user")
+        return userRepository.save(user)
+    }
+
+    fun activateWithCode(code: String) {
+        val rc: RegistrationCode = codeService.validateCode(code)
+        val user = userRepository.findByIdOrNull(rc.userId) ?: throw EntityNotFoundException("User not found")
+        user.active = true
         userRepository.save(user)
         codeService.markUsed(rc)
     }

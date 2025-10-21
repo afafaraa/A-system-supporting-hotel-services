@@ -1,13 +1,17 @@
-package inzynierka.myhotelassistant.utils
+package inzynierka.myhotelassistant.utils.email
 
+import inzynierka.myhotelassistant.configs.AppProperties
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Service
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.time.Instant
 
 @Service
 class EmailSender(
     private val mailSender: JavaMailSender,
+    private val appProperties: AppProperties,
 ) {
     private val sendEmailAddress = "hello@demomailtrap.co"
 
@@ -63,6 +67,37 @@ class EmailSender(
                 subject = "Password Reset Request"
                 this.text = text.trimIndent()
             }
+        mailSender.send(msg)
+    }
+
+    fun sendVerificationEmail(
+        email: String,
+        token: String,
+    ) {
+        val encodedToken = URLEncoder.encode(token, StandardCharsets.UTF_8.toString())
+        val link = "${appProperties.frontend.url}/verify/account?token=$encodedToken"
+
+        val text = """
+            Hello,
+    
+            Please confirm your email by clicking the link below:
+    
+            $link
+    
+            This link is valid for 24 hours.
+    
+            Best regards,
+            MyHotelAssistant Team
+        """
+
+        val msg =
+            SimpleMailMessage().apply {
+                from = sendEmailAddress
+                setTo(email)
+                subject = "Confirm your MyHotelAssistant account"
+                this.text = text.trimIndent()
+            }
+        println("Verification link: $link")
         mailSender.send(msg)
     }
 }

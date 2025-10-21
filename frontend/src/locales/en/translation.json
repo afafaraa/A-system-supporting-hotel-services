@@ -38,7 +38,7 @@
       "password": "Password",
       "loginButton": "Login",
       "resetPassword": "Forgot your password? Reset password.",
-      "registerWithCode": "Don't have an account? Register with a code."
+      "registerWithCode": "Don't have an account? Register today."
     },
     "register": {
       "title": "Register",
@@ -50,8 +50,13 @@
       "invalidCodeError": "Invalid registration code.",
       "newPassword": "New Password",
       "repeatPassword": "Repeat Password",
+      "email": "Email address",
+      "name": "Name",
+      "surname": "Surname",
       "passwordsDoNotMatch": "Passwords do not match.",
-      "resetPasswordButton": "Reset Password"
+      "resetPasswordButton": "Reset Password",
+      "registerNoCodeNavButton": "Register",
+      "registerWithCodeNavButton": "Register with Code"
     },
     "reset-password": {
       "title": "Reset Password",
@@ -99,7 +104,12 @@
     "available_services": {
       "available": "Available",
       "unavailable": "Unavailable",
-      "bookNow": "Book now"
+      "bookNow": "Book now",
+      "tooltip": {
+        "noRoom": "You need to have an active reservation to book services. Go to Book Hotel Room section to book a room.",
+        "accountInactive": "Your account is not active. Scan code available on your reservation in hotel reception.",
+        "serviceDisabled": "This service is not available right now. Sorry for the inconvenience"
+      }
     },
     "booked_services": {
       "filterBookings": "Filter Bookings",
@@ -121,33 +131,25 @@
       "commentInputPlaceholder": "Write your comment here"
     },
     "home": {
-      "welcomeTitle": "Welcome to Grand Hotel",
-      "welcomeSubtitle": "Experience luxury and comfort in the heart of the city. Our world-class service and elegant accommodations await you.",
-      "reserveRoom": "Reserve a Room",
-      "contactUs": "Contact us",
-      "roomsTitle": "Our Rooms & Suites",
-      "roomsSubtitle": "Choose from our carefully designed accommodations, each offering comfort, style, and modern amenities.",
-      "standardTitle": "Standard Room",
-      "standardDesc": "Comfortable room with essential amenities",
-      "deluxeTitle": "Deluxe Room",
-      "deluxeDesc": "Spacious room with premium amenities and city view",
-      "exclusiveTitle": "Exclusive Suite",
-      "exclusiveDesc": "Luxurious suite with separate living area and premium services",
-      "upToGuests": "Up to {{count}} guests",
-      "amenities": "Amenities",
-      "reserveNow": "Reserve Now",
-      "footerTitle": "Grand Hotel",
-      "footerDesc": "Experience luxury and comfort in the heart of the city with our world-class service.",
-      "contactInfo": "Contact Info",
-      "address": "123 Grand Avenue, City Center",
-      "phone": "+1 (555) 123-4567",
-      "email": "reservations@grandhotel.com",
+      "welcomeTitle": "Welcome to Our Hotel",
+      "welcomeSubtitle": "Book your stay and enjoy our best rooms and services.",
+      "reserveRoom": "Reserve Room",
+      "contactUs": "Contact Us",
+      "roomsTitle": "Rooms",
+      "roomsSubtitle": "Choose a room for your stay",
+      "viewMore": "View More",
+      "footerHotelServices": "Hotel Services",
+      "footerHotelServicesDesc": "Enjoy our dining, spa, and recreation facilities.",
+      "contactInfo": "Contact Information",
+      "address": "123 Main St, City",
+      "phone": "+48 123 456 789",
+      "email": "info@hotel.com",
       "services": "Services",
-      "serviceDining": "Fine Dining & Room Service",
-      "serviceTransport": "Transportation & Concierge",
-      "serviceSpa": "Spa & Wellness Center",
-      "serviceRecreation": "Recreation Facilities",
-      "rights": "© 2024 Grand Hotel. All rights reserved."
+      "dining": "Dining",
+      "transport": "Transport",
+      "spa": "Spa",
+      "recreation": "Recreation",
+      "rights": "© 2024 Hotel. All rights reserved."
     },
     "shopping_cart": {
       "title": "Shopping cart",
@@ -172,6 +174,24 @@
       "selectTime": "Select time",
       "specialRequests": "Special Requests",
       "noSlotsAvailable": "No slots available"
+    },
+    "reservations": {
+      "myReservations": "My Room Reservations",
+      "myReservationsSubtitle": "Your current and past room bookings",
+      "loading": "Loading reservations...",
+      "reservationDetails": "{{count}} guests | ${{price}} total",
+      "noBookings": "You have no room bookings.",
+      "reserveRoom": "Reserve a Room",
+      "reserveRoomSubtitle": "Book the perfect accommodation for your stay",
+      "loadingRooms": "Loading rooms...",
+      "status": {
+        "REQUESTED": "Pending",
+        "CONFIRMED": "Confirmed",
+        "CANCELLED": "Cancelled",
+        "Confirmed": "Confirmed",
+        "Pending": "Pending",
+        "Cancelled": "Cancelled"
+      }
     },
     "manager": {
       "navbar": {
@@ -502,10 +522,12 @@
     "unknownError": "Unknown error occurred.",
     "emptyFields": "All fields must be filled.",
     "invalidCredentials": "Invalid login credentials.",
+    "emailNotVerified": "Email nie został zweryfikowany. Sprawdź swoją skrzynkę odbiorczą lub spróbuj zarejestrować się ponownie.",
     "upload_error": "Error during uploading file.",
     "add_employee_failure": "Failed to add new employee",
     "sameRoleError": "Employee already has this role.",
-    "edit_employee_failure": "Failed to edit employee"
+    "edit_employee_failure": "Failed to edit employee",
+    "failedToCreateSession": "Failed to create checkout session"
   },
   "order_status": {
     "AVAILABLE": "AVAILABLE",

@@ -24,4 +24,19 @@ class RoomService(
             .findAll()
             .filter { room -> reservationsService.isRoomAvailable(room.number, from, to) }
     }
+
+    fun findRoomByNumber(number: String): RoomEntity =
+        roomRepository.findByNumber(number)
+            ?: throw NoSuchElementException("Room with number $number not found")
+
+    fun isRoomAvailable(
+        roomNumber: String,
+        from: LocalDate,
+        to: LocalDate,
+    ): Boolean {
+        if (!from.isBefore(to)) {
+            throw IllegalArgumentException("'from' must be before 'to' date")
+        }
+        return reservationsService.isRoomAvailable(roomNumber, from, to)
+    }
 }

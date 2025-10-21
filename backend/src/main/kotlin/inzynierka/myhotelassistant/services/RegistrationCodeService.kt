@@ -3,7 +3,7 @@ package inzynierka.myhotelassistant.services
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidRegistrationCodeException
 import inzynierka.myhotelassistant.models.RegistrationCode
 import inzynierka.myhotelassistant.repositories.RegistrationCodeRepository
-import inzynierka.myhotelassistant.utils.EmailSender
+import inzynierka.myhotelassistant.utils.email.EmailSender
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.Instant

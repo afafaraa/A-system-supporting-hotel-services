@@ -2,7 +2,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import { axiosAuthApi } from '../../../middleware/axiosApi.ts';
 import { ServiceProps } from '../available-services/AvailableServiceCard.tsx';
-import { selectShoppingCart } from '../../../redux/slices/shoppingCartSlice.ts';
+import { selectServicesCart } from '../../../redux/slices/servicesCartSlice.ts';
 import { useSelector } from 'react-redux';
 import ServiceDescription from './ServiceDescription.tsx';
 import ServiceCalendar from './ServiceCalendar.tsx';
@@ -29,7 +29,7 @@ function OrderServicePage() {
   const [loading, setLoading] = useState(false);
   const [timeSlots, setTimeSlots] = useState<OrderServiceProps[]>([]);
   const [selectedTime, setSelectedTime] = useState<string>('');
-  const cartItems = useSelector(selectShoppingCart);
+  const cartItems = useSelector(selectServicesCart);
 
   const fetchServiceData = useCallback(() => {
     if (serviceFromState) {
@@ -50,7 +50,7 @@ function OrderServicePage() {
       .then(response => {
         const scheduleItems = response.data.map((s: OrderServiceProps) => ({
           ...s,
-          inCart: cartItems.includes(s.id),
+          inCart: cartItems.some(item => item.id === s.id),
         }));
         setTimeSlots(scheduleItems);
       })
@@ -88,7 +88,6 @@ function OrderServicePage() {
             service={service}
             timeSlots={timeSlots}
             selectedTime={selectedTime}
-            setSelectedTime={setSelectedTime}
           />
           <ServiceAttributeDetails service={service} />
         </Stack>

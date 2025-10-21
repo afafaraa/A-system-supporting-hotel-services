@@ -4,12 +4,18 @@ import {
   Typography,
   Box,
   Button,
-  useTheme, Chip,
+  useTheme,
+  Chip,
+  Tooltip,
+  Alert,
+  useMediaQuery,
 } from '@mui/material';
 import StarRating from './StarRating.tsx';
 import { useNavigate } from 'react-router-dom';
 import { Rating } from '../../../types';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { selectUserDetails } from '../../../redux/slices/userDetailsSlice.ts';
 
 export type ServiceProps = {
   id: string;
@@ -25,7 +31,26 @@ export type ServiceProps = {
 function AvailableServiceCard({ service }: { service: ServiceProps }) {
   const navigate = useNavigate();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
+  const userDetails = useSelector(selectUserDetails);
+
+  // Compute disabled state and tooltip message
+  const isAccountInactive = !userDetails?.active;
+  const isNoRoom = !userDetails?.guestData?.roomNumber;
+  const isServiceDisabled = service.disabled;
+  const isDisabled = isAccountInactive || isNoRoom || isServiceDisabled;
+
+  let tooltipMsg = '';
+  if (isNoRoom) {
+    tooltipMsg = t('pages.available_services.tooltip.noRoom');
+  } else if (isAccountInactive) {
+    tooltipMsg = t('pages.available_services.tooltip.accountInactive');
+  } else if (isServiceDisabled) {
+    tooltipMsg = t('pages.available_services.tooltip.serviceDisabled');
+  }
+
+  const showInlineMsg = isDisabled && isMobile;
 
   return (
     <Card
@@ -53,7 +78,6 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
                 height: 50,
                 borderRadius: 10,
                 marginTop: 5,
-                objectFit: 'cover',
               }}
               src={service.image}
               alt={service.name}
@@ -78,6 +102,16 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
           >
             {service.description}
           </Typography>
+
+          {showInlineMsg && (
+            <Alert
+              severity="warning"
+              variant="outlined"
+              sx={{ mb: 2, fontSize: '0.9em', borderRadius: '8px' }}
+            >
+              {tooltipMsg}
+            </Alert>
+          )}
         </Box>
 
         <Box>
@@ -105,25 +139,32 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
               {service.duration} min
             </Box>
 
-            <Chip color={service.disabled ? 'error' : 'success'} size='small'
-                  sx={{borderRadius: '8px'}}
-                  label={service.disabled
-                    ? t('pages.available_services.unavailable')
-                    : t('pages.available_services.available')
-                  }
-            >
-            </Chip>
+            <Chip
+              color={service.disabled ? 'error' : 'success'}
+              size="small"
+              sx={{ borderRadius: '8px' }}
+              label={
+                service.disabled
+                  ? t('pages.available_services.unavailable')
+                  : t('pages.available_services.available')
+              }
+            />
           </Box>
 
-          <Button
-            onClick={() => navigate(`/service-schedule/${service.id}`, { state: service })}
-            fullWidth
-            sx={{ marginTop: 2 }}
-            variant="contained"
-            size="small"
-          >
-            {t('pages.available_services.bookNow')}
-          </Button>
+          <Tooltip title={isDisabled ? tooltipMsg : ''} disableHoverListener={!isDisabled}>
+            <span>
+              <Button
+                disabled={isDisabled}
+                onClick={() => navigate(`/service-schedule/${service.id}`, { state: service })}
+                fullWidth
+                sx={{ marginTop: 2 }}
+                variant="contained"
+                size="small"
+              >
+                {t('pages.available_services.bookNow')}
+              </Button>
+            </span>
+          </Tooltip>
         </Box>
       </CardContent>
     </Card>

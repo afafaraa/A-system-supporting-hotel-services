@@ -22,6 +22,35 @@ The system's users will be hotel guests and the staff responsible for customer s
 
 [![tech stack](https://skillicons.dev/icons?i=react,tailwind,ts,redux,kotlin,spring,mongo,docker&theme=dark)](https://skillicons.dev)
 
+
+## Quick setup
+### Prerequisites
+- [Docker](https://www.docker.com/get-started/)
+- [Node.js](https://nodejs.org/en/download/) (for local frontend development)
+- [Npm](https://www.npmjs.com/get-npm) (for local frontend development)
+- [Make](https://www.gnu.org/software/make/) (optional, for using Makefile commands)
+
+### Running with Docker
+1. Clone the repository
+2. To start backend and frontend in project root run:
+```bash 
+make run
+```
+
+Or:
+- in project root run:
+```bash
+docker-compose up
+```
+- in `frontend` folder run:
+```bash
+npm install
+```
+```bash
+npm run dev 
+```
+3. Open your browser and go to `http://localhost:5173` (frontend)
+
 ## Useful links
 ### [📘 API documentation](docs/API.md)
 
