@@ -38,7 +38,7 @@
       "password": "Hasło",
       "loginButton": "Zaloguj się",
       "resetPassword": "Nie pamiętasz hasła? Zresetuj hasło.",
-      "registerWithCode": "Nie masz konta? Zarejestruj się za pomocą kodu."
+      "registerWithCode": "Nie masz konta? Zarejestruj się już dziś."
     },
     "register": {
       "title": "Rejestracja",
@@ -50,8 +50,13 @@
       "invalidCodeError": "Nieprawidłowy kod rejestracyjny.",
       "newPassword": "Nowe hasło",
       "repeatPassword": "Powtórz hasło",
+      "email": "Adres email",
+      "name": "Imię",
+      "surname": "Nazwisko",
       "passwordsDoNotMatch": "Hasła nie pasują do siebie.",
-      "resetPasswordButton": "Zresetuj hasło"
+      "resetPasswordButton": "Zresetuj hasło",
+      "registerNoCodeNavButton": "Zarejestruj się",
+      "registerWithCodeNavButton": "Zarejestruj się z kodem"
     },
     "reset-password": {
       "title": "Resetowanie hasła",
@@ -99,7 +104,12 @@
     "available_services": {
       "available": "Dostępne",
       "unavailable": "Niedostępne",
-      "bookNow": "Zarezerwuj teraz"
+      "bookNow": "Zarezerwuj teraz",
+      "tooltip": {
+        "noRoom": "Aby zarezerwować usługi, musisz mieć aktywną rezerwację. Przejdź do sekcji „Zarezerwuj pokój”, aby zarezerwować pokój.",
+        "accountInactive": "Twoje konto nie jest aktywne. Zeskanuj kod dostępny przy Twojej rezerwacji w recepcji hotelu.",
+        "serviceDisabled": "Ta usługa jest obecnie niedostępna. Przepraszamy za niedogodności."
+      }
     },
     "booked_services": {
       "filterBookings": "Filtruj rezerwacje",
@@ -121,33 +131,25 @@
       "commentInputPlaceholder": "Napisz swój komentarz tutaj"
     },
     "home": {
-      "welcomeTitle": "Witamy w Grand Hotelu",
-      "welcomeSubtitle": "Doświadcz luksusu i komfortu w sercu miasta. Nasza obsługa na światowym poziomie i eleganckie pokoje czekają na Ciebie.",
-      "reserveRoom": "Zarezerwuj pokój",
+      "welcomeTitle": "Witamy w Naszym Hotelu",
+      "welcomeSubtitle": "Zarezerwuj pobyt i ciesz się naszymi najlepszymi pokojami i usługami.",
+      "reserveRoom": "Zarezerwuj Pokój",
       "contactUs": "Skontaktuj się z nami",
-      "roomsTitle": "Nasze pokoje i apartamenty",
-      "roomsSubtitle": "Wybierz spośród starannie zaprojektowanych pokoi, które oferują komfort, styl i nowoczesne udogodnienia.",
-      "standardTitle": "Pokój Standard",
-      "standardDesc": "Komfortowy pokój z podstawowymi udogodnieniami",
-      "deluxeTitle": "Pokój Deluxe",
-      "deluxeDesc": "Przestronny pokój z luksusowymi udogodnieniami i widokiem na miasto",
-      "exclusiveTitle": "Apartament Prezydencki",
-      "exclusiveDesc": "Luksusowy apartament z oddzielnym salonem i usługami premium",
-      "upToGuests": "Do {{count}} gości",
-      "amenities": "Udogodnienia",
-      "reserveNow": "Zarezerwuj teraz",
-      "footerTitle": "Grand Hotel",
-      "footerDesc": "Doświadcz luksusu i komfortu w sercu miasta z naszą obsługą na światowym poziomie.",
+      "roomsTitle": "Pokoje",
+      "roomsSubtitle": "Wybierz pokój na swój pobyt",
+      "viewMore": "Zobacz więcej",
+      "footerHotelServices": "Usługi hotelowe",
+      "footerHotelServicesDesc": "Ciesz się naszą restauracją, spa i obiektami rekreacyjnymi.",
       "contactInfo": "Informacje kontaktowe",
-      "address": "123 Aleja Grand, Centrum Miasta",
-      "phone": "+1 (555) 123-4567",
-      "email": "rezerwacje@grandhotel.com",
+      "address": "ul. Główna 123, Miasto",
+      "phone": "+48 123 456 789",
+      "email": "info@hotel.com",
       "services": "Usługi",
-      "serviceDining": "Wykwintna kuchnia i obsługa pokojowa",
-      "serviceTransport": "Transport i concierge",
-      "serviceSpa": "Spa i centrum odnowy biologicznej",
-      "serviceRecreation": "Obiekty rekreacyjne",
-      "rights": "© 2024 Grand Hotel. Wszelkie prawa zastrzeżone."
+      "dining": "Restauracja",
+      "transport": "Transport",
+      "spa": "Spa",
+      "recreation": "Rekreacja",
+      "rights": "© 2024 Hotel. Wszelkie prawa zastrzeżone."
     },
     "shopping_cart": {
       "title": "Koszyk",
@@ -172,6 +174,24 @@
       "selectTime": "Wybierz godzinę",
       "specialRequests": "Specjalne życzenia",
       "noSlotsAvailable": "Brak dostępnych terminów"
+    },
+    "reservations": {
+      "myReservations": "Moje rezerwacje pokoi",
+      "myReservationsSubtitle": "Twoje obecne i przeszłe rezerwacje pokoi",
+      "loading": "Ładowanie rezerwacji...",
+      "reservationDetails": "{{count}} gości | {{price}} zł łącznie",
+      "noBookings": "Nie masz żadnych rezerwacji pokoi.",
+      "reserveRoom": "Zarezerwuj pokój",
+      "reserveRoomSubtitle": "Zarezerwuj idealne zakwaterowanie na swój pobyt",
+      "loadingRooms": "Ładowanie pokoi...",
+      "status": {
+        "REQUESTED": "Oczekująca",
+        "CONFIRMED": "Potwierdzona",
+        "CANCELLED": "Anulowana",
+        "Confirmed": "Potwierdzona",
+        "Pending": "Oczekująca",
+        "Cancelled": "Anulowana"
+      }
     },
     "manager": {
       "navbar": {
@@ -592,10 +612,12 @@
     "unknownError": "Wystąpił nieznany błąd.",
     "emptyFields": "Wszystkie pola muszą być wypełnione.",
     "invalidCredentials": "Nieprawidłowe dane logowania.",
+    "emailNotVerified": "Email nie został zweryfikowany. Sprawdź swoją skrzynkę odbiorczą lub spróbuj zarejestrować się ponownie.",
     "upload_error": "Błąd podczas przesyłania pliku.",
     "sameRoleError": "Pracownik już posiada tę rolę.",
     "add_employee_failure": "Błąd podczas dodawania nowego pracownika",
-    "edit_employee_failure": "Błąd podczas edytowania pracownika"
+    "edit_employee_failure": "Błąd podczas edytowania pracownika",
+    "failedToCreateSession": "Nie udało się utworzyć sesji płatności"
   },
   "order_status": {
     "AVAILABLE": "DOSTĘPNY",

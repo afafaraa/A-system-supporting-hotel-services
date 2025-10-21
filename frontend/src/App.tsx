@@ -7,7 +7,7 @@ import SendResetPasswordEmail from './pages/user/SendResetPasswordEmail.tsx';
 import ResetPasswordPage from './pages/user/ResetPasswordPage.tsx';
 import AuthenticatedLayout from "./components/layout/AuthenticatedLayout.tsx";
 import PublicLayout from "./components/layout/PublicLayout.tsx";
-import RegisterPage from './pages/user/RegisterPage.tsx';
+import RegisterPage from './pages/user/register/RegisterPage.tsx';
 import EmployeeListPage from "./pages/manager/EmployeeListPage.tsx";
 import LogoutPage from "./pages/user/LogoutPage.tsx";
 import NotificationsPage from "./pages/guest/NotificationsPage.tsx";
@@ -36,6 +36,11 @@ import ReceptionistLayout from "./components/layout/ReceptionistLayout.tsx";
 import GuestArrivalsDeparturesPage from "./pages/receptionist/guest-arrival-departues/GuestArrivalsDeparturesPage.tsx";
 import ReceptionistCheckInPage from "./pages/receptionist/CheckInPage.tsx";
 import ReceptionistGuestService from "./pages/receptionist/GuestService.tsx";
+import RegisterNoCode from './pages/user/register/RegisterNoCode.tsx';
+import RegisterWithCode from './pages/user/register/RegisterWithCode.tsx';
+import VerifyAccount from './pages/user/verify/VerifyAccount.tsx';
+import PaymentSuccessPage from './pages/guest/payment/PaymentSuccessPage.tsx';
+import PaymentCancelPage from './pages/guest/payment/PaymentCancelPage.tsx';
 
 function App(){
   return (
@@ -47,6 +52,8 @@ function App(){
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route element={<ProtectedRoute allowedRoles={["ROLE_GUEST"]}/>}>
               <Route path="/service-schedule/:id" element={<OrderServicePage />} />
+              <Route path="/payment/success" element={<PaymentSuccessPage />} />
+              <Route path="/payment/cancel" element={<PaymentCancelPage />} />
               <Route path="/guest" element={<GuestLayout />}>
                 <Route index element={<Navigate to="available" replace />} />
                 <Route path="available" element={<AvailableServicesPage />} />
@@ -91,7 +98,11 @@ function App(){
             <Route path="/login" element={<LoginPage />} />
             <Route path="/reset-password-email" element={<SendResetPasswordEmail />} />
             <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/register" element={<RegisterPage />} >
+              <Route path="with-code" element={<RegisterWithCode />}/>
+              <Route path="no-code" element={<RegisterNoCode />}/>
+            </Route>
+            <Route path="/verify/account" element={<VerifyAccount />} />
             <Route path="*" element={<Navigate to="/home" replace />} />
             <Route path="/fallback" element={<FallbackPage />} />
           </Route>
@@ -108,6 +119,7 @@ const publicPaths = [
   '/logout',
   '/register',
   '/reset-password',
+  '/verify',
   '/fallback',
 ];
 

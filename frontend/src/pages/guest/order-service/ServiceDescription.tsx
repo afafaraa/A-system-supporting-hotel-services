@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { OrderServiceProps } from './OrderServicePage.tsx';
-import { addItem } from '../../../redux/slices/shoppingCartSlice.ts';
+import { addService } from '../../../redux/slices/servicesCartSlice.ts';
 import { useDispatch } from 'react-redux';
 import { ServiceProps } from '../available-services/AvailableServiceCard.tsx';
 import TimelapseIcon from '@mui/icons-material/Timelapse';
@@ -18,20 +18,19 @@ function ServiceDescription({
   service,
   timeSlots,
   selectedTime,
-  setSelectedTime,
 }: {
   service: ServiceProps;
   timeSlots: OrderServiceProps[];
   selectedTime: string;
-  setSelectedTime: (x: string) => void;
 }) {
   const theme = useTheme();
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const handleAddToCart = (slot: OrderServiceProps) => {
-    dispatch(addItem(slot.id));
-    setSelectedTime(slot.id);
+  const handleAddToCart = () => {
+    if (selectedTime) {
+      dispatch(addService({ id: selectedTime }));
+    }
   };
 
   return (
@@ -131,7 +130,7 @@ function ServiceDescription({
             fullWidth
             onClick={() => {
               const slot = timeSlots.find((s) => s.id === selectedTime);
-              if (slot) handleAddToCart(slot);
+              if (slot) handleAddToCart();
             }}
             disabled={!selectedTime}
             sx={{

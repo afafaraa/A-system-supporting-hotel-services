@@ -9,8 +9,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { Room } from '../../../types/room.ts';
-import { useTranslation } from 'react-i18next';
-import { useMemo } from 'react';
+import {useMemo} from 'react';
 import { mapAmenityToIcon } from '../../../utils/mapAmenityToIcon.tsx';
 
 export default function RoomCard({
@@ -23,8 +22,6 @@ export default function RoomCard({
   size: 'small' | 'medium' | 'large' | undefined;
 }) {
   const theme = useTheme();
-  const { t } = useTranslation();
-
   const fontSize = useMemo(() => {
     switch (size) {
       case 'medium':
@@ -64,10 +61,13 @@ export default function RoomCard({
               variant="h6"
               sx={{ fontWeight: 600, fontSize: `${fontSize + 4}px` }}
             >
-              {t(`pages.home.${room.type}Title`)}
+              {room.standard
+                .replace(/_/g, ' ')
+                .toLowerCase()
+                .replace(/^\w/, c => c.toUpperCase())}
             </Typography>
             <Chip
-              label={`${room.price}/night`}
+              label={`${room.pricePerNight}$/night`}
               color="secondary"
               sx={{
                 fontWeight: 'bold',
@@ -84,9 +84,8 @@ export default function RoomCard({
               fontSize: `${fontSize}px`,
             }}
           >
-            {t(`pages.home.${room.type}Desc`)}
+            {room.description}
           </Typography>
-
           <Typography
             sx={{
               marginTop: '8px',
@@ -94,7 +93,7 @@ export default function RoomCard({
               color: theme.palette.text.secondary,
             }}
           >
-            Up to {room.guestsTotal} guests
+            Up to {room.capacity} guests
           </Typography>
         </div>
 
@@ -116,22 +115,30 @@ export default function RoomCard({
             flexWrap="wrap"
             sx={{ marginTop: '10px' }}
           >
-            {room.amenities.map((amenity, idx) => (
-              <Chip
-                key={idx}
-                icon={mapAmenityToIcon(amenity.key, `${fontSize}px`)}
-                label={amenity.label}
-                sx={{
-                  backgroundColor: theme.palette.background.paper,
-                  fontSize: `${fontSize - 2}px`,
-                  border: `1px solid ${theme.palette.divider}`,
-                  padding: 0,
-                  height: 'auto',
-                  borderRadius: '5px',
-                  margin: '2px',
-                }}
-              />
-            ))}
+            {room.amenities &&
+              Array.isArray(room.amenities) &&
+              room.amenities.map((amenity, idx) => {
+                const formattedAmenity = amenity
+                  .replace(/_/g, ' ')
+                  .toLowerCase()
+                  .replace(/^\w/, c => c.toUpperCase());
+                return (
+                  <Chip
+                    key={idx}
+                    icon={mapAmenityToIcon(amenity, `${fontSize}px`)}
+                    label={formattedAmenity}
+                    sx={{
+                      backgroundColor: theme.palette.background.paper,
+                      fontSize: `${fontSize - 2}px`,
+                      border: `1px solid ${theme.palette.divider}`,
+                      padding: 0,
+                      height: 'auto',
+                      borderRadius: '5px',
+                      margin: '2px',
+                    }}
+                  />
+                );
+              })}
           </Stack>
           <Button
             variant="contained"
