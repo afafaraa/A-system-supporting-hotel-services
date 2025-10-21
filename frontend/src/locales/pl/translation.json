@@ -185,6 +185,9 @@
       "reserveRoomSubtitle": "Zarezerwuj idealne zakwaterowanie na swój pobyt",
       "loadingRooms": "Ładowanie pokoi...",
       "status": {
+        "REQUESTED": "Oczekująca",
+        "CONFIRMED": "Potwierdzona",
+        "CANCELLED": "Anulowana",
         "Confirmed": "Potwierdzona",
         "Pending": "Oczekująca",
         "Cancelled": "Anulowana"

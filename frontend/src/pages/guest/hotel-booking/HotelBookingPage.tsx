@@ -6,8 +6,8 @@ import {
 import { SectionWrapper } from '../../../theme/styled-components/SectionWrapper.ts';
 import RoomCard from './RoomCard.tsx';
 import { useEffect, useState } from 'react';
-import axiosApi from '../../../middleware/axiosApi.ts';
-import { Reservation, Room } from '../../../types/room.ts';
+import axiosApi, { axiosAuthApi } from '../../../middleware/axiosApi.ts';
+import { ReservationGuest, Room } from '../../../types/room.ts';
 import ReservationDialog from './ReservationDialog.tsx';
 import { useTranslation } from 'react-i18next';
 
@@ -15,7 +15,7 @@ export default function HotelBookingPage() {
     const theme = useTheme();
     const { t } = useTranslation();
     const [rooms, setRooms] = useState<Room[]>([]);
-    const [reservations, setReservations] = useState<Reservation[]>([]);
+    const [reservations, setReservations] = useState<ReservationGuest[]>([]);
     const [loading, setLoading] = useState(true);
     const [loadingReservations, setLoadingReservations] = useState(true);
     const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
@@ -26,7 +26,7 @@ export default function HotelBookingPage() {
             .then(res => setRooms(res.data))
             .finally(() => setLoading(false));
 
-        axiosApi.get('/reservations/my')
+        axiosAuthApi.get('/reservations/mine')
             .then(res => setReservations(res.data))
             .finally(() => setLoadingReservations(false));
     }, []);
@@ -64,13 +64,13 @@ export default function HotelBookingPage() {
                         >
                             <div>
                                 <Typography sx={{ fontWeight: 600, fontSize: '16px' }}>
-                                    {reservation.room.standard}
+                                    Room {reservation.room.standard} - Number {reservation.room.number}
                                 </Typography>
                                 <Typography fontSize="12px" color="text.secondary">
-                                    {new Date(reservation.startDate).toLocaleDateString()} – {new Date(reservation.endDate).toLocaleDateString()}
+                                    {new Date(reservation.checkIn).toLocaleDateString()} – {new Date(reservation.checkOut).toLocaleDateString()}
                                 </Typography>
                                 <Typography fontSize="12px" color="text.secondary">
-                                    {t('pages.reservations.reservationDetails', { count: reservation.numberOfGuests, price: reservation.totalPrice })}
+                                    {t('pages.reservations.reservationDetails', { count: reservation.guestCount, price: reservation.reservationPrice })}
                                 </Typography>
                             </div>
 

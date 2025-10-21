@@ -11,12 +11,12 @@ export type Room = {
 
 export type RoomStandard = "Budget" | "Standard" | "Deluxe" | "Exclusive Suite";
 
-export type Reservation = {
-    id: number;
-    room: Room;
-    startDate: string;
-    endDate: string;
-    numberOfGuests: number;
-    totalPrice: number;
-    status: 'Confirmed' | 'Pending' | 'Cancelled';
+export type ReservationGuest = {
+  id: number;
+  room: Room;
+  checkIn: string;
+  checkOut: string;
+  guestCount: number;
+  reservationPrice: number;
+  status: 'Confirmed' | 'Pending' | 'Cancelled';
 };

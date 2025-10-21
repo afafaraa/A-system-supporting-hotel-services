@@ -185,6 +185,9 @@
       "reserveRoomSubtitle": "Book the perfect accommodation for your stay",
       "loadingRooms": "Loading rooms...",
       "status": {
+        "REQUESTED": "Pending",
+        "CONFIRMED": "Confirmed",
+        "CANCELLED": "Cancelled",
         "Confirmed": "Confirmed",
         "Pending": "Pending",
         "Cancelled": "Cancelled"

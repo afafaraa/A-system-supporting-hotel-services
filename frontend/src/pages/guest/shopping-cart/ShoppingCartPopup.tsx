@@ -137,7 +137,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   };
 
   const totalCartItems = servicesCartData.length + reservationsCartData.length;
-  const allCartItems = [...servicesCartData, ...reservationsCartData];
+  const allCartItems = useMemo(() => [...servicesCartData, ...reservationsCartData], [servicesCartData, reservationsCartData]);
 
   const initiateCheckout = async () => {
     setIsProcessing(true);
