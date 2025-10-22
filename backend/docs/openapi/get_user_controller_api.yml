@@ -1,0 +1,59 @@
+openapi: 3.0.3
+info:
+  title: My Hotel Assistant API
+  description: API for hotel service management system
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@myhotelassistant.com
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.myhotelassistant.com
+    description: Production server
+tags:
+  - name: User
+    description: Endpoints for retrieving user information
+paths:
+  /user:
+    get:
+      tags:
+        - User
+      summary: Get current user information
+      description: Retrieves the details of the currently authenticated user.
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: Successful retrieval of user information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEntity'
+        '401':
+          description: Unauthorized
+components:
+  schemas:
+    UserEntity:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        surname:
+          type: string
+        authorized:
+          type: boolean
+        roles:
+          type: array
+          items:
+            type: string
+        employeeData:
+          type: object
+        guestData:
+          type: object
+

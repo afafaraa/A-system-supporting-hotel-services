@@ -1,0 +1,224 @@
+openapi: 3.0.3
+info:
+  title: My Hotel Assistant API
+  description: API for hotel service management system
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@myhotelassistant.com
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.myhotelassistant.com
+    description: Production server
+tags:
+  - name: Guest
+    description: Endpoints for guest users
+paths:
+  /guest/employee/get/id/{id}:
+    get:
+      tags:
+        - Guest
+      summary: Get employee name by ID
+      operationId: getScheduledEmployeeNameById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Employee name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeNameResponse'
+        '404':
+          description: User not found
+  /guest/order/cancel:
+    post:
+      tags:
+        - Guest
+      summary: Cancel an order
+      operationId: cancelOrderByGuest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelOrderRequest'
+      responses:
+        '200':
+          description: Order cancelled
+  /guest/order/services:
+    post:
+      tags:
+        - Guest
+      summary: Order services from schedule
+      operationId: orderServicesFromSchedule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderServicesRequestBody'
+      responses:
+        '201':
+          description: Services ordered
+  /guest/order/get/all/requested/{username}:
+    get:
+      tags:
+        - Guest
+      summary: Get all pending orders for a user
+      operationId: getAllPendingOrdersForUser
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of pending orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduleForPastAndRequestedServicesResponse'
+  /guest/order/get/all/past/{username}:
+    get:
+      tags:
+        - Guest
+      summary: Get all past orders for a user
+      operationId: getAllPastOrdersForUser
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of past orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduleForPastAndRequestedServicesResponse'
+  /guest/bill/get/{username}:
+    get:
+      tags:
+        - Guest
+      summary: Get the bill for a user
+      operationId: getBill
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The user's bill
+          content:
+            application/json:
+              schema:
+                type: number
+                format: double
+  /guest/management:
+    get:
+      tags:
+        - Guest
+      summary: Get all guests
+      operationId: getAllGuests
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: A list of guests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserEntity'
+components:
+  schemas:
+    EmployeeNameResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        surname:
+          type: string
+    OrderServicesRequestBody:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+    ScheduleForPastAndRequestedServicesResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        employeeId:
+          type: string
+        employeeFullName:
+          type: string
+        imageUrl:
+          type: string
+        price:
+          type: number
+          format: double
+        datetime:
+          type: string
+          format: date-time
+        status:
+          type: string
+    CancelOrderRequest:
+      type: object
+      properties:
+        orderId:
+          type: string
+        username:
+          type: string
+    UserEntity:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        surname:
+          type: string
+        authorized:
+          type: boolean
+        roles:
+          type: array
+          items:
+            type: string
+        employeeData:
+          type: object
+        guestData:
+          type: object
+
