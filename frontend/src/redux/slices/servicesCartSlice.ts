@@ -4,7 +4,7 @@ import {ServiceDetailsResponse} from "../../types/service_type_attributes.ts";
 
 export type ServiceCartItem = {
   id: string;
-  attributes: ServiceDetailsResponse;
+  attributes?: ServiceDetailsResponse;
 };
 
 interface ServicesCartState {
