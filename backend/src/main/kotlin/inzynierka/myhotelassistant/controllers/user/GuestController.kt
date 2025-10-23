@@ -5,11 +5,13 @@ import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.models.reservation.ReservationEntity
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.service.ReservationsService
+import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.OrderService
 import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
 import inzynierka.myhotelassistant.services.UserService
+import inzynierka.myhotelassistant.services.notifications.NotificationScheduler
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
+import java.time.ZoneId
 
 @RestController
 @RequestMapping("/guest")
@@ -30,6 +33,7 @@ class GuestController(
     private val serviceService: ServiceService,
     private val orderService: OrderService,
     private val reservationsService: ReservationsService,
+    private val notificationScheduler: NotificationScheduler,
 ) {
     data class EmployeeNameResponse(
         val name: String,
@@ -86,7 +90,8 @@ class GuestController(
         @RequestBody req: OrderServicesRequestBody,
     ) {
         val guest = userService.findByUsernameOrThrow(req.username)
-        orderService.order(guest, req.id)
+        val schedule = orderService.order(guest, req.id)
+        notificationScheduler.notifyGuestOnSuccessfulOrder(schedule)
     }
 
     @PostMapping("/order/services/add-to-tab")
@@ -108,9 +113,30 @@ class GuestController(
         try {
             val reservation: ReservationEntity = reservationsService.createReservation(req)
             val guest = userService.findByUsernameOrThrow(req.guestUsername)
-            guest.guestData?.let { data ->
-                data.bill += reservation.reservationPrice ?: 0.0
+
+            if (guest.guestData == null) {
+                val checkInInstant =
+                    reservation.checkIn
+                        .atStartOfDay()
+                        .atZone(ZoneId.systemDefault())
+                        .toInstant()
+                val checkOutInstant =
+                    reservation.checkOut
+                        .atStartOfDay()
+                        .atZone(ZoneId.systemDefault())
+                        .toInstant()
+
+                guest.guestData =
+                    GuestData(
+                        roomNumber = reservation.roomNumber,
+                        checkInDate = checkInInstant,
+                        checkOutDate = checkOutInstant,
+                        bill = reservation.reservationPrice,
+                    )
+            } else {
+                guest.guestData!!.bill += reservation.reservationPrice
             }
+
             userService.save(guest)
         } catch (e: IllegalArgumentException) {
             throw HttpException.InvalidArgumentException(e.message ?: "Invalid reservation data")
@@ -133,6 +159,18 @@ class GuestController(
     ): List<ScheduleForPastAndRequestedServicesResponse> {
         val userId = userService.findByUsernameOrThrow(username).id!!
         return findAllByStatusAndUserId(listOf(OrderStatus.COMPLETED, OrderStatus.CANCELED), userId)
+    }
+
+    @GetMapping("/order/get/all/{username}")
+    @ResponseStatus(HttpStatus.OK)
+    fun getAllOrdersForUser(
+        @PathVariable username: String,
+    ): List<ScheduleForPastAndRequestedServicesResponse> {
+        val userId = userService.findByUsernameOrThrow(username).id!!
+        return findAllByStatusAndUserId(
+            listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE, OrderStatus.COMPLETED, OrderStatus.CANCELED),
+            userId,
+        )
     }
 
     @GetMapping("/bill/get/{username}")

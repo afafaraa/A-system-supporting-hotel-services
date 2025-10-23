@@ -7,6 +7,7 @@ import inzynierka.myhotelassistant.models.schedule.CancellationReason
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
+import inzynierka.myhotelassistant.services.notifications.NotificationScheduler
 import inzynierka.myhotelassistant.utils.SchedulesToDTOConverter
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
@@ -21,6 +22,7 @@ class ScheduleService(
     private val scheduleRepository: ScheduleRepository,
     private val scheduleDateConverter: SchedulesToDTOConverter,
     private val employeeService: EmployeeService,
+    private val notificationScheduler: NotificationScheduler,
 ) {
     fun findByIdOrThrow(id: String): ScheduleEntity =
         scheduleRepository
@@ -110,9 +112,13 @@ class ScheduleService(
         reason: String? = null,
     ): ScheduleDTO {
         val schedule = findByIdOrThrow(scheduleId)
+        val oldStatus = schedule.status
         reason?.let { schedule.cancellationReason = CancellationReason.fromString(it) }
         schedule.status = newScheduleStatus
         save(schedule)
+
+        notificationScheduler.notifyGuestOnStatusChange(schedule, oldStatus, newScheduleStatus)
+
         return scheduleDateConverter.convert(schedule)
     }
 
@@ -120,4 +126,19 @@ class ScheduleService(
         guestId: String,
         statuses: List<OrderStatus>,
     ): List<ScheduleEntity> = scheduleRepository.findByGuestIdAndStatusIn(guestId, statuses)
+
+    fun createGuestOrder(
+        scheduleId: String,
+        guestId: String,
+        specialRequests: String? = null,
+    ): ScheduleDTO {
+        val schedule = findByIdOrThrow(scheduleId)
+        schedule.guestId = guestId
+        schedule.orderTime = java.time.LocalDateTime.now()
+        schedule.status = OrderStatus.REQUESTED
+        schedule.specialRequests = specialRequests
+        save(schedule)
+
+        return scheduleDateConverter.convert(schedule)
+    }
 }

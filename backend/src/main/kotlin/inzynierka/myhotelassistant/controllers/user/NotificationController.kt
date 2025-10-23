@@ -1,7 +1,7 @@
 package inzynierka.myhotelassistant.controllers.user
 
 import inzynierka.myhotelassistant.models.notification.NotificationDTO
-import inzynierka.myhotelassistant.services.NotificationService
+import inzynierka.myhotelassistant.services.notifications.NotificationService
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping

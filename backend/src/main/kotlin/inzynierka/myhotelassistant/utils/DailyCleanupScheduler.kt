@@ -3,7 +3,7 @@ package inzynierka.myhotelassistant.utils
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.repositories.RegistrationCodeRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
-import inzynierka.myhotelassistant.services.NotificationService
+import inzynierka.myhotelassistant.services.notifications.NotificationService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
