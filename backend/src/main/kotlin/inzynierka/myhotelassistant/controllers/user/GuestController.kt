@@ -6,6 +6,7 @@ import inzynierka.myhotelassistant.models.reservation.ReservationEntity
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.service.ReservationsService
 import inzynierka.myhotelassistant.models.user.UserEntity
+import inzynierka.myhotelassistant.repositories.UserRepository
 import inzynierka.myhotelassistant.services.OrderService
 import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
@@ -32,6 +33,7 @@ class GuestController(
     private val orderService: OrderService,
     private val reservationsService: ReservationsService,
     private val notificationScheduler: NotificationScheduler,
+    private val userRepository: UserRepository,
 ) {
     data class EmployeeNameResponse(
         val name: String,
@@ -138,6 +140,15 @@ class GuestController(
         return findAllByStatusAndUserId(listOf(OrderStatus.COMPLETED, OrderStatus.CANCELED), userId)
     }
 
+    @GetMapping("/order/get/all/{username}")
+    @ResponseStatus(HttpStatus.OK)
+    fun getAllOrdersForUser(
+        @PathVariable username: String,
+    ): List<ScheduleForPastAndRequestedServicesResponse> {
+        val userId = userService.findByUsernameOrThrow(username).id!!
+        return findAllByStatusAndUserId(listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE, OrderStatus.COMPLETED, OrderStatus.CANCELED), userId)
+    }
+
     @GetMapping("/bill/get/{username}")
     @ResponseStatus(HttpStatus.OK)
     fun getBill(
@@ -160,9 +171,12 @@ class GuestController(
     private fun findAllByStatusAndUserId(
         statusList: List<OrderStatus>,
         userId: String,
-    ): List<ScheduleForPastAndRequestedServicesResponse> =
-        scheduleService
-            .findByGuestIdAndStatusIn(userId, statusList)
+    ): List<ScheduleForPastAndRequestedServicesResponse> {
+        val guestUsername = userRepository.findByUsername(userId)?.username
+            ?: throw HttpException.EntityNotFoundException("Guest username not found for id: $userId")
+
+        return scheduleService
+            .findByGuestIdAndStatusIn(guestUsername, statusList)
             .mapNotNull { scheduleItem ->
                 val assignedEmployee = userService.findById(scheduleItem.employeeId)
                 val serviceOpt = serviceService.findById(scheduleItem.serviceId)
@@ -185,4 +199,5 @@ class GuestController(
                     }
                 }
             }
+    }
 }

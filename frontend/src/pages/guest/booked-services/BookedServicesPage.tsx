@@ -53,7 +53,7 @@ function BookedServicesPage() {
     try {
       if (user) {
         const response = await axiosAuthApi.get(
-          `/guest/order/get/all/requested/${user.username}`
+          `/guest/order/get/all/${user.username}`
         );
         setServices(response.data || []);
       }

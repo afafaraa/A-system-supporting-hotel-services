@@ -45,17 +45,10 @@ function NotificationsPage() {
   useEffect(() => {
     fetchNotifications();
 
-    const intervalId = setInterval(fetchNotifications, 30_000);
+    const intervalId = setInterval(fetchNotifications, 60_000);
 
     return () => clearInterval(intervalId);
   }, [fetchNotifications, user]);
-
-  useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => setError(null), 20_000);
-      return () => clearTimeout(timer);
-    }
-  }, [error]);
 
 
   function markAsRead() {

@@ -396,7 +396,7 @@ class DatabaseSeeder(
     fun addOrders() {
         val schedules = scheduleRepository.findAll()
         val guests = userService.findByRole(Role.GUEST)
-        if (schedules.isEmpty() || guests.isEmpty()) return
+        if (schedules.isNotEmpty() || guests.isEmpty()) return
 
         val now = LocalDateTime.now()
         val requestedStatuses = listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE)
