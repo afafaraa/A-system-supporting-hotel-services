@@ -98,10 +98,12 @@ class ReservationsService(
 
     fun findMyReservationsAsGuestDTO(guestUsername: String): List<ReservationsController.ReservationGuestDTO> {
         val guest = userService.findByUsernameOrThrow(guestUsername)
-        return reservationsRepository.findAllByGuestIdOrderByCreatedAtDesc(guest.id!!)
+        return reservationsRepository
+            .findAllByGuestIdOrderByCreatedAtDesc(guest.id!!)
             .map { reservation ->
-                val room = roomRepository.findByNumber(reservation.roomNumber)
-                    ?: throw IllegalArgumentException("Room with number ${reservation.roomNumber} not found")
+                val room =
+                    roomRepository.findByNumber(reservation.roomNumber)
+                        ?: throw IllegalArgumentException("Room with number ${reservation.roomNumber} not found")
                 ReservationsController.ReservationGuestDTO(
                     id = reservation.id!!,
                     room = room,
@@ -109,7 +111,7 @@ class ReservationsService(
                     checkOut = reservation.checkOut.toString(),
                     guestCount = reservation.guestsCount,
                     reservationPrice = reservation.reservationPrice,
-                    status = reservation.status.name
+                    status = reservation.status.name,
                 )
             }
     }
