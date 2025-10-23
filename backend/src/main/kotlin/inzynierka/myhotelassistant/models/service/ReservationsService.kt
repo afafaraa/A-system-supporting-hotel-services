@@ -86,11 +86,6 @@ class ReservationsService(
         return reservationsRepository.save(reservation)
     }
 
-    fun findMyReservations(guestUsername: String): List<ReservationEntity> {
-        val guest = userService.findByUsernameOrThrow(guestUsername)
-        return reservationsRepository.findAllByGuestIdOrderByCreatedAtDesc(guest.id!!)
-    }
-
     fun findMyReservationsAsGuestDTO(guestUsername: String): List<ReservationsController.ReservationGuestDTO> {
         val guest = userService.findByUsernameOrThrow(guestUsername)
         return reservationsRepository
