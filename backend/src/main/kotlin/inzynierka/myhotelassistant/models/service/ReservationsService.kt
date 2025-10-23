@@ -1,11 +1,9 @@
 package inzynierka.myhotelassistant.models.service
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped
 import inzynierka.myhotelassistant.controllers.ReservationsController
 import inzynierka.myhotelassistant.controllers.user.AddUserController
 import inzynierka.myhotelassistant.models.reservation.ReservationEntity
 import inzynierka.myhotelassistant.models.reservation.ReservationStatus
-import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.repositories.ReservationsRepository
 import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.services.UserService
@@ -24,12 +22,6 @@ class ReservationsService(
 
     @Value("\${app.reservations.cancellation.days-before}")
     private lateinit var cancellationDaysBefore: Integer
-
-    data class ReservationWithRoomDTO(
-        @field:JsonUnwrapped
-        val reservation: ReservationEntity,
-        val room: RoomEntity,
-    )
 
     fun findByIdOrThrow(reservationId: String): ReservationEntity =
         reservationsRepository
@@ -280,5 +272,10 @@ class ReservationsService(
             reservation = transformToDTO(refreshedReservation),
             userAccount = addUserResponse,
         )
+    }
+
+    fun getAllOngoingReservations(): List<ReservationsController.ReservationDTO> {
+        val reservations = reservationsRepository.findAllByStatus(ReservationStatus.CHECKED_IN)
+        return reservations.map { transformToDTO(it) }
     }
 }

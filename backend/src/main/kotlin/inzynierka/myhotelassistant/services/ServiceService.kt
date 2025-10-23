@@ -40,9 +40,7 @@ class ServiceService(
         return serviceRepository.findAllById(ids).associateBy { it.id!! }
     }
 
-    fun getServiceAttributes(serviceId: String): ServiceTypeAttributes =
-        serviceRepository.findServiceAttributesById(serviceId)?.attributes
-            ?: throw EntityNotFoundException("Service not found")
+    fun getServiceAttributes(serviceId: String): ServiceTypeAttributes? = serviceRepository.findServiceAttributesById(serviceId)?.attributes
 
     fun updateServiceAttributes(
         serviceId: String,

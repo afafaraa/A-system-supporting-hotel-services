@@ -1,8 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store.ts';
+import {ServiceDetailsResponse} from "../../types/service_type_attributes.ts";
 
 export type ServiceCartItem = {
   id: string;
+  attributes: ServiceDetailsResponse;
 };
 
 interface ServicesCartState {

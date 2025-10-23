@@ -188,6 +188,7 @@
         "REQUESTED": "Oczekująca",
         "CONFIRMED": "Potwierdzona",
         "CANCELLED": "Anulowana",
+        "CHECKED_IN": "Zameldowana",
         "Confirmed": "Potwierdzona",
         "Pending": "Oczekująca",
         "Cancelled": "Anulowana"
@@ -473,6 +474,15 @@
       "guest-service": {
         "title": "Obsługa gości",
         "subtitle": "Wykonaj akcję związaną z obsługą gości",
+        "ongoing-reservations-title": "Obecne rezerwacje pokoi",
+        "find-by-room-input-placeholder": "Znajdź numer pokoju...",
+        "reservations-fetching-error": "Nie udało się pobrać rezerwacji pokoi. Spróbuj ponownie później.",
+        "reservations-no-results": "Nie znaleziono żadnych trwających rezerwacji.",
+        "reservations-no-results-filtered": "Nie znaleziono żadnych trwających rezerwacji dla tego wyniku wyszukiwania.",
+        "reservation-for": "Rezerwacja dla",
+        "days-after-check-in": "dni po zameldowaniu",
+        "days-before-check-out": "dni przed wymeldowaniem",
+        "other-actions-title": "Inne akcje związane z gośćmi",
         "Main": "Główna",
         "Check-In": "Zameldowanie"
       },

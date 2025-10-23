@@ -10,5 +10,6 @@ data class AppProperties(
 ) {
     data class Frontend(
         var url: String = "http://localhost:5273",
+        var port: String = url.split(":").last(),
     )
 }
