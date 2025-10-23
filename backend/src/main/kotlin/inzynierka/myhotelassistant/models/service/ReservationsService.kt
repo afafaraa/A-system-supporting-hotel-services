@@ -169,8 +169,9 @@ class ReservationsService(
         reservation.status = ReservationStatus.CHECKED_IN
         reservation.paid = paid
         val savedReservation = reservationsRepository.save(reservation)
-        val guest = userService.findById(reservation.guestId!!)
-            ?: throw IllegalArgumentException("Guest with id ${reservation.guestId} not found")
+        val guest =
+            userService.findById(reservation.guestId!!)
+                ?: throw IllegalArgumentException("Guest with id ${reservation.guestId} not found")
         guest.active = true
         userService.save(guest)
         notificationScheduler.notifyGuestOnReservationStatusChange(savedReservation, oldStatus, ReservationStatus.CHECKED_IN)

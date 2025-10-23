@@ -115,21 +115,24 @@ class GuestController(
             val guest = userService.findByUsernameOrThrow(req.guestUsername)
 
             if (guest.guestData == null) {
-                val checkInInstant = reservation.checkIn
-                    .atStartOfDay()
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant()
-                val checkOutInstant = reservation.checkOut
-                    .atStartOfDay()
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant()
+                val checkInInstant =
+                    reservation.checkIn
+                        .atStartOfDay()
+                        .atZone(ZoneId.systemDefault())
+                        .toInstant()
+                val checkOutInstant =
+                    reservation.checkOut
+                        .atStartOfDay()
+                        .atZone(ZoneId.systemDefault())
+                        .toInstant()
 
-                guest.guestData = GuestData(
-                    roomNumber = reservation.roomNumber,
-                    checkInDate = checkInInstant,
-                    checkOutDate = checkOutInstant,
-                    bill = reservation.reservationPrice
-                )
+                guest.guestData =
+                    GuestData(
+                        roomNumber = reservation.roomNumber,
+                        checkInDate = checkInInstant,
+                        checkOutDate = checkOutInstant,
+                        bill = reservation.reservationPrice,
+                    )
             } else {
                 guest.guestData!!.bill += reservation.reservationPrice
             }
