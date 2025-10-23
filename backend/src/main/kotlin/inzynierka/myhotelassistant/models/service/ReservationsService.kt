@@ -91,6 +91,26 @@ class ReservationsService(
         return reservationsRepository.findAllByGuestIdOrderByCreatedAtDesc(guest.id!!)
     }
 
+    fun findMyReservationsAsGuestDTO(guestUsername: String): List<ReservationsController.ReservationGuestDTO> {
+        val guest = userService.findByUsernameOrThrow(guestUsername)
+        return reservationsRepository
+            .findAllByGuestIdOrderByCreatedAtDesc(guest.id!!)
+            .map { reservation ->
+                val room =
+                    roomRepository.findByNumber(reservation.roomNumber)
+                        ?: throw IllegalArgumentException("Room with number ${reservation.roomNumber} not found")
+                ReservationsController.ReservationGuestDTO(
+                    id = reservation.id!!,
+                    room = room,
+                    checkIn = reservation.checkIn.toString(),
+                    checkOut = reservation.checkOut.toString(),
+                    guestCount = reservation.guestsCount,
+                    reservationPrice = reservation.reservationPrice,
+                    status = reservation.status.name,
+                )
+            }
+    }
+
     fun cancelMyReservation(
         reservationId: String,
         guestUsername: String,
