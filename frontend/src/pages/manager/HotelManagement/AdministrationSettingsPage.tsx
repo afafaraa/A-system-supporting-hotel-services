@@ -114,7 +114,7 @@ function AdministrationSettingsPage() {
       setSnackbar({
         open: true,
         message: err.response?.data,
-        severity: 'success',
+        severity: 'error',
       });
     } finally {
       setSaving(false);
@@ -132,9 +132,14 @@ function AdministrationSettingsPage() {
 
   if (loading) {
     return (
-      <SectionCard>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="400px"
+      >
         <CircularProgress />
-      </SectionCard>
+      </Box>
     );
   }
 
@@ -254,14 +259,14 @@ function AdministrationSettingsPage() {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              backgroundColor: 'backgorund.secondary',
+              backgroundColor: 'background.secondary',
               borderRadius: '12px',
               border: '1px solid',
               borderColor: 'divider',
               zIndex: 2,
             }}
           >
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="error.main">
               {tc('unsavedChanges')}
             </Typography>
             <Box display="flex" gap={2}>

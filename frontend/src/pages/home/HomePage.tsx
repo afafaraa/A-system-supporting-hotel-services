@@ -18,7 +18,7 @@ export const roomOptions: Room[] = [
     number: '1',
     standard: { id: '1', name: 'standard', capacity: 2, basePrice: 120 },
     pricePerNight: 120,
-    roomStatus: RoomStatus.OPEN,
+    roomStatus: RoomStatus.AVAILABLE,
     capacity: 2,
     description: 'A comfortable standard room with all the basic amenities for a pleasant stay.',
     amenities: [
@@ -32,7 +32,7 @@ export const roomOptions: Room[] = [
     number: '2',
     standard: { id: '2', name: 'deluxe', capacity: 3, basePrice: 180 },
     pricePerNight: 180,
-    roomStatus: RoomStatus.OPEN,
+    roomStatus: RoomStatus.AVAILABLE,
     capacity: 3,
     description: 'Spacious deluxe room with premium amenities and elegant furnishings for a luxurious experience.',
     amenities: [
@@ -47,7 +47,7 @@ export const roomOptions: Room[] = [
     number: '3',
     standard: { id: '3', name: 'exclusive', capacity: 4, basePrice: 350 },
     pricePerNight: 350,
-    roomStatus: RoomStatus.OPEN,
+    roomStatus: RoomStatus.AVAILABLE,
     capacity: 4,
     description: 'A top-tier exclusive suite with premium facilities, ideal for a luxurious stay or business trip.',
     amenities: [

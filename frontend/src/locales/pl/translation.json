@@ -543,6 +543,7 @@
     },
     "room_status": {
       "open": "Open",
+      "available": "Dostępny",
       "booked": "Zarezerwowany",
       "pending": "Oczekujący",
       "out_of_service": "Niedostępny"

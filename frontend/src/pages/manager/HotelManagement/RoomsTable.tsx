@@ -72,12 +72,8 @@ function RoomsTable({
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'BOOKED':
+      case 'AVAILABLE':
         return 'primary';
-      case 'OPEN':
-        return 'success';
-      case 'PENDING':
-        return 'warning';
       case 'OUT_OF_SERVICE':
         return 'error';
       default:
@@ -217,11 +213,9 @@ function RoomsTable({
                 <TableCell align="center">
                   {t(`common.room_standard.${room.standard?.name}`) || 'N/A'}
                 </TableCell>
+                <TableCell align="center">{room.capacity || 'N/A'}</TableCell>
                 <TableCell align="center">
-                  {room.standard?.capacity || 'N/A'}
-                </TableCell>
-                <TableCell align="center">
-                  {room.standard?.basePrice.toFixed(2) || 'N/A'} $
+                  {room.pricePerNight.toFixed(2) || 'N/A'} $
                 </TableCell>
                 <TableCell align="center">{room.floor || '-'}</TableCell>
                 <TableCell align="center">
@@ -243,6 +237,17 @@ function RoomsTable({
                     <Delete />
                   </IconButton>
                 </TableCell>
+              </TableRow>
+            ))}
+
+            {Array.from({
+              length: Math.max(
+                0,
+                itemsPerPage - filteredRooms.slice(startIndex, endIndex).length
+              ),
+            }).map((_, i) => (
+              <TableRow key={`empty-${i}`}>
+                <TableCell colSpan={8} sx={{ height: 67 }} />{' '}
               </TableRow>
             ))}
           </TableBody>

@@ -41,11 +41,10 @@ class RoomController(
         @RequestBody room: RoomEntity,
     ): RoomEntity = roomService.createRoom(room)
 
-    @PutMapping("/{number}")
+    @PutMapping
     fun updateRoom(
-        @PathVariable number: String,
         @RequestBody room: RoomEntity,
-    ): RoomEntity = roomService.updateRoom(number, room)
+    ): RoomEntity = roomService.updateRoom(room)
 
     @DeleteMapping("/{number}")
     fun deleteRoom(
@@ -71,7 +70,7 @@ class RoomController(
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
         }
 
-    @PutMapping("room-standard/{id}")
+    @PutMapping("/room-standard/{id}")
     fun updateRoomStandard(
         @PathVariable id: String,
         @RequestBody standard: RoomStandardEntity,
@@ -82,7 +81,7 @@ class RoomController(
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
         }
 
-    @DeleteMapping("room-standard/{id}")
+    @DeleteMapping("/room-standard/{id}")
     fun deleteRoomStandard(
         @PathVariable id: String,
     ) = try {

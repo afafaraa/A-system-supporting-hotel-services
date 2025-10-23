@@ -52,7 +52,7 @@ class SettingsService(
             settingsRepository
                 .findById(defaultSettingsId)
                 .orElseThrow {
-                    throw RuntimeException("Settings not found")
+                    throw NoSuchElementException("Settings not found")
                 }
         return settings
     }

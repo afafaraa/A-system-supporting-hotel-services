@@ -15,6 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { axiosAuthApi } from '../../../middleware/axiosApi.ts';
 
 interface RoomModalProps {
   open: boolean;
@@ -30,13 +31,14 @@ function RoomModal({ open, room, standards, onClose, onSave }: RoomModalProps) {
   const [formData, setFormData] = useState<Room>({
     number: '',
     standard: { id: '', name: '', capacity: 1, basePrice: 0 },
-    roomStatus: RoomStatus.OPEN,
+    roomStatus: RoomStatus.AVAILABLE,
     floor: undefined,
     description: '',
     capacity: 1,
     pricePerNight: 0,
     amenities: [],
   });
+  const isEditMode = !!room;
 
   useEffect(() => {
     if (room) {
@@ -45,7 +47,7 @@ function RoomModal({ open, room, standards, onClose, onSave }: RoomModalProps) {
       setFormData({
         number: '',
         standard: { id: '', name: '', capacity: 1, basePrice: 0 },
-        roomStatus: RoomStatus.OPEN,
+        roomStatus: RoomStatus.AVAILABLE,
         floor: undefined,
         description: '',
         capacity: 1,
@@ -55,13 +57,38 @@ function RoomModal({ open, room, standards, onClose, onSave }: RoomModalProps) {
     }
   }, [room, open]);
 
-  const handleSubmit = () => {
-    if (!formData.number || !formData.standard.id) {
-      alert('Please fill in all required fields');
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.number || !formData.pricePerNight || !formData.standard) {
       return;
     }
-    onSave(formData);
+    try {
+      let res;
+      if (isEditMode) {
+        res = await axiosAuthApi.put('/rooms', formData);
+      } else {
+        res = await axiosAuthApi.post('/rooms', formData);
+      }
+      console.log(res.data);
+      onClose();
+      onSave(res.data);
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+    const handlePriceChange =(e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (value === '') {
+          setFormData((prev) => ({ ...prev, ['pricePerNight']: formData.standard.basePrice }));
+          return;
+        }
+        const normalized = value.replace(',', '.');
+        const parsed = parseFloat(normalized);
+        if (!isNaN(parsed) && parsed >= 0) {
+          setFormData((prev) => ({ ...prev, ['pricePerNight']: parsed }));
+        }
+    };
 
   return (
     <Dialog
@@ -138,6 +165,26 @@ function RoomModal({ open, room, standards, onClose, onSave }: RoomModalProps) {
               ))}
             </Select>
           </FormControl>
+          <TextField
+            label={tc('price') + ' ($)'}
+            type="number"
+            value={isNaN(formData.pricePerNight) ? '' : formData.pricePerNight}
+            onChange={handlePriceChange}
+            fullWidth
+            inputProps={{ min: 0, step: 0.01, inputMode: 'decimal' }}
+          />
+          <TextField
+            label={tc('capacity')}
+            type="number"
+            value={formData.capacity}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                capacity: Number(e.target.value) || 0,
+              })
+            }
+            fullWidth
+          />
           <TextField
             label={tc('floor')}
             type="number"

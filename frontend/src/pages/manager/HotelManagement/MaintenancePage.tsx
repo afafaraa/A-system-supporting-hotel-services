@@ -48,12 +48,12 @@ function MaintenancePage() {
 
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(false);
-  const [searchOpen, setSerachOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | IssueStatus>('ALL');
   const [issueModalOpen, setIssueModalOpen] = useState(false);
   const [editingIssue, setEditingIssue] = useState<Issue | null>(null);
-  const [assignModalOpen, setAssingModalOpen] = useState(false);
+  const [assignModalOpen, setAssignModalOpen] = useState(false);
   const [assigningIssue, setAssigningIssue] = useState<Issue | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
@@ -126,7 +126,7 @@ function MaintenancePage() {
 
   const handleAssignIssue = () => {
     setAssigningIssue(selectedIssue);
-    setAssingModalOpen(true);
+    setAssignModalOpen(true);
     handleMenuClose();
   };
 
@@ -192,7 +192,7 @@ function MaintenancePage() {
             justifyContent="flex-end"
             flexGrow={1}
           >
-            <ClickAwayListener onClickAway={() => setSerachOpen(false)}>
+            <ClickAwayListener onClickAway={() => setSearchOpen(false)}>
               <Box
                 display="grid"
                 alignItems="center"
@@ -204,7 +204,7 @@ function MaintenancePage() {
                     'grid-template-columns 0.3s ease, column-gap 0.3s ease',
                 }}
               >
-                <IconButton onClick={() => setSerachOpen(!searchOpen)}>
+                <IconButton onClick={() => setSearchOpen(!searchOpen)}>
                   <Search />
                 </IconButton>
                 <TextField
@@ -416,12 +416,12 @@ function MaintenancePage() {
         open={assignModalOpen}
         issue={assigningIssue}
         onClose={() => {
-          setAssingModalOpen(false);
+          setAssignModalOpen(false);
           setAssigningIssue(null);
         }}
         onAssign={() => {
           fetchIssues();
-          setAssingModalOpen(false);
+          setAssignModalOpen(false);
           setAssigningIssue(null);
         }}
       />

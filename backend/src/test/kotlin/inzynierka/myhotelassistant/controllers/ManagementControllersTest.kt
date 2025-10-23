@@ -313,7 +313,7 @@ class ManagementControllersTest {
                     pricePerNight = 45.00,
                     standard = roomStandard,
                     description = "this is test description",
-                    roomStatus = RoomStatus.OPEN,
+                    roomStatus = RoomStatus.AVAILABLE,
                 ),
                 RoomEntity(
                     number = "102",
@@ -322,7 +322,7 @@ class ManagementControllersTest {
                     pricePerNight = 45.00,
                     standard = roomStandard,
                     description = "this is test description",
-                    roomStatus = RoomStatus.BOOKED,
+                    roomStatus = RoomStatus.AVAILABLE,
                 ),
             )
 
@@ -355,7 +355,7 @@ class ManagementControllersTest {
                     pricePerNight = 45.00,
                     standard = roomStandard,
                     description = "this is test description",
-                    roomStatus = RoomStatus.BOOKED,
+                    roomStatus = RoomStatus.AVAILABLE,
                 ),
             )
 
@@ -394,7 +394,7 @@ class ManagementControllersTest {
                 pricePerNight = 45.00,
                 standard = roomStandard,
                 description = "this is test description",
-                roomStatus = RoomStatus.BOOKED,
+                roomStatus = RoomStatus.AVAILABLE,
             )
 
         given(roomService.findRoomByNumber("201")).willReturn(room)
@@ -426,7 +426,7 @@ class ManagementControllersTest {
                 pricePerNight = 2505.00,
                 standard = roomStandard,
                 description = "this is test description",
-                roomStatus = RoomStatus.BOOKED,
+                roomStatus = RoomStatus.AVAILABLE,
             )
 
         given(roomService.createRoom(room)).willReturn(room)
@@ -463,11 +463,11 @@ class ManagementControllersTest {
                 roomStatus = RoomStatus.OUT_OF_SERVICE,
             )
 
-        given(roomService.updateRoom("101", updatedRoom)).willReturn(updatedRoom)
+        given(roomService.updateRoom(updatedRoom)).willReturn(updatedRoom)
 
         mvc
             .perform(
-                put("/rooms/101")
+                put("/rooms")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(mapper.writeValueAsString(updatedRoom)),
             ).andExpect(status().isOk)

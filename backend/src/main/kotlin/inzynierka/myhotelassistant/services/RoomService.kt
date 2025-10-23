@@ -32,25 +32,22 @@ class RoomService(
 
     fun createRoom(room: RoomEntity): RoomEntity {
         require(!(roomRepository.existsById(room.number))) {
-            throw IllegalArgumentException("room with id ${room.number} already exists")
+            "room with id ${room.number} already exists"
         }
         return roomRepository.save(room)
     }
 
-    fun updateRoom(
-        number: String,
-        room: RoomEntity,
-    ): RoomEntity {
+    fun updateRoom(room: RoomEntity): RoomEntity {
         require((roomRepository.existsById(room.number))) {
-            throw IllegalArgumentException("room with id ${room.number} not found")
+            "room with id ${room.number} not found"
         }
-        val roomToUpdate = room.copy(number = number)
+        val roomToUpdate = room.copy(number = room.number)
         return roomRepository.save(roomToUpdate)
     }
 
     fun deleteRoom(number: String) {
         require((roomRepository.existsById(number))) {
-            throw IllegalArgumentException("room with id $number not found")
+            "room with id $number not found"
         }
         return roomRepository.deleteById(number)
     }
@@ -61,7 +58,7 @@ class RoomService(
 
     fun createStandard(standard: RoomStandardEntity): RoomStandardEntity {
         require(!roomStandardRepository.existsByName(standard.name)) {
-            throw IllegalArgumentException("Room standard with name ${standard.name} already exists")
+            "Room standard with name ${standard.name} already exists"
         }
         return roomStandardRepository.save(standard)
     }
@@ -71,11 +68,11 @@ class RoomService(
         standard: RoomStandardEntity,
     ): RoomStandardEntity {
         require((roomStandardRepository.existsById(id))) {
-            throw IllegalArgumentException("room with id $id not found")
+            "room with id $id not found"
         }
         val existingStandard = roomStandardRepository.findById(id).get()
         if (existingStandard.name != standard.name && roomStandardRepository.existsByName(standard.name)) {
-            throw IllegalArgumentException("Room standard with name '${standard.name}' already exists")
+            "Room standard with name '${standard.name}' already exists"
         }
         val standardToUpdate = standard.copy(id = id)
         return roomStandardRepository.save(standardToUpdate)

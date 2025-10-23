@@ -37,17 +37,17 @@ class MaintenanceController(
     )
 
     @GetMapping
-    fun getAllIssues(): ResponseEntity<List<IssueResponse>> = ResponseEntity.ok(service.getAllIssues())
+    fun getAllIssues(): List<IssueResponse> = service.getAllIssues()
 
     @GetMapping("/{id}")
     fun getIssue(
         @PathVariable id: String,
-    ): ResponseEntity<IssueResponse> = ResponseEntity.ok(service.getIssue(id))
+    ): IssueResponse = service.getIssue(id)
 
     @PostMapping
     fun createIssue(
         @RequestBody request: IssueRequest,
-    ): ResponseEntity<IssueResponse> = ResponseEntity.ok(service.createIssue(request))
+    ): IssueResponse = service.createIssue(request)
 
     @DeleteMapping("/{id}")
     fun deleteIssue(
@@ -57,33 +57,33 @@ class MaintenanceController(
     @GetMapping("/status/{status}")
     fun getByStatus(
         @PathVariable status: IssueStatus,
-    ): ResponseEntity<List<IssueResponse>> = ResponseEntity.ok(service.getIssueByStatus(status))
+    ): List<IssueResponse> = service.getIssueByStatus(status)
 
     @GetMapping("/employee/{employeeId}")
     fun getEmployeeIssues(
         @PathVariable employeeId: String,
-    ): ResponseEntity<List<IssueResponse>> = ResponseEntity.ok(service.getEmployeeIssues(employeeId))
+    ): List<IssueResponse> = service.getEmployeeIssues(employeeId)
 
     @GetMapping("/employee/{employeeId}/in-progress")
     fun getEmployeeIssuesInProgress(
         @PathVariable employeeId: String,
-    ): ResponseEntity<List<IssueResponse>> = ResponseEntity.ok(service.getEmployeeInProgressIssues(employeeId))
+    ): List<IssueResponse> = service.getEmployeeInProgressIssues(employeeId)
 
     @PutMapping("/{id}")
     fun updateIssue(
         @PathVariable id: String,
         @RequestBody request: IssueRequest,
-    ): ResponseEntity<IssueResponse> = ResponseEntity.ok(service.updateIssue(id, request))
+    ): IssueResponse = service.updateIssue(id, request)
 
     @PutMapping("/{id}/assign/{employeeId}")
     fun assignIssue(
         @PathVariable id: String,
         @PathVariable employeeId: String,
-    ): ResponseEntity<IssueResponse> = ResponseEntity.ok(service.assignIssue(id, employeeId))
+    ): IssueResponse = service.assignIssue(id, employeeId)
 
     @PutMapping("/{id}/status/{status}")
     fun changeStatus(
         @PathVariable id: String,
         @PathVariable status: IssueStatus,
-    ): ResponseEntity<IssueResponse> = ResponseEntity.ok(service.changeIssueStatus(id, status))
+    ): IssueResponse = service.changeIssueStatus(id, status)
 }

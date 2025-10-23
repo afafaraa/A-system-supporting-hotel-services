@@ -180,8 +180,20 @@ function RoomsManagementPage() {
     );
   }
 
-  function handleSaveRoom(): void {
-    throw new Error('Function not implemented.');
+  const onRoomUpdated = (updatedRoom: Room) => {
+    setAllRooms((prev) => {
+      const exists = prev.some((room) => room.number === updatedRoom.number);
+      return exists
+        ? prev.map((room) =>
+            room.number === updatedRoom.number ? updatedRoom : room
+          )
+        : [updatedRoom, ...prev];
+    });
+    setSnackbar({
+          open: true,
+          message: 'Action successfull',
+          severity: 'success',
+        });
   }
 
   return (
@@ -229,7 +241,13 @@ function RoomsManagementPage() {
           setRoomDialogOpen(false);
           setEditingRoom(null);
         }}
-        onSave={handleSaveRoom}
+        onSave={(updatedRoom) => {
+          if (updatedRoom) {
+            onRoomUpdated(updatedRoom);
+          }
+          setRoomDialogOpen(false);
+          setEditingRoom(null);
+        }}
       />
 
       <RoomStandardModal

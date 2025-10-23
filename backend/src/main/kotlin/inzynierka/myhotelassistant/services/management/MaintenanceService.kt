@@ -1,11 +1,14 @@
 package inzynierka.myhotelassistant.services.management
 
 import inzynierka.myhotelassistant.controllers.management.MaintenanceController
+import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.models.management.IssueEntity
 import inzynierka.myhotelassistant.models.management.IssueStatus
 import inzynierka.myhotelassistant.repositories.UserRepository
 import inzynierka.myhotelassistant.repositories.management.IssueRepository
 import org.springframework.stereotype.Service
+import kotlin.NoSuchElementException
+import kotlin.jvm.Throws
 
 @Service
 class MaintenanceService(
@@ -28,9 +31,7 @@ class MaintenanceService(
     }
 
     fun getIssue(id: String): MaintenanceController.IssueResponse =
-        issueRepository
-            .findById(id)
-            .orElseThrow { IllegalArgumentException("User $id does not exist") }
+        findByIdOrThrow(id)
             .toResponse()
 
     fun getIssueByStatus(status: IssueStatus): List<MaintenanceController.IssueResponse> =
@@ -50,10 +51,7 @@ class MaintenanceService(
         id: String,
         request: MaintenanceController.IssueRequest,
     ): MaintenanceController.IssueResponse {
-        val existing =
-            issueRepository
-                .findById(id)
-                .orElseThrow { NoSuchElementException("User $id does not exist") }
+        val existing = findByIdOrThrow(id)
 
         val updated =
             existing.copy(
@@ -70,16 +68,15 @@ class MaintenanceService(
         id: String,
         assignedTo: String,
     ): MaintenanceController.IssueResponse {
-        val issue =
-            issueRepository
-                .findById(id)
-                .orElseThrow { NoSuchElementException("Issue $id does not exist") }
+        val issue = findByIdOrThrow(id)
 
-        val user = userRepository.findByUsername(assignedTo)
+        require(userRepository.existsByUsername(assignedTo)) {
+            "Employee with username '$assignedTo' was not found"
+        }
 
         val updated =
             issue.copy(
-                assignedTo = user?.username,
+                assignedTo = assignedTo,
                 status = IssueStatus.IN_PROGRESS,
             )
         return issueRepository.save(updated).toResponse()
@@ -89,10 +86,7 @@ class MaintenanceService(
         id: String,
         newStatus: IssueStatus,
     ): MaintenanceController.IssueResponse {
-        val issue =
-            issueRepository
-                .findById(id)
-                .orElseThrow { IllegalArgumentException("User $id does not exist") }
+        val issue = findByIdOrThrow(id)
 
         val updated = issue.copy(status = newStatus)
         return issueRepository.save(updated).toResponse()
@@ -105,6 +99,12 @@ class MaintenanceService(
             throw NoSuchElementException("Issue $id does not exist")
         }
     }
+
+    @Throws(EntityNotFoundException::class)
+    fun findByIdOrThrow(id: String): IssueEntity =
+        issueRepository
+            .findById(id)
+            .orElseThrow { EntityNotFoundException("Issue $id does not exist") }
 
     private fun IssueEntity.toResponse(): MaintenanceController.IssueResponse {
         val reporter = reportedBy?.let { userRepository.findByUsername(it) }

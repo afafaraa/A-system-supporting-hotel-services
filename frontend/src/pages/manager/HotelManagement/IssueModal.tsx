@@ -14,7 +14,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../../../redux/slices/userSlice.ts';
-import {} from '@mui/icons-material';
 import { axiosAuthApi } from '../../../middleware/axiosApi.ts';
 
 interface IssueModalProps {

@@ -35,17 +35,11 @@ function HotelManagementPage() {
   };
 
   return (
-    <SectionCard
-      sx={{
-        p: 0,
-      }}
-    >
-      <Box display="flex" alignItems="stretch" height="100%">
+    <SectionCard size={0} display="flex" alignItems="stretch" height="100%">
         <SideMenu active={selectedSection} onSelect={setSelectedSection} />
         <Box flexGrow={1} p={3} minWidth={0}>
           {renderSection()}
         </Box>
-      </Box>
     </SectionCard>
   );
 }

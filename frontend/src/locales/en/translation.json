@@ -542,6 +542,7 @@
     },
     "room_status": {
       "open": "Open",
+      "available": "Available",
       "booked": "Booked",
       "pending": "Pending",
       "out_of_service": "Out of Service"
