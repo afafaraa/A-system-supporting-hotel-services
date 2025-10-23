@@ -101,7 +101,7 @@ function IssueModal({ open, issue, onClose, onSave }: IssueModalProps) {
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
           <TextField
-            label={tc('title')}
+            label={tc('modalTitle')}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             fullWidth

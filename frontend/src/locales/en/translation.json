@@ -192,7 +192,8 @@
         "Confirmed": "Confirmed",
         "Pending": "Pending",
         "Cancelled": "Cancelled",
-        "REJECTED": "Rejected"
+        "REJECTED": "Rejected",
+        "COMPLETED": "Completed"
       }
     },
     "manager": {
@@ -201,7 +202,8 @@
         "services": "Services",
         "management": "Hotel Management",
         "employees": "Personnel",
-        "statistics": "Statistics"
+        "statistics": "Statistics",
+        "calendar": "Calendar"
       },
       "guests": {
         "title": "Guests Management",
@@ -416,7 +418,9 @@
         "issue": "Issue",
         "assignTo": "Assign to",
         "reportedDate": "Reported at",
-        "close": "Close"
+        "close": "Close",
+        "modalTitle": "Issue title",
+        "list": "Issue list"
       }
     },
     "employee": {

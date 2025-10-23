@@ -7,6 +7,7 @@ import {
   IconButton,
   Box,
   Tooltip,
+  useMediaQuery
 } from '@mui/material';
 import {
   Hotel,
@@ -20,8 +21,8 @@ import {
 import { HotelSection } from '../../../types/hotel_sections';
 import SectionTitle from '../../../components/ui/SectionTitle.tsx';
 import { HomeOutlined } from '@mui/icons-material';
-import { SectionCard } from '../../../theme/styled-components/SectionCard';
 import { useTranslation } from 'react-i18next';
+
 
 interface SideMenuProps {
   active: HotelSection | null;
@@ -29,7 +30,8 @@ interface SideMenuProps {
 }
 
 function SideMenu({ active, onSelect }: SideMenuProps) {
-  const [collapsed, setCollapsed] = useState(false);
+  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down('sm'));
+  const [collapsed, setCollapsed] = useState(!isMobile);
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.manager.hotel_management.${key}`);
 
@@ -43,14 +45,22 @@ function SideMenu({ active, onSelect }: SideMenuProps) {
   ] as const;
 
   return (
-    <SectionCard
+    <Box
+      py={2}
+      px={collapsed ? 1 : 3}
+      width={!collapsed ? "310px" : "60px"}
+      alignSelf="stretch"
+      flexShrink={0}
+      borderRight="1px solid" 
+      borderColor="divider"
+      fontSize="0.8rem"
       sx={{
         borderLeft: 'none',
         borderTop: 'none',
         borderBottom: 'none',
-        minWidth: collapsed ? 80 : 330,
-        transition: 'all 0.3s ease',
+        transition: "width 0.5s ease, padding 0.5s ease",
         position: 'relative',
+        backgroundColor: 'background.default',
       }}
     >
       {!collapsed && (
@@ -93,7 +103,6 @@ function SideMenu({ active, onSelect }: SideMenuProps) {
                 borderRadius: 2,
                 mb: 1,
                 justifyContent: collapsed ? 'center' : 'flex-start',
-                px: collapsed ? 1 : 2,
                 '&.Mui-selected': {
                   bgcolor: 'primary.main',
                   color: 'white',
@@ -112,7 +121,9 @@ function SideMenu({ active, onSelect }: SideMenuProps) {
               >
                 {item.icon}
               </ListItemIcon>
-              {!collapsed && <ListItemText primary={item.label} />}
+              {!collapsed && <ListItemText primary={item.label} primaryTypographyProps={{
+                    fontSize: '0.9rem',
+                  }} />}
             </ListItemButton>
           </Tooltip>
         ))}
@@ -121,7 +132,7 @@ function SideMenu({ active, onSelect }: SideMenuProps) {
         <Box
           sx={{
             position: 'absolute',
-            top: '8%',
+            top: 35,
             right: 5,
             transform: 'translateY(-50%)',
             zIndex: 1,
@@ -130,9 +141,10 @@ function SideMenu({ active, onSelect }: SideMenuProps) {
           <IconButton
             onClick={() => setCollapsed(true)}
             sx={{
-              bgcolor: 'background.paper',
+              bgcolor: 'background.default',
               width: 32,
               height: 32,
+              p: 0.5,
               '&:hover': {
                 bgcolor: 'action.hover',
               },
@@ -142,7 +154,7 @@ function SideMenu({ active, onSelect }: SideMenuProps) {
           </IconButton>
         </Box>
       )}
-    </SectionCard>
+    </Box>
   );
 }
 

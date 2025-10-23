@@ -181,8 +181,8 @@ function MaintenancePage() {
 
       <SectionCard>
         <Box display="flex" alignItems="center" flexWrap="wrap" gap={2} mb={3}>
-          <Typography variant="h6" fontWeight="600">
-            Issues List
+          <Typography variant="h6" fontWeight="500">
+            {tc('list')}
           </Typography>
           <Box
             display="flex"

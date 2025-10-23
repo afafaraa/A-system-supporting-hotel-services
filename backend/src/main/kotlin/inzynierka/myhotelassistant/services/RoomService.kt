@@ -52,8 +52,6 @@ class RoomService(
 
     fun findAllStandards(): List<RoomStandardEntity> = roomStandardRepository.findAll()
 
-    fun findStandardByName(name: String): RoomStandardEntity? = roomStandardRepository.findByName(name)
-
     fun createStandard(standard: RoomStandardEntity): RoomStandardEntity {
         require(!roomStandardRepository.existsByName(standard.name)) {
             "Room standard with name ${standard.name} already exists"
@@ -77,10 +75,11 @@ class RoomService(
     }
 
     fun deleteStandard(id: String) {
-        require((roomStandardRepository.existsById(id))) {
-            throw IllegalArgumentException("Room standard with id $id not found")
-        }
-        val roomsUsingStandard = roomRepository.getRoomStandardByNumber(id)
+        val standard = roomStandardRepository.findById(id)
+            .orElseThrow { IllegalArgumentException("Room standard with id $id not found") }
+
+        val roomsUsingStandard = roomRepository.findAllByStandard(standard)
+
         require(roomsUsingStandard.isEmpty()) {
             throw IllegalArgumentException("Cannot delete room standard: ${roomsUsingStandard.size} room(s) are using this standard")
         }
@@ -88,7 +87,12 @@ class RoomService(
         roomStandardRepository.deleteById(id)
     }
 
-    fun getRoomsUsingStandard(id: String): List<RoomEntity> = roomRepository.getRoomStandardByNumber(id)
+    fun getRoomsUsingStandard(id: String): List<RoomEntity> {
+        val standard = roomStandardRepository.findById(id)
+            .orElseThrow { IllegalArgumentException("Room standard with id $id not found") }
+
+        return roomRepository.findAllByStandard(standard)
+    }
 
     fun findRoomByNumber(number: String): RoomEntity =
         roomRepository.findByNumber(number)

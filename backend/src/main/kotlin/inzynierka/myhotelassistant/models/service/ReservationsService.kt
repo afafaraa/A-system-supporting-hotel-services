@@ -49,14 +49,16 @@ class ReservationsService(
     private fun transformToDTO(reservation: ReservationEntity): ReservationsController.ReservationDTO {
         val guest = userService.getUserNameAndEmailById(reservation.guestId)
         val standard =
-            roomRepository.getRoomStandardByNumber(reservation.roomNumber)
+            roomRepository.findRoomStandardByNumber(reservation.roomNumber)
                 ?: throw IllegalArgumentException("Room with number ${reservation.roomNumber} not found")
-        return ReservationsController.ReservationDTO(
-            reservation,
-            "${guest?.name} ${guest?.surname}",
-            guest?.email,
-            standard.toString(),
-        )
+        return standard.name.let {
+            ReservationsController.ReservationDTO(
+                reservation,
+                "${guest?.name} ${guest?.surname}",
+                guest?.email,
+                it,
+            )
+        }
     }
 
     fun createReservation(reservationDTO: ReservationsController.ReservationCreateDTO): ReservationEntity {

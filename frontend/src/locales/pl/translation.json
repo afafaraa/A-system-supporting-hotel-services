@@ -192,7 +192,8 @@
         "Confirmed": "Potwierdzona",
         "Pending": "Oczekująca",
         "Cancelled": "Anulowana",
-        "REJECTED": "Odrzucona"
+        "REJECTED": "Odrzucona",
+        "COMPLETED": "Zakończona"
       }
     },
     "manager": {
@@ -201,7 +202,8 @@
           "services": "Usługi",
           "management": "Zarządzanie Hotelem",
           "employees": "Pracownicy",
-          "statistics": "Statystyki"
+          "statistics": "Statystyki",
+          "calendar": "Kalendarz"
       },
       "guests": {
         "title": "Zarządzanie gośćmi",
@@ -417,7 +419,9 @@
         "issue": "Zgłoszenie",
         "assignTo": "Przydziel do",
         "reportedDate": "Zgłoszone w",
-        "close": "Zamknij zgłoszenie"
+        "close": "Zamknij zgłoszenie",
+        "modalTitle": "Tytuł Zgłoszenia",
+        "list": "Lista usterek"
       }
     },
     "employee": {
@@ -702,7 +706,7 @@
     "approve": "Zatwierdź",
     "reject": "Odrzuć",
     "back": "Cofnij",
-    "update": "Aktualizuj Pracownika",
+    "update": "Aktualizuj",
     "promote": "Awansuj",
     "remove": "Usuń",
     "edit": "Edytuj",
