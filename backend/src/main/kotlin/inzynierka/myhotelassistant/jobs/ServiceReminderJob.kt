@@ -29,7 +29,6 @@ class ServiceReminderJob(
         val now = LocalDateTime.now()
         val oneHourLater = now.plusHours(1)
 
-        // Find schedules that are active or requested and starting within the next hour
         val upcomingSchedules = scheduleRepository.findByStatusInAndServiceDateBetween(
             statuses = listOf(OrderStatus.ACTIVE, OrderStatus.REQUESTED),
             startDate = now,
@@ -39,7 +38,6 @@ class ServiceReminderJob(
         logger.info("Found ${upcomingSchedules.size} upcoming services")
 
         upcomingSchedules.forEach { schedule ->
-            // Skip if schedule has no id, already notified or no guest assigned
             if (schedule.id == null || schedule.id in notifiedSchedules || schedule.guestId == null) {
                 return@forEach
             }
@@ -58,7 +56,6 @@ class ServiceReminderJob(
                     message = message
                 )
 
-                // Mark as notified
                 schedule.id?.let { notifiedSchedules.add(it) }
                 logger.info("Sent reminder notification for schedule ${schedule.id} to guest ${schedule.guestId}")
             } catch (e: Exception) {
@@ -66,7 +63,6 @@ class ServiceReminderJob(
             }
         }
 
-        // Clean up notified schedules that are in the past
         cleanupOldNotifications(now)
     }
 
@@ -80,7 +76,6 @@ class ServiceReminderJob(
                     iterator.remove()
                 }
             } catch (e: Exception) {
-                // If schedule not found, remove from set
                 iterator.remove()
             }
         }

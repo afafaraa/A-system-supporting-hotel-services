@@ -8,7 +8,6 @@ import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.repositories.NotificationRepository
 import inzynierka.myhotelassistant.services.UserService
 import inzynierka.myhotelassistant.utils.email.EmailSender
-import org.slf4j.LoggerFactory
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 import java.security.Principal
@@ -21,7 +20,6 @@ class NotificationService(
     private val notificationRepository: NotificationRepository,
     private val emailSender: EmailSender,
 ) {
-    private val logger = LoggerFactory.getLogger(NotificationService::class.java)
 
     fun getNotificationsOfGivenUser(
         username: String,
@@ -107,7 +105,7 @@ class NotificationService(
                 message = message
             )
         } catch (e: Exception) {
-            logger.error("Failed to send email notification to user $userId: ${'$'}{e.message}", e)
+            println("Failed to send email notification to user $userId: ${'$'}{e.message}")
         }
     }
 
