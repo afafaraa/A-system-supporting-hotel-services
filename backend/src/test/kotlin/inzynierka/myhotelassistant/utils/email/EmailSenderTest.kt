@@ -29,7 +29,7 @@ class EmailSenderTest {
             AppProperties().apply {
                 frontend.url = "http://localhost:5173"
             }
-        emailSender = EmailSender(mailSender, appProperties, "test@example.com")
+        emailSender = EmailSender(mailSender, appProperties, null)
     }
 
     @Test

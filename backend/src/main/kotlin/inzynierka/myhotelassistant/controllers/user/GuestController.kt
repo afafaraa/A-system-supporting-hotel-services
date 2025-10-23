@@ -6,7 +6,6 @@ import inzynierka.myhotelassistant.models.reservation.ReservationEntity
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.service.ReservationsService
 import inzynierka.myhotelassistant.models.user.UserEntity
-import inzynierka.myhotelassistant.repositories.UserRepository
 import inzynierka.myhotelassistant.services.OrderService
 import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
@@ -173,8 +172,8 @@ class GuestController(
     private fun findAllByStatusAndUserId(
         statusList: List<OrderStatus>,
         userId: String,
-    ): List<ScheduleForPastAndRequestedServicesResponse> {
-        return scheduleService
+    ): List<ScheduleForPastAndRequestedServicesResponse> =
+        scheduleService
             .findByGuestIdAndStatusIn(userId, statusList)
             .mapNotNull { scheduleItem ->
                 val assignedEmployee = userService.findById(scheduleItem.employeeId)
@@ -198,5 +197,4 @@ class GuestController(
                     }
                 }
             }
-    }
 }
