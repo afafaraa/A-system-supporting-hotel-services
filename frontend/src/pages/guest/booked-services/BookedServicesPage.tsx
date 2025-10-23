@@ -52,6 +52,7 @@ function BookedServicesPage() {
   const fetchRequestedServices = useCallback(async () => {
     try {
       if (user) {
+        console.log(user)
         const response = await axiosAuthApi.get(
           `/guest/order/get/all/${user.username}`
         );

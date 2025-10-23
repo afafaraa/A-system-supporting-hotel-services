@@ -33,7 +33,6 @@ class GuestController(
     private val orderService: OrderService,
     private val reservationsService: ReservationsService,
     private val notificationScheduler: NotificationScheduler,
-    private val userRepository: UserRepository,
 ) {
     data class EmployeeNameResponse(
         val name: String,
@@ -175,12 +174,8 @@ class GuestController(
         statusList: List<OrderStatus>,
         userId: String,
     ): List<ScheduleForPastAndRequestedServicesResponse> {
-        val guestUsername =
-            userRepository.findByUsername(userId)?.username
-                ?: throw HttpException.EntityNotFoundException("Guest username not found for id: $userId")
-
         return scheduleService
-            .findByGuestIdAndStatusIn(guestUsername, statusList)
+            .findByGuestIdAndStatusIn(userId, statusList)
             .mapNotNull { scheduleItem ->
                 val assignedEmployee = userService.findById(scheduleItem.employeeId)
                 val serviceOpt = serviceService.findById(scheduleItem.serviceId)
