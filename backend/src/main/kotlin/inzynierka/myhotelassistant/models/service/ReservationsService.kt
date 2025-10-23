@@ -7,6 +7,7 @@ import inzynierka.myhotelassistant.models.reservation.ReservationStatus
 import inzynierka.myhotelassistant.repositories.ReservationsRepository
 import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.services.UserService
+import inzynierka.myhotelassistant.services.notifications.NotificationScheduler
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -17,6 +18,7 @@ class ReservationsService(
     private val reservationsRepository: ReservationsRepository,
     private val userService: UserService,
     private val roomRepository: RoomRepository,
+    private val notificationScheduler: NotificationScheduler,
 ) {
     private val possibleCancellationStatus = listOf(ReservationStatus.REQUESTED, ReservationStatus.CONFIRMED)
 
@@ -83,7 +85,9 @@ class ReservationsService(
                 reservationPrice = reservationPrice,
                 specialRequests = reservationDTO.specialRequests,
             )
-        return reservationsRepository.save(reservation)
+        val savedReservation = reservationsRepository.save(reservation)
+        notificationScheduler.notifyGuestOnSuccessfulReservation(savedReservation)
+        return savedReservation
     }
 
     fun findMyReservationsAsGuestDTO(guestUsername: String): List<ReservationsController.ReservationGuestDTO> {
@@ -121,8 +125,10 @@ class ReservationsService(
         if (reservation.status !in possibleCancellationStatus) {
             throw IllegalArgumentException("Only reservations with status $possibleCancellationStatus can be cancelled")
         }
+        val oldStatus = reservation.status
         reservation.status = ReservationStatus.CANCELED
-        reservationsRepository.save(reservation)
+        val savedReservation = reservationsRepository.save(reservation)
+        notificationScheduler.notifyGuestOnReservationStatusChange(savedReservation, oldStatus, ReservationStatus.CANCELED)
     }
 
     fun rejectGuestReservation(
@@ -133,9 +139,11 @@ class ReservationsService(
         if (reservation.status != ReservationStatus.REQUESTED) {
             throw IllegalArgumentException("Only reservations with status REQUESTED can be rejected")
         }
+        val oldStatus = reservation.status
         reservation.status = ReservationStatus.REJECTED
         reservation.rejectReason = reason
-        reservationsRepository.save(reservation)
+        val savedReservation = reservationsRepository.save(reservation)
+        notificationScheduler.notifyGuestOnReservationStatusChange(savedReservation, oldStatus, ReservationStatus.REJECTED)
     }
 
     fun approveGuestReservation(reservationId: String) {
@@ -143,8 +151,10 @@ class ReservationsService(
         if (reservation.status != ReservationStatus.REQUESTED) {
             throw IllegalArgumentException("Only reservations with status REQUESTED can be approved")
         }
+        val oldStatus = reservation.status
         reservation.status = ReservationStatus.CONFIRMED
-        reservationsRepository.save(reservation)
+        val savedReservation = reservationsRepository.save(reservation)
+        notificationScheduler.notifyGuestOnReservationStatusChange(savedReservation, oldStatus, ReservationStatus.CONFIRMED)
     }
 
     fun checkInGuestReservation(
@@ -155,9 +165,12 @@ class ReservationsService(
         if (reservation.status != ReservationStatus.CONFIRMED) {
             throw IllegalArgumentException("Only reservations with status CONFIRMED can be checked in")
         }
+        val oldStatus = reservation.status
         reservation.status = ReservationStatus.CHECKED_IN
         reservation.paid = paid
-        return transformToDTO(reservationsRepository.save(reservation))
+        val savedReservation = reservationsRepository.save(reservation)
+        notificationScheduler.notifyGuestOnReservationStatusChange(savedReservation, oldStatus, ReservationStatus.CHECKED_IN)
+        return transformToDTO(savedReservation)
     }
 
     fun checkOutGuestReservation(reservationId: String): ReservationsController.ReservationDTO {
@@ -165,8 +178,11 @@ class ReservationsService(
         if (reservation.status != ReservationStatus.CHECKED_IN) {
             throw IllegalArgumentException("Only reservations with status CHECKED_IN can be checked out")
         }
+        val oldStatus = reservation.status
         reservation.status = ReservationStatus.COMPLETED
-        return transformToDTO(reservationsRepository.save(reservation))
+        val savedReservation = reservationsRepository.save(reservation)
+        notificationScheduler.notifyGuestOnReservationStatusChange(savedReservation, oldStatus, ReservationStatus.COMPLETED)
+        return transformToDTO(savedReservation)
     }
 
     fun calculateReservationPrice(
@@ -281,6 +297,7 @@ class ReservationsService(
             )
         reservation.status = if (dto.withCheckIn) ReservationStatus.CHECKED_IN else ReservationStatus.CONFIRMED
         val savedReservation = reservationsRepository.save(reservation)
+        notificationScheduler.notifyGuestOnSuccessfulReservation(savedReservation)
         val refreshedReservation = findByIdOrThrow(savedReservation.id!!)
 
         return ReservationsController.ReservationCreateWithNewGuestResponseDTO(

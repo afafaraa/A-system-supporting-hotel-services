@@ -1,6 +1,8 @@
 package inzynierka.myhotelassistant.services.notifications
 
 import inzynierka.myhotelassistant.models.notification.NotificationVariant
+import inzynierka.myhotelassistant.models.reservation.ReservationEntity
+import inzynierka.myhotelassistant.models.reservation.ReservationStatus
 import inzynierka.myhotelassistant.models.schedule.CancellationReason
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
@@ -14,6 +16,7 @@ class NotificationScheduler(
     private val serviceService: ServiceService,
 ) {
     private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+    private val dateOnlyFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 
     fun notifyGuestOnSuccessfulOrder(schedule: ScheduleEntity) {
         val guestId = schedule.guestId ?: return
@@ -105,4 +108,84 @@ class NotificationScheduler(
             CancellationReason.OTHER -> "Other"
             CancellationReason.UNKNOWN -> "Unknown"
         }
+
+    fun notifyGuestOnSuccessfulReservation(reservation: ReservationEntity) {
+        val title = "Reservation Confirmed"
+        val message =
+            "Your reservation for room ${reservation.roomNumber} from " +
+                "${reservation.checkIn.format(dateOnlyFormatter)} to ${reservation.checkOut.format(dateOnlyFormatter)} " +
+                "has been successfully created."
+
+        notificationService.addNotificationToUser(
+            userId = reservation.guestId,
+            title = title,
+            variant = NotificationVariant.CONFIRMATION,
+            message = message,
+        )
+    }
+
+    fun notifyGuestOnReservationStatusChange(
+        reservation: ReservationEntity,
+        oldStatus: ReservationStatus,
+        newStatus: ReservationStatus,
+    ) {
+        val (title, variant, message) = getReservationNotificationContent(reservation, oldStatus, newStatus)
+
+        notificationService.addNotificationToUser(
+            userId = reservation.guestId,
+            title = title,
+            variant = variant,
+            message = message,
+        )
+    }
+
+    private fun getReservationNotificationContent(
+        reservation: ReservationEntity,
+        oldStatus: ReservationStatus,
+        newStatus: ReservationStatus,
+    ): Triple<String, NotificationVariant, String> {
+        val checkInDate = reservation.checkIn.format(dateOnlyFormatter)
+        val checkOutDate = reservation.checkOut.format(dateOnlyFormatter)
+
+        return when (newStatus) {
+            ReservationStatus.CONFIRMED ->
+                Triple(
+                    "Reservation Approved",
+                    NotificationVariant.CONFIRMATION,
+                    "Your reservation for room ${reservation.roomNumber} from $checkInDate to $checkOutDate has been approved.",
+                )
+            ReservationStatus.REJECTED -> {
+                val reason = reservation.rejectReason ?: "No reason provided"
+                Triple(
+                    "Reservation Rejected",
+                    NotificationVariant.ALERT,
+                    "Your reservation for room ${reservation.roomNumber} has been rejected. Reason: $reason",
+                )
+            }
+            ReservationStatus.CANCELED ->
+                Triple(
+                    "Reservation Cancelled",
+                    NotificationVariant.NOTICE,
+                    "Your reservation for room ${reservation.roomNumber} from $checkInDate to $checkOutDate has been cancelled.",
+                )
+            ReservationStatus.CHECKED_IN ->
+                Triple(
+                    "Check-In Complete",
+                    NotificationVariant.CONFIRMATION,
+                    "You have successfully checked in to room ${reservation.roomNumber}. Enjoy your stay!",
+                )
+            ReservationStatus.COMPLETED ->
+                Triple(
+                    "Check-Out Complete",
+                    NotificationVariant.NOTICE,
+                    "You have successfully checked out from room ${reservation.roomNumber}. Thank you for staying with us!",
+                )
+            else ->
+                Triple(
+                    "Reservation Status Update",
+                    NotificationVariant.NOTICE,
+                    "Your reservation for room ${reservation.roomNumber} status has changed to ${newStatus.name}.",
+                )
+        }
+    }
 }
