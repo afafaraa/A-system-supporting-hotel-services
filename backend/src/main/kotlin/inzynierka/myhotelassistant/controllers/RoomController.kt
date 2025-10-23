@@ -2,7 +2,9 @@ package inzynierka.myhotelassistant.controllers
 
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.models.room.RoomStandardEntity
+import inzynierka.myhotelassistant.models.service.ReservationsService
 import inzynierka.myhotelassistant.services.RoomService
+import org.springframework.context.annotation.Lazy
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -10,11 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
-import inzynierka.myhotelassistant.models.service.ReservationsService
-import inzynierka.myhotelassistant.services.RoomService
-import org.springframework.context.annotation.Lazy
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -43,11 +40,6 @@ class RoomController(
         @RequestParam("from") from: LocalDate,
         @RequestParam("to") to: LocalDate,
     ): List<RoomEntity> = roomService.findAllAvailableRoomsForDate(from, to)
-
-    @GetMapping("/{number}")
-    fun getRoomByNumber(
-        @PathVariable number: String,
-    ): RoomEntity? = roomService.findRoomByNumber(number)
 
     @PostMapping
     fun createRoom(
@@ -102,6 +94,7 @@ class RoomController(
     } catch (e: IllegalArgumentException) {
         throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
     }
+
     @GetMapping("/by/number/{id}")
     fun getRoomByNumber(
         @PathVariable("id") id: String,

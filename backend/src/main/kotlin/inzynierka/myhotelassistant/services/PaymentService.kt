@@ -47,9 +47,11 @@ class PaymentService(
                             .between(checkIn, checkOut)
                             .toInt()
                             .coerceAtLeast(1)
-                    val totalPrice = room.pricePerNight * nights
-                    val priceCents = (totalPrice * 100).toInt()
-                    totalAmountCents += priceCents
+                    val totalPrice = room.pricePerNight?.times(nights)
+                    val priceCents = (totalPrice?.times(100))?.toInt()
+                    if (priceCents != null) {
+                        totalAmountCents += priceCents
+                    }
 
                     itemDetails.add(
                         mapOf(
@@ -57,9 +59,9 @@ class PaymentService(
                             "type" to "RESERVATION",
                             "name" to "Room ${room.number}",
                             "nights" to nights,
-                            "pricePerNight" to room.pricePerNight,
-                            "price" to totalPrice,
-                            "priceCents" to priceCents,
+                            "pricePerNight" to (room.pricePerNight ?: 0.0),
+                            "price" to (totalPrice ?: 0.0),
+                            "priceCents" to (priceCents ?: 0),
                         ),
                     )
                 }

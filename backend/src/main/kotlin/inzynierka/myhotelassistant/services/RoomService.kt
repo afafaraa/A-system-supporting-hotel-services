@@ -28,8 +28,6 @@ class RoomService(
             .filter { room -> reservationsService.isRoomAvailable(room.number, from, to) }
     }
 
-    fun findRoomByNumber(number: String): RoomEntity? = roomRepository.findByNumber(number)
-
     fun createRoom(room: RoomEntity): RoomEntity {
         require(!(roomRepository.existsById(room.number))) {
             "room with id ${room.number} already exists"
@@ -82,7 +80,7 @@ class RoomService(
         require((roomStandardRepository.existsById(id))) {
             throw IllegalArgumentException("Room standard with id $id not found")
         }
-        val roomsUsingStandard = roomRepository.findByStandardId(id)
+        val roomsUsingStandard = roomRepository.getRoomStandardByNumber(id)
         require(roomsUsingStandard.isEmpty()) {
             throw IllegalArgumentException("Cannot delete room standard: ${roomsUsingStandard.size} room(s) are using this standard")
         }
@@ -90,8 +88,8 @@ class RoomService(
         roomStandardRepository.deleteById(id)
     }
 
-    fun getRoomsUsingStandard(id: String): List<RoomEntity> = roomRepository.findByStandardId(id)
-    
+    fun getRoomsUsingStandard(id: String): List<RoomEntity> = roomRepository.getRoomStandardByNumber(id)
+
     fun findRoomByNumber(number: String): RoomEntity =
         roomRepository.findByNumber(number)
             ?: throw NoSuchElementException("Room with number $number not found")

@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository
 interface RoomRepository : MongoRepository<RoomEntity, String> {
     fun findByNumber(number: String): RoomEntity?
 
-    fun findByStandardId(standardId: String): List<RoomEntity>
+    fun getRoomStandardByNumber(standardId: String): List<RoomEntity>
 }

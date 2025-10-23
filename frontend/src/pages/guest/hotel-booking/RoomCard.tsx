@@ -118,7 +118,9 @@ export default function RoomCard({
             {room.amenities &&
               Array.isArray(room.amenities) &&
               room.amenities.map((amenity, idx) => {
-                const formattedAmenity = amenity.label
+                if (!amenity || !amenity.key) return null;
+                const base = amenity.label || amenity.key;
+                const formattedAmenity = base
                   .replace(/_/g, ' ')
                   .toLowerCase()
                   .replace(/^\w/, c => c.toUpperCase());
