@@ -205,9 +205,6 @@
         "REQUESTED": "Oczekująca",
         "CONFIRMED": "Potwierdzona",
         "CANCELLED": "Anulowana",
-        "Confirmed": "Potwierdzona",
-        "Pending": "Oczekująca",
-        "Cancelled": "Anulowana"
       }
     },
     "manager": {
