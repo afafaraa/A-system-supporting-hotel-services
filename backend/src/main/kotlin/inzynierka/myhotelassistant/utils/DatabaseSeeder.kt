@@ -70,7 +70,7 @@ class DatabaseSeeder(
             addTestGuests()
             addServices()
             schedulesGenerator.createSchedules()
-            addOrders()
+//            addOrders()
             addManager()
             addRatings()
 //            addTestNotifications()
