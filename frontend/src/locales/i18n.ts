@@ -1,6 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import {enUS, Locale, pl} from "date-fns/locale";
 
 import translationEN from './en/translation.json';
 import translationPL from './pl/translation.json';
@@ -26,4 +27,13 @@ i18n
     interpolation: {
       escapeValue: false,
     },
-  });
+  })
+  .then(() => null);
+
+
+const localeMap: Record<string, Locale> = {
+  "pl-PL": pl,
+  "en-US": enUS,
+} as const;
+
+export const getDateFnsLocale = (locale: string): Locale => localeMap[locale] || enUS;

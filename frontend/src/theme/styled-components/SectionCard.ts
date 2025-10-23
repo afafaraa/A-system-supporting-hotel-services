@@ -20,6 +20,7 @@ export const SectionCard = styled(Box, {
     fontSize: "14px",
     cursor: clickable ? "pointer" : "default",
     transition: clickable ? theme.transitions.create(['box-shadow', 'transform']) : undefined,
+    overflow: "hidden",
     "&:hover": {
       boxShadow: clickable && theme.shadows[3],
       transform: clickable && "translateY(-2px)",

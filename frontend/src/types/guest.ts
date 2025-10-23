@@ -12,7 +12,8 @@ export type Guest = {
         checkInDate: Date,
         checkOutDate: Date,
         bill: number,
-    }
+    },
+  active?: boolean,
 }
 
 export type GuestStatus = "CHECKED_IN" | "CHECKED_OUT" | "UPCOMING";

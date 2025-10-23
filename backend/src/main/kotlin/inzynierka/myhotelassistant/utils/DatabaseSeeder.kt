@@ -13,6 +13,7 @@ import inzynierka.myhotelassistant.models.service.RatingEntity
 import inzynierka.myhotelassistant.models.service.ReservationsService
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.models.service.ServiceType
+import inzynierka.myhotelassistant.models.service.ServiceTypeAttributes
 import inzynierka.myhotelassistant.models.service.WeekdayHour
 import inzynierka.myhotelassistant.models.user.Department
 import inzynierka.myhotelassistant.models.user.EmployeeData
@@ -102,6 +103,8 @@ class DatabaseSeeder(
                     email = "test_user@user.test",
                     name = "Test",
                     surname = "User",
+                    active = true,
+                    emailAuthorized = true,
                     guestData =
                         GuestData(
                             roomNumber = "002",
@@ -121,6 +124,8 @@ class DatabaseSeeder(
                     role = Role.ADMIN,
                     email = "test_admin@admin.test",
                     name = "Test",
+                    active = true,
+                    emailAuthorized = true,
                     surname = "Admin",
                 ),
             )
@@ -297,6 +302,8 @@ class DatabaseSeeder(
                     password = passwordEncoder.encode("password"),
                     email = "employee1@gmail.com",
                     name = "Joe",
+                    active = true,
+                    emailAuthorized = true,
                     surname = "Doe",
                     employeeData = EmployeeData(Department.HOUSEKEEPING, listOf(Sector.SECURITY)),
                 ),
@@ -311,6 +318,8 @@ class DatabaseSeeder(
                     email = "ann.smith@mymail.com",
                     name = "Anna",
                     surname = "Smith",
+                    active = true,
+                    emailAuthorized = true,
                     employeeData = EmployeeData(Department.RECEPTION, listOf(Sector.SPA_AND_WELLNESS)),
                 ),
             )
@@ -323,6 +332,8 @@ class DatabaseSeeder(
                     password = passwordEncoder.encode("easy"),
                     email = "c.brown@yahoo.com",
                     name = "Charlie",
+                    active = true,
+                    emailAuthorized = true,
                     surname = "Brown",
                     employeeData = EmployeeData(Department.FOOD_AND_BEVERAGE, listOf(Sector.BREAKFAST, Sector.LUNCH, Sector.DINNER)),
                 ),
@@ -339,6 +350,8 @@ class DatabaseSeeder(
                     username = "guest1",
                     password = passwordEncoder.encode("guest1"),
                     name = "Alice",
+                    active = true,
+                    emailAuthorized = true,
                     surname = "Johnson",
                     guestData =
                         GuestData(
@@ -358,6 +371,8 @@ class DatabaseSeeder(
                     password = passwordEncoder.encode("guest2"),
                     name = "Bob",
                     surname = "Smith",
+                    active = true,
+                    emailAuthorized = true,
                     guestData =
                         GuestData(
                             roomNumber = "002",
@@ -376,6 +391,8 @@ class DatabaseSeeder(
                     password = passwordEncoder.encode("guest3"),
                     name = "Charlie",
                     surname = "Brown",
+                    active = true,
+                    emailAuthorized = true,
                     guestData =
                         GuestData(
                             roomNumber = "316",
@@ -409,6 +426,7 @@ class DatabaseSeeder(
                         description = serviceData.description,
                         price = (5 + random.nextDouble(5.0, 50.0)).let { (it * 100).roundToInt() / 100.0 },
                         type = serviceData.serviceType,
+                        attributes = serviceData.attributes,
                         disabled = false,
                         duration = duration,
                         maxAvailable = random.nextInt(1, 10),
@@ -506,6 +524,8 @@ class DatabaseSeeder(
                     password = passwordEncoder.encode("password"),
                     email = "manager@gmail.com",
                     name = "Jim",
+                    active = true,
+                    emailAuthorized = true,
                     surname = "Brown",
                     employeeData = EmployeeData(Department.MANAGEMENT),
                 ),
@@ -567,40 +587,38 @@ class DatabaseSeeder(
     }
 
     private fun createReservations() {
+        if (reservationsService.isAnyExist()) return
         val guests = userRepo.findByRole(Role.GUEST)
         val rooms = roomRepo.findAll()
-        if (reservationsService.isAnyExist()) return
-        guests.plus(guests).forEach { guest ->
-            val room = rooms.random()
-            val now = LocalDate.now()
-            val checkIn = now.plus(Random.nextInt(-20, 30).toLong(), ChronoUnit.DAYS)
-            val checkOut = checkIn.plus(Random.nextInt(1, 14).toLong(), ChronoUnit.DAYS)
-            if (reservationsService.isRoomAvailable(room.number, checkIn, checkOut)) {
-                val reservation =
-                    ReservationEntity(
-                        roomNumber = room.number,
-                        guestId = guest.id!!,
-                        guestsCount = Random.nextInt(1, room.capacity + 1),
-                        checkIn = checkIn,
-                        checkOut = checkOut,
-                        reservationPrice =
-                            room.pricePerNight?.times(ChronoUnit.DAYS.between(checkIn, checkOut))
-                                ?: room.standard.basePrice.times(ChronoUnit.DAYS.between(checkIn, checkOut)),
+        repeat(8) {
+            guests.forEach { guest ->
+                val now = LocalDate.now()
+                val checkIn = now.plusDays(Random.nextInt(-4, 2).toLong())
+                val checkOut = checkIn.plusDays(Random.nextInt(1, 4).toLong())
+                val room = rooms.shuffled().find { room -> reservationsService.isRoomAvailable(room.number, checkIn, checkOut) }
+                if (room != null) {
+                    val reservation =
+                        ReservationEntity(
+                            roomNumber = room.number,
+                            guestId = guest.id!!,
+                            guestsCount = Random.nextInt(1, room.capacity + 1),
+                            checkIn = checkIn,
+                            checkOut = checkOut,
+                            reservationPrice = room.pricePerNight * ChronoUnit.DAYS.between(checkIn, checkOut),
+                        )
+                    reservation.status =
+                        if (checkOut.isBefore(now)) {
+                            listOf(ReservationStatus.COMPLETED, ReservationStatus.CANCELED, ReservationStatus.REJECTED).random()
+                        } else {
+                            listOf(ReservationStatus.REQUESTED, ReservationStatus.CONFIRMED, ReservationStatus.CHECKED_IN).random()
+                        }
+                    reservationsService.save(reservation)
+                    logger.info("Placed reservation for guest '${guest.username}' in room '${room.number}'")
+                } else {
+                    logger.warn(
+                        "Cannot place reservation for guest '${guest.username}' because there wasn't any available room.",
                     )
-                reservation.status =
-                    if (checkOut.isBefore(now)) {
-                        listOf(ReservationStatus.COMPLETED, ReservationStatus.CANCELED, ReservationStatus.REJECTED).random()
-                    } else if (checkIn.isAfter(now)) {
-                        ReservationStatus.REQUESTED
-                    } else {
-                        ReservationStatus.CONFIRMED
-                    }
-                reservationsService.save(reservation)
-                logger.info("Placed reservation for guest '${guest.username}' in room '${room.number}'")
-            } else {
-                logger.warn(
-                    "Cannot place reservation for guest '${guest.username}' in room '${room.number}' because the room is not available.",
-                )
+                }
             }
         }
     }
@@ -610,62 +628,120 @@ class DatabaseSeeder(
         val description: String,
         val imageUrl: String,
         val serviceType: ServiceType,
+        val attributes: ServiceTypeAttributes? = null,
     )
 
     val serviceDataList =
         listOf(
             ServiceData(
+                "Food delivery from menu",
+                "Order delicious meals and beverages from our extensive menu, delivered straight to your room.",
+                "https://i.pinimg.com/1200x/b5/1e/c0/b51ec055f32d175f1c1ae0db5cdaf4d0.jpg",
+                ServiceType.SELECTION,
+                ServiceTypeAttributes.Selection(
+                    multipleSelection = true,
+                    options =
+                        linkedMapOf(
+                            "soups" to
+                                listOf(
+                                    ServiceTypeAttributes.OptionObject(
+                                        label = "Tomato Soup",
+                                        description = "Fresh tomatoes blended into a creamy soup.",
+                                        price = 5.99,
+                                        image = "https://i.pinimg.com/1200x/dc/88/5e/dc885e424e2cc36080e3ffaee09b6dfb.jpg",
+                                    ),
+                                    ServiceTypeAttributes.OptionObject(
+                                        label = "Chicken Noodle Soup",
+                                        description = "Hearty chicken broth with noodles and vegetables.",
+                                        price = 6.99,
+                                        image = "https://i.pinimg.com/1200x/22/80/7c/22807cd7d1f29e5894b5ca68a557a8c1.jpg",
+                                    ),
+                                ),
+                            "main_courses" to
+                                listOf(
+                                    ServiceTypeAttributes.OptionObject(
+                                        label = "Grilled Salmon",
+                                        description = "Fresh salmon fillet grilled to perfection, served with vegetables.",
+                                        price = 15.99,
+                                        image = "https://i.pinimg.com/1200x/a8/ac/21/a8ac21fd838e87e55e23589a826ecfff.jpg",
+                                    ),
+                                    ServiceTypeAttributes.OptionObject(
+                                        label = "Steak",
+                                        description = "Juicy steak cooked to your liking, served with fries and salad.",
+                                        price = 18.99,
+                                        image = "https://i.pinimg.com/736x/fa/74/a1/fa74a1051787c3d9ce707215be6eedd8.jpg",
+                                    ),
+                                ),
+                            "desserts" to
+                                listOf(
+                                    ServiceTypeAttributes.OptionObject(
+                                        label = "Cheesecake",
+                                        description = "Creamy cheesecake with a graham cracker crust.",
+                                        price = 6.49,
+                                        image = "https://i.pinimg.com/736x/93/09/62/930962eed0b30e9e861d5e097dfdfd14.jpg",
+                                    ),
+                                    ServiceTypeAttributes.OptionObject(
+                                        label = "Chocolate Lava Cake",
+                                        description = "Warm chocolate cake with a gooey center, served with vanilla ice cream.",
+                                        price = 6.99,
+                                        image = "https://i.pinimg.com/736x/ef/bc/8e/efbc8e27d543d6fa0c0559967c104896.jpg",
+                                    ),
+                                ),
+                        ),
+                ),
+            ),
+            ServiceData(
                 "Room cleaning",
                 "Thorough cleaning of your room, including dusting, vacuuming, and sanitizing surfaces.",
-                "https://i.pinimg.com/736x/b0/9b/77/b09b77d8e801fac4a0d2baa99dbff57b.jpg",
+                "http://localhost:8080/Coffee.jpg",
                 ServiceType.GENERAL_SERVICE,
             ),
             ServiceData(
                 "Laundry",
                 "Professional washing, drying, and folding of your clothes using eco-friendly detergents.",
-                "https://i.pinimg.com/736x/9d/42/6d/9d426da81011154cfa1e7aa01782c1ca.jpg",
+                "http://localhost:8080/Coffee.jpg",
                 ServiceType.GENERAL_SERVICE,
             ),
             ServiceData(
                 "Spa access",
                 "Relax in our luxury spa with sauna, jacuzzi, and massage services.",
-                "https://i.pinimg.com/736x/9f/88/01/9f880100ad711d2173157e9c9452ec19.jpg",
+                "http://localhost:8080/Coffee.jpg",
                 ServiceType.PLACE_RESERVATION,
             ),
             ServiceData(
                 "Gym session",
                 "Access to a fully equipped fitness center with personal trainers available.",
-                "https://i.pinimg.com/736x/3f/1b/c7/3f1bc780ba6582314b5e71b7a46efe1e.jpg",
+                "http://localhost:8080/Coffee.jpg",
                 ServiceType.PLACE_RESERVATION,
             ),
             ServiceData(
                 "Airport shuttle",
                 "Convenient transport to and from the airport with comfortable seating and AC.",
-                "https://i.pinimg.com/736x/69/56/cb/6956cbcb567a3206dd01d2e00848d21a.jpg",
+                "http://localhost:8080/Coffee.jpg",
                 ServiceType.GENERAL_SERVICE,
             ),
             ServiceData(
                 "Breakfast delivery",
                 "Enjoy a fresh breakfast delivered straight to your room every morning.",
-                "https://i.pinimg.com/736x/4a/d0/c7/4ad0c71087dfaa177127736d6ff65898.jpg",
+                "http://localhost:8080/Coffee.jpg",
                 ServiceType.GENERAL_SERVICE,
             ),
             ServiceData(
                 "City tour",
                 "Guided tour of the city's main attractions, history, and local culture.",
-                "https://i.pinimg.com/736x/cb/ba/bb/cbbabb1bd63a761bad5fe0db8db7465c.jpg",
+                "http://localhost:8080/Coffee.jpg",
                 ServiceType.GENERAL_SERVICE,
             ),
             ServiceData(
                 "Valet parking",
                 "Fast and secure valet parking service available 24/7.",
-                "https://i.pinimg.com/736x/4b/4a/a6/4b4aa6644b4e9db0d14d202917b18c1b.jpg",
+                "http://localhost:8080/Coffee.jpg",
                 ServiceType.GENERAL_SERVICE,
             ),
             ServiceData(
                 "Tennis court",
                 "Access to our outdoor tennis court, including equipment rental.",
-                "https://i.pinimg.com/736x/f4/4c/44/f44c44e8fa684046a1133ad6ef97b93f.jpg",
+                "http://localhost:8080/Coffee.jpg",
                 ServiceType.PLACE_RESERVATION,
             ),
         )

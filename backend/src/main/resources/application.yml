@@ -29,7 +29,14 @@ spring:
 logging:
   level:
     inzynierka.myhotelassistant: DEBUG
+stripe:
+  api:
+    key: ${STRIPE_SECRET_KEY:paste_api_key_here}
 app:
+  security:
+    password-length: 10
+  frontend:
+    url: http://localhost:5173
   reservations:
     cancellation:
       days-before: 7

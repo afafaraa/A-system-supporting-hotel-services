@@ -28,7 +28,6 @@ function StatsPage() {
     const fetchStats = async () => {
       try {
         const res = await axiosAuthApi.get<ServiceStat[]>('management/stats');
-        console.log(res.data)
         setStats(res.data);
       } catch (err) {
         console.error('Failed to fetch stats ', err);

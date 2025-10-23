@@ -4,6 +4,7 @@ import inzynierka.myhotelassistant.dto.ServiceCreateRequestDTO
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.service.ServiceEntity
+import inzynierka.myhotelassistant.models.service.ServiceTypeAttributes
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.repositories.ServiceRepository
 import org.springframework.data.domain.Pageable
@@ -37,6 +38,17 @@ class ServiceService(
     fun getSchedulesByIds(ids: List<String>): Map<String, ServiceEntity> {
         if (ids.isEmpty()) return emptyMap()
         return serviceRepository.findAllById(ids).associateBy { it.id!! }
+    }
+
+    fun getServiceAttributes(serviceId: String): ServiceTypeAttributes? = serviceRepository.findServiceAttributesById(serviceId)?.attributes
+
+    fun updateServiceAttributes(
+        serviceId: String,
+        attributes: ServiceTypeAttributes,
+    ): ServiceEntity {
+        val service = findByIdOrThrow(serviceId)
+        val updated = service.copy(type = attributes.getType(), attributes = attributes)
+        return save(updated)
     }
 
     fun deleteService(
@@ -77,7 +89,8 @@ class ServiceService(
                 name = request.name,
                 description = request.description ?: existing.description,
                 price = request.price,
-                type = request.type,
+                type = request.attributes?.getType() ?: request.type,
+                attributes = request.attributes ?: existing.attributes,
                 duration = request.getDurationFromMinutes() ?: existing.duration,
                 maxAvailable = request.maxAvailable ?: existing.maxAvailable,
                 weekday = request.getWeekdayHours() ?: existing.weekday,

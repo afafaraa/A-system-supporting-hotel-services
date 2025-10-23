@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
 
 @RestController
 class AddUserController(
@@ -33,14 +34,8 @@ class AddUserController(
             message = "Room number must only contain digits and be 3-4 digits long",
         )
         val roomNumber: String,
-        @field:Pattern(
-            regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z",
-            message = "Check-in date must be in ISO 8601 format (e.g., 2025-04-21T14:00:00Z)",
-        ) val checkInDate: String,
-        @field:Pattern(
-            regexp = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z",
-            message = "Check-out date must be in ISO 8601 format (e.g., 2025-04-22T10:00:00Z)",
-        ) val checkOutDate: String,
+        val checkInDate: LocalDate,
+        val checkOutDate: LocalDate,
     )
 
     data class AddUserResponse(
@@ -52,7 +47,7 @@ class AddUserController(
     @ResponseStatus(HttpStatus.CREATED)
     fun addGuest(
         @RequestBody user: AddUserRequest,
-    ): AddUserResponse = userService.createAndSaveGuest(user)
+    ): AddUserResponse = userService.createAndSaveGuest(user).second
 
     data class NewAdminRequest(
         @field:Email(message = "Email should be valid")

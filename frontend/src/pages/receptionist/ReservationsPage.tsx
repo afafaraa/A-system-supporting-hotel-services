@@ -10,18 +10,15 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import CommentOutlinedIcon from '@mui/icons-material/CommentOutlined';
 import Box from "@mui/system/Box";
-import {
-  Button, Dialog,
-  Typography
-} from "@mui/material";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
-import RejectReservationDialog from "./RejectReservationDialog.tsx";
+import RejectReservationDialog from "../employee/RejectReservationDialog.tsx";
 import roomStandardIcon from "../../utils/roomStandardIcon.tsx";
 import Reservation from "../../types/reservation.ts";
 import Alert from "@mui/material/Alert";
-import Add from "@mui/icons-material/Add";
-import AddGuestPage from "../AddReservationPage.tsx";
+import Snackbar from "@mui/material/Snackbar";
 
 
 function ReservationsPage() {
@@ -32,22 +29,20 @@ function ReservationsPage() {
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
   const [pageLoading, setPageLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   useEffect(() => {
-    axiosAuthApi.get("/reservations/requested")
+    axiosAuthApi.get<Reservation[]>("/reservations/requested")
       .then(res => setReservations(res.data))
-      .catch(err => setError(err))
+      .catch(err => setError(err.message))
       .finally(() => setPageLoading(false));
   }, []);
 
   const handleApproveButton = (reservation: Reservation) => {
     setActionLoading(true);
     axiosAuthApi.patch(`/reservations/${reservation.id}/approve`)
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(err => console.error(err))
+      .then(() => setReservations(prev => prev.filter(r => r.id !== reservation.id)))
+      .catch(err => setActionError(err.message))
       .finally(() => setActionLoading(false));
   }
 
@@ -59,11 +54,11 @@ function ReservationsPage() {
     if (!selectedReservation) return;
     setActionLoading(true);
     axiosAuthApi.patch(`/reservations/${selectedReservation.id}/reject`, {reason: reason})
-      .then(res => {
-        console.log(res.data);
+      .then(() => {
+        setReservations(prev => prev.filter(r => r.id !== selectedReservation.id));
         setSelectedReservation(null);
       })
-      .catch(err => console.error(err))
+      .catch(err => setActionError(err.message))
       .finally(() => setActionLoading(false));
   }
 
@@ -76,15 +71,8 @@ function ReservationsPage() {
 
   return (
     <SectionCard>
-      <Stack direction="row" alignItems="flex-start" flexWrap="wrap" columnGap={2}>
-        <SectionTitle title={<><HotelIcon sx={{color: "primary.dark"}}/> {tc("title")}</>}
-                      subtitle={tc("subtitle")} />
-        <Box flexGrow={1} display="flex" justifyContent="flex-end">
-          <Button variant="contained" startIcon={<Add />}
-                  onClick={() => setModalOpen(true)}>{t("buttons.register")}</Button>
-        </Box>
-
-      </Stack>
+      <SectionTitle title={<><HotelIcon sx={{color: "primary.dark"}}/> {tc("title")}</>}
+                    subtitle={tc("subtitle")} />
       {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
       {pageLoading ? <></> : reservations.length === 0 ? (
           <SectionCard mt={2}>
@@ -144,10 +132,16 @@ function ReservationsPage() {
         actionLoading={actionLoading}
       />
 
-      <Dialog open={modalOpen} onClose={() => setModalOpen(false)}
-              sx={{"& .MuiDialog-paper": {p: {xs: 4, sm: 4}, borderRadius: 3, width: "min(95vw, 500px)"}}}>
-        <AddGuestPage />
-      </Dialog>
+      <Snackbar
+        open={!!actionError}
+        autoHideDuration={6000}
+        onClose={() => setActionError(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={() => setActionError(null)} severity="error" sx={{ width: "100%" }}>
+          {actionError}
+        </Alert>
+      </Snackbar>
     </SectionCard>
   );
 }

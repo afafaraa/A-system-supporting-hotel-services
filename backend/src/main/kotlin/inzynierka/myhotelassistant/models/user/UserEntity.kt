@@ -17,4 +17,6 @@ data class UserEntity(
     var surname: String,
     var guestData: GuestData? = null,
     var employeeData: EmployeeData? = null,
+    var emailAuthorized: Boolean = false, // if user confirmed email
+    var active: Boolean = false, // is user has access to services (has a room or account activated by admin/employee)
 )

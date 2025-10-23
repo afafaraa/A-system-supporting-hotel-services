@@ -8,6 +8,7 @@ enum class ReservationStatus(
     CANCELED(false),
     REJECTED(false),
     COMPLETED(false),
+    CHECKED_IN(true),
     ;
 
     companion object {

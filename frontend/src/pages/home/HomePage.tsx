@@ -6,63 +6,26 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import SpaIcon from '@mui/icons-material/Spa';
 import SportsTennisIcon from '@mui/icons-material/SportsTennis';
 import RoomServiceIcon from '@mui/icons-material/RoomService';
-import { useTranslation } from 'react-i18next';
 import LoginDialog from './LoginDialog.tsx';
-import { useState } from 'react';
-import { Room, RoomStatus } from '../../types/room.ts';
+import { useState, useEffect } from 'react';
 import RoomCard from '../guest/hotel-booking/RoomCard.tsx';
 import {alpha} from "@mui/material/styles";
-
-export const roomOptions: Room[] = [
-  {
-    number: '1',
-    standard: { id: '1', name: 'standard', capacity: 2, basePrice: 120 },
-    pricePerNight: 120,
-    roomStatus: RoomStatus.AVAILABLE,
-    capacity: 2,
-    description: 'A comfortable standard room with all the basic amenities for a pleasant stay.',
-    amenities: [
-      { key: 'wifi', label: 'Free Wi-Fi' },
-      { key: 'ac', label: 'Air Conditioning' },
-      { key: 'tv', label: 'Cable TV' },
-      { key: 'miniFridge', label: 'Mini Fridge' },
-    ],
-  },
-  {
-    number: '2',
-    standard: { id: '2', name: 'deluxe', capacity: 3, basePrice: 180 },
-    pricePerNight: 180,
-    roomStatus: RoomStatus.AVAILABLE,
-    capacity: 3,
-    description: 'Spacious deluxe room with premium amenities and elegant furnishings for a luxurious experience.',
-    amenities: [
-      { key: 'wifi', label: 'Free Wi-Fi' },
-      { key: 'ac', label: 'Air Conditioning' },
-      { key: 'tv', label: 'Smart TV' },
-      { key: 'miniBar', label: 'Mini Bar' },
-      { key: 'more', label: '+2 more' },
-    ],
-  },
-  {
-    number: '3',
-    standard: { id: '3', name: 'exclusive', capacity: 4, basePrice: 350 },
-    pricePerNight: 350,
-    roomStatus: RoomStatus.AVAILABLE,
-    capacity: 4,
-    description: 'A top-tier exclusive suite with premium facilities, ideal for a luxurious stay or business trip.',
-    amenities: [
-      { key: 'wifi', label: 'Free Wi-Fi' },
-      { key: 'ac', label: 'Air Conditioning' },
-      { key: 'tv', label: 'Smart TV' },
-      { key: 'miniBar', label: 'Full Bar' },
-      { key: 'more', label: '+4 more' },
-    ],
-  },
-];
+import axiosApi from '../../middleware/axiosApi.ts';
+import { Room } from '../../types/room.ts';
+import { useTranslation } from 'react-i18next';
 
 function HomePage() {
   const { t } = useTranslation();
   const [openLoginDialog, setOpenLoginDialog] = useState<boolean>(false);
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
+
+  useEffect(() => {
+    axiosApi.get('/rooms')
+      .then(res => setRooms(res.data))
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <main style={{ padding: 0, width: '100%' }}>
@@ -158,12 +121,23 @@ function HomePage() {
           columns={{ xs: 1, sm: 2, lg: 3 }}
           sx={{ maxWidth: '1000px', margin: '0 auto' }}
         >
-          {roomOptions.map((room, index) => (
-            <Grid sx={{ flexGrow: 1 }} size={1} key={index}>
-              <RoomCard room={room} onReserve={() => setOpenLoginDialog(true)} size="medium"/>
-            </Grid>
-          ))}
+          {loading ? (
+            <Typography>{t('pages.reservations.loadingRooms')}</Typography>
+          ) : (
+            (showAll ? rooms : rooms.slice(0, 3)).map((room, index) => (
+              <Grid sx={{ flexGrow: 1 }} size={1} key={index}>
+                <RoomCard room={room} onReserve={() => setOpenLoginDialog(true)} size="medium"/>
+              </Grid>
+            ))
+          )}
         </Grid>
+        {!showAll && !loading && rooms.length > 3 && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+            <Button variant="contained" onClick={() => setShowAll(true)}>
+              {t('pages.home.viewMore')}
+            </Button>
+          </Box>
+        )}
       </Box>
 
       <Box
@@ -194,10 +168,10 @@ function HomePage() {
               >
                 <RoomServiceIcon />
               </Box>
-              {t('pages.home.footerTitle')}
+              {t('pages.home.footerHotelServices')}
             </Typography>
             <Typography sx={{ mt: 2, color: 'text.secondary' }}>
-              {t('pages.home.footerDesc')}
+              {t('pages.home.footerHotelServicesDesc')}
             </Typography>
           </Grid>
 
@@ -228,25 +202,22 @@ function HomePage() {
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <RoomServiceIcon color="secondary" />{' '}
-                {t('pages.home.serviceDining')}
+                <RoomServiceIcon color="secondary" /> {t('pages.home.dining')}
               </Typography>
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <DirectionsCarIcon color="secondary" />{' '}
-                {t('pages.home.serviceTransport')}
+                <DirectionsCarIcon color="secondary" /> {t('pages.home.transport')}
               </Typography>
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <SpaIcon color="secondary" /> {t('pages.home.serviceSpa')}
+                <SpaIcon color="secondary" /> {t('pages.home.spa')}
               </Typography>
               <Typography
                 sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
               >
-                <SportsTennisIcon color="secondary" />{' '}
-                {t('pages.home.serviceRecreation')}
+                <SportsTennisIcon color="secondary" /> {t('pages.home.recreation')}
               </Typography>
             </Stack>
           </Grid>

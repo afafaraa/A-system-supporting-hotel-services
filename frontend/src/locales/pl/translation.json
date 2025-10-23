@@ -38,7 +38,7 @@
       "password": "Hasło",
       "loginButton": "Zaloguj się",
       "resetPassword": "Nie pamiętasz hasła? Zresetuj hasło.",
-      "registerWithCode": "Nie masz konta? Zarejestruj się za pomocą kodu."
+      "registerWithCode": "Nie masz konta? Zarejestruj się już dziś."
     },
     "register": {
       "title": "Rejestracja",
@@ -50,8 +50,13 @@
       "invalidCodeError": "Nieprawidłowy kod rejestracyjny.",
       "newPassword": "Nowe hasło",
       "repeatPassword": "Powtórz hasło",
+      "email": "Adres email",
+      "name": "Imię",
+      "surname": "Nazwisko",
       "passwordsDoNotMatch": "Hasła nie pasują do siebie.",
-      "resetPasswordButton": "Zresetuj hasło"
+      "resetPasswordButton": "Zresetuj hasło",
+      "registerNoCodeNavButton": "Zarejestruj się",
+      "registerWithCodeNavButton": "Zarejestruj się z kodem"
     },
     "reset-password": {
       "title": "Resetowanie hasła",
@@ -99,7 +104,12 @@
     "available_services": {
       "available": "Dostępne",
       "unavailable": "Niedostępne",
-      "bookNow": "Zarezerwuj teraz"
+      "bookNow": "Zarezerwuj teraz",
+      "tooltip": {
+        "noRoom": "Aby zarezerwować usługi, musisz mieć aktywną rezerwację. Przejdź do sekcji „Zarezerwuj pokój”, aby zarezerwować pokój.",
+        "accountInactive": "Twoje konto nie jest aktywne. Zeskanuj kod dostępny przy Twojej rezerwacji w recepcji hotelu.",
+        "serviceDisabled": "Ta usługa jest obecnie niedostępna. Przepraszamy za niedogodności."
+      }
     },
     "booked_services": {
       "filterBookings": "Filtruj rezerwacje",
@@ -121,33 +131,25 @@
       "commentInputPlaceholder": "Napisz swój komentarz tutaj"
     },
     "home": {
-      "welcomeTitle": "Witamy w Grand Hotelu",
-      "welcomeSubtitle": "Doświadcz luksusu i komfortu w sercu miasta. Nasza obsługa na światowym poziomie i eleganckie pokoje czekają na Ciebie.",
-      "reserveRoom": "Zarezerwuj pokój",
+      "welcomeTitle": "Witamy w Naszym Hotelu",
+      "welcomeSubtitle": "Zarezerwuj pobyt i ciesz się naszymi najlepszymi pokojami i usługami.",
+      "reserveRoom": "Zarezerwuj Pokój",
       "contactUs": "Skontaktuj się z nami",
-      "roomsTitle": "Nasze pokoje i apartamenty",
-      "roomsSubtitle": "Wybierz spośród starannie zaprojektowanych pokoi, które oferują komfort, styl i nowoczesne udogodnienia.",
-      "standardTitle": "Pokój Standard",
-      "standardDesc": "Komfortowy pokój z podstawowymi udogodnieniami",
-      "deluxeTitle": "Pokój Deluxe",
-      "deluxeDesc": "Przestronny pokój z luksusowymi udogodnieniami i widokiem na miasto",
-      "exclusiveTitle": "Apartament Prezydencki",
-      "exclusiveDesc": "Luksusowy apartament z oddzielnym salonem i usługami premium",
-      "upToGuests": "Do {{count}} gości",
-      "amenities": "Udogodnienia",
-      "reserveNow": "Zarezerwuj teraz",
-      "footerTitle": "Grand Hotel",
-      "footerDesc": "Doświadcz luksusu i komfortu w sercu miasta z naszą obsługą na światowym poziomie.",
+      "roomsTitle": "Pokoje",
+      "roomsSubtitle": "Wybierz pokój na swój pobyt",
+      "viewMore": "Zobacz więcej",
+      "footerHotelServices": "Usługi hotelowe",
+      "footerHotelServicesDesc": "Ciesz się naszą restauracją, spa i obiektami rekreacyjnymi.",
       "contactInfo": "Informacje kontaktowe",
-      "address": "123 Aleja Grand, Centrum Miasta",
-      "phone": "+1 (555) 123-4567",
-      "email": "rezerwacje@grandhotel.com",
+      "address": "ul. Główna 123, Miasto",
+      "phone": "+48 123 456 789",
+      "email": "info@hotel.com",
       "services": "Usługi",
-      "serviceDining": "Wykwintna kuchnia i obsługa pokojowa",
-      "serviceTransport": "Transport i concierge",
-      "serviceSpa": "Spa i centrum odnowy biologicznej",
-      "serviceRecreation": "Obiekty rekreacyjne",
-      "rights": "© 2024 Grand Hotel. Wszelkie prawa zastrzeżone."
+      "dining": "Restauracja",
+      "transport": "Transport",
+      "spa": "Spa",
+      "recreation": "Rekreacja",
+      "rights": "© 2024 Hotel. Wszelkie prawa zastrzeżone."
     },
     "shopping_cart": {
       "title": "Koszyk",
@@ -172,6 +174,25 @@
       "selectTime": "Wybierz godzinę",
       "specialRequests": "Specjalne życzenia",
       "noSlotsAvailable": "Brak dostępnych terminów"
+    },
+    "reservations": {
+      "myReservations": "Moje rezerwacje pokoi",
+      "myReservationsSubtitle": "Twoje obecne i przeszłe rezerwacje pokoi",
+      "loading": "Ładowanie rezerwacji...",
+      "reservationDetails": "{{count}} gości | {{price}} zł łącznie",
+      "noBookings": "Nie masz żadnych rezerwacji pokoi.",
+      "reserveRoom": "Zarezerwuj pokój",
+      "reserveRoomSubtitle": "Zarezerwuj idealne zakwaterowanie na swój pobyt",
+      "loadingRooms": "Ładowanie pokoi...",
+      "status": {
+        "REQUESTED": "Oczekująca",
+        "CONFIRMED": "Potwierdzona",
+        "CANCELLED": "Anulowana",
+        "CHECKED_IN": "Zameldowana",
+        "Confirmed": "Potwierdzona",
+        "Pending": "Oczekująca",
+        "Cancelled": "Anulowana"
+      }
     },
     "manager": {
       "navbar": {
@@ -522,6 +543,104 @@
       "title": "Coś poszło nie tak",
       "subtitle": "Wystąpił nieoczekiwany błąd z przekierowaniem.",
       "go_home": "Wróć do strony głównej"
+    },
+    "receptionist": {
+      "navbar": {
+        "arrival-departures": "Meldunki i wymeldowania",
+        "reservations": "Rezerwacje",
+        "guest-service": "Obsługa gości"
+      },
+      "guest-service": {
+        "title": "Obsługa gości",
+        "subtitle": "Wykonaj akcję związaną z obsługą gości",
+        "ongoing-reservations-title": "Obecne rezerwacje pokoi",
+        "find-by-room-input-placeholder": "Znajdź numer pokoju...",
+        "reservations-fetching-error": "Nie udało się pobrać rezerwacji pokoi. Spróbuj ponownie później.",
+        "reservations-no-results": "Nie znaleziono żadnych trwających rezerwacji.",
+        "reservations-no-results-filtered": "Nie znaleziono żadnych trwających rezerwacji dla tego wyniku wyszukiwania.",
+        "reservation-for": "Rezerwacja dla",
+        "days-after-check-in": "dni po zameldowaniu",
+        "days-before-check-out": "dni przed wymeldowaniem",
+        "other-actions-title": "Inne akcje związane z gośćmi",
+        "Main": "Główna",
+        "Check-In": "Zameldowanie"
+      },
+      "check-in": {
+        "title": "Dodaj gościa do hotelu",
+        "subtitle": "Strona, gdzie możesz dodać gościa do hotelu, który nie miał wcześniej rezerwacji",
+        "date-range": "Okres pobytu",
+        "available-rooms-in-range": "Dostępne pokoje w podanym terminie:",
+        "room-option": "Pokój {{number}} - {{standard}}, {{capacity}} os., {{price}} $/noc",
+        "reservation-price": "Cena rezerwacji",
+        "guest-info": "Informacje o gościu",
+        "guest-count": "Liczba gości",
+        "name": "Imię",
+        "surname": "Nazwisko",
+        "email": "Email",
+        "with-check-in": "Chcę jednocześnie wykonać meldunek gościa hotelu",
+        "payment-confirmed": "Potwierdzam, że płatność została wykonana",
+        "add-reservation": "Dodaj rezerwację",
+        "and-check-in": "i zamelduj gościa",
+        "loading-available-rooms": "Ładowanie dostępnych pokoi...",
+        "available-rooms-found": "Znaleziono {{count}} dostępnych pokoi",
+        "error-loading-available-rooms": "Nie udało się pobrać listy dostępnych pokoi",
+        "loading-reservation-price": "Ładowanie ceny rezerwacji...",
+        "error-loading-reservation-price": "Nie udało się pobrać ceny rezerwacji",
+        "error-unable-to-add-reservation": "Nie udało się dodać rezerwacji",
+        "reservation-added-success": "Udało się dodać rezerwację",
+        "reservation-data": "Dane dotyczące rezerwacji:",
+        "user-login-data": "Dane logowania użytkownika do systemu:",
+        "username": "Nazwa użytkownika",
+        "password": "Hasło"
+      },
+      "reservation-dialog": {
+        "common": {
+          "reservation-title": "Rezerwacja pokoju {{room}}",
+          "reservation-id": "ID rezerwacji",
+          "reservation-status": "Status rezerwacji",
+          "stay-dates": "Data pobytu",
+          "room-standard": "Standard pokoju",
+          "guest-email": "Email gościa",
+          "guest-count": "Liczba gości",
+          "reservation-price": "Cena rezerwacji",
+          "paid": "Opłacona"
+        },
+        "check-in": {
+          "confirm-payment-label": "Potwierdzam, że płatność za pokój została dokonana",
+          "cancel": "Anuluj",
+          "check-in-button": "Zamelduj",
+          "success-message": "Pomyślnie zameldowano rezerwację",
+          "only-confirmed-error": "Tylko potwierdzone rezerwacje mogą zostać zameldowane",
+          "error-during-check-in": "Błąd podczas meldunku"
+        },
+        "check-out": {
+          "cancel": "Anuluj",
+          "check-out-button": "Wymelduj",
+          "success-message": "Pomyślnie wymeldowano rezerwację",
+          "only-checked-in-error": "Tylko zameldowane rezerwacje mogą zostać wymeldowane",
+          "error-during-check-out": "Błąd podczas wymeldowania"
+        }
+      },
+      "guest-arrival-departures": {
+        "title": "Przyjazdy i wyjazdy gości",
+        "subtitle": "Lista gości przyjeżdżających i wyjeżdżających dzisiaj",
+        "overdue-check-ins": "Zaległe meldunki",
+        "overdue-check-outs": "Zaległe wymeldowania",
+        "today-check-ins": "Dzisiejsze meldunki",
+        "today-check-outs": "Dzisiejsze wymeldowania",
+        "upcoming-check-ins": "Nadchodzące meldunki",
+        "upcoming-check-outs": "Nadchodzące wymeldowania",
+        "check-in-button": "Zamelduj",
+        "check-out-button": "Wymelduj",
+        "no-check-ins-today": "Brak potwierdzonych przyjazdów na dzisiaj.",
+        "no-check-outs-today": "Brak wyjazdów zaplanowanych na dzisiaj.",
+        "no-upcoming-check-ins": "Brak nadchodzących przyjazdów.",
+        "no-upcoming-check-outs": "Brak nadchodzących wyjazdów.",
+        "error-overdue-check-ins-count": "Błąd podczas pobierania liczby zaległych meldunków",
+        "error-overdue-check-outs-count": "Błąd podczas pobierania liczby zaległych wymeldowań",
+        "room-label": "Pokój",
+        "guest-label": "Gość"
+      }
     }
   },
   "common": {
@@ -595,10 +714,12 @@
     "unknownError": "Wystąpił nieznany błąd.",
     "emptyFields": "Wszystkie pola muszą być wypełnione.",
     "invalidCredentials": "Nieprawidłowe dane logowania.",
+    "emailNotVerified": "Email nie został zweryfikowany. Sprawdź swoją skrzynkę odbiorczą lub spróbuj zarejestrować się ponownie.",
     "upload_error": "Błąd podczas przesyłania pliku.",
     "sameRoleError": "Pracownik już posiada tę rolę.",
     "add_employee_failure": "Błąd podczas dodawania nowego pracownika",
-    "edit_employee_failure": "Błąd podczas edytowania pracownika"
+    "edit_employee_failure": "Błąd podczas edytowania pracownika",
+    "failedToCreateSession": "Nie udało się utworzyć sesji płatności"
   },
   "order_status": {
     "AVAILABLE": "DOSTĘPNY",

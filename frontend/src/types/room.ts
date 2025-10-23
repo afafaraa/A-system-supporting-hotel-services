@@ -41,3 +41,13 @@ export enum RoomStatus {
   AVAILABLE = "AVAILABLE",
   OUT_OF_SERVICE = "OUT_OF_SERVICE"
 }
+
+export type ReservationGuest = {
+  id: number;
+  room: Room;
+  checkIn: string;
+  checkOut: string;
+  guestCount: number;
+  reservationPrice: number;
+  status: 'Confirmed' | 'Pending' | 'Cancelled';
+};

@@ -4,13 +4,14 @@ import inzynierka.myhotelassistant.controllers.AuthController
 import inzynierka.myhotelassistant.controllers.user.AddUserController
 import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserRequest
 import inzynierka.myhotelassistant.controllers.user.AddUserController.AddUserResponse
+import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
-import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.RegistrationCode
 import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.User
@@ -19,9 +20,8 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import java.security.MessageDigest
-import java.time.Instant
-import java.time.format.DateTimeParseException
+import java.time.LocalTime
+import java.time.ZoneOffset
 import kotlin.jvm.optionals.getOrNull
 
 @Service
@@ -30,6 +30,9 @@ class UserService(
     private val codeService: RegistrationCodeService,
     private val passwordEncoder: PasswordEncoder,
 ) : UserDetailsService {
+    @field:Value("\${app.security.password-length}")
+    private var passwordLength: Int = 10
+
     fun findByRole(role: Role): List<UserEntity> = userRepository.findByRole(role)
 
     fun findById(id: String): UserEntity? = userRepository.findById(id).getOrNull()
@@ -38,6 +41,9 @@ class UserService(
         val user =
             userRepository.findByUsername(username)
                 ?: throw UsernameNotFoundException("User with username $username not found")
+        if (!user.emailAuthorized) {
+            throw HttpException.NoPermissionException("This users email is not verified")
+        }
         return User
             .builder()
             .username(user.username)
@@ -69,57 +75,47 @@ class UserService(
         userRepository.save(user)
     }
 
-    fun createAndSaveGuest(user: AddUserRequest): AddUserResponse {
+    fun createAndSaveGuest(user: AddUserRequest): Pair<String, AddUserResponse> {
         val username: String = generateUsername(user)
-        val password: String = generatePassword(user)
-        try {
-            val guest =
-                UserEntity(
-                    name = user.name,
-                    surname = user.surname,
-                    email = user.email,
-                    role = Role.GUEST,
-                    username = username,
-                    password = passwordEncoder.encode(password),
-                    guestData =
-                        GuestData(
-                            roomNumber = user.roomNumber,
-                            checkInDate = Instant.parse(user.checkInDate),
-                            checkOutDate = Instant.parse(user.checkOutDate),
-                        ),
-                )
-            val saved = save(guest)
-            codeService.generateAndSendForUser(saved.id!!, saved.email, saved.guestData!!.checkOutDate)
-        } catch (e: DateTimeParseException) {
-            throw InvalidArgumentException(e.message ?: "Invalid date format")
-        }
-        return AddUserResponse(username = username, password = password)
+        val password: String = generatePassword()
+        val guest =
+            UserEntity(
+                name = user.name.lowercase().replaceFirstChar { it.uppercase() },
+                surname = user.surname.lowercase().replaceFirstChar { it.uppercase() },
+                email = user.email,
+                role = Role.GUEST,
+                username = username,
+                password = passwordEncoder.encode(password),
+                guestData =
+                    GuestData(
+                        roomNumber = user.roomNumber,
+                        checkInDate =
+                            user.checkInDate
+                                .atTime(LocalTime.MIN)
+                                .atZone(ZoneOffset.systemDefault())
+                                .toInstant(),
+                        checkOutDate =
+                            user.checkOutDate
+                                .atTime(LocalTime.MIN)
+                                .atZone(ZoneOffset.systemDefault())
+                                .toInstant(),
+                    ),
+            )
+        val saved = save(guest)
+        codeService.generateAndSendForUser(saved.id!!, saved.email, saved.guestData!!.checkOutDate)
+        return saved.id to AddUserResponse(username = username, password = password)
     }
 
-    fun generatePassword(user: AddUserRequest): String =
-        encodeString(
-            user.name + "_" + user.surname + "_" + user.roomNumber + "_" + user.checkInDate + "_" + user.checkOutDate,
-            12,
-        )
+    fun generatePassword(): String = generateRandomString(passwordLength)
 
-    fun generateUsername(user: AddUserRequest): String {
-        val userEncode =
-            user.name.take(4) +
-                "_" + user.surname.take(4) +
-                "_" + user.roomNumber
+    fun generateUsername(user: AddUserRequest): String =
+        "${user.name.take(4).lowercase()}-${user.surname.take(4).lowercase()}-${user.checkInDate}"
 
-        return userEncode + "_" + encodeString(userEncode + "_" + user.checkInDate + "_" + user.checkOutDate, 4)
-    }
-
-    fun encodeString(
-        str: String,
-        length: Int,
-    ): String {
-        val md5 = MessageDigest.getInstance("MD5")
-        val hashBytes = md5.digest(str.toByteArray())
-        val hexString = hashBytes.joinToString("") { "%02x".format(it) }
-
-        return hexString.take(length)
+    fun generateRandomString(length: Int): String {
+        val chars = ('a'..'z') + ('0'..'9')
+        return (1..length)
+            .map { chars.random() }
+            .joinToString("")
     }
 
     fun completeRegistration(req: AuthController.CompleteRegistrationRequest) {
@@ -127,6 +123,34 @@ class UserService(
         val user = userRepository.findByIdOrNull(rc.userId) ?: throw EntityNotFoundException("User not found")
         user.username = req.username
         user.password = passwordEncoder.encode(req.password)
+        userRepository.save(user)
+        codeService.markUsed(rc)
+    }
+
+    fun completeRegistrationNoCode(req: AuthController.CompleteRegistrationRequestNoCode): UserEntity {
+        if (userRepository.findByUsername(req.username) != null) {
+            throw EntityNotFoundException("Username is already taken")
+        }
+        if (userRepository.findByEmail(req.email) != null) {
+            throw EntityNotFoundException("User with that email already exists")
+        }
+        val user =
+            UserEntity(
+                username = req.username,
+                password = passwordEncoder.encode(req.password),
+                name = req.name,
+                surname = req.surname,
+                email = req.email,
+                role = Role.GUEST,
+            )
+        println("Creating user: $user")
+        return userRepository.save(user)
+    }
+
+    fun activateWithCode(code: String) {
+        val rc: RegistrationCode = codeService.validateCode(code)
+        val user = userRepository.findByIdOrNull(rc.userId) ?: throw EntityNotFoundException("User not found")
+        user.active = true
         userRepository.save(user)
         codeService.markUsed(rc)
     }

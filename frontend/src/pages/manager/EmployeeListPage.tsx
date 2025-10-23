@@ -44,7 +44,6 @@ function EmployeeListPage() {
       const res = await axiosAuthApi.get<Employee[]>('/management/employees', {
         params: { page: page, size: pageSize },
       });
-      console.log(res.data);
       setEmployees(res.data);
     } catch (err) {
       console.error(err);

@@ -38,7 +38,7 @@
       "password": "Password",
       "loginButton": "Login",
       "resetPassword": "Forgot your password? Reset password.",
-      "registerWithCode": "Don't have an account? Register with a code."
+      "registerWithCode": "Don't have an account? Register today."
     },
     "register": {
       "title": "Register",
@@ -50,8 +50,13 @@
       "invalidCodeError": "Invalid registration code.",
       "newPassword": "New Password",
       "repeatPassword": "Repeat Password",
+      "email": "Email address",
+      "name": "Name",
+      "surname": "Surname",
       "passwordsDoNotMatch": "Passwords do not match.",
-      "resetPasswordButton": "Reset Password"
+      "resetPasswordButton": "Reset Password",
+      "registerNoCodeNavButton": "Register",
+      "registerWithCodeNavButton": "Register with Code"
     },
     "reset-password": {
       "title": "Reset Password",
@@ -99,7 +104,12 @@
     "available_services": {
       "available": "Available",
       "unavailable": "Unavailable",
-      "bookNow": "Book now"
+      "bookNow": "Book now",
+      "tooltip": {
+        "noRoom": "You need to have an active reservation to book services. Go to Book Hotel Room section to book a room.",
+        "accountInactive": "Your account is not active. Scan code available on your reservation in hotel reception.",
+        "serviceDisabled": "This service is not available right now. Sorry for the inconvenience"
+      }
     },
     "booked_services": {
       "filterBookings": "Filter Bookings",
@@ -121,33 +131,25 @@
       "commentInputPlaceholder": "Write your comment here"
     },
     "home": {
-      "welcomeTitle": "Welcome to Grand Hotel",
-      "welcomeSubtitle": "Experience luxury and comfort in the heart of the city. Our world-class service and elegant accommodations await you.",
-      "reserveRoom": "Reserve a Room",
-      "contactUs": "Contact us",
-      "roomsTitle": "Our Rooms & Suites",
-      "roomsSubtitle": "Choose from our carefully designed accommodations, each offering comfort, style, and modern amenities.",
-      "standardTitle": "Standard Room",
-      "standardDesc": "Comfortable room with essential amenities",
-      "deluxeTitle": "Deluxe Room",
-      "deluxeDesc": "Spacious room with premium amenities and city view",
-      "exclusiveTitle": "Exclusive Suite",
-      "exclusiveDesc": "Luxurious suite with separate living area and premium services",
-      "upToGuests": "Up to {{count}} guests",
-      "amenities": "Amenities",
-      "reserveNow": "Reserve Now",
-      "footerTitle": "Grand Hotel",
-      "footerDesc": "Experience luxury and comfort in the heart of the city with our world-class service.",
-      "contactInfo": "Contact Info",
-      "address": "123 Grand Avenue, City Center",
-      "phone": "+1 (555) 123-4567",
-      "email": "reservations@grandhotel.com",
+      "welcomeTitle": "Welcome to Our Hotel",
+      "welcomeSubtitle": "Book your stay and enjoy our best rooms and services.",
+      "reserveRoom": "Reserve Room",
+      "contactUs": "Contact Us",
+      "roomsTitle": "Rooms",
+      "roomsSubtitle": "Choose a room for your stay",
+      "viewMore": "View More",
+      "footerHotelServices": "Hotel Services",
+      "footerHotelServicesDesc": "Enjoy our dining, spa, and recreation facilities.",
+      "contactInfo": "Contact Information",
+      "address": "123 Main St, City",
+      "phone": "+48 123 456 789",
+      "email": "info@hotel.com",
       "services": "Services",
-      "serviceDining": "Fine Dining & Room Service",
-      "serviceTransport": "Transportation & Concierge",
-      "serviceSpa": "Spa & Wellness Center",
-      "serviceRecreation": "Recreation Facilities",
-      "rights": "© 2024 Grand Hotel. All rights reserved."
+      "dining": "Dining",
+      "transport": "Transport",
+      "spa": "Spa",
+      "recreation": "Recreation",
+      "rights": "© 2024 Hotel. All rights reserved."
     },
     "shopping_cart": {
       "title": "Shopping cart",
@@ -172,6 +174,25 @@
       "selectTime": "Select time",
       "specialRequests": "Special Requests",
       "noSlotsAvailable": "No slots available"
+    },
+    "reservations": {
+      "myReservations": "My Room Reservations",
+      "myReservationsSubtitle": "Your current and past room bookings",
+      "loading": "Loading reservations...",
+      "reservationDetails": "{{count}} guests | ${{price}} total",
+      "noBookings": "You have no room bookings.",
+      "reserveRoom": "Reserve a Room",
+      "reserveRoomSubtitle": "Book the perfect accommodation for your stay",
+      "loadingRooms": "Loading rooms...",
+      "status": {
+        "REQUESTED": "Pending",
+        "CONFIRMED": "Confirmed",
+        "CANCELLED": "Cancelled",
+        "CHECKED_IN": "Checked-in",
+        "Confirmed": "Confirmed",
+        "Pending": "Pending",
+        "Cancelled": "Cancelled"
+      }
     },
     "manager": {
       "navbar": {
@@ -521,6 +542,104 @@
       "title": "Oops! Something went wrong.",
       "subtitle": "This is a fallback page for undefined routes.",
       "go_home": "Go back to Home Page"
+    },
+    "receptionist": {
+      "navbar": {
+        "arrival-departures": "Arrival and Departures",
+        "reservations": "Reservations",
+        "guest-service": "Guest service"
+      },
+      "guest-service": {
+        "title": "Guest Service",
+        "subtitle": "Perform an action related to guest service",
+        "ongoing-reservations-title": "Ongoing Reservations",
+        "find-by-room-input-placeholder": "Find by room number...",
+        "reservations-fetching-error": "Unable to fetch ongoing reservations. Please try again later.",
+        "reservations-no-results": "No ongoing reservations found.",
+        "reservations-no-results-filtered": "No ongoing reservations found for this search query.",
+        "reservation-for": "Reservation for",
+        "days-after-check-in": "days after check-in",
+        "days-before-check-out": "days before check-out",
+        "other-actions-title": "Other guest-related actions",
+        "Main": "Main",
+        "Check-In": "Check-In"
+      },
+      "check-in": {
+        "title": "Add a guest to the hotel",
+        "subtitle": "Page where you can add a guest to the hotel who didn't have a prior reservation",
+        "date-range": "Stay period",
+        "available-rooms-in-range": "Available rooms in the selected period:",
+        "room-option": "Room {{number}} - {{standard}}, {{capacity}} ppl, {{price}} $/night",
+        "reservation-price": "Reservation price",
+        "guest-info": "Guest information",
+        "guest-count": "Number of guests",
+        "name": "Name",
+        "surname": "Surname",
+        "email": "Email",
+        "with-check-in": "I want to perform guest check-in at the same time",
+        "payment-confirmed": "I confirm that payment has been made",
+        "add-reservation": "Add reservation",
+        "and-check-in": "and check in the guest",
+        "loading-available-rooms": "Loading available rooms...",
+        "available-rooms-found": "Found {{count}} available rooms",
+        "error-loading-available-rooms": "Failed to fetch available rooms",
+        "loading-reservation-price": "Loading reservation price...",
+        "error-loading-reservation-price": "Failed to fetch reservation price",
+        "error-unable-to-add-reservation": "Unable to add reservation",
+        "reservation-added-success": "Reservation added successfully",
+        "reservation-data": "Reservation details:",
+        "user-login-data": "User login details:",
+        "username": "Username",
+        "password": "Password"
+      },
+      "reservation-dialog": {
+        "common": {
+          "reservation-title": "Room reservation {{room}}",
+          "reservation-id": "Reservation ID",
+          "reservation-status": "Reservation status",
+          "stay-dates": "Stay dates",
+          "room-standard": "Room standard",
+          "guest-email": "Guest email",
+          "guest-count": "Number of guests",
+          "reservation-price": "Reservation price",
+          "paid": "Paid"
+        },
+        "check-in": {
+          "confirm-payment-label": "I confirm that the room payment has been made",
+          "cancel": "Cancel",
+          "check-in-button": "Check in",
+          "success-message": "You successfully checked-in the reservation",
+          "only-confirmed-error": "Only confirmed reservations can be checked-in",
+          "error-during-check-in": "Error during check-in"
+        },
+        "check-out": {
+          "cancel": "Cancel",
+          "check-out-button": "Check out",
+          "success-message": "You successfully checked-out the reservation",
+          "only-checked-in-error": "Only checked-in reservations can be checked-out",
+          "error-during-check-out": "Error during check-out"
+        }
+      },
+      "guest-arrival-departures": {
+        "title": "Guest Arrivals and Departures",
+        "subtitle": "List of guests arriving and departing today",
+        "overdue-check-ins": "Overdue check-ins",
+        "overdue-check-outs": "Overdue check-outs",
+        "today-check-ins": "Today check-ins",
+        "today-check-outs": "Today check-outs",
+        "upcoming-check-ins": "Upcoming check-ins",
+        "upcoming-check-outs": "Upcoming check-outs",
+        "check-in-button": "Check in",
+        "check-out-button": "Check out",
+        "no-check-ins-today": "No confirmed arrivals for today.",
+        "no-check-outs-today": "No departures scheduled for today.",
+        "no-upcoming-check-ins": "No upcoming arrivals.",
+        "no-upcoming-check-outs": "No upcoming departures.",
+        "error-overdue-check-ins-count": "Error fetching overdue check-ins count",
+        "error-overdue-check-outs-count": "Error fetching overdue check-outs count",
+        "room-label": "Room",
+        "guest-label": "Guest"
+      }
     }
   },
   "common": {
@@ -594,10 +713,12 @@
     "unknownError": "Unknown error occurred.",
     "emptyFields": "All fields must be filled.",
     "invalidCredentials": "Invalid login credentials.",
+    "emailNotVerified": "Email nie został zweryfikowany. Sprawdź swoją skrzynkę odbiorczą lub spróbuj zarejestrować się ponownie.",
     "upload_error": "Error during uploading file.",
     "add_employee_failure": "Failed to add new employee",
     "sameRoleError": "Employee already has this role.",
-    "edit_employee_failure": "Failed to edit employee"
+    "edit_employee_failure": "Failed to edit employee",
+    "failedToCreateSession": "Failed to create checkout session"
   },
   "order_status": {
     "AVAILABLE": "AVAILABLE",

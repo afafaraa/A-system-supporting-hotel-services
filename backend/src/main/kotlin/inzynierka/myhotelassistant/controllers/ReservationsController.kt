@@ -1,8 +1,12 @@
 package inzynierka.myhotelassistant.controllers
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped
+import inzynierka.myhotelassistant.controllers.user.AddUserController
 import inzynierka.myhotelassistant.models.reservation.ReservationEntity
+import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.models.service.ReservationsService
+import jakarta.validation.Valid
+import jakarta.validation.constraints.Email
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
@@ -30,6 +34,16 @@ class ReservationsController(
         val roomStandard: String,
     )
 
+    data class ReservationGuestDTO(
+        val id: String,
+        val room: RoomEntity,
+        val checkIn: String,
+        val checkOut: String,
+        val guestCount: Int,
+        val reservationPrice: Double,
+        val status: String,
+    )
+
     @GetMapping
     @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).EMPLOYEE.name)")
     fun getAllReservations(): List<ReservationEntity> = reservationsService.findAllReservations()
@@ -42,7 +56,8 @@ class ReservationsController(
 
     @GetMapping("/mine")
     @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).GUEST.name)")
-    fun getMyReservations(principal: Principal): List<ReservationEntity> = reservationsService.findMyReservations(principal.name)
+    fun getMyReservations(principal: Principal): List<ReservationGuestDTO> =
+        reservationsService.findMyReservationsAsGuestDTO(principal.name)
 
     data class ReservationCreateDTO(
         val roomNumber: String,
@@ -95,15 +110,80 @@ class ReservationsController(
     fun checkInGuestReservation(
         @PathVariable reservationId: String,
         @RequestParam paid: Boolean,
-    ) {
-        reservationsService.checkInGuestReservation(reservationId, paid)
-    }
+    ): ReservationDTO = reservationsService.checkInGuestReservation(reservationId, paid)
 
     @PatchMapping("/{reservationId}/check-out")
     @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).EMPLOYEE.name)")
     fun checkOutGuestReservation(
         @PathVariable reservationId: String,
-    ) {
-        reservationsService.checkOutGuestReservation(reservationId)
-    }
+    ): ReservationDTO = reservationsService.checkOutGuestReservation(reservationId)
+
+    @GetMapping("/today-check-ins")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun getTodayCheckIns(
+        @RequestParam(required = false) date: LocalDate = LocalDate.now(),
+    ): List<ReservationDTO> = reservationsService.getCheckInsFromDay(date)
+
+    @GetMapping("/today-check-outs")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun getTodayCheckOuts(
+        @RequestParam(required = false) date: LocalDate = LocalDate.now(),
+    ): List<ReservationDTO> = reservationsService.getCheckOutsFromDay(date)
+
+    @GetMapping("/upcoming-check-ins")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun getUpcomingCheckIns(): List<ReservationDTO> = reservationsService.getUpcomingCheckIns()
+
+    @GetMapping("/upcoming-check-outs")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun getUpcomingCheckOuts(): List<ReservationDTO> = reservationsService.getUpcomingCheckOuts()
+
+    data class CountDTO(
+        val count: Long,
+    )
+
+    @GetMapping("/overdue-check-ins")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun getOverdueCheckIns(): List<ReservationDTO> = reservationsService.getOverdueCheckIns()
+
+    @GetMapping("/overdue-check-ins/count")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun countOverdueCheckIns() = CountDTO(reservationsService.countOverdueCheckIns())
+
+    @GetMapping("/overdue-check-outs")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun getOverdueCheckOuts(): List<ReservationDTO> = reservationsService.getOverdueCheckOuts()
+
+    @GetMapping("/overdue-check-outs/count")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun countOverdueCheckOuts() = CountDTO(reservationsService.countOverdueCheckOuts())
+
+    data class ReservationCreateWithNewGuestDTO(
+        @field:Email(message = "Email should be valid")
+        val email: String,
+        val name: String,
+        val surname: String,
+        val roomNumber: String,
+        val checkInDate: LocalDate,
+        val checkOutDate: LocalDate,
+        val guestCount: Int,
+        val specialRequests: String?,
+        val withCheckIn: Boolean,
+    )
+
+    data class ReservationCreateWithNewGuestResponseDTO(
+        val reservation: ReservationDTO,
+        val userAccount: AddUserController.AddUserResponse,
+    )
+
+    @PostMapping("/with-new-guest")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
+    fun createReservationWithNewGuest(
+        @RequestBody @Valid reservationWithGuestDTO: ReservationCreateWithNewGuestDTO,
+    ): ReservationCreateWithNewGuestResponseDTO = reservationsService.createReservationWithNewGuest(reservationWithGuestDTO)
+
+    @GetMapping("/ongoing")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).EMPLOYEE.name)")
+    fun getAllOngoingReservations() = reservationsService.getAllOngoingReservations()
 }

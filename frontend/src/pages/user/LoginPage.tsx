@@ -57,6 +57,7 @@ function LoginPage(){
         if (!isAxiosError(e) || (!e.response && e.code !== "ERR_NETWORK")) { setError("error.unknownError"); return; }
         if (!e.response) { setError(e.code === "ERR_NETWORK" ? "error.networkError" : "error.unknownError"); return; }
         if (e.response.status === 401) setError("error.invalidCredentials");
+        else if (e.response.status === 403) setError("error.emailNotVerified");
         else if (e.response.status >= 500) setError("error.serverError");
         else setError("error.unknownError");
       })
@@ -86,7 +87,7 @@ function LoginPage(){
                      slotProps={generatePasswordAdornment(showPassword, setShowPassword)}/>
 
         <AppLink to="/reset-password-email" color="text.secondary" mt={3}>{tc("resetPassword")}</AppLink>
-        <AppLink to="/register" color="text.primary" mt={0.8}>{tc("registerWithCode")}</AppLink>
+        <AppLink to="/register/no-code" color="text.primary" mt={0.8}>{tc("registerWithCode")}</AppLink>
         <Button disabled={disabled} fullWidth variant="contained" onClick={login} loading={loading} sx={{mt: 3}}>
           {tc("loginButton")}
         </Button>
@@ -119,3 +120,4 @@ function LoginPage(){
 }
 
 export default LoginPage;
+

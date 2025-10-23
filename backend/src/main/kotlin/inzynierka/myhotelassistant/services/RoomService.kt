@@ -91,4 +91,19 @@ class RoomService(
     }
 
     fun getRoomsUsingStandard(id: String): List<RoomEntity> = roomRepository.findByStandardId(id)
+    
+    fun findRoomByNumber(number: String): RoomEntity =
+        roomRepository.findByNumber(number)
+            ?: throw NoSuchElementException("Room with number $number not found")
+
+    fun isRoomAvailable(
+        roomNumber: String,
+        from: LocalDate,
+        to: LocalDate,
+    ): Boolean {
+        if (!from.isBefore(to)) {
+            throw IllegalArgumentException("'from' must be before 'to' date")
+        }
+        return reservationsService.isRoomAvailable(roomNumber, from, to)
+    }
 }

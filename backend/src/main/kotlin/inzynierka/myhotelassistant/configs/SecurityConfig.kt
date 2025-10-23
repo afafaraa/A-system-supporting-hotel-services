@@ -39,7 +39,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-class SecurityConfig {
+class SecurityConfig(
+    private val appProperties: AppProperties,
+) {
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
@@ -70,6 +72,12 @@ class SecurityConfig {
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers(
+                        "/index.html",
+                        "/static/**",
+                        "/images/**",
+                        "/css/**",
+                        "/js/**",
+                        "/Coffee.jpg",
                         "/open/**",
                         "/uploads/files/**",
                         "/rooms/**",
@@ -126,7 +134,7 @@ class SecurityConfig {
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOriginPatterns = listOf("http://localhost:5173", "http://192.168.*:5173")
+        configuration.allowedOriginPatterns = listOf(appProperties.frontend.url, "http://192.168.*:${appProperties.frontend.port}")
         configuration.allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE")
         configuration.allowedHeaders = listOf("Authorization", "Content-Type")
         val source = UrlBasedCorsConfigurationSource()

@@ -7,7 +7,7 @@ import SendResetPasswordEmail from './pages/user/SendResetPasswordEmail.tsx';
 import ResetPasswordPage from './pages/user/ResetPasswordPage.tsx';
 import AuthenticatedLayout from "./components/layout/AuthenticatedLayout.tsx";
 import PublicLayout from "./components/layout/PublicLayout.tsx";
-import RegisterPage from './pages/user/RegisterPage.tsx';
+import RegisterPage from './pages/user/register/RegisterPage.tsx';
 import EmployeeListPage from "./pages/manager/EmployeeListPage.tsx";
 import LogoutPage from "./pages/user/LogoutPage.tsx";
 import NotificationsPage from "./pages/guest/NotificationsPage.tsx";
@@ -23,16 +23,25 @@ import EmployeeLayout from "./components/layout/EmployeeLayout.tsx";
 import EmployeeCalendarPage from "./pages/employee/EmployeeCalendarPage.tsx";
 import TodaySchedulesPage from "./pages/employee/TodaySchedulesPage.tsx";
 import RequestedSchedulesPage from "./pages/employee/RequestedSchedulesPage.tsx";
-import EmployeeReservationsPage from "./pages/employee/ReservationsPage.tsx";
+import EmployeeReservationsPage from "./pages/receptionist/ReservationsPage.tsx";
 import EmployeeReviewsPage from "./pages/employee/ReviewsPage.tsx";
 import FallbackPage from "./pages/user/FallbackPage.tsx";
-import GuestLayout from "./pages/guest/layout/GuestLayout.tsx";
+import GuestLayout from "./components/layout/GuestLayout.tsx";
 import AdminLayout from "./components/layout/AdminLayout.tsx";
 import GuestsListPage from './pages/manager/GuestsListPage.tsx';
 import AvailableServicesPage from './pages/guest/available-services/AvailableServicesPage.tsx';
 import BookedServicesPage from './pages/guest/booked-services/BookedServicesPage.tsx';
 import HotelBookingPage from './pages/guest/hotel-booking/HotelBookingPage.tsx';
 import HotelManagementPage from './pages/manager/HotelManagement/HotelManagementPage.tsx';
+import ReceptionistLayout from "./components/layout/ReceptionistLayout.tsx";
+import GuestArrivalsDeparturesPage from "./pages/receptionist/guest-arrival-departues/GuestArrivalsDeparturesPage.tsx";
+import ReceptionistCheckInPage from "./pages/receptionist/CheckInPage.tsx";
+import ReceptionistGuestService from "./pages/receptionist/GuestService.tsx";
+import RegisterNoCode from './pages/user/register/RegisterNoCode.tsx';
+import RegisterWithCode from './pages/user/register/RegisterWithCode.tsx';
+import VerifyAccount from './pages/user/verify/VerifyAccount.tsx';
+import PaymentSuccessPage from './pages/guest/payment/PaymentSuccessPage.tsx';
+import PaymentCancelPage from './pages/guest/payment/PaymentCancelPage.tsx';
 
 function App(){
   return (
@@ -44,6 +53,8 @@ function App(){
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route element={<ProtectedRoute allowedRoles={["ROLE_GUEST"]}/>}>
               <Route path="/service-schedule/:id" element={<OrderServicePage />} />
+              <Route path="/payment/success" element={<PaymentSuccessPage />} />
+              <Route path="/payment/cancel" element={<PaymentCancelPage />} />
               <Route path="/guest" element={<GuestLayout />}>
                 <Route index element={<Navigate to="available" replace />} />
                 <Route path="available" element={<AvailableServicesPage />} />
@@ -56,8 +67,16 @@ function App(){
                 <Route path="/employee/today-schedules" element={<TodaySchedulesPage />} />
                 <Route path="/employee/requested-schedules" element={<RequestedSchedulesPage />} />
                 <Route path="/employee/calendar" element={<EmployeeCalendarPage />} />
-                <Route path="/employee/reservations" element={<EmployeeReservationsPage />} />
                 <Route path="/employee/reviews" element={<EmployeeReviewsPage />} />
+              </Route>
+            </Route>
+            <Route element={<ProtectedRoute allowedRoles={["ROLE_RECEPTIONIST", "ROLE_MANAGER", "ROLE_ADMIN"]} />}>
+              <Route path="/receptionist" element={<ReceptionistLayout />}>
+                <Route path="guest-arrival-and-departures" element={<GuestArrivalsDeparturesPage />} />
+                <Route path="reservations" element={<EmployeeReservationsPage />} />
+                <Route path="guest-service" element={<ReceptionistGuestService />}>
+                  <Route path="check-in" element={<ReceptionistCheckInPage />} />
+                </Route>
               </Route>
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]} />}>
@@ -80,7 +99,11 @@ function App(){
             <Route path="/login" element={<LoginPage />} />
             <Route path="/reset-password-email" element={<SendResetPasswordEmail />} />
             <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/register" element={<RegisterPage />} >
+              <Route path="with-code" element={<RegisterWithCode />}/>
+              <Route path="no-code" element={<RegisterNoCode />}/>
+            </Route>
+            <Route path="/verify/account" element={<VerifyAccount />} />
             <Route path="*" element={<Navigate to="/home" replace />} />
             <Route path="/fallback" element={<FallbackPage />} />
           </Route>
@@ -97,6 +120,7 @@ const publicPaths = [
   '/logout',
   '/register',
   '/reset-password',
+  '/verify',
   '/fallback',
 ];
 

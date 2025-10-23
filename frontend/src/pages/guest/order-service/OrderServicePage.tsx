@@ -2,12 +2,13 @@ import { useLocation, useParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import { axiosAuthApi } from '../../../middleware/axiosApi.ts';
 import { ServiceProps } from '../available-services/AvailableServiceCard.tsx';
-import Grid from '@mui/material/Grid';
-import { selectShoppingCart } from '../../../redux/slices/shoppingCartSlice.ts';
+import { selectServicesCart } from '../../../redux/slices/servicesCartSlice.ts';
 import { useSelector } from 'react-redux';
 import ServiceDescription from './ServiceDescription.tsx';
 import ServiceCalendar from './ServiceCalendar.tsx';
 import AppLink from "../../../components/ui/AppLink.tsx";
+import ServiceAttributeDetails from "./ServiceAttributeDetails.tsx";
+import Stack from "@mui/material/Stack";
 
 export type OrderServiceProps = {
   id: string;
@@ -28,7 +29,7 @@ function OrderServicePage() {
   const [loading, setLoading] = useState(false);
   const [timeSlots, setTimeSlots] = useState<OrderServiceProps[]>([]);
   const [selectedTime, setSelectedTime] = useState<string>('');
-  const cartItems = useSelector(selectShoppingCart);
+  const cartItems = useSelector(selectServicesCart);
 
   const fetchServiceData = useCallback(() => {
     if (serviceFromState) {
@@ -49,7 +50,7 @@ function OrderServicePage() {
       .then(response => {
         const scheduleItems = response.data.map((s: OrderServiceProps) => ({
           ...s,
-          inCart: cartItems.includes(s.id),
+          inCart: cartItems.some(item => item.id === s.id),
         }));
         setTimeSlots(scheduleItems);
       })
@@ -81,13 +82,15 @@ function OrderServicePage() {
   return (
     <main style={{ width: '100%' }}>
       <AppLink to="/guest/available" display="inline-block" color="text.primary" mb={1}>{"< Go back"}</AppLink>
-      <Grid container spacing={3} columns={{ xs: 1, md: 2}}>
-        <ServiceDescription
-          service={service}
-          timeSlots={timeSlots}
-          selectedTime={selectedTime}
-          setSelectedTime={setSelectedTime}
-        />
+      <Stack flexDirection={{xs: "column", lg: "row"}} gap={3} alignItems="flex-start">
+        <Stack flexDirection="column" gap="inherit" flexGrow={1}>
+          <ServiceDescription
+            service={service}
+            timeSlots={timeSlots}
+            selectedTime={selectedTime}
+          />
+          <ServiceAttributeDetails service={service} />
+        </Stack>
         <ServiceCalendar
           selectedDate={selectedDate}
           timeSlots={timeSlots}
@@ -95,7 +98,7 @@ function OrderServicePage() {
           setSelectedTime={setSelectedTime}
           handleDateChange={handleDateChange}
         />
-      </Grid>
+      </Stack>
     </main>
   );
 }
