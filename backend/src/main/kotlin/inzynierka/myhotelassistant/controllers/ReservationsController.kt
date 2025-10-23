@@ -31,7 +31,7 @@ class ReservationsController(
         val roomStandard: String,
     )
 
-    data class ReservationGuest(
+    data class ReservationGuestDTO(
         val id: String,
         val room: RoomEntity,
         val checkIn: String,
@@ -53,7 +53,8 @@ class ReservationsController(
 
     @GetMapping("/mine")
     @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).GUEST.name)")
-    fun getMyReservations(principal: Principal): List<ReservationEntity> = reservationsService.findMyReservations(principal.name)
+    fun getMyReservations(principal: Principal): List<ReservationGuestDTO> =
+        reservationsService.findMyReservationsAsGuestDTO(principal.name)
 
     data class ReservationCreateDTO(
         val roomNumber: String,
