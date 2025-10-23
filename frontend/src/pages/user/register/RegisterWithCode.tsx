@@ -51,7 +51,7 @@ function RegisterWithCode() {
   };
 
   return (
-    <div style={{maxWidth: '362px'}}>
+    <div style={{width: '100%'}}>
       <InputLabel
         label={
           <>
@@ -101,6 +101,7 @@ function RegisterWithCode() {
         placeholder="************"
         autoComplete="new-password"
         slotProps={generatePasswordAdornment(showPassword, setShowPassword)}
+        sx={{mb: 2}}
       />
 
       <Button
@@ -108,16 +109,17 @@ function RegisterWithCode() {
         onClick={register}
         loading={loading}
         fullWidth
-        sx={{marginY: 2}}
         variant="contained"
       >
         {tc('registerButton')}
       </Button>
-      {error && (
-        <Typography component="p" variant="caption" color="error">
-          {t(error)}
-        </Typography>
-      )}
+      <div style={{textAlign: 'left', margin: '6px 0'}}>
+        {error && (
+          <Typography component="p" variant="caption" color="error">
+            {t(error)}
+          </Typography>
+        )}
+      </div>
       <Button
         size="small"
         sx={{ fontSize: '105%' }}

@@ -182,4 +182,8 @@ class ReservationsController(
     fun createReservationWithNewGuest(
         @RequestBody @Valid reservationWithGuestDTO: ReservationCreateWithNewGuestDTO,
     ): ReservationCreateWithNewGuestResponseDTO = reservationsService.createReservationWithNewGuest(reservationWithGuestDTO)
+
+    @GetMapping("/ongoing")
+    @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).EMPLOYEE.name)")
+    fun getAllOngoingReservations() = reservationsService.getAllOngoingReservations()
 }

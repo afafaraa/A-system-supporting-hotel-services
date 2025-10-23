@@ -28,3 +28,9 @@
 .MuiInputBase-input[type="password"] {
     font-family: 'Segoe UI', sans-serif;
 }
+
+.flex-centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

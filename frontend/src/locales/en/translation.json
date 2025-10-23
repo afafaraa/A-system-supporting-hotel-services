@@ -188,6 +188,7 @@
         "REQUESTED": "Pending",
         "CONFIRMED": "Confirmed",
         "CANCELLED": "Cancelled",
+        "CHECKED_IN": "Checked-in",
         "Confirmed": "Confirmed",
         "Pending": "Pending",
         "Cancelled": "Cancelled"
@@ -472,6 +473,15 @@
       "guest-service": {
         "title": "Guest Service",
         "subtitle": "Perform an action related to guest service",
+        "ongoing-reservations-title": "Ongoing Reservations",
+        "find-by-room-input-placeholder": "Find by room number...",
+        "reservations-fetching-error": "Unable to fetch ongoing reservations. Please try again later.",
+        "reservations-no-results": "No ongoing reservations found.",
+        "reservations-no-results-filtered": "No ongoing reservations found for this search query.",
+        "reservation-for": "Reservation for",
+        "days-after-check-in": "days after check-in",
+        "days-before-check-out": "days before check-out",
+        "other-actions-title": "Other guest-related actions",
         "Main": "Main",
         "Check-In": "Check-In"
       },

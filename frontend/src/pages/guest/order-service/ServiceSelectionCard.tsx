@@ -3,6 +3,7 @@ import Box from "@mui/system/Box";
 import {Button, ButtonGroup, Grid, MenuItem, Select, SelectChangeEvent, Stack, Typography} from "@mui/material";
 import {Dispatch, SetStateAction, useState} from "react";
 import {OptionObject, SelectionAttributes, SelectionAttributesResponse} from "../../../types/service_type_attributes.ts"
+import {onAddToCartFunction} from "./ServiceAttributeDetails.tsx";
 
 
 interface OrderItem {
@@ -12,15 +13,16 @@ interface OrderItem {
 }
 
 interface Props {
-  details: SelectionAttributes
+  details: SelectionAttributes;
+  onAddToCart: onAddToCartFunction;
 }
 
-function ServiceSelectionCard({details}: Props) {
+function ServiceSelectionCard({details, onAddToCart}: Props) {
   const [order, setOrder] = useState<OrderItem[]>([]);
 
   return (<>
     <SelectionCard details={details} setOrder={setOrder} />
-    <OrderSummary details={details} order={order} setOrder={setOrder} />
+    <OrderSummary details={details} order={order} setOrder={setOrder} onAddToCart={onAddToCart} />
   </>)
 }
 
@@ -106,7 +108,7 @@ function OptionCardSingleButton({group, option, setOrder}: {
   );
 }
 
-const OrderSummary = ({details, order, setOrder}: {details: SelectionAttributes, order: OrderItem[], setOrder: Dispatch<SetStateAction<OrderItem[]>>}) => {
+const OrderSummary = ({details, order, setOrder, onAddToCart}: {details: SelectionAttributes, order: OrderItem[], setOrder: Dispatch<SetStateAction<OrderItem[]>>, onAddToCart: onAddToCartFunction}) => {
 
   const handleAddQuantityButton = (option: OptionObject, value: number) => {
     setOrder(prev => {
@@ -123,13 +125,12 @@ const OrderSummary = ({details, order, setOrder}: {details: SelectionAttributes,
   }
 
   const handleOrderButton = () => {
-    // TODO: implement adding to main order
     const packedOrder: SelectionAttributesResponse = {
       type: details.type,
       selectedOptions: Object.fromEntries(order.map(item => [item.group + '.' + item.option.label, item.quantity])),
     }
-    console.log("Order:", packedOrder)
-    // setOrder([]);
+    onAddToCart(packedOrder);
+    setOrder([]);
   }
 
   return (
