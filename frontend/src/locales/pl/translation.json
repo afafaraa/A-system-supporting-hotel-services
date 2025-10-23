@@ -463,6 +463,95 @@
       "title": "Coś poszło nie tak",
       "subtitle": "Wystąpił nieoczekiwany błąd z przekierowaniem.",
       "go_home": "Wróć do strony głównej"
+    },
+    "receptionist": {
+      "navbar": {
+        "arrival-departures": "Meldunki i wymeldowania",
+        "reservations": "Rezerwacje",
+        "guest-service": "Obsługa gości"
+      },
+      "guest-service": {
+        "title": "Obsługa gości",
+        "subtitle": "Wykonaj akcję związaną z obsługą gości",
+        "Main": "Główna",
+        "Check-In": "Zameldowanie"
+      },
+      "check-in": {
+        "title": "Dodaj gościa do hotelu",
+        "subtitle": "Strona, gdzie możesz dodać gościa do hotelu, który nie miał wcześniej rezerwacji",
+        "date-range": "Okres pobytu",
+        "available-rooms-in-range": "Dostępne pokoje w podanym terminie:",
+        "room-option": "Pokój {{number}} - {{standard}}, {{capacity}} os., {{price}} $/noc",
+        "reservation-price": "Cena rezerwacji",
+        "guest-info": "Informacje o gościu",
+        "guest-count": "Liczba gości",
+        "name": "Imię",
+        "surname": "Nazwisko",
+        "email": "Email",
+        "with-check-in": "Chcę jednocześnie wykonać meldunek gościa hotelu",
+        "payment-confirmed": "Potwierdzam, że płatność została wykonana",
+        "add-reservation": "Dodaj rezerwację",
+        "and-check-in": "i zamelduj gościa",
+        "loading-available-rooms": "Ładowanie dostępnych pokoi...",
+        "available-rooms-found": "Znaleziono {{count}} dostępnych pokoi",
+        "error-loading-available-rooms": "Nie udało się pobrać listy dostępnych pokoi",
+        "loading-reservation-price": "Ładowanie ceny rezerwacji...",
+        "error-loading-reservation-price": "Nie udało się pobrać ceny rezerwacji",
+        "error-unable-to-add-reservation": "Nie udało się dodać rezerwacji",
+        "reservation-added-success": "Udało się dodać rezerwację",
+        "reservation-data": "Dane dotyczące rezerwacji:",
+        "user-login-data": "Dane logowania użytkownika do systemu:",
+        "username": "Nazwa użytkownika",
+        "password": "Hasło"
+      },
+      "reservation-dialog": {
+        "common": {
+          "reservation-title": "Rezerwacja pokoju {{room}}",
+          "reservation-id": "ID rezerwacji",
+          "reservation-status": "Status rezerwacji",
+          "stay-dates": "Data pobytu",
+          "room-standard": "Standard pokoju",
+          "guest-email": "Email gościa",
+          "guest-count": "Liczba gości",
+          "reservation-price": "Cena rezerwacji",
+          "paid": "Opłacona"
+        },
+        "check-in": {
+          "confirm-payment-label": "Potwierdzam, że płatność za pokój została dokonana",
+          "cancel": "Anuluj",
+          "check-in-button": "Zamelduj",
+          "success-message": "Pomyślnie zameldowano rezerwację",
+          "only-confirmed-error": "Tylko potwierdzone rezerwacje mogą zostać zameldowane",
+          "error-during-check-in": "Błąd podczas meldunku"
+        },
+        "check-out": {
+          "cancel": "Anuluj",
+          "check-out-button": "Wymelduj",
+          "success-message": "Pomyślnie wymeldowano rezerwację",
+          "only-checked-in-error": "Tylko zameldowane rezerwacje mogą zostać wymeldowane",
+          "error-during-check-out": "Błąd podczas wymeldowania"
+        }
+      },
+      "guest-arrival-departures": {
+        "title": "Przyjazdy i wyjazdy gości",
+        "subtitle": "Lista gości przyjeżdżających i wyjeżdżających dzisiaj",
+        "overdue-check-ins": "Zaległe meldunki",
+        "overdue-check-outs": "Zaległe wymeldowania",
+        "today-check-ins": "Dzisiejsze meldunki",
+        "today-check-outs": "Dzisiejsze wymeldowania",
+        "upcoming-check-ins": "Nadchodzące meldunki",
+        "upcoming-check-outs": "Nadchodzące wymeldowania",
+        "check-in-button": "Zamelduj",
+        "check-out-button": "Wymelduj",
+        "no-check-ins-today": "Brak potwierdzonych przyjazdów na dzisiaj.",
+        "no-check-outs-today": "Brak wyjazdów zaplanowanych na dzisiaj.",
+        "no-upcoming-check-ins": "Brak nadchodzących przyjazdów.",
+        "no-upcoming-check-outs": "Brak nadchodzących wyjazdów.",
+        "error-overdue-check-ins-count": "Błąd podczas pobierania liczby zaległych meldunków",
+        "error-overdue-check-outs-count": "Błąd podczas pobierania liczby zaległych wymeldowań",
+        "room-label": "Pokój",
+        "guest-label": "Gość"
+      }
     }
   },
   "common": {

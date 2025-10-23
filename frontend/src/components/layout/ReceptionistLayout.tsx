@@ -7,18 +7,16 @@ import {useMemo} from "react";
 const globalStyles = <GlobalStyles styles={{ html: { overflowY: 'scroll' } }} />
 
 const tabs = [
-  { key: "today",        link: "/employee/today-schedules" },
-  { key: "requested",    link: "/employee/requested-schedules" },
-  { key: "calendar",     link: "/employee/calendar" },
-  { key: "reviews",      link: "/employee/reviews" },
+  { key: "arrival-departures",  link: "/receptionist/guest-arrival-and-departures" },
+  { key: "reservations",  link: "/receptionist/reservations" },
+  { key: "guest-service", link: "/receptionist/guest-service"}
 ] as const;
 
-function EmployeeLayout() {
+function ReceptionistLayout() {
   const {t} = useTranslation();
   const translatedTabs = useMemo(() =>
-    tabs.map(tab => ({ name: t(`pages.employee.navbar.${tab.key}`), link: tab.link })
-  ), [t]);
-
+    tabs.map(tab => ({ name: t("pages.receptionist.navbar." + tab.key), link: tab.link })
+    ), [t]);
   return (
     <>
       {globalStyles}
@@ -28,4 +26,4 @@ function EmployeeLayout() {
   )
 }
 
-export default EmployeeLayout;
+export default ReceptionistLayout;

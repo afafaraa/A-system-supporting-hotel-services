@@ -23,15 +23,19 @@ import EmployeeLayout from "./components/layout/EmployeeLayout.tsx";
 import EmployeeCalendarPage from "./pages/employee/EmployeeCalendarPage.tsx";
 import TodaySchedulesPage from "./pages/employee/TodaySchedulesPage.tsx";
 import RequestedSchedulesPage from "./pages/employee/RequestedSchedulesPage.tsx";
-import EmployeeReservationsPage from "./pages/employee/ReservationsPage.tsx";
+import EmployeeReservationsPage from "./pages/receptionist/ReservationsPage.tsx";
 import EmployeeReviewsPage from "./pages/employee/ReviewsPage.tsx";
 import FallbackPage from "./pages/user/FallbackPage.tsx";
-import GuestLayout from "./pages/guest/layout/GuestLayout.tsx";
+import GuestLayout from "./components/layout/GuestLayout.tsx";
 import AdminLayout from "./components/layout/AdminLayout.tsx";
 import GuestsListPage from './pages/manager/GuestsListPage.tsx';
 import AvailableServicesPage from './pages/guest/available-services/AvailableServicesPage.tsx';
 import BookedServicesPage from './pages/guest/booked-services/BookedServicesPage.tsx';
 import HotelBookingPage from './pages/guest/hotel-booking/HotelBookingPage.tsx';
+import ReceptionistLayout from "./components/layout/ReceptionistLayout.tsx";
+import GuestArrivalsDeparturesPage from "./pages/receptionist/guest-arrival-departues/GuestArrivalsDeparturesPage.tsx";
+import ReceptionistCheckInPage from "./pages/receptionist/CheckInPage.tsx";
+import ReceptionistGuestService from "./pages/receptionist/GuestService.tsx";
 import RegisterNoCode from './pages/user/register/RegisterNoCode.tsx';
 import RegisterWithCode from './pages/user/register/RegisterWithCode.tsx';
 import VerifyAccount from './pages/user/verify/VerifyAccount.tsx';
@@ -62,8 +66,16 @@ function App(){
                 <Route path="/employee/today-schedules" element={<TodaySchedulesPage />} />
                 <Route path="/employee/requested-schedules" element={<RequestedSchedulesPage />} />
                 <Route path="/employee/calendar" element={<EmployeeCalendarPage />} />
-                <Route path="/employee/reservations" element={<EmployeeReservationsPage />} />
                 <Route path="/employee/reviews" element={<EmployeeReviewsPage />} />
+              </Route>
+            </Route>
+            <Route element={<ProtectedRoute allowedRoles={["ROLE_RECEPTIONIST", "ROLE_MANAGER", "ROLE_ADMIN"]} />}>
+              <Route path="/receptionist" element={<ReceptionistLayout />}>
+                <Route path="guest-arrival-and-departures" element={<GuestArrivalsDeparturesPage />} />
+                <Route path="reservations" element={<EmployeeReservationsPage />} />
+                <Route path="guest-service" element={<ReceptionistGuestService />}>
+                  <Route path="check-in" element={<ReceptionistCheckInPage />} />
+                </Route>
               </Route>
             </Route>
             <Route element={<ProtectedRoute allowedRoles={["ROLE_MANAGER", "ROLE_ADMIN"]} />}>

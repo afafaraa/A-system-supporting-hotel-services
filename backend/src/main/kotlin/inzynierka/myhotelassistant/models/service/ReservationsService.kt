@@ -2,6 +2,7 @@ package inzynierka.myhotelassistant.models.service
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped
 import inzynierka.myhotelassistant.controllers.ReservationsController
+import inzynierka.myhotelassistant.controllers.user.AddUserController
 import inzynierka.myhotelassistant.models.reservation.ReservationEntity
 import inzynierka.myhotelassistant.models.reservation.ReservationStatus
 import inzynierka.myhotelassistant.models.room.RoomEntity
@@ -50,18 +51,20 @@ class ReservationsService(
         val parsedStatus = ReservationStatus.fromString(status)
         return reservationsRepository
             .findAllByStatus(parsedStatus)
-            .map { reservation ->
-                val guest = userService.getUserNameAndEmailById(reservation.guestId)
-                val room =
-                    roomRepository.getRoomStandardByNumber(reservation.roomNumber)
-                        ?: throw IllegalArgumentException("Room with number ${reservation.roomNumber} not found")
-                ReservationsController.ReservationDTO(
-                    reservation,
-                    "${guest?.name} ${guest?.surname}",
-                    guest?.email,
-                    room.standard.displayName,
-                )
-            }
+            .map { transformToDTO(it) }
+    }
+
+    private fun transformToDTO(reservation: ReservationEntity): ReservationsController.ReservationDTO {
+        val guest = userService.getUserNameAndEmailById(reservation.guestId)
+        val room =
+            roomRepository.getRoomStandardByNumber(reservation.roomNumber)
+                ?: throw IllegalArgumentException("Room with number ${reservation.roomNumber} not found")
+        return ReservationsController.ReservationDTO(
+            reservation,
+            "${guest?.name} ${guest?.surname}",
+            guest?.email,
+            room.standard.displayName,
+        )
     }
 
     fun createReservation(reservationDTO: ReservationsController.ReservationCreateDTO): ReservationEntity {
@@ -160,22 +163,23 @@ class ReservationsService(
     fun checkInGuestReservation(
         reservationId: String,
         paid: Boolean,
-    ) {
+    ): ReservationsController.ReservationDTO {
         val reservation = findByIdOrThrow(reservationId)
         if (reservation.status != ReservationStatus.CONFIRMED) {
             throw IllegalArgumentException("Only reservations with status CONFIRMED can be checked in")
         }
+        reservation.status = ReservationStatus.CHECKED_IN
         reservation.paid = paid
-        reservationsRepository.save(reservation)
+        return transformToDTO(reservationsRepository.save(reservation))
     }
 
-    fun checkOutGuestReservation(reservationId: String) {
+    fun checkOutGuestReservation(reservationId: String): ReservationsController.ReservationDTO {
         val reservation = findByIdOrThrow(reservationId)
-        if (reservation.status != ReservationStatus.CONFIRMED) {
-            throw IllegalArgumentException("Only reservations with status CONFIRMED can be checked out")
+        if (reservation.status != ReservationStatus.CHECKED_IN) {
+            throw IllegalArgumentException("Only reservations with status CHECKED_IN can be checked out")
         }
         reservation.status = ReservationStatus.COMPLETED
-        reservationsRepository.save(reservation)
+        return transformToDTO(reservationsRepository.save(reservation))
     }
 
     fun calculateReservationPrice(
@@ -195,4 +199,106 @@ class ReservationsService(
     fun isAnyExist(): Boolean = reservationsRepository.count() > 0
 
     fun save(reservation: ReservationEntity): ReservationEntity = reservationsRepository.save(reservation)
+
+    fun getCheckInsFromDay(date: LocalDate?): List<ReservationsController.ReservationDTO> {
+        val reservations = reservationsRepository.findAllByCheckInIsAndStatusIs(date ?: LocalDate.now(), ReservationStatus.CONFIRMED)
+        return reservations.map { transformToDTO(it) }
+    }
+
+    fun getCheckOutsFromDay(date: LocalDate?): List<ReservationsController.ReservationDTO> {
+        val reservations = reservationsRepository.findAllByCheckOutIsAndStatusIs(date ?: LocalDate.now(), ReservationStatus.CHECKED_IN)
+        return reservations.map { transformToDTO(it) }
+    }
+
+    fun getUpcomingCheckIns(): List<ReservationsController.ReservationDTO> {
+        val today = LocalDate.now()
+        val reservations =
+            reservationsRepository.findAllByCheckInIsBetweenAndStatusInOrderByCheckIn(
+                checkInAfter = today,
+                checkInBefore = today.plusDays(30),
+                statuses = listOf(ReservationStatus.CONFIRMED, ReservationStatus.REQUESTED),
+            )
+        return reservations.map { transformToDTO(it) }
+    }
+
+    fun getUpcomingCheckOuts(): List<ReservationsController.ReservationDTO> {
+        val today = LocalDate.now()
+        val reservations =
+            reservationsRepository.findAllByCheckOutIsBetweenAndStatusIsOrderByCheckOut(
+                checkOutAfter = today,
+                checkOutBefore = today.plusDays(30),
+                status = ReservationStatus.CHECKED_IN,
+            )
+        return reservations.map { transformToDTO(it) }
+    }
+
+    fun getOverdueCheckIns(): List<ReservationsController.ReservationDTO> {
+        val today = LocalDate.now()
+        val reservations =
+            reservationsRepository.findAllByCheckInIsBeforeAndStatusIsIn(
+                checkInDate = today,
+                statuses = listOf(ReservationStatus.CONFIRMED, ReservationStatus.REQUESTED),
+            )
+        return reservations.map { transformToDTO(it) }
+    }
+
+    fun getOverdueCheckOuts(): List<ReservationsController.ReservationDTO> {
+        val today = LocalDate.now()
+        val reservations =
+            reservationsRepository.findAllByCheckOutIsBeforeAndStatusIsIn(
+                checkOutDate = today,
+                statuses = listOf(ReservationStatus.CHECKED_IN),
+            )
+        return reservations.map { transformToDTO(it) }
+    }
+
+    fun countOverdueCheckIns(): Long {
+        val today = LocalDate.now()
+        return reservationsRepository.countAllByCheckInIsBeforeAndStatusIsIn(
+            checkInDate = today,
+            statuses = listOf(ReservationStatus.CONFIRMED, ReservationStatus.REQUESTED),
+        )
+    }
+
+    fun countOverdueCheckOuts(): Long {
+        val today = LocalDate.now()
+        return reservationsRepository.countAllByCheckOutIsBeforeAndStatusIsIn(
+            checkOutDate = today,
+            statuses = listOf(ReservationStatus.CHECKED_IN),
+        )
+    }
+
+    fun createReservationWithNewGuest(
+        dto: ReservationsController.ReservationCreateWithNewGuestDTO,
+    ): ReservationsController.ReservationCreateWithNewGuestResponseDTO {
+        val (guestId, addUserResponse) =
+            userService.createAndSaveGuest(
+                AddUserController.AddUserRequest(
+                    email = dto.email,
+                    name = dto.name,
+                    surname = dto.surname,
+                    roomNumber = dto.roomNumber,
+                    checkInDate = dto.checkInDate,
+                    checkOutDate = dto.checkOutDate,
+                ),
+            )
+        val reservation =
+            ReservationEntity(
+                roomNumber = dto.roomNumber,
+                guestId = guestId,
+                guestsCount = dto.guestCount,
+                checkIn = dto.checkInDate,
+                checkOut = dto.checkOutDate,
+                reservationPrice = calculateReservationPrice(dto.roomNumber, dto.checkInDate, dto.checkOutDate),
+                specialRequests = dto.specialRequests,
+            )
+        reservation.status = if (dto.withCheckIn) ReservationStatus.CHECKED_IN else ReservationStatus.CONFIRMED
+        val savedReservation = reservationsRepository.save(reservation)
+        val refreshedReservation = findByIdOrThrow(savedReservation.id!!)
+
+        return ReservationsController.ReservationCreateWithNewGuestResponseDTO(
+            reservation = transformToDTO(refreshedReservation),
+            userAccount = addUserResponse,
+        )
+    }
 }

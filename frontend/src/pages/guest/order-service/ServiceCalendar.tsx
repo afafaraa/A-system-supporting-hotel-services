@@ -9,6 +9,8 @@ import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { OrderServiceProps } from './OrderServicePage.tsx';
 import { useTranslation } from 'react-i18next';
+import {addDays} from "date-fns";
+import {getDateFnsLocale} from "../../../locales/i18n.ts";
 
 function ServiceCalendar({
   selectedDate,
@@ -45,15 +47,16 @@ function ServiceCalendar({
           <Typography sx={{ mb: 1, fontWeight: '600' }}>
             {t('pages.order_service.selectDate')}
           </Typography>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={getDateFnsLocale(t("date.locale"))}>
             <DateCalendar
               value={selectedDate}
-              onChange={(newDate) => handleDateChange(newDate)}
+              onChange={(newDate: Date | null) => handleDateChange(newDate)}
+              disablePast
+              maxDate={addDays(new Date(), 30)}
               sx={{
                 border: theme => `1px solid ${theme.palette.divider}`,
-                borderRadius: '10px',
-                padding: '15px 10px 15px 10px',
-                width: '100%',
+                borderRadius: '12px',
+                padding: 1,
               }}
             />
           </LocalizationProvider>

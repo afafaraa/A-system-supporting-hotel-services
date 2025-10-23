@@ -31,20 +31,7 @@ class FileUploadController(
     fun uploadImage(
         @RequestParam("file") file: MultipartFile,
     ): ResponseEntity<*> {
-        if (file.isEmpty) {
-            return ResponseEntity.badRequest().body("Error: File is empty")
-        }
-
-        val allowedTypes = listOf("image/jpeg", "image/jpg", "image/png", "image/webp")
-        if (file.contentType !in allowedTypes) {
-            return ResponseEntity.badRequest().body("Error: Illegal file format, try jpg/jpeg/png/webp")
-        }
-
-        val maxSize = 10 * 1024 * 1024L // 10MB
-        if (file.size > maxSize) {
-            return ResponseEntity.badRequest().body("Error: File cannot be larger than 10MB")
-        }
-
+        fileStorageService.verifyFile(file)
         return try {
             val fileName = fileStorageService.storeFile(file)
             val fileDownloadUri =
