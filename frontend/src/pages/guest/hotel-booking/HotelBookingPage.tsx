@@ -64,7 +64,7 @@ export default function HotelBookingPage() {
                         >
                             <div>
                                 <Typography sx={{ fontWeight: 600, fontSize: '16px' }}>
-                                    Room {reservation.room.standard} - Number {reservation.room.number}
+                                    Room {reservation.room.standard.name} - Number {reservation.room.number}
                                 </Typography>
                                 <Typography fontSize="12px" color="text.secondary">
                                     {new Date(reservation.checkIn).toLocaleDateString()} – {new Date(reservation.checkOut).toLocaleDateString()}

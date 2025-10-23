@@ -82,7 +82,7 @@ function ReservationDialog({
       </DialogTitle>
       <DialogContent dividers>
         <Typography variant="subtitle2" sx={{ mb: 2 }}>
-          {room.standard
+          {room.standard.name
             .replace(/_/g, ' ')
             .toLowerCase()
             .replace(/^\w/, (c) => c.toUpperCase())}{' '}

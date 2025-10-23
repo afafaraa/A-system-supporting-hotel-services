@@ -187,11 +187,12 @@
       "status": {
         "REQUESTED": "Oczekująca",
         "CONFIRMED": "Potwierdzona",
-        "CANCELLED": "Anulowana",
+        "CANCELED": "Anulowana",
         "CHECKED_IN": "Zameldowana",
         "Confirmed": "Potwierdzona",
         "Pending": "Oczekująca",
-        "Cancelled": "Anulowana"
+        "Cancelled": "Anulowana",
+        "REJECTED": "Odrzucona"
       }
     },
     "manager": {

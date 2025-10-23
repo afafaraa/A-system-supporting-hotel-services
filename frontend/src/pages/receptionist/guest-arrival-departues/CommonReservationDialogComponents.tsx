@@ -44,7 +44,7 @@ const ReservationDetails = ({reservation}: {reservation: Reservation}) => {
         {formatDateRange(reservation.checkIn, reservation.checkOut)}
       </DialogSection>
       <DialogSection title={tc("room-standard")}>
-        {reservation.roomStandard}
+        {reservation.roomStandard.name}
       </DialogSection>
       <DialogSection title={tc("guest-email")}>
         {reservation.guestEmail}
