@@ -46,4 +46,11 @@ interface ScheduleRepository : MongoRepository<ScheduleEntity, String> {
     ): List<ScheduleEntity>
 
     fun findAllByStatusIn(statuses: List<OrderStatus>): List<ScheduleEntity>
+
+    // Added: find schedules by statuses and date range (used by ServiceReminderJob)
+    fun findByStatusInAndServiceDateBetween(
+        statuses: List<OrderStatus>,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime,
+    ): List<ScheduleEntity>
 }

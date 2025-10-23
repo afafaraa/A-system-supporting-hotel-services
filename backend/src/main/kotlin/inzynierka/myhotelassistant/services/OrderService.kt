@@ -2,6 +2,7 @@ package inzynierka.myhotelassistant.services
 
 import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
+import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.models.user.UserEntity
 import org.springframework.stereotype.Component
 import java.time.Duration
@@ -38,7 +39,7 @@ class OrderService(
     fun order(
         guest: UserEntity,
         scheduleId: String,
-    ) {
+    ): ScheduleEntity {
         val schedule = scheduleService.findByIdOrThrow(scheduleId)
         val service = serviceService.findByIdOrThrow(schedule.serviceId)
         val currentPrice = service.price
@@ -51,5 +52,6 @@ class OrderService(
         }
         scheduleService.save(schedule)
         userService.save(guest)
+        return schedule
     }
 }

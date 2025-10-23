@@ -10,6 +10,7 @@ import inzynierka.myhotelassistant.services.OrderService
 import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
 import inzynierka.myhotelassistant.services.UserService
+import inzynierka.myhotelassistant.services.notifications.NotificationScheduler
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
@@ -30,6 +31,7 @@ class GuestController(
     private val serviceService: ServiceService,
     private val orderService: OrderService,
     private val reservationsService: ReservationsService,
+    private val notificationScheduler: NotificationScheduler,
 ) {
     data class EmployeeNameResponse(
         val name: String,
@@ -86,7 +88,8 @@ class GuestController(
         @RequestBody req: OrderServicesRequestBody,
     ) {
         val guest = userService.findByUsernameOrThrow(req.username)
-        orderService.order(guest, req.id)
+        val schedule = orderService.order(guest, req.id)
+        notificationScheduler.notifyGuestOnSuccessfulOrder(schedule)
     }
 
     @PostMapping("/order/services/add-to-tab")

@@ -1,6 +1,9 @@
 package inzynierka.myhotelassistant.utils.email
 
 import inzynierka.myhotelassistant.configs.AppProperties
+import inzynierka.myhotelassistant.models.notification.NotificationVariant
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Service
@@ -12,8 +15,10 @@ import java.time.Instant
 class EmailSender(
     private val mailSender: JavaMailSender,
     private val appProperties: AppProperties,
+    @Value("\${spring.mail.username}") private val configuredFromEmail: String?,
 ) {
-    private val sendEmailAddress = "hello@demomailtrap.co"
+    private val logger = LoggerFactory.getLogger(EmailSender::class.java)
+    private val fallbackSendEmailAddress = "hello@demomailtrap.co"
 
     fun sendRegistrationCodeEmail(
         email: String,
@@ -35,7 +40,7 @@ class EmailSender(
 
         val msg =
             SimpleMailMessage().apply {
-                from = sendEmailAddress
+                from = configuredFromEmail ?: fallbackSendEmailAddress
                 setTo(email)
                 subject = "Your registration code"
                 this.text = text.trimIndent()
@@ -62,7 +67,7 @@ class EmailSender(
 
         val msg =
             SimpleMailMessage().apply {
-                from = sendEmailAddress
+                from = configuredFromEmail ?: fallbackSendEmailAddress
                 setTo(email)
                 subject = "Password Reset Request"
                 this.text = text.trimIndent()
@@ -92,7 +97,7 @@ class EmailSender(
 
         val msg =
             SimpleMailMessage().apply {
-                from = sendEmailAddress
+                from = configuredFromEmail ?: fallbackSendEmailAddress
                 setTo(email)
                 subject = "Confirm your MyHotelAssistant account"
                 this.text = text.trimIndent()
@@ -100,4 +105,42 @@ class EmailSender(
         println("Verification link: $link")
         mailSender.send(msg)
     }
+
+    fun sendNotificationEmail(
+        toEmail: String,
+        title: String,
+        variant: NotificationVariant,
+        message: String,
+    ) {
+        try {
+            val mailMessage = SimpleMailMessage()
+            mailMessage.setTo(toEmail)
+            mailMessage.from = configuredFromEmail ?: fallbackSendEmailAddress
+            mailMessage.subject = "[${variant.name}] $title"
+            mailMessage.text = buildEmailBody(title, variant, message)
+
+            mailSender.send(mailMessage)
+            logger.info("Notification email sent successfully to $toEmail")
+        } catch (e: Exception) {
+            logger.error("Failed to send notification email to $toEmail: ${'$'}{e.message}")
+        }
+    }
+
+    private fun buildEmailBody(
+        title: String,
+        variant: NotificationVariant,
+        message: String,
+    ): String =
+        """
+        Dear Guest,
+        
+        $message
+        
+        ---
+        This is an automated notification from My Hotel Assistant.
+        Please do not reply to this email.
+        
+        Best regards,
+        Hotel Management Team
+        """.trimIndent()
 }
