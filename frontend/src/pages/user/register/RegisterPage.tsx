@@ -61,7 +61,7 @@ function RegisterPage() {
     <ShadowCard
       style={{
         minHeight: '70%',
-        width: 'fit-content',
+        flexBasis: '460px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -84,7 +84,7 @@ function RegisterPage() {
         fontWeight="regular"
         fontSize={28}
         color="primary.main"
-        sx={{width: '362px'}}
+        mb={1}
       >
         {tc('title')}
       </Typography>
@@ -97,7 +97,7 @@ function RegisterPage() {
           display: 'flex',
           gap: '1rem',
           overflow: 'hidden',
-          width: '362px',
+          width: '100%',
         }}
       >
         <div

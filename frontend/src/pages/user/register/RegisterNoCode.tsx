@@ -58,112 +58,114 @@ function RegisterNoCode() {
   };
 
   return (
-    <Grid spacing={2} container columns={{ xs: 1, md: 2 }}>
-      <Grid sx={{ flexGrow: 1 }} size={1}>
-        <InputLabel
-          label={
-            <>
-              <PersonIcon sx={{ fontSize: '120%' }} /> {tc('username')}
-            </>
-          }
-          htmlFor="username"
-        />
-        <StyledInput
-          id="username"
-          name="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder={tc('username')}
-        />
+    <div style={{width: '100%'}}>
+      <Grid columnSpacing={2} container columns={{ xs: 1, md: 2 }} mb={2}>
+        <Grid sx={{ flexGrow: 1 }} size={1}>
+          <InputLabel
+            label={
+              <>
+                <PersonIcon sx={{ fontSize: '120%' }} /> {tc('username')}
+              </>
+            }
+            htmlFor="username"
+          />
+          <StyledInput
+            id="username"
+            name="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder={tc('username')}
+          />
 
-        <InputLabel
-          label={
-            <>
-              <LockIcon sx={{ fontSize: '120%' }} /> {tc('password')}
-            </>
-          }
-          htmlFor="password"
-        />
-        <StyledInput
-          id="password"
-          name="password"
-          type={showPassword ? 'text' : 'password'}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="************"
-          autoComplete="new-password"
-          slotProps={generatePasswordAdornment(showPassword, setShowPassword)}
-        />
+          <InputLabel
+            label={
+              <>
+                <LockIcon sx={{ fontSize: '120%' }} /> {tc('password')}
+              </>
+            }
+            htmlFor="password"
+          />
+          <StyledInput
+            id="password"
+            name="password"
+            type={showPassword ? 'text' : 'password'}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="************"
+            autoComplete="new-password"
+            slotProps={generatePasswordAdornment(showPassword, setShowPassword)}
+          />
 
-        <InputLabel
-          label={
-            <>
-              <LockIcon sx={{ fontSize: '120%' }} /> {tc('repeatPassword')}
-            </>
-          }
-          htmlFor="repeatPassword"
-        />
-        <StyledInput
-          id="repeatPassword"
-          name="repeatPassword"
-          type={showRepeatPassword ? 'text' : 'password'}
-          value={repeatPassword}
-          onChange={(e) => setRepeatPassword(e.target.value)}
-          placeholder="************"
-          autoComplete="new-password"
-          slotProps={generatePasswordAdornment(showRepeatPassword, setShowRepeatPassword)}
-          error={repeatPassword !== '' && !passwordsMatch}
-        />
+          <InputLabel
+            label={
+              <>
+                <LockIcon sx={{ fontSize: '120%' }} /> {tc('repeatPassword')}
+              </>
+            }
+            htmlFor="repeatPassword"
+          />
+          <StyledInput
+            id="repeatPassword"
+            name="repeatPassword"
+            type={showRepeatPassword ? 'text' : 'password'}
+            value={repeatPassword}
+            onChange={(e) => setRepeatPassword(e.target.value)}
+            placeholder="************"
+            autoComplete="new-password"
+            slotProps={generatePasswordAdornment(showRepeatPassword, setShowRepeatPassword)}
+            error={repeatPassword !== '' && !passwordsMatch}
+          />
 
-      </Grid>
-      <Grid sx={{ flexGrow: 1 }} size={1}>
-        <InputLabel
-          label={
-            <>
-              <EmailIcon sx={{ fontSize: '120%' }} /> {tc('email')}
-            </>
-          }
-          htmlFor="email"
-        />
-        <StyledInput
-          id="email"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder={tc('email')}
-        />
-        
-        <InputLabel
-          label={
-            <>
-              <PersonIcon sx={{ fontSize: '120%' }} /> {tc('name')}
-            </>
-          }
-          htmlFor="name"
-        />
-        <StyledInput
-          id="name"
-          name="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder={tc('name')}
-        />
+        </Grid>
+        <Grid sx={{ flexGrow: 1 }} size={1}>
+          <InputLabel
+            label={
+              <>
+                <EmailIcon sx={{ fontSize: '120%' }} /> {tc('email')}
+              </>
+            }
+            htmlFor="email"
+          />
+          <StyledInput
+            id="email"
+            name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={tc('email')}
+          />
 
-        <InputLabel
-          label={
-            <>
-              <PersonIcon sx={{ fontSize: '120%' }} /> {tc('surname')}
-            </>
-          }
-          htmlFor="surname"
-        />
-        <StyledInput
-          id="surname"
-          name="surname"
-          value={surname}
-          onChange={(e) => setSurname(e.target.value)}
-          placeholder={tc('surname')}
-        />
+          <InputLabel
+            label={
+              <>
+                <PersonIcon sx={{ fontSize: '120%' }} /> {tc('name')}
+              </>
+            }
+            htmlFor="name"
+          />
+          <StyledInput
+            id="name"
+            name="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder={tc('name')}
+          />
+
+          <InputLabel
+            label={
+              <>
+                <PersonIcon sx={{ fontSize: '120%' }} /> {tc('surname')}
+              </>
+            }
+            htmlFor="surname"
+          />
+          <StyledInput
+            id="surname"
+            name="surname"
+            value={surname}
+            onChange={(e) => setSurname(e.target.value)}
+            placeholder={tc('surname')}
+          />
+        </Grid>
       </Grid>
       <Button
         disabled={disabled}
@@ -174,21 +176,23 @@ function RegisterNoCode() {
       >
         {tc('registerButton')}
       </Button>
-      {!passwordsMatch && repeatPassword !== '' && (
-        <Typography component="p" variant="caption" color="error">
-          {tc('passwordsDoNotMatch')}
-        </Typography>
-      )}
-      {error && (
-        <Typography component="p" variant="caption" color="error">
-          {t(error)}
-        </Typography>
-      )}
-      {success && (
-        <Typography component="p" variant="caption" color="success.main">
-          {t(success)}
-        </Typography>
-      )}
+      <div style={{textAlign: 'left', margin: '6px 0'}}>
+        {!passwordsMatch && repeatPassword !== '' && (
+          <Typography component="p" variant="caption" color="error">
+            {tc('passwordsDoNotMatch')}
+          </Typography>
+        )}
+        {error && (
+          <Typography component="p" variant="caption" color="error">
+            {t(error)}
+          </Typography>
+        )}
+        {success && (
+          <Typography component="p" variant="caption" color="success.main">
+            {t(success)}
+          </Typography>
+        )}
+      </div>
       <Button
         size="small"
         fullWidth
@@ -198,7 +202,7 @@ function RegisterNoCode() {
         {'< '}
         {tc('goBack')}
       </Button>
-    </Grid>
+    </div>
   );
 }
 
