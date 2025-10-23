@@ -26,12 +26,15 @@ class NotificationScheduler(
             userId = guestId,
             title = title,
             variant = NotificationVariant.CONFIRMATION,
-            message = message
+            message = message,
         )
-
     }
 
-    fun notifyGuestOnStatusChange(schedule: ScheduleEntity, oldStatus: OrderStatus, newStatus: OrderStatus) {
+    fun notifyGuestOnStatusChange(
+        schedule: ScheduleEntity,
+        oldStatus: OrderStatus,
+        newStatus: OrderStatus,
+    ) {
         val guestId = schedule.guestId ?: return
 
         // Only notify guests for their orders (not for AVAILABLE status)
@@ -46,7 +49,7 @@ class NotificationScheduler(
             userId = guestId,
             title = title,
             variant = variant,
-            message = message
+            message = message,
         )
     }
 
@@ -54,39 +57,43 @@ class NotificationScheduler(
         serviceName: String,
         schedule: ScheduleEntity,
         oldStatus: OrderStatus,
-        newStatus: OrderStatus
+        newStatus: OrderStatus,
     ): Triple<String, NotificationVariant, String> {
         val dateTime = schedule.serviceDate.format(dateFormatter)
 
         return when (newStatus) {
-            OrderStatus.ACTIVE -> Triple(
-                "Service Confirmed",
-                NotificationVariant.CONFIRMATION,
-                "Your service '$serviceName' scheduled for $dateTime has been confirmed and is now active."
-            )
-            OrderStatus.COMPLETED -> Triple(
-                "Service Completed",
-                NotificationVariant.NOTICE,
-                "Your service '$serviceName' has been completed. Thank you for using our services!"
-            )
+            OrderStatus.ACTIVE ->
+                Triple(
+                    "Service Confirmed",
+                    NotificationVariant.CONFIRMATION,
+                    "Your service '$serviceName' scheduled for $dateTime has been confirmed and is now active.",
+                )
+            OrderStatus.COMPLETED ->
+                Triple(
+                    "Service Completed",
+                    NotificationVariant.NOTICE,
+                    "Your service '$serviceName' has been completed. Thank you for using our services!",
+                )
             OrderStatus.CANCELED -> {
                 val reason = schedule.cancellationReason?.let { getCancellationReasonDisplayName(it) } ?: "No reason provided"
                 Triple(
                     "Service Cancelled",
                     NotificationVariant.ALERT,
-                    "Your service '$serviceName' scheduled for $dateTime has been cancelled. Reason: $reason"
+                    "Your service '$serviceName' scheduled for $dateTime has been cancelled. Reason: $reason",
                 )
             }
-            OrderStatus.REQUESTED -> Triple(
-                "Service Requested",
-                NotificationVariant.NOTICE,
-                "Your service request for '$serviceName' is being processed."
-            )
-            else -> Triple(
-                "Service Status Update",
-                NotificationVariant.NOTICE,
-                "Your service '$serviceName' status has changed from ${oldStatus.name} to ${newStatus.name}."
-            )
+            OrderStatus.REQUESTED ->
+                Triple(
+                    "Service Requested",
+                    NotificationVariant.NOTICE,
+                    "Your service request for '$serviceName' is being processed.",
+                )
+            else ->
+                Triple(
+                    "Service Status Update",
+                    NotificationVariant.NOTICE,
+                    "Your service '$serviceName' status has changed from ${oldStatus.name} to ${newStatus.name}.",
+                )
         }
     }
 

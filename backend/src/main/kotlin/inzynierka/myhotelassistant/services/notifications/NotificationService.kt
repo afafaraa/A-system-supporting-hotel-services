@@ -20,7 +20,6 @@ class NotificationService(
     private val notificationRepository: NotificationRepository,
     private val emailSender: EmailSender,
 ) {
-
     fun getNotificationsOfGivenUser(
         username: String,
         authentication: Authentication,
@@ -102,7 +101,7 @@ class NotificationService(
                 toEmail = user.email,
                 title = title,
                 variant = variant,
-                message = message
+                message = message,
             )
         } catch (e: Exception) {
             println("Failed to send email notification to user $userId: ${'$'}{e.message}")

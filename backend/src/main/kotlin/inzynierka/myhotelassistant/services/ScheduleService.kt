@@ -130,7 +130,7 @@ class ScheduleService(
     fun createGuestOrder(
         scheduleId: String,
         guestId: String,
-        specialRequests: String? = null
+        specialRequests: String? = null,
     ): ScheduleDTO {
         val schedule = findByIdOrThrow(scheduleId)
         schedule.guestId = guestId

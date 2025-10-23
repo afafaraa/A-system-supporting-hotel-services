@@ -1,6 +1,8 @@
 package inzynierka.myhotelassistant.models.schedule
 
-enum class CancellationReason(val displayName: String) {
+enum class CancellationReason(
+    val displayName: String,
+) {
     OVERLAPPING_TERMS("Overlapping terms"),
     PERSONAL_REASONS("Personal reasons"),
     ILLNESS("Illness"),

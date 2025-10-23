@@ -114,7 +114,7 @@ class GuestController(
             val reservation: ReservationEntity = reservationsService.createReservation(req)
             val guest = userService.findByUsernameOrThrow(req.guestUsername)
             guest.guestData?.let { data ->
-                data.bill += reservation.reservationPrice ?: 0.0
+                data.bill += reservation.reservationPrice
             }
             userService.save(guest)
         } catch (e: IllegalArgumentException) {
@@ -146,7 +146,10 @@ class GuestController(
         @PathVariable username: String,
     ): List<ScheduleForPastAndRequestedServicesResponse> {
         val userId = userService.findByUsernameOrThrow(username).id!!
-        return findAllByStatusAndUserId(listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE, OrderStatus.COMPLETED, OrderStatus.CANCELED), userId)
+        return findAllByStatusAndUserId(
+            listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE, OrderStatus.COMPLETED, OrderStatus.CANCELED),
+            userId,
+        )
     }
 
     @GetMapping("/bill/get/{username}")
@@ -172,8 +175,9 @@ class GuestController(
         statusList: List<OrderStatus>,
         userId: String,
     ): List<ScheduleForPastAndRequestedServicesResponse> {
-        val guestUsername = userRepository.findByUsername(userId)?.username
-            ?: throw HttpException.EntityNotFoundException("Guest username not found for id: $userId")
+        val guestUsername =
+            userRepository.findByUsername(userId)?.username
+                ?: throw HttpException.EntityNotFoundException("Guest username not found for id: $userId")
 
         return scheduleService
             .findByGuestIdAndStatusIn(guestUsername, statusList)

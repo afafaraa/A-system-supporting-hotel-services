@@ -3,8 +3,8 @@ package inzynierka.myhotelassistant.jobs
 import inzynierka.myhotelassistant.models.notification.NotificationVariant
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
-import inzynierka.myhotelassistant.services.notifications.NotificationService
 import inzynierka.myhotelassistant.services.ServiceService
+import inzynierka.myhotelassistant.services.notifications.NotificationService
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -29,11 +29,12 @@ class ServiceReminderJob(
         val now = LocalDateTime.now()
         val oneHourLater = now.plusHours(1)
 
-        val upcomingSchedules = scheduleRepository.findByStatusInAndServiceDateBetween(
-            statuses = listOf(OrderStatus.ACTIVE, OrderStatus.REQUESTED),
-            startDate = now,
-            endDate = oneHourLater
-        )
+        val upcomingSchedules =
+            scheduleRepository.findByStatusInAndServiceDateBetween(
+                statuses = listOf(OrderStatus.ACTIVE, OrderStatus.REQUESTED),
+                startDate = now,
+                endDate = oneHourLater,
+            )
 
         logger.info("Found ${upcomingSchedules.size} upcoming services")
 
@@ -44,16 +45,21 @@ class ServiceReminderJob(
 
             try {
                 val service = serviceService.findByIdOrThrow(schedule.serviceId)
-                val minutesUntil = java.time.Duration.between(now, schedule.serviceDate).toMinutes()
+                val minutesUntil =
+                    java.time.Duration
+                        .between(now, schedule.serviceDate)
+                        .toMinutes()
 
                 val title = "Upcoming Service Reminder"
-                val message = "Your service '${service.name}' is scheduled to start in approximately $minutesUntil minutes at ${schedule.serviceDate.format(dateFormatter)}."
+                val message =
+                    "Your service '${service.name}' is scheduled to start in approximately " +
+                        "$minutesUntil minutes at ${schedule.serviceDate.format(dateFormatter)}."
 
                 notificationService.addNotificationToUser(
                     userId = schedule.guestId!!,
                     title = title,
                     variant = NotificationVariant.NOTICE,
-                    message = message
+                    message = message,
                 )
 
                 schedule.id?.let { notifiedSchedules.add(it) }
