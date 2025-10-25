@@ -187,11 +187,10 @@
       "status": {
         "REQUESTED": "Pending",
         "CONFIRMED": "Confirmed",
-        "CANCELLED": "Cancelled",
-        "CHECKED_IN": "Checked-in",
-        "Confirmed": "Confirmed",
-        "Pending": "Pending",
-        "Cancelled": "Cancelled"
+        "CANCELED": "Cancelled",
+        "REJECTED": "Rejected",
+        "COMPLETED": "Completed",
+        "CHECKED_IN": "Checked-in"
       }
     },
     "manager": {

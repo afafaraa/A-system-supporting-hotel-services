@@ -1,10 +1,10 @@
 package inzynierka.myhotelassistant.models.user
 
-import java.time.Instant
+import inzynierka.myhotelassistant.models.reservation.ReservationEntity
+import org.springframework.data.mongodb.core.mapping.DBRef
 
 data class GuestData(
-    var roomNumber: String,
-    val checkInDate: Instant,
-    val checkOutDate: Instant,
+    @DBRef(lazy = false)
+    var currentReservation: ReservationEntity,
     var bill: Double = 0.0,
 )

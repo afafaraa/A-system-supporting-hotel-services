@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 
 function HomePage() {
   const { t } = useTranslation();
-  const [openLoginDialog, setOpenLoginDialog] = useState<boolean>(false);
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
@@ -29,7 +29,7 @@ function HomePage() {
 
   return (
     <main style={{ padding: 0, width: '100%' }}>
-      <LoginDialog open={openLoginDialog} setOpen={setOpenLoginDialog} />
+      <LoginDialog selectedRoom={selectedRoom} setSelectedRoom={setSelectedRoom} />
       <Box
         bgcolor="primary.main"
         sx={{
@@ -120,20 +120,21 @@ function HomePage() {
           spacing={{ xs: 2, md: 3 }}
           columns={{ xs: 1, sm: 2, lg: 3 }}
           sx={{ maxWidth: '1000px', margin: '0 auto' }}
+          justifyContent="center"
         >
           {loading ? (
             <Typography>{t('pages.reservations.loadingRooms')}</Typography>
           ) : (
             (showAll ? rooms : rooms.slice(0, 3)).map((room, index) => (
-              <Grid sx={{ flexGrow: 1 }} size={1} key={index}>
-                <RoomCard room={room} onReserve={() => setOpenLoginDialog(true)} size="medium"/>
+              <Grid size={1} key={index}>
+                <RoomCard room={room} onReserve={() => setSelectedRoom(room)} size="medium"/>
               </Grid>
             ))
           )}
         </Grid>
         {!showAll && !loading && rooms.length > 3 && (
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-            <Button variant="contained" onClick={() => setShowAll(true)}>
+            <Button variant="contained" onClick={() => setShowAll(true)} sx={{width: '200px'}}>
               {t('pages.home.viewMore')}
             </Button>
           </Box>

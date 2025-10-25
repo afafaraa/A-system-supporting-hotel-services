@@ -74,9 +74,11 @@ function RegisterPage() {
           padding: '5px 10px',
           color: theme.palette.background.default,
           borderRadius: '10%',
+          cursor: 'pointer',
         }}
         width={70}
         height={70}
+        onClick={() => navigate("/home")}
       />
 
       <Typography

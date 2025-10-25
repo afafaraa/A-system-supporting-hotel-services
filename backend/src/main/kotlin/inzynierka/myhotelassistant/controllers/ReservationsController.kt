@@ -173,7 +173,7 @@ class ReservationsController(
 
     data class ReservationCreateWithNewGuestResponseDTO(
         val reservation: ReservationDTO,
-        val userAccount: AddUserController.AddUserResponse,
+        val userAccount: AddUserController.AccountDetailsResponse,
     )
 
     @PostMapping("/with-new-guest")

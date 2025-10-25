@@ -174,7 +174,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
             </Box>
           </Box>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-            {tc("room")} {guest.guestData?.roomNumber} | {guest.servicesCount} {tc("booked")}
+            {tc("room")} {guest.guestData?.currentReservation.roomNumber} | {guest.servicesCount} {tc("booked")}
           </Typography>
           <NavigationTabs
             activeTab={activeTab}
@@ -200,7 +200,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                     </Box>
                     <Box display="flex" alignItems="center" gap={1} mb={1}>
                       <RoomOutlined fontSize="small" color="action" />
-                      <Typography variant="body2">{tc("room")} {guest.guestData?.roomNumber}</Typography>
+                      <Typography variant="body2">{tc("room")} {guest.guestData?.currentReservation.roomNumber}</Typography>
                     </Box>
                     <Box display="flex" alignItems="center" gap={1}>
                       <Language fontSize="small" color="action" />
@@ -231,7 +231,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                         {tc("check_in")} {tc("date")}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {new Date(guest.guestData?.checkInDate ?? "")
+                        {new Date(guest.guestData?.currentReservation.checkIn ?? "")
                           .toLocaleDateString("pl-PL")
                           .replace(/\./g, "/")}
                       </Typography>
@@ -250,7 +250,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                         {tc("check_out")} {tc("date")}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {new Date(guest.guestData?.checkOutDate ?? "")
+                        {new Date(guest.guestData?.currentReservation.checkOut ?? "")
                           .toLocaleDateString("pl-PL")
                           .replace(/\./g, "/")}
                       </Typography>
@@ -351,7 +351,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                     <Box display="flex" flexDirection="column" gap={0.5}>
                       <Typography fontWeight="bold">{service.name}</Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {guest.name} {guest.surname} | {tc("room")} {guest.guestData?.roomNumber}
+                        {guest.name} {guest.surname} | {tc("room")} {guest.guestData?.currentReservation.roomNumber}
                       </Typography>
                       <Typography variant="body2" color="text.primary">
                         09/08/2025 {tc("at")} {service.weekday[0].startHour}:00
@@ -420,7 +420,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                     <Box display="flex" flexDirection="column" gap={0.5}>
                       <Typography fontWeight="bold">{service.name}</Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {guest.name} {guest.surname} | {tc("room")} {guest.guestData?.roomNumber}
+                        {guest.name} {guest.surname} | {tc("room")} {guest.guestData?.currentReservation.roomNumber}
                       </Typography>
                       <Typography variant="body2" color="text.primary">
                         09/08/2025 {tc("at")} {service.weekday[0].startHour}:00

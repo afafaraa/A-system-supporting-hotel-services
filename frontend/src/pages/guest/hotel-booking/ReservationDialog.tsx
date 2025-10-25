@@ -16,11 +16,9 @@ import { useDispatch } from 'react-redux';
 import { addReservation } from '../../../redux/slices/reservationsCartSlice.ts';
 
 function ReservationDialog({
-  open,
   onClose,
   room,
 }: {
-  open: boolean;
   onClose: () => void;
   room: Room | null;
 }) {
@@ -76,7 +74,7 @@ function ReservationDialog({
   if (!room) return null;
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={true} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ fontWeight: 600 }}>
         Complete Your Reservation
       </DialogTitle>

@@ -1,27 +1,6 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {RootState} from "../store.ts";
-
-export interface UserDetails {
-  email: string,
-  employeeData: EmployeeData | null,
-  guestData: GuestData | null,
-  name: string,
-  surname: string,
-  active: boolean,
-}
-
-interface EmployeeData {
-  department: string,
-  sectors: string[],
-  hireDate: string | Date,
-}
-
-interface GuestData {
-  roomNumber: string,
-  checkInDate: string,
-  checkOutDate: string,
-  bill: number,
-}
+import UserDetails from "../../types/userDetails.ts";
 
 const initialState: {userDetails: UserDetails | null} = {
   userDetails: null

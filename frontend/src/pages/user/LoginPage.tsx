@@ -1,6 +1,6 @@
 import axiosApi from "../../middleware/axiosApi";
 import {useEffect, useState} from 'react';
-import {Navigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
 import Button from '@mui/material/Button';
 import {Box, Typography, useTheme} from "@mui/material";
 import AppLink from "../../components/ui/AppLink.tsx";
@@ -19,8 +19,9 @@ import dashboardDestination from "../../utils/dashboardDestination.ts";
 import generatePasswordAdornment from "../../components/ui/generatePasswordAdornment.tsx";
 import PersonIcon from "@mui/icons-material/Person";
 import LockIcon from '@mui/icons-material/Lock';
+import {Room} from "../../types/room.ts";
 
-function LoginPage(){
+function LoginPage({selectedRoom}: {selectedRoom?: Room}){
   const user = useSelector(selectUser);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -28,6 +29,7 @@ function LoginPage(){
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.login.${key}`);
   const theme = useTheme();
@@ -39,7 +41,10 @@ function LoginPage(){
     }
   }, [error]);
 
-  if (user) return <Navigate to={dashboardDestination(user.role)} replace />;
+  if (user) {
+    if (selectedRoom) return <Navigate to={"/guest/hotel"} state={{selectedRoom}} replace />;
+    else return <Navigate to={dashboardDestination(user.role)} replace />;
+  }
 
   const disabled = username === '' || password === '';
 
@@ -71,8 +76,9 @@ function LoginPage(){
           background: theme.palette.primary.main,
           padding: '5px 10px',
           color: theme.palette.background.default,
-          borderRadius: '10%'
-        }} width={70} height={70}/>
+          borderRadius: '10%',
+          cursor: 'pointer',
+        }} width={70} height={70} onClick={() => navigate("/home")}/>
 
         <Box mt={1}>
           <Typography component={RouterLink} to="/home" variant="h1" fontWeight="bold" fontSize={fontSizes.md} color="primary.main" sx={{textDecoration: "none"}}>{tc("title")}</Typography>

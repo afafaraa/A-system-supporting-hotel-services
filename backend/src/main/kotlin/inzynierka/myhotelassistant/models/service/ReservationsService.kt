@@ -1,9 +1,10 @@
 package inzynierka.myhotelassistant.models.service
 
 import inzynierka.myhotelassistant.controllers.ReservationsController
-import inzynierka.myhotelassistant.controllers.user.AddUserController
 import inzynierka.myhotelassistant.models.reservation.ReservationEntity
 import inzynierka.myhotelassistant.models.reservation.ReservationStatus
+import inzynierka.myhotelassistant.models.user.GuestData
+import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.ReservationsRepository
 import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.services.UserService
@@ -204,8 +205,6 @@ class ReservationsService(
 
     fun findAllReservations(): List<ReservationEntity> = reservationsRepository.findAll()
 
-    fun isAnyExist(): Boolean = reservationsRepository.count() > 0
-
     fun save(reservation: ReservationEntity): ReservationEntity = reservationsRepository.save(reservation)
 
     fun getCheckInsFromDay(date: LocalDate?): List<ReservationsController.ReservationDTO> {
@@ -279,21 +278,23 @@ class ReservationsService(
     fun createReservationWithNewGuest(
         dto: ReservationsController.ReservationCreateWithNewGuestDTO,
     ): ReservationsController.ReservationCreateWithNewGuestResponseDTO {
-        val (guestId, addUserResponse) =
+        require(isRoomAvailable(dto.roomNumber, dto.checkInDate, dto.checkOutDate)) {
+            "Room ${dto.roomNumber} is not available from ${dto.checkInDate} to ${dto.checkOutDate}"
+        }
+        val (savedGuest, accountDetails) =
             userService.createAndSaveGuest(
-                AddUserController.AddUserRequest(
-                    email = dto.email,
+                UserService.NewUserDetails(
                     name = dto.name,
                     surname = dto.surname,
-                    roomNumber = dto.roomNumber,
-                    checkInDate = dto.checkInDate,
-                    checkOutDate = dto.checkOutDate,
+                    email = dto.email,
+                    checkIn = dto.checkInDate,
                 ),
             )
+        userService.sendCodeForGuest(savedGuest.id!!, savedGuest.email, dto.checkOutDate)
         val reservation =
             ReservationEntity(
                 roomNumber = dto.roomNumber,
-                guestId = guestId,
+                guestId = savedGuest.id,
                 guestsCount = dto.guestCount,
                 checkIn = dto.checkInDate,
                 checkOut = dto.checkOutDate,
@@ -302,13 +303,22 @@ class ReservationsService(
             )
         reservation.status = if (dto.withCheckIn) ReservationStatus.CHECKED_IN else ReservationStatus.CONFIRMED
         val savedReservation = reservationsRepository.save(reservation)
+        bindReservationToGuest(savedGuest, savedReservation)
         notificationScheduler.notifyGuestOnSuccessfulReservation(savedReservation)
         val refreshedReservation = findByIdOrThrow(savedReservation.id!!)
 
         return ReservationsController.ReservationCreateWithNewGuestResponseDTO(
             reservation = transformToDTO(refreshedReservation),
-            userAccount = addUserResponse,
+            userAccount = accountDetails,
         )
+    }
+
+    fun bindReservationToGuest(
+        savedGuest: UserEntity,
+        savedReservation: ReservationEntity,
+    ) {
+        savedGuest.guestData = GuestData(currentReservation = savedReservation)
+        userService.save(savedGuest)
     }
 
     fun getAllOngoingReservations(): List<ReservationsController.ReservationDTO> {

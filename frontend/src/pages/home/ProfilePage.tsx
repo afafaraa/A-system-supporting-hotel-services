@@ -52,7 +52,7 @@ function ProfilePage() {
             </Typography>
             {userDetails && userDetails.guestData &&
                 <Typography color="background.default" fontSize="0.8rem" display={{xs: "none", sm: "flex"}} alignItems="center" gap={0.5}>
-                    <PlaceOutlinedIcon fontSize="small"/> {t("common.room")} {userDetails && userDetails.guestData.roomNumber}
+                    <PlaceOutlinedIcon fontSize="small"/> {t("common.room")} {userDetails && userDetails.guestData.currentReservation.roomNumber}
                 </Typography>
             }
           </Box>
@@ -94,7 +94,7 @@ function ProfilePage() {
                       subtitle={tc("stay_info_subtitle")} />
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Typography fontSize="inherit" fontWeight="bold">{tc("room_number")}</Typography>
-          <Chip label={`${t("common.room")} ${userDetails?.guestData?.roomNumber ?? ''}`} size="small" color="primary" variant="outlined"/>
+          <Chip label={`${t("common.room")} ${userDetails?.guestData?.currentReservation.roomNumber ?? ''}`} size="small" color="primary" variant="outlined"/>
         </Stack>
         <Divider sx={{ my: 3 }} />
         <Stack direction="row" justifyContent="space-between">
@@ -104,8 +104,8 @@ function ProfilePage() {
           </Stack>
           <Stack direction="column" gap={2} textAlign="right" fontWeight="bold">
             {userDetails?.guestData && <>
-                <span>{new Date(userDetails.guestData.checkInDate).toLocaleDateString(t('date.locale'))}</span>
-                <span>{new Date(userDetails.guestData.checkOutDate).toLocaleDateString(t('date.locale'))}</span>
+                <span>{new Date(userDetails.guestData.currentReservation.checkIn).toLocaleDateString(t('date.locale'))}</span>
+                <span>{new Date(userDetails.guestData.currentReservation.checkOut).toLocaleDateString(t('date.locale'))}</span>
             </>}
           </Stack>
         </Stack>

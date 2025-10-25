@@ -37,7 +37,7 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
 
   // Compute disabled state and tooltip message
   const isAccountInactive = !userDetails?.active;
-  const isNoRoom = !userDetails?.guestData?.roomNumber;
+  const isNoRoom = !userDetails?.guestData?.currentReservation.roomNumber;
   const isServiceDisabled = service.disabled;
   const isDisabled = isAccountInactive || isNoRoom || isServiceDisabled;
 
@@ -55,7 +55,7 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
   return (
     <Card
       sx={{
-        borderRadius: '10px',
+        borderRadius: '12px',
         minHeight: '290px',
         display: 'flex',
         flexDirection: 'column',
@@ -77,15 +77,17 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
                 width: 50,
                 height: 50,
                 borderRadius: 10,
-                marginTop: 5,
+                marginTop: 2,
               }}
               src={service.image}
               alt={service.name}
             />
             <Box>
               <Typography
-                sx={{ fontWeight: 600, fontSize: { xs: '1.5em', sm: '1.3em', lg: '1.2em' } }}
+                sx={{ fontWeight: 600, fontSize: { xs: '1.5em', sm: '1.2em' } }}
                 variant="h6"
+                lineHeight={1.2}
+                mb="0.2rem"
               >
                 {service.name}
               </Typography>
@@ -95,9 +97,12 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
 
           <Typography
             sx={{
-              fontSize: { xs: '1em', sm: '1em', md: '0.8em' },
-              margin: '20px 0',
+              fontSize: { xs: '0.95em', md: '0.8em' },
+              marginTop: '14px',
               color: theme.palette.text.secondary,
+              lineHeight: 1.5,
+              height: 'calc(1.5em * 3)', // Limit to approx. 3 lines
+              overflowY: 'auto',
             }}
           >
             {service.description}
