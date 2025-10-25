@@ -589,7 +589,8 @@
       "maintenance": "Maintenance",
       "management": "Management"
     },
-    "special_requests": "Special requests"
+    "special_requests": "Special requests",
+    "without_reservation": "Without reservation"
   },
   "ui": {
     "show_more": "Show more ↓",

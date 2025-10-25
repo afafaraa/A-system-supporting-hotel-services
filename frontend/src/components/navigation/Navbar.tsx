@@ -143,8 +143,8 @@ function Navbar() {
           >
             {user?.role === 'ROLE_GUEST' && userDetails
               ? userDetails.guestData?.currentReservation
-                ? `${t('common.room')} ${userDetails.guestData?.currentReservation.roomNumber}`
-                : 'Guest'
+                ? t('common.room') + ' ' + userDetails.guestData?.currentReservation.roomNumber
+                : t('common.without_reservation')
               : user?.role?.split('_')[1]?.toLowerCase()}
           </Typography>
         </Stack>

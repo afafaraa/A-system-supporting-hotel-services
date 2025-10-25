@@ -590,7 +590,8 @@
       "maintenance": "Serwis",
       "management": "Zarządzanie"
     },
-    "special_requests": "Specjalne życzenia"
+    "special_requests": "Specjalne życzenia",
+    "without_reservation": "Bez rezerwacji"
   },
   "ui": {
     "show_more": "Pokaż więcej ↓",
