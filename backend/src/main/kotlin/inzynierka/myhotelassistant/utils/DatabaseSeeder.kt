@@ -67,10 +67,10 @@ class DatabaseSeeder(
             addTestGuests()
             addServices()
             schedulesGenerator.createSchedules()
-//            addOrders()
+            addOrders()
             addManager()
             addRatings()
-//            addTestNotifications()
+            addTestNotifications()
             createReservations()
         } catch (e: Exception) {
             logger.error(e.message, e)
@@ -577,7 +577,7 @@ class DatabaseSeeder(
     private fun createReservations() {
         val guests = userRepo.findByRole(Role.GUEST)
         val rooms = roomRepo.findAll()
-        repeat(1) {
+        repeat(4) {
             guests.forEach { guest ->
                 val now = LocalDate.now()
                 val checkIn = now.plusDays(Random.nextInt(-4, 2).toLong())

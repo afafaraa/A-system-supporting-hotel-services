@@ -1,11 +1,9 @@
 package inzynierka.myhotelassistant.controllers.user
 
 import inzynierka.myhotelassistant.controllers.ReservationsController
-import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.models.reservation.ReservationEntity
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.service.ReservationsService
-import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.OrderService
 import inzynierka.myhotelassistant.services.ScheduleService
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
-import java.time.ZoneId
 
 @RestController
 @RequestMapping("/guest")
@@ -71,7 +68,7 @@ class GuestController(
     fun getScheduledEmployeeNameById(
         @PathVariable id: String,
     ): EmployeeNameResponse? {
-        val user = userService.findById(id) ?: throw HttpException.EntityNotFoundException("User not found")
+        val user = userService.findByIdOrThrow(id)
         return EmployeeNameResponse(name = user.name, surname = user.surname)
     }
 
@@ -110,37 +107,9 @@ class GuestController(
     fun addReservationToTab(
         @RequestBody req: ReservationsController.ReservationCreateDTO,
     ) {
-        try {
-            val reservation: ReservationEntity = reservationsService.createReservation(req)
-            val guest = userService.findByUsernameOrThrow(req.guestUsername)
-
-            if (guest.guestData == null) {
-                val checkInInstant =
-                    reservation.checkIn
-                        .atStartOfDay()
-                        .atZone(ZoneId.systemDefault())
-                        .toInstant()
-                val checkOutInstant =
-                    reservation.checkOut
-                        .atStartOfDay()
-                        .atZone(ZoneId.systemDefault())
-                        .toInstant()
-
-                guest.guestData =
-                    GuestData(
-                        roomNumber = reservation.roomNumber,
-                        checkInDate = checkInInstant,
-                        checkOutDate = checkOutInstant,
-                        bill = reservation.reservationPrice,
-                    )
-            } else {
-                guest.guestData!!.bill += reservation.reservationPrice
-            }
-
-            userService.save(guest)
-        } catch (e: IllegalArgumentException) {
-            throw HttpException.InvalidArgumentException(e.message ?: "Invalid reservation data")
-        }
+        val reservation: ReservationEntity = reservationsService.createReservation(req)
+        val guest = userService.findByUsernameOrThrow(req.guestUsername)
+        reservationsService.bindReservationToGuest(guest, reservation)
     }
 
     @GetMapping("/order/get/all/requested/{username}")
@@ -199,25 +168,21 @@ class GuestController(
         scheduleService
             .findByGuestIdAndStatusIn(userId, statusList)
             .mapNotNull { scheduleItem ->
-                val assignedEmployee = userService.findById(scheduleItem.employeeId)
-                val serviceOpt = serviceService.findById(scheduleItem.serviceId)
+                val employeeFullName = userService.findUserNameById(scheduleItem.employeeId)
+                val service = serviceService.getServiceDetailsById(scheduleItem.serviceId)
 
-                if (assignedEmployee == null || serviceOpt.isEmpty) {
-                    null
-                } else {
-                    val service = serviceOpt.get()
-                    scheduleItem.id?.let {
-                        ScheduleForPastAndRequestedServicesResponse(
-                            it,
-                            service.name,
-                            scheduleItem.employeeId,
-                            assignedEmployee.name + " " + assignedEmployee.surname,
-                            service.image ?: "",
-                            service.price,
-                            scheduleItem.serviceDate,
-                            scheduleItem.status,
-                        )
-                    }
+                if (employeeFullName == null || service == null) {
+                    return@mapNotNull null
                 }
+                ScheduleForPastAndRequestedServicesResponse(
+                    scheduleItem.id!!,
+                    service.name,
+                    scheduleItem.employeeId,
+                    employeeFullName,
+                    service.image ?: "",
+                    service.price,
+                    scheduleItem.serviceDate,
+                    scheduleItem.status,
+                )
             }
 }

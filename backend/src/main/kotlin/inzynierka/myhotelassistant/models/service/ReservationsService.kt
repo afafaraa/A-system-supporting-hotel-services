@@ -170,9 +170,7 @@ class ReservationsService(
         reservation.status = ReservationStatus.CHECKED_IN
         reservation.paid = paid
         val savedReservation = reservationsRepository.save(reservation)
-        val guest =
-            userService.findById(reservation.guestId!!)
-                ?: throw IllegalArgumentException("Guest with id ${reservation.guestId} not found")
+        val guest = userService.findByIdOrThrow(reservation.guestId)
         guest.active = true
         userService.save(guest)
         notificationScheduler.notifyGuestOnReservationStatusChange(savedReservation, oldStatus, ReservationStatus.CHECKED_IN)
@@ -288,6 +286,7 @@ class ReservationsService(
                     surname = dto.surname,
                     email = dto.email,
                     checkIn = dto.checkInDate,
+                    active = true,
                 ),
             )
         userService.sendCodeForGuest(savedGuest.id!!, savedGuest.email, dto.checkOutDate)
@@ -317,7 +316,17 @@ class ReservationsService(
         savedGuest: UserEntity,
         savedReservation: ReservationEntity,
     ) {
-        savedGuest.guestData = GuestData(currentReservation = savedReservation)
+        if (savedGuest.guestData == null) {
+            savedGuest.guestData =
+                GuestData(
+                    currentReservation = savedReservation,
+                    bill = savedReservation.reservationPrice,
+                )
+        } else {
+            savedGuest.guestData?.currentReservation = savedReservation
+            savedGuest.guestData?.bill = savedReservation.reservationPrice
+        }
+
         userService.save(savedGuest)
     }
 

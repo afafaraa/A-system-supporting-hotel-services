@@ -31,7 +31,9 @@ class UserService(
     @field:Value("\${app.security.password-length}")
     private var passwordLength: Int = 10
 
-    fun findById(id: String): UserEntity? = userRepository.findById(id).getOrNull()
+    fun findByIdOrThrow(id: String): UserEntity =
+        userRepository.findById(id).getOrNull()
+            ?: throw EntityNotFoundException("User with given id was not found")
 
     override fun loadUserByUsername(username: String): UserDetails {
         val user =
@@ -47,6 +49,10 @@ class UserService(
             .roles(user.role.name)
             .build()
     }
+
+    fun findUserNameById(id: String): String? = userRepository.findUserNameById(id)?.let { it.name + " " + it.surname }
+
+    fun getUserEmailById(id: String): String? = userRepository.findUserEmailById(id)?.email
 
     fun getUserNameAndEmailById(id: String): UserRepository.UserNameAndEmail? = userRepository.getUserNameAndEmailById(id)
 
@@ -76,6 +82,7 @@ class UserService(
         val surname: String,
         val email: String,
         val checkIn: LocalDate,
+        val active: Boolean = false,
     )
 
     data class UserEntityWithAccountDetails(
@@ -94,6 +101,7 @@ class UserService(
                 role = Role.GUEST,
                 username = username,
                 password = passwordEncoder.encode(password),
+                active = user.active,
             )
         val savedGuest = save(guest)
         val accountDetails =

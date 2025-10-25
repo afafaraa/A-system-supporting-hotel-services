@@ -1,13 +1,11 @@
 package inzynierka.myhotelassistant.utils
 
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
-import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.repositories.ServiceRepository
 import inzynierka.myhotelassistant.services.EmployeeService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -41,7 +39,7 @@ class SchedulesGenerator(
         end: LocalDate,
     ) {
         val services = serviceRepository.findAll()
-        val employees = employeeService.getAllEmployees(Pageable.unpaged()).filter { it.role != Role.RECEPTIONIST }
+        val employees = employeeService.getAllEmployeesWithEmployeeRole()
         val schedulesToSave = mutableListOf<ScheduleEntity>()
 
         val employeeAvailability: MutableMap<String, MutableList<Pair<LocalDateTime, LocalDateTime>>> =
@@ -58,7 +56,7 @@ class SchedulesGenerator(
                     endDate = end.atTime(LocalTime.MAX),
                 )
             // If the latest schedule is already on the last day, skip creating new schedules
-            if (latest != null && latest.serviceDate.toLocalDate() == end) {
+            if (latest != null && latest.serviceDate.toLocalDate().isEqual(end)) {
                 continue
             }
             // If there are schedules for this service, start from the next day after the latest one

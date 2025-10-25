@@ -44,4 +44,10 @@ interface UserRepository : MongoRepository<UserEntity, String> {
     )
 
     fun getUserNameAndEmailById(id: String): UserNameAndEmail?
+
+    data class UserEmail(
+        val email: String,
+    )
+
+    fun findUserEmailById(id: String): UserEmail?
 }

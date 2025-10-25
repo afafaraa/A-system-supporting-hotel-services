@@ -42,6 +42,12 @@ interface ScheduleRepository : MongoRepository<ScheduleEntity, String> {
 
     fun findAllByStatusIn(statuses: List<OrderStatus>): List<ScheduleEntity>
 
+    fun findByStatusInAndServiceDateBetween(
+        statuses: List<OrderStatus>,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime,
+    ): List<ScheduleEntity>
+
     fun countAllByOrderTimeBetween(
         startDate: LocalDateTime,
         endDate: LocalDateTime,

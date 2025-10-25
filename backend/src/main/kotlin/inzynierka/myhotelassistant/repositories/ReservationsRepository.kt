@@ -59,6 +59,12 @@ interface ReservationsRepository : MongoRepository<ReservationEntity, String> {
         statuses: List<ReservationStatus>,
     ): Long
 
+    fun findAllByCheckInIsBetweenAndStatusIs(
+        checkInAfter: LocalDate,
+        checkInBefore: LocalDate,
+        status: ReservationStatus,
+    ): List<ReservationEntity>
+
     fun countAllByCheckInIs(checkInDate: LocalDate): Long
 
     fun countAllByStatus(status: ReservationStatus): Long

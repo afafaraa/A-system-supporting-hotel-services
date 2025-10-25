@@ -15,10 +15,14 @@ import java.time.Instant
 class EmailSender(
     private val mailSender: JavaMailSender,
     private val appProperties: AppProperties,
-    @Value("\${spring.mail.username}") private val configuredFromEmail: String?,
+    @param:Value("\${spring.mail.username}") private val configuredFromEmail: String?,
 ) {
     private val logger = LoggerFactory.getLogger(EmailSender::class.java)
-    private val fallbackSendEmailAddress = "hello@demomailtrap.co"
+    private val sendEmailAddress = configuredFromEmail ?: "hello@demomailtrap.co"
+
+    init {
+        logger.info("EmailSender initialized with from email: $sendEmailAddress")
+    }
 
     fun sendRegistrationCodeEmail(
         email: String,
@@ -40,7 +44,7 @@ class EmailSender(
 
         val msg =
             SimpleMailMessage().apply {
-                from = configuredFromEmail ?: fallbackSendEmailAddress
+                from = sendEmailAddress
                 setTo(email)
                 subject = "Your registration code"
                 this.text = text.trimIndent()
@@ -67,7 +71,7 @@ class EmailSender(
 
         val msg =
             SimpleMailMessage().apply {
-                from = configuredFromEmail ?: fallbackSendEmailAddress
+                from = sendEmailAddress
                 setTo(email)
                 subject = "Password Reset Request"
                 this.text = text.trimIndent()
@@ -97,7 +101,7 @@ class EmailSender(
 
         val msg =
             SimpleMailMessage().apply {
-                from = configuredFromEmail ?: fallbackSendEmailAddress
+                from = sendEmailAddress
                 setTo(email)
                 subject = "Confirm your MyHotelAssistant account"
                 this.text = text.trimIndent()
@@ -115,22 +119,18 @@ class EmailSender(
         try {
             val mailMessage = SimpleMailMessage()
             mailMessage.setTo(toEmail)
-            mailMessage.from = configuredFromEmail ?: fallbackSendEmailAddress
+            mailMessage.from = sendEmailAddress
             mailMessage.subject = "[${variant.name}] $title"
-            mailMessage.text = buildEmailBody(title, variant, message)
+            mailMessage.text = buildEmailBody(message)
 
             mailSender.send(mailMessage)
             logger.info("Notification email sent successfully to $toEmail")
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             logger.error("Failed to send notification email to $toEmail: ${'$'}{e.message}")
         }
     }
 
-    private fun buildEmailBody(
-        title: String,
-        variant: NotificationVariant,
-        message: String,
-    ): String =
+    private fun buildEmailBody(message: String): String =
         """
         Dear Guest,
         
