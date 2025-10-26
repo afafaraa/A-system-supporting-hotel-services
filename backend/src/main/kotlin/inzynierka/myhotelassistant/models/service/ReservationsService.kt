@@ -185,6 +185,9 @@ class ReservationsService(
         val oldStatus = reservation.status
         reservation.status = ReservationStatus.COMPLETED
         val savedReservation = reservationsRepository.save(reservation)
+        val guest = userService.findByIdOrThrow(reservation.guestId)
+        guest.active = false
+        userService.save(guest)
         notificationScheduler.notifyGuestOnReservationStatusChange(savedReservation, oldStatus, ReservationStatus.COMPLETED)
         return transformToDTO(savedReservation)
     }
@@ -275,21 +278,21 @@ class ReservationsService(
 
     fun createReservationWithNewGuest(
         dto: ReservationsController.ReservationCreateWithNewGuestDTO,
-    ): ReservationsController.ReservationCreateWithNewGuestResponseDTO {
+    ): ReservationsController.ReservationWithGuestCode {
         require(isRoomAvailable(dto.roomNumber, dto.checkInDate, dto.checkOutDate)) {
             "Room ${dto.roomNumber} is not available from ${dto.checkInDate} to ${dto.checkOutDate}"
         }
-        val (savedGuest, accountDetails) =
+        val savedGuest =
             userService.createAndSaveGuest(
                 UserService.NewUserDetails(
                     name = dto.name,
                     surname = dto.surname,
                     email = dto.email,
                     checkIn = dto.checkInDate,
-                    active = true,
+                    active = dto.withCheckIn,
                 ),
             )
-        userService.sendCodeForGuest(savedGuest.id!!, savedGuest.email, dto.checkOutDate)
+        val code = userService.sendCodeForGuest(savedGuest.id!!, savedGuest.email, dto.checkOutDate)
         val reservation =
             ReservationEntity(
                 roomNumber = dto.roomNumber,
@@ -306,9 +309,9 @@ class ReservationsService(
         notificationScheduler.notifyGuestOnSuccessfulReservation(savedReservation)
         val refreshedReservation = findByIdOrThrow(savedReservation.id!!)
 
-        return ReservationsController.ReservationCreateWithNewGuestResponseDTO(
+        return ReservationsController.ReservationWithGuestCode(
             reservation = transformToDTO(refreshedReservation),
-            userAccount = accountDetails,
+            code = code,
         )
     }
 

@@ -100,7 +100,7 @@ function LoginPage({selectedRoom}: {selectedRoom?: Room}){
         {error && <Typography component="p" variant="caption" color="error" sx={{mt: 2}}>{t(error)}</Typography>}
       </ShadowCard>
 
-      <Box position="fixed" my="auto" left={4} display={{xs: "none", md: "flex"}} flexDirection="column" gap={0.8}>
+      <Box position="fixed" my="auto" left={4} display={{xs: "none", sm: "flex"}} flexDirection="column" gap={0.8}>
         <p>Quick log-in:</p>
         <button onClick={() => {
           setUsername("user"); setPassword("password"); login();

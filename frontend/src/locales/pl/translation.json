@@ -56,7 +56,19 @@
       "passwordsDoNotMatch": "Hasła nie pasują do siebie.",
       "resetPasswordButton": "Zresetuj hasło",
       "registerNoCodeNavButton": "Zarejestruj się",
-      "registerWithCodeNavButton": "Zarejestruj się z kodem"
+      "registerWithCodeNavButton": "Zarejestruj się z kodem",
+      "emailSent": "Email weryfikacyjny został wysłany na adres {{email}}. Proszę zweryfikować email, aby zakończyć rejestrację."
+    },
+    "account-verification": {
+      "verifying": "Weryfikowanie twojego konta...",
+      "missingToken": "Brak tokenu weryfikacji konta.",
+      "success": "Email pomyślnie zweryfikowany! Możesz się teraz zalogować.",
+      "invalidOrExpired": "Nieprawidłowy lub przeterminowany link weryfikacyjny.",
+      "error": "Coś poszło nie tak podczas weryfikacji twojego konta.",
+      "successTitle": "Weryfikacja pomyślna",
+      "goToLogin": "Wróć do logowania",
+      "failureTitle": "Weryfikacja nieudana",
+      "returnHome": "Wróć do strony głównej"
     },
     "reset-password": {
       "title": "Resetowanie hasła",
@@ -195,11 +207,11 @@
     },
     "manager": {
       "navbar": {
-          "guests": "Goście",
-          "services": "Usługi",
-          "calendar": "Kalendarz",
-          "employees": "Pracownicy",
-          "statistics": "Statystyki"
+        "guests": "Goście",
+        "services": "Usługi",
+        "calendar": "Kalendarz",
+        "employees": "Pracownicy",
+        "statistics": "Statystyki"
       },
       "guests": {
         "title": "Zarządzanie gośćmi",
@@ -510,8 +522,7 @@
         "reservation-added-success": "Udało się dodać rezerwację",
         "reservation-data": "Dane dotyczące rezerwacji:",
         "user-login-data": "Dane logowania użytkownika do systemu:",
-        "username": "Nazwa użytkownika",
-        "password": "Hasło"
+        "registration-code": "Kod rejestracyjny"
       },
       "reservation-dialog": {
         "common": {
@@ -624,8 +635,8 @@
     "invalidCredentials": "Nieprawidłowe dane logowania.",
     "emailNotVerified": "Email nie został zweryfikowany. Sprawdź swoją skrzynkę odbiorczą lub spróbuj zarejestrować się ponownie.",
     "upload_error": "Błąd podczas przesyłania pliku.",
-    "sameRoleError": "Pracownik już posiada tę rolę.",
     "add_employee_failure": "Błąd podczas dodawania nowego pracownika",
+    "sameRoleError": "Pracownik już posiada tę rolę.",
     "edit_employee_failure": "Błąd podczas edytowania pracownika",
     "failedToCreateSession": "Nie udało się utworzyć sesji płatności"
   },

@@ -85,12 +85,7 @@ class UserService(
         val active: Boolean = false,
     )
 
-    data class UserEntityWithAccountDetails(
-        val user: UserEntity,
-        val account: AddUserController.AccountDetailsResponse,
-    )
-
-    fun createAndSaveGuest(user: NewUserDetails): UserEntityWithAccountDetails {
+    fun createAndSaveGuest(user: NewUserDetails): UserEntity {
         val username: String = generateUsername(user.name, user.surname, user.checkIn)
         val password: String = generatePassword()
         val guest =
@@ -104,24 +99,14 @@ class UserService(
                 active = user.active,
             )
         val savedGuest = save(guest)
-        val accountDetails =
-            AddUserController.AccountDetailsResponse(
-                username = username,
-                password = password,
-            )
-        return UserEntityWithAccountDetails(
-            user = savedGuest,
-            account = accountDetails,
-        )
+        return savedGuest
     }
 
     fun sendCodeForGuest(
         guestId: String,
         guestEmail: String,
         guestCheckOut: LocalDate,
-    ) {
-        codeService.generateAndSendForUser(guestId, guestEmail, guestCheckOut.atTime(LocalTime.MAX).toInstant(ZoneOffset.UTC))
-    }
+    ): String = codeService.generateAndSendForUser(guestId, guestEmail, guestCheckOut.atTime(LocalTime.MAX).toInstant(ZoneOffset.UTC))
 
     fun generatePassword(): String = generateRandomString(passwordLength)
 
@@ -138,13 +123,14 @@ class UserService(
             .joinToString("")
     }
 
-    fun completeRegistration(req: AuthController.CompleteRegistrationRequest) {
+    fun completeRegistration(req: AuthController.CompleteRegistrationRequest): UserEntity {
         val rc: RegistrationCode = codeService.validateCode(req.code)
         val user = userRepository.findByIdOrNull(rc.userId) ?: throw EntityNotFoundException("User not found")
         user.username = req.username
         user.password = passwordEncoder.encode(req.password)
-        userRepository.save(user)
+        val savedUser = userRepository.save(user)
         codeService.markUsed(rc)
+        return savedUser
     }
 
     fun completeRegistrationNoCode(req: AuthController.CompleteRegistrationRequestNoCode): UserEntity {

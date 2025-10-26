@@ -10,10 +10,11 @@ import generatePasswordAdornment from '../../../components/ui/generatePasswordAd
 import { useNavigate } from 'react-router-dom';
 import InputLabel from '../../../components/ui/InputLabel.tsx';
 import EmailIcon from '@mui/icons-material/Email';
+import useTranslationWithPrefix from "../../../locales/useTranslationWithPrefix.tsx";
 
 function RegisterNoCode() {
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [sentToEmail, setSentToEmail] = useState<string | null>(null);
   const [username, setUsername] = useState('');
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
@@ -24,7 +25,7 @@ function RegisterNoCode() {
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-  const tc = (key: string) => t(`pages.register.${key}`);
+  const {t: tc} = useTranslationWithPrefix('pages.register');
   const navigate = useNavigate();
 
   const passwordsMatch = password === repeatPassword;
@@ -32,7 +33,7 @@ function RegisterNoCode() {
   const register = async () => {
     setLoading(true);
     try {
-      const res = await axiosApi.post('/open/register/no-code', {
+      const res = await axiosApi.post<{email: string}>('/open/register/no-code', {
         username,
         password,
         name,
@@ -40,7 +41,7 @@ function RegisterNoCode() {
         email,
       });
       console.log(res)
-      setSuccess(res.data)
+      setSentToEmail(res.data.email)
     } catch (err) {
       console.log(err);
       if (isAxiosError(err)) {
@@ -187,9 +188,9 @@ function RegisterNoCode() {
             {t(error)}
           </Typography>
         )}
-        {success && (
+        {sentToEmail && (
           <Typography component="p" variant="caption" color="success.main">
-            {t(success)}
+            {tc('emailSent', {email: sentToEmail})}
           </Typography>
         )}
       </div>

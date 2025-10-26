@@ -110,14 +110,22 @@ class SchedulesGenerator(
                         employeeAvailability[chosenEmployee.id]?.add(proposedDateTime to breakEndTime)
 
                         schedulesToSave.add(scheduleEntity)
-                        logger.info(
-                            "Schedule added: ${service.name} on $currentDate at $proposedDateTime with Employee ${chosenEmployee.id}",
+                        logger.debug(
+                            "Schedule added: {} on {} at {} with Employee {}",
+                            service.name,
+                            currentDate,
+                            proposedDateTime,
+                            chosenEmployee.id,
                         )
                         assigned = true
                         break
                     }
                     if (!assigned) {
-                        logger.warn("Could not find a suitable time and employee for service ${service.name} on $currentDate")
+                        logger.debug(
+                            "Could not find a suitable time and employee for service {} on {}",
+                            service.name,
+                            currentDate,
+                        )
                     }
                 }
                 currentDate = currentDate.plusDays(1)

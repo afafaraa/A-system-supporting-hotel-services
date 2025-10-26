@@ -56,7 +56,19 @@
       "passwordsDoNotMatch": "Passwords do not match.",
       "resetPasswordButton": "Reset Password",
       "registerNoCodeNavButton": "Register",
-      "registerWithCodeNavButton": "Register with Code"
+      "registerWithCodeNavButton": "Register with Code",
+      "emailSent": "A verification email has been sent to {{email}}. Please verify your email to complete the registration."
+    },
+    "account-verification": {
+      "verifying": "Verifying your account...",
+      "missingToken": "Verification token is missing.",
+      "success": "Email verified successfully! You can now log in.",
+      "invalidOrExpired": "Invalid or expired verification link.",
+      "error": "Something went wrong while verifying your account.",
+      "successTitle": "Verification successful",
+      "goToLogin": "Go to Login",
+      "failureTitle": "Verification failed",
+      "returnHome": "Return to Home"
     },
     "reset-password": {
       "title": "Reset Password",
@@ -316,6 +328,7 @@
         "typeDelete": "Type \"DELETE\" to confirm deletion",
         "confirmTextError": "Please type DELETE to confirm",
         "confirmTextMismatch": "Text does not match",
+        "removeError": "Failed to delete the employee",
         "removing": "Removing...",
         "confirmRemove": "Remove Employee",
         "removeEmployee": "Remove Employee"
@@ -509,8 +522,7 @@
         "reservation-added-success": "Reservation added successfully",
         "reservation-data": "Reservation details:",
         "user-login-data": "User login details:",
-        "username": "Username",
-        "password": "Password"
+        "registration-code": "Registration code"
       },
       "reservation-dialog": {
         "common": {
