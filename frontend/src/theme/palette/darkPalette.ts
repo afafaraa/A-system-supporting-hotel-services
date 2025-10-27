@@ -43,4 +43,8 @@ export const darkPalette: PaletteOptions = {
     CHECKED_OUT: '#AAAAAA',
     UPCOMING: '#7545FB',
   },
+  custom: {
+    sidebarButtonBg: '#2b2a2e',
+    sidebarButtonSelectedBg: '#353438',
+  }
 };
