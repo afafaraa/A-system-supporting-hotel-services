@@ -5,7 +5,8 @@ import {
   Stack,
   Typography,
   useTheme,
-  Box, Button,
+  Box,
+  Button,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import Logo from '../../assets/hotel.svg?react';
@@ -32,7 +33,7 @@ import {
 import { selectServicesCartCount } from '../../redux/slices/servicesCartSlice.ts';
 import { selectReservationsCartCount } from '../../redux/slices/reservationsCartSlice.ts';
 import ShoppingCartPopup from '../../pages/guest/shopping-cart/ShoppingCartPopup.tsx';
-import dashboardDestination from "../../utils/dashboardDestination.ts";
+import dashboardDestination from '../../utils/dashboardDestination.ts';
 
 const drawerHeight = 64;
 
@@ -72,7 +73,10 @@ function Navbar() {
   };
 
   const AppLogo = () => (
-    <Link to={user?.role ? dashboardDestination(user.role) : '/home'} style={{ textDecoration: 'none' }}>
+    <Link
+      to={user?.role ? dashboardDestination(user.role) : '/home'}
+      style={{ textDecoration: 'none' }}
+    >
       <Stack direction="row" spacing={2} alignItems="center">
         <Logo
           style={{
@@ -138,7 +142,9 @@ function Navbar() {
             lineHeight={1.3}
           >
             {user?.role === 'ROLE_GUEST' && userDetails
-              ? `Room ${userDetails.guestData?.roomNumber}`
+              ? userDetails.guestData?.roomNumber
+                ? `Room ${userDetails.guestData?.roomNumber}`
+                : 'Guest'
               : user?.role?.split('_')[1]?.toLowerCase()}
           </Typography>
         </Stack>
@@ -153,15 +159,18 @@ function Navbar() {
         position="fixed"
         color="transparent"
         sx={{
-          backgroundColor: (theme) => alpha(theme.palette.background.paper, 0.4),
+          backgroundColor: (theme) =>
+            alpha(theme.palette.background.paper, 0.4),
           backdropFilter: 'blur(10px)',
           justifyContent: 'center',
           height: drawerHeight,
           py: 2,
-          px: "max(1rem, calc(13vw - 58.667px))",
-          borderBottom: `1px solid ${theme.palette.divider}`
+          px: 'max(1rem, calc(13vw - 58.667px))',
+          borderBottom: `1px solid ${theme.palette.divider}`,
         }}
-      > {/* padding 16 px to 96 px (sm to xl) */}
+      >
+        {' '}
+        {/* padding 16 px to 96 px (sm to xl) */}
         <Stack
           direction="row"
           justifyContent="space-between"
@@ -200,8 +209,13 @@ function Navbar() {
           ) : (
             <Stack direction="row" spacing={2} alignItems="center">
               <ThemeSwitcher />
-              <Button variant="outlined" color="primary" onClick={() => navigate('/login')} endIcon={<LoginOutlinedIcon />}>
-                {tc("loginButton")}
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => navigate('/login')}
+                endIcon={<LoginOutlinedIcon />}
+              >
+                {tc('loginButton')}
               </Button>
             </Stack>
           )}

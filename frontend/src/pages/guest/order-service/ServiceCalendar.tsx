@@ -26,6 +26,13 @@ function ServiceCalendar({
 }) {
   const { t } = useTranslation();
 
+  const minAllowedTime = new Date();
+  minAllowedTime.setHours(minAllowedTime.getHours() + 2);
+
+  const availableTimeSlots = timeSlots.filter(slot =>
+    new Date(slot.serviceDate).getTime() >= minAllowedTime.getTime()
+  );
+
   return (
     <SectionCard flexShrink={0}>
       <Typography sx={{ fontWeight: '600', fontSize: '20px' }}>
@@ -54,7 +61,7 @@ function ServiceCalendar({
       </LocalizationProvider>
 
       <Typography mt={3} mb={1} fontWeight={600}>
-        {t('pages.order_service.selectTime')} {`(${timeSlots.length})`}
+        {t('pages.order_service.selectTime')} {`(${availableTimeSlots.length})`}
       </Typography>
       <TextField
         variant="outlined"
@@ -65,12 +72,12 @@ function ServiceCalendar({
         onChange={(e) => setSelectedTime(e.target.value)}
         sx={{"& .MuiOutlinedInput-root": {backgroundColor: "background.default"}}}
       >
-        {timeSlots.length === 0 ? (
+        {availableTimeSlots.length === 0 ? (
           <MenuItem disabled>
             {t('pages.order_service.noSlotsAvailable')}
           </MenuItem>
         ) : (
-          timeSlots
+          availableTimeSlots
             .sort(
               (a, b) =>
                 new Date(a.serviceDate).getTime() -

@@ -26,10 +26,10 @@ class EmailSenderTest {
     fun setup() {
         MockitoAnnotations.openMocks(this)
         appProperties =
-            AppProperties(
-                frontend = AppProperties.Frontend(url = "http://localhost:5273"),
-            )
-        emailSender = EmailSender(mailSender, appProperties)
+            AppProperties().apply {
+                frontend.url = "http://localhost:5173"
+            }
+        emailSender = EmailSender(mailSender, appProperties, null)
     }
 
     @Test

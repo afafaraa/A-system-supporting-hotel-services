@@ -8,6 +8,7 @@ import inzynierka.myhotelassistant.repositories.ReservationsRepository
 import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.repositories.RoomStandardRepository
 import inzynierka.myhotelassistant.services.UserService
+import inzynierka.myhotelassistant.services.notifications.NotificationScheduler
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -20,6 +21,7 @@ class ReservationsService(
     private val userService: UserService,
     private val roomRepository: RoomRepository,
     private val roomStandardRepository: RoomStandardRepository,
+    private val notificationScheduler: NotificationScheduler,
 ) {
     private val possibleCancellationStatus = listOf(ReservationStatus.REQUESTED, ReservationStatus.CONFIRMED)
 
@@ -90,6 +92,7 @@ class ReservationsService(
                 specialRequests = reservationDTO.specialRequests,
             )
         val savedReservation = reservationsRepository.save(reservation)
+        notificationScheduler.notifyGuestOnSuccessfulReservation(savedReservation)
         return savedReservation
     }
 
@@ -155,6 +158,7 @@ class ReservationsService(
         val oldStatus = reservation.status
         reservation.status = ReservationStatus.CANCELED
         val savedReservation = reservationsRepository.save(reservation)
+        notificationScheduler.notifyGuestOnReservationStatusChange(savedReservation, oldStatus, ReservationStatus.CANCELED)
     }
 
     fun rejectGuestReservation(
@@ -169,6 +173,7 @@ class ReservationsService(
         reservation.status = ReservationStatus.REJECTED
         reservation.rejectReason = reason
         val savedReservation = reservationsRepository.save(reservation)
+        notificationScheduler.notifyGuestOnReservationStatusChange(savedReservation, oldStatus, ReservationStatus.REJECTED)
     }
 
     fun approveGuestReservation(reservationId: String) {
@@ -179,6 +184,7 @@ class ReservationsService(
         val oldStatus = reservation.status
         reservation.status = ReservationStatus.CONFIRMED
         val savedReservation = reservationsRepository.save(reservation)
+        notificationScheduler.notifyGuestOnReservationStatusChange(savedReservation, oldStatus, ReservationStatus.CONFIRMED)
     }
 
     fun checkInGuestReservation(
@@ -198,6 +204,7 @@ class ReservationsService(
                 ?: throw IllegalArgumentException("Guest with id ${reservation.guestId} not found")
         guest.active = true
         userService.save(guest)
+        notificationScheduler.notifyGuestOnReservationStatusChange(savedReservation, oldStatus, ReservationStatus.CHECKED_IN)
         return transformToDTO(savedReservation)
     }
 
@@ -209,6 +216,7 @@ class ReservationsService(
         val oldStatus = reservation.status
         reservation.status = ReservationStatus.COMPLETED
         val savedReservation = reservationsRepository.save(reservation)
+        notificationScheduler.notifyGuestOnReservationStatusChange(savedReservation, oldStatus, ReservationStatus.COMPLETED)
         return transformToDTO(savedReservation)
     }
 
@@ -328,6 +336,7 @@ class ReservationsService(
             )
         reservation.status = if (dto.withCheckIn) ReservationStatus.CHECKED_IN else ReservationStatus.CONFIRMED
         val savedReservation = reservationsRepository.save(reservation)
+        notificationScheduler.notifyGuestOnSuccessfulReservation(savedReservation)
         val refreshedReservation = findByIdOrThrow(savedReservation.id!!)
 
         return ReservationsController.ReservationCreateWithNewGuestResponseDTO(

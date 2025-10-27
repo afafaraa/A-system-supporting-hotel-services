@@ -144,7 +144,6 @@ function ServiceItem({
               variant="contained"
               color="primary"
               onClick={() => setOpenRate(true)}
-              sx={{ padding: '10px 0px' }}
             >
               {t('pages.booked_services.rate')}
             </Button>

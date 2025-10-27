@@ -1,6 +1,7 @@
 package inzynierka.myhotelassistant.utils
 
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
+import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.repositories.ServiceRepository
 import inzynierka.myhotelassistant.services.EmployeeService
@@ -40,7 +41,7 @@ class SchedulesGenerator(
         end: LocalDate,
     ) {
         val services = serviceRepository.findAll()
-        val employees = employeeService.getAllEmployees(Pageable.unpaged())
+        val employees = employeeService.getAllEmployees(Pageable.unpaged()).filter { it.role != Role.RECEPTIONIST }
         val schedulesToSave = mutableListOf<ScheduleEntity>()
 
         val employeeAvailability: MutableMap<String, MutableList<Pair<LocalDateTime, LocalDateTime>>> =

@@ -1,4 +1,4 @@
-import {ChangeEvent, useEffect, useState} from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import {axiosAuthApi} from "../../middleware/axiosApi.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {selectUser} from "../../redux/slices/userSlice.ts";
@@ -26,26 +26,29 @@ function NotificationsPage() {
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.notifications.${key}`);
 
-  useEffect(() => {
+  const fetchNotifications = useCallback(() => {
     if (!user) return;
     axiosAuthApi.get<Notification[]>('/user/notifications')
       .then(res => {
         setLoading(false)
         setNotifications(res.data)
-        console.log("Response:", res);
+        const unreadCount = res.data.reduce((count, n) => n.isRead ? count : count + 1, 0);
+        dispatch(setNotificationsCount(unreadCount));
+        console.log("Response:", res.data);
       })
       .catch(err => {
         setError(err.message);
         console.log("Error:", err);
       });
-  }, [user]);
+  }, [dispatch, user]);
 
   useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => setError(null), 20_000);
-      return () => clearTimeout(timer);
-    }
-  }, [error]);
+    fetchNotifications();
+
+    const intervalId = setInterval(fetchNotifications, 60_000);
+
+    return () => clearInterval(intervalId);
+  }, [fetchNotifications, user]);
 
 
   function markAsRead() {
@@ -57,9 +60,15 @@ function NotificationsPage() {
     }
     axiosAuthApi.patch('/user/notifications/mark-read', selectedUnread)
       .then(() => {
-        setNotifications(prev => prev.map(n =>
-          selected.has(n.id) ? {...n, isRead: true} : n
-        ));
+        setNotifications(prev => {
+          const updated = prev.map(n =>
+            selected.has(n.id) ? {...n, isRead: true} : n
+          );
+          // Update notification count after marking as read
+          const unreadCount = updated.reduce((count, n) => n.isRead ? count : count + 1, 0);
+          dispatch(setNotificationsCount(unreadCount));
+          return updated;
+        });
         setSelected(new Set());
       })
       .catch(err => {
@@ -71,9 +80,13 @@ function NotificationsPage() {
   function deleteSelected() {
     axiosAuthApi.delete('/user/notifications', {data: Array.from(selected)})
       .then(() => {
-        setNotifications(prev => prev.filter(n =>
-          !selected.has(n.id)
-        ))
+        setNotifications(prev => {
+          const filtered = prev.filter(n => !selected.has(n.id));
+          // Update notification count after deletion
+          const unreadCount = filtered.reduce((count, n) => n.isRead ? count : count + 1, 0);
+          dispatch(setNotificationsCount(unreadCount));
+          return filtered;
+        });
         setSelected(new Set());
       })
       .catch(err => {
@@ -95,12 +108,6 @@ function NotificationsPage() {
     if (e.target.checked) setSelected(new Set(notifications.map((n) => n.id)));
     else setSelected(new Set());
   }
-
-  const countUnread = notifications.reduce((count, n) => n.isRead ? count : count + 1, 0);
-
-  useEffect(() => {
-    dispatch(setNotificationsCount(countUnread));
-  }, [dispatch, countUnread]);
 
   return (
     <SectionCard>
