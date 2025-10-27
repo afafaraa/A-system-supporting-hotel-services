@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.TimeUnit
 
 @Component
 class ReservationReminderJob(
@@ -17,10 +18,10 @@ class ReservationReminderJob(
     private val notificationService: NotificationService,
 ) {
     private val logger = LoggerFactory.getLogger(ReservationReminderJob::class.java)
-    private val notifiedReservations = ConcurrentHashMap.newKeySet<String>()
+    private val notifiedReservationsCheckInMap = ConcurrentHashMap<String, LocalDate>()
     private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 
-    @Scheduled(fixedRate = 3600000) // Every hour (3,600,000 milliseconds)
+    @Scheduled(timeUnit = TimeUnit.HOURS, fixedRate = 1)
     fun checkUpcomingReservations() {
         logger.info("Running reservation reminder check...")
 
@@ -37,7 +38,7 @@ class ReservationReminderJob(
         logger.info("Found ${upcomingReservations.size} upcoming reservations within 24 hours")
 
         upcomingReservations.forEach { reservation ->
-            if (reservation.id == null || reservation.id in notifiedReservations) {
+            if (reservation.id in notifiedReservationsCheckInMap.keys) {
                 return@forEach
             }
 
@@ -55,7 +56,7 @@ class ReservationReminderJob(
                     message = message,
                 )
 
-                reservation.id?.let { notifiedReservations.add(it) }
+                notifiedReservationsCheckInMap[reservation.id!!] = reservation.checkIn
                 logger.info("Sent reminder notification for reservation ${reservation.id} to guest ${reservation.guestId}")
             } catch (e: Exception) {
                 logger.error("Error sending reminder for reservation ${reservation.id}: ${e.message}", e)
@@ -66,17 +67,6 @@ class ReservationReminderJob(
     }
 
     private fun cleanupOldNotifications(today: LocalDate) {
-        val iterator = notifiedReservations.iterator()
-        while (iterator.hasNext()) {
-            val reservationId = iterator.next()
-            try {
-                val reservation = reservationsRepository.findById(reservationId)
-                if (reservation.isEmpty || reservation.get().checkIn.isBefore(today)) {
-                    iterator.remove()
-                }
-            } catch (e: Exception) {
-                iterator.remove()
-            }
-        }
+        notifiedReservationsCheckInMap.entries.removeIf { it.value.isBefore(today) }
     }
 }
