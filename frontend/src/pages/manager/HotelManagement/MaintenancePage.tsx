@@ -313,7 +313,7 @@ function MaintenancePage() {
                       <Box display="flex" alignItems="center" gap={1}>
                         <PersonAdd fontSize="small" color="action" />
                         <Typography variant="body2" color="text.primary">
-                          {tc('assignedTo')}: {issue.assignedTo}
+                          {tc('assignedTo')}: {issue.assignedTo?.split(' ')[0] === 'null' ? "External company" : issue.assignedTo}
                         </Typography>
                       </Box>
                     )}

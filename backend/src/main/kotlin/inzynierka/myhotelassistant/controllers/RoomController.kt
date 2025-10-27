@@ -1,5 +1,6 @@
 package inzynierka.myhotelassistant.controllers
 
+import inzynierka.myhotelassistant.models.room.RoomAmenity
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.models.room.RoomStandardEntity
 import inzynierka.myhotelassistant.models.service.ReservationsService
@@ -25,8 +26,19 @@ class RoomController(
     private val roomService: RoomService,
     @param:Lazy private val reservationsService: ReservationsService,
 ) {
+    data class RoomWithStandardDTO(
+        val number: String,
+        val floor: Int,
+        val capacity: Int,
+        val pricePerNight: Double?,
+        val standard: RoomStandardEntity,
+        val description: String?,
+        val amenities: Set<RoomAmenity>,
+        val roomStatus: String,
+    )
+
     @GetMapping
-    fun getAllRooms(): List<RoomEntity> = roomService.findAllRooms()
+    fun getAllRooms(): List<RoomWithStandardDTO> = roomService.findAllRooms().map { roomService.toDTO(it) }
 
     @GetMapping("/{roomNumber}/price")
     fun getRoomPriceForDateRange(
@@ -39,17 +51,23 @@ class RoomController(
     fun getAllAvailableRoomsForDate(
         @RequestParam("from") from: LocalDate,
         @RequestParam("to") to: LocalDate,
-    ): List<RoomEntity> = roomService.findAllAvailableRoomsForDate(from, to)
+    ): List<RoomWithStandardDTO> = roomService.findAllAvailableRoomsForDate(from, to).map { roomService.toDTO(it) }
 
     @PostMapping
     fun createRoom(
         @RequestBody room: RoomEntity,
-    ): RoomEntity = roomService.createRoom(room)
+    ): RoomWithStandardDTO {
+        val created = roomService.createRoom(room)
+        return roomService.toDTO(created)
+    }
 
     @PutMapping
     fun updateRoom(
         @RequestBody room: RoomEntity,
-    ): RoomEntity = roomService.updateRoom(room)
+    ): RoomWithStandardDTO {
+        val updated = roomService.updateRoom(room)
+        return roomService.toDTO(updated)
+    }
 
     @DeleteMapping("/{number}")
     fun deleteRoom(
@@ -62,7 +80,7 @@ class RoomController(
     @GetMapping("/by-standard/{id}")
     fun getRoomsUsingStandard(
         @PathVariable id: String,
-    ): List<RoomEntity> = roomService.getRoomsUsingStandard(id)
+    ): List<RoomWithStandardDTO> = roomService.getRoomsUsingStandard(id).map { roomService.toDTO(it) }
 
     @PostMapping("/room-standard")
     @ResponseStatus(HttpStatus.CREATED)

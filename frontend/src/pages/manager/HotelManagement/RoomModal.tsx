@@ -63,11 +63,17 @@ function RoomModal({ open, room, standards, onClose, onSave }: RoomModalProps) {
       return;
     }
     try {
+      const payload = {
+        ...formData,
+        standardId: formData.standard.id,
+      };
+
+      delete (payload as any).standard;
       let res;
       if (isEditMode) {
-        res = await axiosAuthApi.put('/rooms', formData);
+        res = await axiosAuthApi.put('/rooms', payload);
       } else {
-        res = await axiosAuthApi.post('/rooms', formData);
+        res = await axiosAuthApi.post('/rooms', payload);
       }
       console.log(res.data);
       onClose();
@@ -77,18 +83,21 @@ function RoomModal({ open, room, standards, onClose, onSave }: RoomModalProps) {
     }
   };
 
-    const handlePriceChange =(e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        if (value === '') {
-          setFormData((prev) => ({ ...prev, ['pricePerNight']: formData.standard.basePrice }));
-          return;
-        }
-        const normalized = value.replace(',', '.');
-        const parsed = parseFloat(normalized);
-        if (!isNaN(parsed) && parsed >= 0) {
-          setFormData((prev) => ({ ...prev, ['pricePerNight']: parsed }));
-        }
-    };
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value === '') {
+      setFormData((prev) => ({
+        ...prev,
+        ['pricePerNight']: formData.standard.basePrice,
+      }));
+      return;
+    }
+    const normalized = value.replace(',', '.');
+    const parsed = parseFloat(normalized);
+    if (!isNaN(parsed) && parsed >= 0) {
+      setFormData((prev) => ({ ...prev, ['pricePerNight']: parsed }));
+    }
+  };
 
   return (
     <Dialog
@@ -133,8 +142,9 @@ function RoomModal({ open, room, standards, onClose, onSave }: RoomModalProps) {
                 setFormData({
                   ...formData,
                   standard:
-                    standards.find((s) => s.id === e.target.value) ||
-                    formData.standard,
+                    standards.find(
+                      (s) => s.id === (e.target.value as string)
+                    ) || formData.standard,
                 })
               }
             >

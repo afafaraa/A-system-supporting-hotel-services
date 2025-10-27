@@ -3,7 +3,7 @@ package inzynierka.myhotelassistant.controllers
 import com.fasterxml.jackson.annotation.JsonUnwrapped
 import inzynierka.myhotelassistant.controllers.user.AddUserController
 import inzynierka.myhotelassistant.models.reservation.ReservationEntity
-import inzynierka.myhotelassistant.models.room.RoomEntity
+import inzynierka.myhotelassistant.models.room.RoomAmenity
 import inzynierka.myhotelassistant.models.service.ReservationsService
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
@@ -26,6 +26,25 @@ import java.time.LocalDate
 class ReservationsController(
     private val reservationsService: ReservationsService,
 ) {
+    data class RoomStandardDTO(
+        val id: String?,
+        val name: String,
+        val capacity: Int,
+        val basePrice: Double,
+        val description: String?,
+    )
+
+    data class RoomDTO(
+        val number: String,
+        val floor: Int?,
+        val capacity: Int,
+        val pricePerNight: Double,
+        val description: String?,
+        val amenities: Set<RoomAmenity>,
+        val roomStatus: String,
+        val standard: RoomStandardDTO,
+    )
+
     data class ReservationDTO(
         @field:JsonUnwrapped
         val reservation: ReservationEntity,
@@ -36,7 +55,7 @@ class ReservationsController(
 
     data class ReservationGuestDTO(
         val id: String,
-        val room: RoomEntity,
+        val room: RoomDTO,
         val checkIn: String,
         val checkOut: String,
         val guestCount: Int,

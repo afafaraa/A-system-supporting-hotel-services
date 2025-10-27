@@ -118,16 +118,14 @@ export default function RoomCard({
             {room.amenities &&
               Array.isArray(room.amenities) &&
               room.amenities.map((amenity, idx) => {
-                if (!amenity || !amenity.key) return null;
-                const base = amenity.label || amenity.key;
-                const formattedAmenity = base
-                  .replace(/_/g, ' ')
-                  .toLowerCase()
-                  .replace(/^\w/, c => c.toUpperCase());
-                return (
+                  const formattedAmenity = amenity
+                      .replace(/_/g, ' ')
+                      .toLowerCase()
+                      .replace(/^\w/, c => c.toUpperCase());
+                  return (
                   <Chip
                     key={idx}
-                    icon={mapAmenityToIcon(amenity.key, `${fontSize}px`)}
+                    icon={mapAmenityToIcon(amenity, `${fontSize}px`)}
                     label={formattedAmenity}
                     sx={{
                       backgroundColor: theme.palette.background.paper,
