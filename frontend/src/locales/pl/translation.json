@@ -187,20 +187,23 @@
       "status": {
         "REQUESTED": "Oczekująca",
         "CONFIRMED": "Potwierdzona",
-        "CANCELLED": "Anulowana",
+        "CANCELED": "Anulowana",
         "CHECKED_IN": "Zameldowana",
         "Confirmed": "Potwierdzona",
         "Pending": "Oczekująca",
-        "Cancelled": "Anulowana"
+        "Cancelled": "Anulowana",
+        "REJECTED": "Odrzucona",
+        "COMPLETED": "Zakończona"
       }
     },
     "manager": {
       "navbar": {
           "guests": "Goście",
           "services": "Usługi",
-          "calendar": "Kalendarz",
+          "management": "Zarządzanie Hotelem",
           "employees": "Pracownicy",
-          "statistics": "Statystyki"
+          "statistics": "Statystyki",
+          "calendar": "Kalendarz"
       },
       "guests": {
         "title": "Zarządzanie gośćmi",
@@ -338,6 +341,87 @@
         "no_services": "Brak przypisanych usług",
         "error_fetch": "Nie udało się pobrać danych pracownika.",
         "not_found": "Nie znaleziono pracownika."
+      },
+      "hotel_management": {
+        "title": "Zarządzanie Hotelem",
+        "subtitle": "Zarządzaj strukturą i ustawieniami hotelu",
+        "rooms_subtitle": "Wyświetlaj i zarządzaj pokojami hotelowymi, edytuj ceny i standardy",
+        "rooms_title": "Zarządzanie Pokojami",
+        "structure_title": "Struktura Hotelu",
+        "menu_title": "Menu Dnia",
+        "maintenance_title": "Konserwacja",
+        "finance_title": "Fakturowanie i Płatności",
+        "settings_title": "Ustawienia Administracyjne",
+        "add_room": "Dodaj Pokój",
+        "room_number": "Numer Pokoju",
+        "standard": "Standard",
+        "room_standard": "Standard Pokoju",
+        "rooms_list": "Lista Pokoi",
+        "standards_list" : "Lista Standardów Pokoi",
+        "price": "Cena",
+        "search_placeholder": "Szukaj Pokoi...",
+        "room_no": "Numer Pokoju",
+        "room_type": "Typ Pokoju",
+        "capacity": "Pojemność",
+        "floor": "Piętro",
+        "base_price": "Cena Podstawowa",
+        "name": "Nazwa",
+        "edit": "Edytuj Pokój",
+        "add_new": "Dodaj Nowy Pokój",
+        "guests": "gości",
+        "edit_standard": "Edytuj Standard Pokoju",
+        "add_new_standard": "Dodaj Nowy Standard Pokoju"
+      },
+      "settings": {
+        "title": "Ustawienia Systemu Hotelowego",
+        "subtitle": "Skonfiguruj ustawienia swojego systemu hotelowego",
+        "hotelInfo": "Informacje o Hotelu",
+        "hotelInfoDesc": "Podstawowe informacje o Twoim hotelu",
+        "regionalSettings": "Ustawienia Regionalne",
+        "regionalSettingsDesc": "Skonfiguruj preferencje strefy czasowej i językowej",
+        "hotelName": "Nazwa Hotelu",
+        "address": "Adres",
+        "phoneNumber": "Numer Telefonu",
+        "email": "Email",
+        "timezone": "Strefa Czasowa",
+        "defaultLanguage": "Domyślny Język",
+        "unsavedChanges": "Masz niezapisane zmiany",
+        "discard": "Odrzuć",
+        "saveChanges": "Zapisz Zmiany"
+      },
+      "maintenance": {
+        "title": "Konserwacja i Naprawy",
+        "subtitle": "Zarządzaj problemami konserwacyjnymi i naprawami",
+        "searchPlaceholder": "Szukaj problemów...",
+        "status": "Status",
+        "all": "Wszystkie",
+        "open": "Otwarte",
+        "inProgress": "W trakcie",
+        "resolved": "Zakończone",
+        "closed": "Zamknięte",
+        "addIssue": "Dodaj usterkę",
+        "room": "Pokój",
+        "reportedBy": "Zgłoszone przez",
+        "assignedTo": "Przydzielone do",
+        "markResolved": "Oznacz jako rozwiązane",
+        "noIssuesFound": "Nie znaleziono usterek",
+        "edit": "Edytuj",
+        "assign": "Przydziel",
+        "delete": "Usuń",
+        "createIssue": "Utwórz zgłoszenie",
+        "editIssue": "Edytuj zgłoszenie",
+        "titleLabel": "Tytuł",
+        "description": "Opis",
+        "roomNumber": "Numer pokoju",
+        "cancel": "Anuluj",
+        "save": "Zapisz",
+        "assignIssue": "Przydziel zgłoszenie",
+        "issue": "Zgłoszenie",
+        "assignTo": "Przydziel do",
+        "reportedDate": "Zgłoszone w",
+        "close": "Zamknij zgłoszenie",
+        "modalTitle": "Tytuł Zgłoszenia",
+        "list": "Lista usterek"
       }
     },
     "employee": {
@@ -570,11 +654,23 @@
     "room": "Pokój",
     "guest_unknown": "Nieznany gość",
     "unknown": "nieznany",
+    "all": "Wszystko",
+    "status": "Status",
+    "actions": "Akcje",
+    "page": "Strona",
+    "description": "Opis",
     "room_standard": {
       "Budget": "Budżetowy",
       "Standard": "Standardowy",
       "Deluxe": "Deluxe",
-      "Exclusive Suite": "Apartament"
+      "Exclusive": "Exclusive"
+    },
+    "room_status": {
+      "open": "Open",
+      "available": "Dostępny",
+      "booked": "Zarezerwowany",
+      "pending": "Oczekujący",
+      "out_of_service": "Niedostępny"
     },
     "sectors": {
       "breakfast": "Śniadania",
@@ -610,11 +706,12 @@
     "approve": "Zatwierdź",
     "reject": "Odrzuć",
     "back": "Cofnij",
-    "update": "Aktualizuj Pracownika",
+    "update": "Aktualizuj",
     "promote": "Awansuj",
     "remove": "Usuń",
     "edit": "Edytuj",
-    "register": "Zarejestruj"
+    "register": "Zarejestruj",
+    "add":"Dodaj"
   },
   "error": {
     "networkError": "Błąd połączenia z serwerem.",

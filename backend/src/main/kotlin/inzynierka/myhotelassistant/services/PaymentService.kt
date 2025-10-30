@@ -47,8 +47,10 @@ class PaymentService(
                             .between(checkIn, checkOut)
                             .toInt()
                             .coerceAtLeast(1)
-                    val totalPrice = room.pricePerNight * nights
-                    val priceCents = (totalPrice * 100).toInt()
+                    val standard = roomService.findStandard(room)
+                    val pricePerNight = room.pricePerNight ?: standard.basePrice
+                    val totalPrice = pricePerNight.times(nights)
+                    val priceCents = (totalPrice.times(100)).toInt()
                     totalAmountCents += priceCents
 
                     itemDetails.add(
@@ -57,7 +59,7 @@ class PaymentService(
                             "type" to "RESERVATION",
                             "name" to "Room ${room.number}",
                             "nights" to nights,
-                            "pricePerNight" to room.pricePerNight,
+                            "pricePerNight" to pricePerNight,
                             "price" to totalPrice,
                             "priceCents" to priceCents,
                         ),

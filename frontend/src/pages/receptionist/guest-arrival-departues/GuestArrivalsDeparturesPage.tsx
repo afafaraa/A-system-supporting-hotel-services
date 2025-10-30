@@ -290,7 +290,7 @@ const ReservationCard = ({reservation, onClick, children}: {reservation: Reserva
                  clickable onClick={onClick}
                  display="flex" alignItems="center" columnGap={2} rowGap={1} flexWrap="wrap">
       <ServiceIcon icon={roomStandardIcon(reservation.roomStandard)}>
-        <Typography fontSize="16px" fontWeight={500}>{tc("room-label")} {reservation.roomNumber} | {reservation.roomStandard}</Typography>
+        <Typography fontSize="16px" fontWeight={500}>{tc("room-label")} {reservation.roomNumber} | {reservation.roomStandard.name}</Typography>
         <Typography fontSize="12px" color="text.secondary">{tc("guest-label")}: {reservation.guestFullName}</Typography>
         <Typography fontSize="12px" color="text.secondary">{formatDateRange(reservation.checkIn, reservation.checkOut)}</Typography>
         <Typography fontSize="14px" mt={0.5} color={colorFromStatus[reservation.status] || "text.primary"} borderRadius="9px">

@@ -8,8 +8,9 @@ data class RoomEntity(
     @Id val number: String,
     val floor: Int,
     val capacity: Int,
-    val pricePerNight: Double,
-    val standard: RoomStandard,
+    val pricePerNight: Double? = null,
+    val standardId: String,
     val description: String? = null,
     val amenities: Set<RoomAmenity> = emptySet(),
+    val roomStatus: RoomStatus = RoomStatus.AVAILABLE,
 )

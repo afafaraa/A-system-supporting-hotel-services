@@ -1,15 +1,26 @@
-export type Room = {
+export interface Room {
   number: string;
-  type: 'standard' | 'deluxe' | 'exclusive';
+  floor?: number;
+  capacity: number;
   pricePerNight: number;
-  status: string;
   standard: RoomStandard;
   description: string;
-  capacity: number;
   amenities: string[];
-};
+  roomStatus: RoomStatus;
+}
 
-export type RoomStandard = "Budget" | "Standard" | "Deluxe" | "Exclusive Suite";
+export interface RoomStandard {
+  id?: string;
+  name: string;
+  capacity: number;
+  basePrice: number;
+  description?: string;
+}
+
+export enum RoomStatus {
+  AVAILABLE = "AVAILABLE",
+  OUT_OF_SERVICE = "OUT_OF_SERVICE"
+}
 
 export type ReservationGuest = {
   id: number;

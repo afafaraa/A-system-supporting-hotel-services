@@ -3,6 +3,7 @@ import { Paper } from "@mui/material";
 
 export const ServiceCard = styled(Paper)(({ theme }) => ({
   display: "flex",
+  width: "100%",
   alignItems: "center",
   justifyContent: "space-between",
   padding: theme.spacing(2),

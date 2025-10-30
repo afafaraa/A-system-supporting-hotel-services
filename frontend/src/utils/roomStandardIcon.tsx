@@ -7,7 +7,7 @@ import {RoomStandard} from "../types/room.ts";
 
 type MuiIcon = typeof SingleBedOutlinedIcon;
 
-const roomStandardToIconMap: Record<RoomStandard, MuiIcon> = {
+const roomStandardToIconMap: Record<RoomStandard['name'], MuiIcon> = {
   "Budget": SingleBedOutlinedIcon,
   "Standard": BedOutlinedIcon,
   "Deluxe": BusinessCenterOutlinedIcon,
@@ -15,7 +15,7 @@ const roomStandardToIconMap: Record<RoomStandard, MuiIcon> = {
 }
 
 const roomStandardIcon = (standard: RoomStandard): MuiIcon => {
-  return roomStandardToIconMap[standard] ?? DoorFrontOutlinedIcon;
+  return roomStandardToIconMap[standard.name] ?? DoorFrontOutlinedIcon;
 }
 
 export default roomStandardIcon;

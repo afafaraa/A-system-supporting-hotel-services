@@ -8,7 +8,7 @@ import useTranslationWithPrefix from "../../locales/useTranslationWithPrefix.tsx
 import {useNavigate} from "react-router-dom";
 import {TabProp} from "./GuestService.tsx";
 
-const TabButton = styled(Box)(({ theme }) => ({
+export const TabButton = styled(Box)(({ theme }) => ({
   padding: theme.spacing(0.9),
   borderRadius: "12px",
   display: "flex",
