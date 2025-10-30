@@ -61,7 +61,7 @@ export default function RoomCard({
               variant="h6"
               sx={{ fontWeight: 600, fontSize: `${fontSize + 4}px` }}
             >
-              {room.standard
+              {room.standard.name
                 .replace(/_/g, ' ')
                 .toLowerCase()
                 .replace(/^\w/, c => c.toUpperCase())}
@@ -118,11 +118,11 @@ export default function RoomCard({
             {room.amenities &&
               Array.isArray(room.amenities) &&
               room.amenities.map((amenity, idx) => {
-                const formattedAmenity = amenity
-                  .replace(/_/g, ' ')
-                  .toLowerCase()
-                  .replace(/^\w/, c => c.toUpperCase());
-                return (
+                  const formattedAmenity = amenity
+                      .replace(/_/g, ' ')
+                      .toLowerCase()
+                      .replace(/^\w/, c => c.toUpperCase());
+                  return (
                   <Chip
                     key={idx}
                     icon={mapAmenityToIcon(amenity, `${fontSize}px`)}

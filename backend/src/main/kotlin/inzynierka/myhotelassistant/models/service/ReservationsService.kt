@@ -7,18 +7,21 @@ import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.ReservationsRepository
 import inzynierka.myhotelassistant.repositories.RoomRepository
+import inzynierka.myhotelassistant.repositories.RoomStandardRepository
 import inzynierka.myhotelassistant.services.UserService
 import inzynierka.myhotelassistant.services.notifications.NotificationScheduler
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class ReservationsService(
     private val reservationsRepository: ReservationsRepository,
     private val userService: UserService,
     private val roomRepository: RoomRepository,
+    private val roomStandardRepository: RoomStandardRepository,
     private val notificationScheduler: NotificationScheduler,
 ) {
     private val possibleCancellationStatus = listOf(ReservationStatus.REQUESTED, ReservationStatus.CONFIRMED)
@@ -52,13 +55,16 @@ class ReservationsService(
     private fun transformToDTO(reservation: ReservationEntity): ReservationsController.ReservationDTO {
         val guest = userService.getUserNameAndEmailById(reservation.guestId)
         val room =
-            roomRepository.getRoomStandardByNumber(reservation.roomNumber)
+            roomRepository.findByNumber(reservation.roomNumber)
+                ?: throw IllegalArgumentException("Room with number ${reservation.roomNumber} not found")
+        val standard =
+            roomStandardRepository.findById(room.standardId).getOrNull()
                 ?: throw IllegalArgumentException("Room with number ${reservation.roomNumber} not found")
         return ReservationsController.ReservationDTO(
             reservation,
             "${guest?.name} ${guest?.surname}",
             guest?.email,
-            room.standard.displayName,
+            standard.name,
         )
     }
 
@@ -99,9 +105,33 @@ class ReservationsService(
                 val room =
                     roomRepository.findByNumber(reservation.roomNumber)
                         ?: throw IllegalArgumentException("Room with number ${reservation.roomNumber} not found")
+
+                val standard =
+                    roomStandardRepository.findById(room.standardId).getOrNull()
+                        ?: throw IllegalArgumentException("Standard for room ${room.number} not found")
+
+                val roomDTO =
+                    ReservationsController.RoomDTO(
+                        number = room.number,
+                        floor = room.floor,
+                        capacity = room.capacity,
+                        pricePerNight = room.pricePerNight ?: standard.basePrice,
+                        description = room.description,
+                        amenities = room.amenities,
+                        roomStatus = room.roomStatus.name,
+                        standard =
+                            ReservationsController.RoomStandardDTO(
+                                id = standard.id,
+                                name = standard.name,
+                                capacity = standard.capacity,
+                                basePrice = standard.basePrice,
+                                description = standard.description,
+                            ),
+                    )
+
                 ReservationsController.ReservationGuestDTO(
                     id = reservation.id!!,
-                    room = room,
+                    room = roomDTO,
                     checkIn = reservation.checkIn.toString(),
                     checkOut = reservation.checkOut.toString(),
                     guestCount = reservation.guestsCount,
@@ -201,7 +231,11 @@ class ReservationsService(
         val room =
             roomRepository.findByNumber(roomNumber)
                 ?: throw IllegalArgumentException("Room with number $roomNumber not found")
-        return room.pricePerNight * days // TODO: apply discounts, seasonal prices, etc.
+        val standard =
+            roomStandardRepository.findById(roomNumber).getOrNull()
+                ?: throw IllegalArgumentException("Room with number $roomNumber not found")
+        val basePrice = room.pricePerNight ?: standard.basePrice
+        return basePrice * days // TODO: apply discounts, seasonal prices, etc.
     }
 
     fun findAllReservations(): List<ReservationEntity> = reservationsRepository.findAll()
