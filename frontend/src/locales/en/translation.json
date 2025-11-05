@@ -526,6 +526,7 @@
       "room_number": "Room Number",
       "check_in": "Check-In Date",
       "check_out": "Check-Out Date",
+      "room_price": "Room price",
       "view_all": "View All",
 
       "employee_card": "Employee Card",

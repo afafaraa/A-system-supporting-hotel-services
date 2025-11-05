@@ -620,7 +620,7 @@ class DatabaseSeeder(
                 val checkOut = checkIn.plusDays(Random.nextInt(1, 4).toLong())
                 val room = rooms.shuffled().find { room -> reservationsService.isRoomAvailable(room.number, checkIn, checkOut) }
                 if (room != null) {
-                    val standard = roomService.findStandard(room)
+                    val standard = roomService.findStandardById(room.standardId)
                     val reservation =
                         ReservationEntity(
                             roomNumber = room.number,

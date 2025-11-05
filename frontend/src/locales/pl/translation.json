@@ -191,7 +191,7 @@
       "myReservations": "Moje rezerwacje pokoi",
       "myReservationsSubtitle": "Twoje obecne i przeszłe rezerwacje pokoi",
       "loading": "Ładowanie rezerwacji...",
-      "reservationDetails": "{{count}} gości | {{price}} zł łącznie",
+      "reservationDetails": "{{count}} gości | {{price}} $ łącznie",
       "noBookings": "Nie masz żadnych rezerwacji pokoi.",
       "reserveRoom": "Zarezerwuj pokój",
       "reserveRoomSubtitle": "Zarezerwuj idealne zakwaterowanie na swój pobyt",
@@ -526,6 +526,7 @@
       "room_number": "Numer pokoju",
       "check_in": "Data zameldowania",
       "check_out": "Data wymeldowania",
+      "room_price": "Cena pokoju",
       "view_all": "Zobacz wszystkie",
 
       "employee_card": "Karta pracownika",

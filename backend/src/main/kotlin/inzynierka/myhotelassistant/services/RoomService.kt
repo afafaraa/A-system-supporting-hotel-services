@@ -8,7 +8,6 @@ import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.repositories.RoomStandardRepository
 import org.springframework.stereotype.Service
 import java.time.LocalDate
-import kotlin.jvm.optionals.getOrNull
 
 @Service
 class RoomService(
@@ -54,12 +53,10 @@ class RoomService(
 
     fun findAllStandards(): List<RoomStandardEntity> = roomStandardRepository.findAll()
 
-    fun findStandard(room: RoomEntity): RoomStandardEntity {
-        require(roomStandardRepository.existsById(room.standardId)) {
-            "room with id ${room.standardId} not found"
-        }
-        return roomStandardRepository.findById(room.standardId).get()
-    }
+    fun findStandardById(id: String): RoomStandardEntity =
+        roomStandardRepository
+            .findById(id)
+            .orElseThrow { IllegalArgumentException("Room standard with id $id was not found") }
 
     fun createStandard(standard: RoomStandardEntity): RoomStandardEntity {
         require(!roomStandardRepository.existsByName(standard.name)) {
@@ -72,10 +69,7 @@ class RoomService(
         id: String,
         standard: RoomStandardEntity,
     ): RoomStandardEntity {
-        require((roomStandardRepository.existsById(id))) {
-            "room with id $id not found"
-        }
-        val existingStandard = roomStandardRepository.findById(id).get()
+        val existingStandard = findStandardById(id)
         require((existingStandard.name != standard.name && roomStandardRepository.existsByName(standard.name))) {
             "Room standard with name '${standard.name}' already exists"
         }
@@ -85,13 +79,13 @@ class RoomService(
 
     fun deleteStandard(id: String) {
         require(roomStandardRepository.existsById(id)) {
-            { IllegalArgumentException("Room standard with id $id not found") }
+            "Room standard with id $id not found"
         }
 
         val roomsUsingStandard = roomRepository.findAllByStandardId(id)
 
         require(roomsUsingStandard.isEmpty()) {
-            throw IllegalArgumentException("Cannot delete room standard: ${roomsUsingStandard.size} room(s) are using this standard")
+            "Cannot delete room standard: ${roomsUsingStandard.size} room(s) are using this standard"
         }
 
         roomStandardRepository.deleteById(id)
@@ -99,7 +93,7 @@ class RoomService(
 
     fun getRoomsUsingStandard(id: String): List<RoomEntity> {
         require(roomStandardRepository.existsById(id)) {
-            { IllegalArgumentException("Room standard with id $id not found") }
+            "Room standard with id $id not found"
         }
 
         return roomRepository.findAllByStandardId(id)
@@ -121,9 +115,7 @@ class RoomService(
     }
 
     fun toDTO(room: RoomEntity): RoomController.RoomWithStandardDTO {
-        val standard =
-            roomStandardRepository.findById(room.standardId).getOrNull()
-                ?: throw IllegalArgumentException("Room ${room.number} has invalid standardId=${room.standardId}")
+        val standard = findStandardById(room.standardId)
 
         return RoomController.RoomWithStandardDTO(
             number = room.number,

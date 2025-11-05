@@ -47,7 +47,7 @@ class PaymentService(
                             .between(checkIn, checkOut)
                             .toInt()
                             .coerceAtLeast(1)
-                    val standard = roomService.findStandard(room)
+                    val standard = roomService.findStandardById(room.standardId)
                     val pricePerNight = room.pricePerNight ?: standard.basePrice
                     val totalPrice = pricePerNight.times(nights)
                     val priceCents = (totalPrice.times(100)).toInt()

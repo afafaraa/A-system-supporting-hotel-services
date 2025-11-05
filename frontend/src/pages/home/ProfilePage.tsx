@@ -16,10 +16,11 @@ import React from "react";
 import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
 import SectionTitle from "../../components/ui/SectionTitle.tsx";
 import {useTranslation} from "react-i18next";
+import useTranslationWithPrefix from "../../locales/useTranslationWithPrefix.tsx";
 
 function ProfilePage() {
   const {t} = useTranslation();
-  const tc = (key: string) => t("pages.profile." + key);
+  const {t: tc} = useTranslationWithPrefix("pages.profile");
   const user = useSelector(selectUser);
   const userDetails = useSelector(selectUserDetails);
 
@@ -82,8 +83,9 @@ function ProfilePage() {
       {user.role === "ROLE_GUEST" && <>
         <Divider sx={{ my: 3 }} />
         <span style={{fontWeight: "bold"}}>{t("common.special_requests")}</span>
-                {/* TODO: guest special requests */}
-        <Typography fontSize="inherit" color="text.secondary" mt={1}>—</Typography>
+        <Typography fontSize="95%" color="text.secondary" mt={1}>
+          {userDetails?.guestData?.currentReservation.specialRequests ?? "—"}
+        </Typography>
       </>}
     </SectionCard>
   )
@@ -101,11 +103,13 @@ function ProfilePage() {
           <Stack direction="column" gap={2}>
             <span>{tc("check_in")}</span>
             <span>{tc("check_out")}</span>
+            <span>{tc("room_price")}</span>
           </Stack>
           <Stack direction="column" gap={2} textAlign="right" fontWeight="bold">
             {userDetails?.guestData && <>
                 <span>{new Date(userDetails.guestData.currentReservation.checkIn).toLocaleDateString(t('date.locale'))}</span>
                 <span>{new Date(userDetails.guestData.currentReservation.checkOut).toLocaleDateString(t('date.locale'))}</span>
+                <span>{userDetails.guestData.currentReservation.reservationPrice.toFixed(2)} $</span>
             </>}
           </Stack>
         </Stack>
@@ -141,7 +145,7 @@ function ProfilePage() {
                     subtitle={tc("account_balance_subtitle")}/>
       <SectionCard sx={{backgroundColor: "primary.main"}} textAlign="center">
         <Typography color="background.default">{tc("current_bill")}</Typography>
-        <Typography fontWeight="bold" color="background.default" fontSize="2.5rem">{userDetails?.guestData?.bill.toFixed(2)} PLN</Typography>
+        <Typography fontWeight="bold" color="background.default" fontSize="2.5rem">{userDetails?.guestData?.bill.toFixed(2)} $</Typography>
       </SectionCard>
       <Typography mt={3}>{tc("recent_transactions")}:</Typography>
       {[1, 2, 3].map(item => (
