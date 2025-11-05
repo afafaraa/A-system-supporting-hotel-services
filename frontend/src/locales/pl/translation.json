@@ -84,6 +84,11 @@
       "invalidToken": "Nieprawidłowy lub wygasły link.",
       "invalidEmail": "Nieprawidłowy adres email."
     },
+    "guest_navbar": {
+      "availableServices": "Dostępne usługi",
+      "bookedServices": "Zamówione usługi",
+      "bookHotelRoom": "Zarezerwuj pokój"
+    },
     "notifications": {
       "title": "Powiadomienia",
       "unread": "nieprzeczytanych powiadomień",

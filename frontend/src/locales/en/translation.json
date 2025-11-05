@@ -84,6 +84,11 @@
       "invalidToken": "Invalid or expired link.",
       "invalidEmail": "Invalid email address."
     },
+    "guest_navbar": {
+      "availableServices": "Available Services",
+      "bookedServices": "Booked Services",
+      "bookHotelRoom": "Book Hotel Room"
+    },
     "notifications": {
       "title": "Notifications",
       "unread": "unread notifications",
