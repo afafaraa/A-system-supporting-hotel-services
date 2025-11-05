@@ -96,14 +96,14 @@ class NotificationService(
 
         // Send email notification
         try {
-            val user = userService.findById(userId) ?: throw IllegalArgumentException("User with id $userId not found")
+            val userEmail = userService.getUserEmailById(userId) ?: throw IllegalArgumentException("User with id $userId not found")
             emailSender.sendNotificationEmail(
-                toEmail = user.email,
+                toEmail = userEmail,
                 title = title,
                 variant = variant,
                 message = message,
             )
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             println("Failed to send email notification to user $userId: ${'$'}{e.message}")
         }
     }

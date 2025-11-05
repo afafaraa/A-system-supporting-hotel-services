@@ -126,19 +126,4 @@ class ScheduleService(
         guestId: String,
         statuses: List<OrderStatus>,
     ): List<ScheduleEntity> = scheduleRepository.findByGuestIdAndStatusIn(guestId, statuses)
-
-    fun createGuestOrder(
-        scheduleId: String,
-        guestId: String,
-        specialRequests: String? = null,
-    ): ScheduleDTO {
-        val schedule = findByIdOrThrow(scheduleId)
-        schedule.guestId = guestId
-        schedule.orderTime = java.time.LocalDateTime.now()
-        schedule.status = OrderStatus.REQUESTED
-        schedule.specialRequests = specialRequests
-        save(schedule)
-
-        return scheduleDateConverter.convert(schedule)
-    }
 }

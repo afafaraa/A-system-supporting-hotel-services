@@ -16,11 +16,13 @@ export const TabButton = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1.2),
   cursor: "pointer",
   fontWeight: 400,
+  zIndex: 100,
   "--icon-color": theme.palette.text.secondary,
   "&:hover": {
-    backgroundColor: theme.palette.action.hover,
+    backgroundColor: theme.palette.custom.sidebarButtonBg,
     "--icon-color": theme.palette.primary.main,
     fontWeight: 500,
+    width: "fit-content",
   },
   "&.active": {
     backgroundColor: theme.palette.action.selected,
@@ -28,9 +30,10 @@ export const TabButton = styled(Box)(({ theme }) => ({
     "--icon-color": theme.palette.primary.main,
     fontWeight: 500,
     "&:hover": {
-      backgroundColor: theme.palette.action.focus,
+      backgroundColor: theme.palette.custom.sidebarButtonSelectedBg,
     }
   },
+  minWidth: "100%",
   transition: "0.15s ease",
 }));
 
@@ -73,9 +76,9 @@ function GuestServiceSidebar({tabs, activeTabIndex}: Props) {
             <TabButton key={tab.name} onClick={() => tab.link && navigate(tab.link)}
                        className={activeTabIndex === index ? "active" : ""}>
               <Icon sx={{fontSize: "24px", color: "var(--icon-color)"}} />
-              <div style={{overflow: "hidden", textWrap: "nowrap"}}>
+              <Box sx={{overflow: "hidden", textWrap: "nowrap", "&:hover": {overflow: "visible"}}}>
                 <Typography fontSize="15px" fontWeight="inherit">{tc(tab.name, {defaultValue: tab.name})}</Typography>
-              </div>
+              </Box>
             </TabButton>
             </Tooltip>
           );

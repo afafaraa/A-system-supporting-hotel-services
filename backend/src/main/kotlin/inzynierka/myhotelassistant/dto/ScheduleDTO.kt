@@ -35,7 +35,7 @@ data class ScheduleDTO(
             date = schedule.serviceDate.toString(),
             weekday = schedule.serviceDate.dayOfWeek.name,
             guestName = guest?.let { "${it.name} ${it.surname}" },
-            room = guest?.guestData?.roomNumber,
+            room = guest?.guestData?.currentReservation?.roomNumber,
             orderTime = schedule.orderTime?.toString(),
             price = schedule.price,
             status = schedule.status.name,

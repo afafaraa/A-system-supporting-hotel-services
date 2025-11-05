@@ -10,44 +10,15 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDate
 
 @RestController
 class AddUserController(
     private val userService: UserService,
 ) {
-    data class AddUserRequest(
-        @field:Email(message = "Email should be valid")
-        val email: String,
-        @field:Pattern(
-            regexp = "^[A-Za-z-]{2,20}$",
-            message = "Name must be 2-20 characters long and may include '-'",
-        )
-        val name: String,
-        @field:Pattern(
-            regexp = "^[A-Za-z-]{2,30}$",
-            message = "Surname must be 2-30 characters long and may include '-'",
-        )
-        val surname: String,
-        @field:Pattern(
-            regexp = "^[0-9]{3,4}$",
-            message = "Room number must only contain digits and be 3-4 digits long",
-        )
-        val roomNumber: String,
-        val checkInDate: LocalDate,
-        val checkOutDate: LocalDate,
-    )
-
-    data class AddUserResponse(
+    data class AccountDetailsResponse(
         val username: String,
         val password: String,
     )
-
-    @PostMapping("/secured/add/guest")
-    @ResponseStatus(HttpStatus.CREATED)
-    fun addGuest(
-        @RequestBody user: AddUserRequest,
-    ): AddUserResponse = userService.createAndSaveGuest(user).second
 
     data class NewAdminRequest(
         @field:Email(message = "Email should be valid")
@@ -70,9 +41,9 @@ class AddUserController(
     @ResponseStatus(HttpStatus.CREATED)
     fun addAdmin(
         @RequestBody @Valid request: NewAdminRequest,
-    ): AddUserResponse {
+    ): AccountDetailsResponse {
         val newAdmin = userService.createAdmin(request)
         val savedAdmin = userService.save(newAdmin)
-        return AddUserResponse(password = savedAdmin.password, username = savedAdmin.username)
+        return AccountDetailsResponse(password = savedAdmin.password, username = savedAdmin.username)
     }
 }

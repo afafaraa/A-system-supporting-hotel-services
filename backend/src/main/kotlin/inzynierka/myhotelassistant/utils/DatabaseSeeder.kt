@@ -17,7 +17,6 @@ import inzynierka.myhotelassistant.models.service.ServiceTypeAttributes
 import inzynierka.myhotelassistant.models.service.WeekdayHour
 import inzynierka.myhotelassistant.models.user.Department
 import inzynierka.myhotelassistant.models.user.EmployeeData
-import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.Sector
 import inzynierka.myhotelassistant.models.user.UserEntity
@@ -29,18 +28,17 @@ import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
 import inzynierka.myhotelassistant.services.RoomService
 import inzynierka.myhotelassistant.services.ServiceService
-import inzynierka.myhotelassistant.services.UserService
 import jakarta.annotation.PostConstruct
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.time.DayOfWeek
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.collections.forEach
+import kotlin.jvm.optionals.getOrNull
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.random.Random
@@ -57,7 +55,6 @@ class DatabaseSeeder(
     private val serviceService: ServiceService,
     private val notificationRepository: NotificationRepository,
     private val scheduleRepository: ScheduleRepository,
-    private val userService: UserService,
     private val schedulesGenerator: SchedulesGenerator,
     private val ratingRepository: RatingRepository,
     private val reservationsService: ReservationsService,
@@ -101,10 +98,10 @@ class DatabaseSeeder(
             addTestGuests()
             addServices()
             schedulesGenerator.createSchedules()
-//            addOrders()
+            addOrders()
             addManager()
             addRatings()
-//            addTestNotifications()
+            addTestNotifications()
             createReservations()
             // addTestRoomStandards()
         } catch (e: Exception) {
@@ -115,24 +112,32 @@ class DatabaseSeeder(
 
     private fun addTestAdminAndUser() {
         if (!userRepo.existsByUsername("user")) {
-            userRepo.save(
-                UserEntity(
-                    username = "user",
-                    password = passwordEncoder.encode("password"),
-                    role = Role.GUEST,
-                    email = "test_user@user.test",
-                    name = "Test",
-                    surname = "User",
-                    active = true,
-                    emailAuthorized = true,
-                    guestData =
-                        GuestData(
-                            roomNumber = "002",
-                            checkInDate = Instant.now(),
-                            checkOutDate = Instant.now().plus(7, ChronoUnit.DAYS),
-                        ),
-                ),
-            )
+            val savedGuest =
+                userRepo.save(
+                    UserEntity(
+                        username = "user",
+                        password = passwordEncoder.encode("password"),
+                        role = Role.GUEST,
+                        email = "test_user@user.test",
+                        name = "Test",
+                        surname = "User",
+                        active = true,
+                        emailAuthorized = true,
+                    ),
+                )
+            val reservation =
+                ReservationEntity(
+                    roomNumber = "002",
+                    guestId = savedGuest.id!!,
+                    guestsCount = 2,
+                    checkIn = LocalDate.now(),
+                    checkOut = LocalDate.now().plusDays(7),
+                    reservationPrice = 129.99 * 7,
+                    paid = true,
+                    specialRequests = "I would like to have a room with a sea view and working ac, if possible. Thank you!",
+                )
+            reservation.status = ReservationStatus.CHECKED_IN
+            saveReservationAndBindToGuest(savedGuest, reservation)
             logger.info("Default 'user' added to database")
         }
 
@@ -153,34 +158,12 @@ class DatabaseSeeder(
         }
     }
 
-    private fun addTestRoomStandards() {
-        if (!roomStandardRepository.existsByName("Standard")) {
-            roomStandardRepository.save(
-                RoomStandardEntity(
-                    name = "Standard",
-                    capacity = 2,
-                    basePrice = 50.00,
-                ),
-            )
-        }
-        if (!roomStandardRepository.existsByName("Deluxe")) {
-            roomStandardRepository.save(
-                RoomStandardEntity(
-                    name = "Deluxe",
-                    capacity = 3,
-                    basePrice = 180.00,
-                ),
-            )
-        }
-        if (!roomStandardRepository.existsByName("Exclusive")) {
-            roomStandardRepository.save(
-                RoomStandardEntity(
-                    name = "Exclusive",
-                    capacity = 4,
-                    basePrice = 350.00,
-                ),
-            )
-        }
+    private fun saveReservationAndBindToGuest(
+        savedGuest: UserEntity,
+        reservation: ReservationEntity,
+    ) {
+        val savedReservation = reservationsService.save(reservation)
+        reservationsService.bindReservationToGuest(savedGuest, savedReservation)
     }
 
     private fun addTestRooms() {
@@ -363,64 +346,85 @@ class DatabaseSeeder(
 
     private fun addTestGuests() {
         if (!userRepo.existsByUsername("guest1")) {
-            userRepo.save(
-                UserEntity(
-                    role = Role.GUEST,
-                    email = "guest1@gmail.com",
-                    username = "guest1",
-                    password = passwordEncoder.encode("guest1"),
-                    name = "Alice",
-                    active = true,
-                    emailAuthorized = true,
-                    surname = "Johnson",
-                    guestData =
-                        GuestData(
-                            roomNumber = "121",
-                            checkInDate = Instant.now().minus(10, ChronoUnit.DAYS),
-                            checkOutDate = Instant.now().plus(5, ChronoUnit.DAYS),
-                        ),
-                ),
-            )
+            val savedGuest =
+                userRepo.save(
+                    UserEntity(
+                        role = Role.GUEST,
+                        email = "guest1@gmail.com",
+                        username = "guest1",
+                        password = passwordEncoder.encode("guest1"),
+                        name = "Alice",
+                        active = true,
+                        emailAuthorized = true,
+                        surname = "Johnson",
+                    ),
+                )
+            val reservation =
+                ReservationEntity(
+                    roomNumber = "121",
+                    guestId = savedGuest.id!!,
+                    guestsCount = 3,
+                    checkIn = LocalDate.now().minusDays(10),
+                    checkOut = LocalDate.now().plusDays(5),
+                    reservationPrice = 210.0 * 15,
+                    paid = true,
+                )
+            reservation.status = ReservationStatus.CHECKED_IN
+            saveReservationAndBindToGuest(savedGuest, reservation)
         }
         if (!userRepo.existsByUsername("guest2")) {
-            userRepo.save(
-                UserEntity(
-                    role = Role.GUEST,
-                    email = "guest2@gmail.com",
-                    username = "guest2",
-                    password = passwordEncoder.encode("guest2"),
-                    name = "Bob",
-                    surname = "Smith",
-                    active = true,
-                    emailAuthorized = true,
-                    guestData =
-                        GuestData(
-                            roomNumber = "002",
-                            checkInDate = Instant.now().minus(17, ChronoUnit.DAYS),
-                            checkOutDate = Instant.now().plus(10, ChronoUnit.DAYS),
-                        ),
-                ),
-            )
+            val savedGuest =
+                userRepo.save(
+                    UserEntity(
+                        role = Role.GUEST,
+                        email = "guest2@gmail.com",
+                        username = "guest2",
+                        password = passwordEncoder.encode("guest2"),
+                        name = "Bob",
+                        surname = "Smith",
+                        active = true,
+                        emailAuthorized = true,
+                    ),
+                )
+            val reservation =
+                ReservationEntity(
+                    roomNumber = "002",
+                    guestId = savedGuest.id!!,
+                    guestsCount = 2,
+                    checkIn = LocalDate.now().minusDays(17),
+                    checkOut = LocalDate.now().plusDays(10),
+                    reservationPrice = 129.99 * 27,
+                    paid = true,
+                )
+            reservation.status = ReservationStatus.CHECKED_IN
+            saveReservationAndBindToGuest(savedGuest, reservation)
         }
         if (!userRepo.existsByUsername("guest3")) {
-            userRepo.save(
-                UserEntity(
-                    role = Role.GUEST,
-                    email = "guest3@gmail.com",
-                    username = "guest3",
-                    password = passwordEncoder.encode("guest3"),
-                    name = "Charlie",
-                    surname = "Brown",
-                    active = true,
-                    emailAuthorized = true,
-                    guestData =
-                        GuestData(
-                            roomNumber = "316",
-                            checkInDate = Instant.now().minus(12, ChronoUnit.DAYS),
-                            checkOutDate = Instant.now().plus(3, ChronoUnit.DAYS),
-                        ),
-                ),
-            )
+            val savedGuest =
+                userRepo.save(
+                    UserEntity(
+                        role = Role.GUEST,
+                        email = "guest3@gmail.com",
+                        username = "guest3",
+                        password = passwordEncoder.encode("guest3"),
+                        name = "Charlie",
+                        surname = "Brown",
+                        active = true,
+                        emailAuthorized = true,
+                    ),
+                )
+            val reservation =
+                ReservationEntity(
+                    roomNumber = "316",
+                    guestId = savedGuest.id!!,
+                    guestsCount = 4,
+                    checkIn = LocalDate.now().minusDays(12),
+                    checkOut = LocalDate.now().plusDays(3),
+                    reservationPrice = 250.0 * 15,
+                    paid = true,
+                )
+            reservation.status = ReservationStatus.CHECKED_IN
+            saveReservationAndBindToGuest(savedGuest, reservation)
         }
     }
 
@@ -461,7 +465,7 @@ class DatabaseSeeder(
 
     fun addOrders() {
         val schedules = scheduleRepository.findAll()
-        val guests = userService.findByRole(Role.GUEST)
+        val guests = userRepo.findByRole(Role.GUEST)
         if (schedules.isEmpty() || guests.isEmpty()) return
 
         val now = LocalDateTime.now()
@@ -508,7 +512,7 @@ class DatabaseSeeder(
                 scheduleRepository.save(schedule)
             }
 
-            userService.save(guest)
+            userRepo.save(guest)
         }
     }
 
@@ -527,7 +531,7 @@ class DatabaseSeeder(
                         scheduleId = it.id!!,
                         employeeId = it.employeeId,
                         guestId = it.guestId!!,
-                        fullName = userService.findById(it.guestId!!)?.let { user -> user.name + " " + user.surname } ?: "Unknown",
+                        fullName = userRepo.findById(it.guestId!!).getOrNull()?.let { user -> user.name + " " + user.surname } ?: "Unknown",
                         rating = random.nextInt(1, 5),
                         comment = "Example comment for particular service. Rating generated randomly.",
                     )
@@ -607,17 +611,16 @@ class DatabaseSeeder(
     }
 
     private fun createReservations() {
-        if (reservationsService.isAnyExist()) return
         val guests = userRepo.findByRole(Role.GUEST)
         val rooms = roomRepo.findAll()
-        repeat(1) {
+        repeat(4) {
             guests.forEach { guest ->
                 val now = LocalDate.now()
                 val checkIn = now.plusDays(Random.nextInt(-4, 2).toLong())
                 val checkOut = checkIn.plusDays(Random.nextInt(1, 4).toLong())
                 val room = rooms.shuffled().find { room -> reservationsService.isRoomAvailable(room.number, checkIn, checkOut) }
                 if (room != null) {
-                    val standard = roomService.findStandard(room)
+                    val standard = roomService.findStandardById(room.standardId)
                     val reservation =
                         ReservationEntity(
                             roomNumber = room.number,

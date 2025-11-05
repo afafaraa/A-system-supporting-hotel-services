@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {
   Box,
   Card,
@@ -11,18 +11,21 @@ import {
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import axiosApi from "../../../middleware/axiosApi";
+import useTranslationWithPrefix from "../../../locales/useTranslationWithPrefix.tsx";
 
 const VerifyAccount = () => {
+  const {t: tc} = useTranslationWithPrefix('pages.account-verification');
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
 
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
-  const [message, setMessage] = useState<string>("Verifying your account...");
+  const [message, setMessage] = useState<string>("verifying");
 
   useEffect(() => {
     if (!token) {
       setStatus("error");
-      setMessage("Missing verification token.");
+      setMessage("missingToken");
       return;
     }
 
@@ -32,15 +35,15 @@ const VerifyAccount = () => {
 
         if (res.status === 200) {
           setStatus("success");
-          setMessage("Email verified successfully! You can now log in.");
+          setMessage("success");
         } else {
           setStatus("error");
-          setMessage("Invalid or expired verification link.");
+          setMessage("invalidOrExpired");
         }
       } catch (err) {
         console.error(err);
         setStatus("error");
-        setMessage("Something went wrong while verifying your account.");
+        setMessage("error");
       }
     };
 
@@ -73,7 +76,7 @@ const VerifyAccount = () => {
             <>
               <CircularProgress size={48} />
               <Typography mt={3} variant="h6">
-                Verifying your account...
+                {tc(message)}
               </Typography>
             </>
           )}
@@ -82,19 +85,19 @@ const VerifyAccount = () => {
             <>
               <CheckCircleOutlineIcon color="success" sx={{ fontSize: 64 }} />
               <Typography mt={2} variant="h5" color="success.main" fontWeight="medium">
-                Verification successful
+                {tc("successTitle")}
               </Typography>
               <Typography mt={1} color="text.secondary">
-                {message}
+                {tc(message)}
               </Typography>
               <Button
                 sx={{ mt: 3 }}
                 variant="contained"
                 color="primary"
-                href="/login"
+                onClick={() => navigate("/login")}
                 fullWidth
               >
-                Go to Login
+                {tc("goToLogin")}
               </Button>
             </>
           )}
@@ -103,19 +106,19 @@ const VerifyAccount = () => {
             <>
               <ErrorOutlineIcon color="error" sx={{ fontSize: 64 }} />
               <Typography mt={2} variant="h5" color="error.main" fontWeight="medium">
-                Verification failed
+                {tc("failureTitle")}
               </Typography>
               <Typography mt={1} color="text.secondary">
-                {message}
+                {tc(message)}
               </Typography>
               <Button
                 sx={{ mt: 3 }}
                 variant="outlined"
                 color="error"
-                href="/"
+                onClick={() => navigate("/home")}
                 fullWidth
               >
-                Return Home
+                {tc("returnHome")}
               </Button>
             </>
           )}

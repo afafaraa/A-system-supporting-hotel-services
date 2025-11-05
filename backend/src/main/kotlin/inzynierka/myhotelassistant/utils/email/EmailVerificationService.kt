@@ -16,7 +16,12 @@ class EmailVerificationService(
         email: String,
     ) {
         val token = tokenUtil.generateVerificationToken(userId, email)
-        emailSender.sendVerificationEmail(email, token)
+        try {
+            emailSender.sendVerificationEmail(email, token)
+        } catch (e: Exception) {
+            println("Error during sending verification email: ${e.message}")
+            throw IllegalStateException("Couldn't send verification email. Make sure your email is correct and try again.")
+        }
     }
 
     fun verifyEmailToken(token: String): Boolean {

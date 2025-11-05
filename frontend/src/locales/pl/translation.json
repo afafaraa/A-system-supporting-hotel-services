@@ -56,7 +56,19 @@
       "passwordsDoNotMatch": "Hasła nie pasują do siebie.",
       "resetPasswordButton": "Zresetuj hasło",
       "registerNoCodeNavButton": "Zarejestruj się",
-      "registerWithCodeNavButton": "Zarejestruj się z kodem"
+      "registerWithCodeNavButton": "Zarejestruj się z kodem",
+      "emailSent": "Email weryfikacyjny został wysłany na adres {{email}}. Proszę zweryfikować email, aby zakończyć rejestrację."
+    },
+    "account-verification": {
+      "verifying": "Weryfikowanie twojego konta...",
+      "missingToken": "Brak tokenu weryfikacji konta.",
+      "success": "Email pomyślnie zweryfikowany! Możesz się teraz zalogować.",
+      "invalidOrExpired": "Nieprawidłowy lub przeterminowany link weryfikacyjny.",
+      "error": "Coś poszło nie tak podczas weryfikacji twojego konta.",
+      "successTitle": "Weryfikacja pomyślna",
+      "goToLogin": "Wróć do logowania",
+      "failureTitle": "Weryfikacja nieudana",
+      "returnHome": "Wróć do strony głównej"
     },
     "reset-password": {
       "title": "Resetowanie hasła",
@@ -71,6 +83,11 @@
       "resetPasswordSuccess": "Hasło zostało pomyślnie zresetowane. Możesz teraz się zalogować.",
       "invalidToken": "Nieprawidłowy lub wygasły link.",
       "invalidEmail": "Nieprawidłowy adres email."
+    },
+    "guest_navbar": {
+      "availableServices": "Dostępne usługi",
+      "bookedServices": "Zamówione usługi",
+      "bookHotelRoom": "Zarezerwuj pokój"
     },
     "notifications": {
       "title": "Powiadomienia",
@@ -179,7 +196,7 @@
       "myReservations": "Moje rezerwacje pokoi",
       "myReservationsSubtitle": "Twoje obecne i przeszłe rezerwacje pokoi",
       "loading": "Ładowanie rezerwacji...",
-      "reservationDetails": "{{count}} gości | {{price}} zł łącznie",
+      "reservationDetails": "{{count}} gości | {{price}} $ łącznie",
       "noBookings": "Nie masz żadnych rezerwacji pokoi.",
       "reserveRoom": "Zarezerwuj pokój",
       "reserveRoomSubtitle": "Zarezerwuj idealne zakwaterowanie na swój pobyt",
@@ -188,12 +205,9 @@
         "REQUESTED": "Oczekująca",
         "CONFIRMED": "Potwierdzona",
         "CANCELED": "Anulowana",
-        "CHECKED_IN": "Zameldowana",
-        "Confirmed": "Potwierdzona",
-        "Pending": "Oczekująca",
-        "Cancelled": "Anulowana",
         "REJECTED": "Odrzucona",
-        "COMPLETED": "Zakończona"
+        "COMPLETED": "Zakończona",
+        "CHECKED_IN": "Zameldowana"
       }
     },
     "manager": {
@@ -517,6 +531,7 @@
       "room_number": "Numer pokoju",
       "check_in": "Data zameldowania",
       "check_out": "Data wymeldowania",
+      "room_price": "Cena pokoju",
       "view_all": "Zobacz wszystkie",
 
       "employee_card": "Karta pracownika",
@@ -595,8 +610,7 @@
         "reservation-added-success": "Udało się dodać rezerwację",
         "reservation-data": "Dane dotyczące rezerwacji:",
         "user-login-data": "Dane logowania użytkownika do systemu:",
-        "username": "Nazwa użytkownika",
-        "password": "Hasło"
+        "registration-code": "Kod rejestracyjny"
       },
       "reservation-dialog": {
         "common": {
@@ -687,7 +701,8 @@
       "maintenance": "Serwis",
       "management": "Zarządzanie"
     },
-    "special_requests": "Specjalne życzenia"
+    "special_requests": "Specjalne życzenia",
+    "without_reservation": "Bez rezerwacji"
   },
   "ui": {
     "show_more": "Pokaż więcej ↓",
@@ -721,8 +736,8 @@
     "invalidCredentials": "Nieprawidłowe dane logowania.",
     "emailNotVerified": "Email nie został zweryfikowany. Sprawdź swoją skrzynkę odbiorczą lub spróbuj zarejestrować się ponownie.",
     "upload_error": "Błąd podczas przesyłania pliku.",
-    "sameRoleError": "Pracownik już posiada tę rolę.",
     "add_employee_failure": "Błąd podczas dodawania nowego pracownika",
+    "sameRoleError": "Pracownik już posiada tę rolę.",
     "edit_employee_failure": "Błąd podczas edytowania pracownika",
     "failedToCreateSession": "Nie udało się utworzyć sesji płatności"
   },

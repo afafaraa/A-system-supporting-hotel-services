@@ -16,6 +16,7 @@ interface ServiceRepository : MongoRepository<ServiceEntity, String> {
     data class ServiceDetails(
         val name: String,
         val image: String?,
+        val price: Double,
     )
 
     fun findServiceDetailsById(id: String): ServiceDetails?

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.TimeUnit
 
 @Component
 class ServiceReminderJob(
@@ -19,10 +20,10 @@ class ServiceReminderJob(
     private val serviceService: ServiceService,
 ) {
     private val logger = LoggerFactory.getLogger(ServiceReminderJob::class.java)
-    private val notifiedSchedules = ConcurrentHashMap.newKeySet<String>()
+    private val notifiedSchedulesServiceDateMap = ConcurrentHashMap<String, LocalDateTime>()
     private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
 
-    @Scheduled(fixedRate = 600000) // Every 10 minutes (600,000 milliseconds)
+    @Scheduled(timeUnit = TimeUnit.MINUTES, fixedRate = 10)
     fun checkUpcomingServices() {
         logger.info("Running service reminder check...")
 
@@ -39,7 +40,7 @@ class ServiceReminderJob(
         logger.info("Found ${upcomingSchedules.size} upcoming services")
 
         upcomingSchedules.forEach { schedule ->
-            if (schedule.id == null || schedule.id in notifiedSchedules || schedule.guestId == null) {
+            if (schedule.id in notifiedSchedulesServiceDateMap.keys || schedule.guestId == null) {
                 return@forEach
             }
 
@@ -62,7 +63,7 @@ class ServiceReminderJob(
                     message = message,
                 )
 
-                schedule.id?.let { notifiedSchedules.add(it) }
+                notifiedSchedulesServiceDateMap[schedule.id!!] = schedule.serviceDate
                 logger.info("Sent reminder notification for schedule ${schedule.id} to guest ${schedule.guestId}")
             } catch (e: Exception) {
                 logger.error("Error sending reminder for schedule ${schedule.id}: ${e.message}", e)
@@ -73,17 +74,6 @@ class ServiceReminderJob(
     }
 
     private fun cleanupOldNotifications(now: LocalDateTime) {
-        val iterator = notifiedSchedules.iterator()
-        while (iterator.hasNext()) {
-            val scheduleId = iterator.next()
-            try {
-                val schedule = scheduleRepository.findById(scheduleId)
-                if (schedule.isEmpty || schedule.get().serviceDate.isBefore(now)) {
-                    iterator.remove()
-                }
-            } catch (e: Exception) {
-                iterator.remove()
-            }
-        }
+        notifiedSchedulesServiceDateMap.entries.removeIf { it.value.isBefore(now) }
     }
 }

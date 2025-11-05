@@ -93,7 +93,7 @@ function BookedServicesPage() {
 
   // Tooltip logic (same as AvailableServiceCard)
   const isAccountInactive = !userDetails?.active;
-  const isNoRoom = !userDetails?.guestData?.roomNumber;
+  const isNoRoom = !userDetails?.guestData?.currentReservation.roomNumber;
   const tooltipMsg = isNoRoom
     ? t('pages.available_services.tooltip.noRoom')
     : isAccountInactive

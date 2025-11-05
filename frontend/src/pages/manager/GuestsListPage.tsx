@@ -20,6 +20,7 @@ import { SectionCard } from "../../theme/styled-components/SectionCard";
 import { useTranslation } from "react-i18next";
 import { axiosAuthApi } from '../../middleware/axiosApi';
 import SectionTitle from "../../components/ui/SectionTitle.tsx";
+import UserDetails from "../../types/userDetails.ts";
 
 
 function GuestsListPage() {
@@ -41,29 +42,18 @@ function GuestsListPage() {
     setLoading(true)
 
     try {
-      const res = await axiosAuthApi.get<Guest[]>('/guest/management', {
+      const res = await axiosAuthApi.get<UserDetails[]>('/guest/management', {
         params: { page: page, size: 10 },
       });
       const mapped: Guest[] = res.data.map((u) => ({
-        id: u.id,
-        name: u.name,
-        surname: u.surname,
-        servicesCount: u.servicesCount ?? 0,
-        upcomingServicesCount: u.upcomingServicesCount ?? 0,
-        phone: u.phone ?? "",
-        email: u.email,
+        ...u,
+        servicesCount: 0,
+        upcomingServicesCount: 0,
+        phone: "",
         status: mapStatus(
-          u.guestData?.checkInDate ? u.guestData.checkInDate.toString() : "",
-          u.guestData?.checkOutDate ? u.guestData.checkOutDate.toString() : ""
+          u.guestData?.currentReservation.checkIn ? u.guestData.currentReservation.checkIn.toString() : "",
+          u.guestData?.currentReservation.checkOut ? u.guestData.currentReservation.checkOut.toString() : ""
         ),
-        guestData: u.guestData
-          ? {
-            roomNumber: u.guestData.roomNumber,
-            checkInDate: u.guestData.checkInDate,
-            checkOutDate: u.guestData.checkOutDate,
-            bill: u.guestData.bill,
-          }
-          : undefined,
       }));
       setGuests(mapped);
     } catch (err) {

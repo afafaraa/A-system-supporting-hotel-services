@@ -28,9 +28,12 @@ class RegistrationCodeService(
         return rawCode
     }
 
-    fun validateCode(rawCode: String): RegistrationCode =
-        repo.findByCode(rawCode)?.takeIf { !it.used && it.expiresAt.isAfter(Instant.now()) }
-            ?: throw InvalidRegistrationCodeException("Invalid or expired code!")
+    fun validateCode(rawCode: String): RegistrationCode {
+        val code: RegistrationCode = repo.findByCode(rawCode) ?: throw InvalidRegistrationCodeException("Code not found!")
+        if (code.used) throw InvalidRegistrationCodeException("Code already used!")
+        if (code.expiresAt.isBefore(Instant.now())) throw InvalidRegistrationCodeException("Code expired!")
+        return code
+    }
 
     fun markUsed(rc: RegistrationCode) {
         repo.delete(rc)

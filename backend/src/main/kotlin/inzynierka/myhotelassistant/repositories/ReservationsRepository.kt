@@ -2,6 +2,7 @@ package inzynierka.myhotelassistant.repositories
 
 import inzynierka.myhotelassistant.models.reservation.ReservationEntity
 import inzynierka.myhotelassistant.models.reservation.ReservationStatus
+import org.springframework.data.mongodb.repository.Aggregation
 import org.springframework.data.mongodb.repository.MongoRepository
 import java.time.LocalDate
 
@@ -63,4 +64,17 @@ interface ReservationsRepository : MongoRepository<ReservationEntity, String> {
         checkInBefore: LocalDate,
         status: ReservationStatus,
     ): List<ReservationEntity>
+
+    fun countAllByCheckInIs(checkInDate: LocalDate): Long
+
+    fun countAllByStatus(status: ReservationStatus): Long
+
+    @Aggregation(
+        pipeline = [
+            "{ '\$match': { 'paid': true } }",
+            "{ '\$group': { '_id': null, 'total': { '\$sum': '\$reservationPrice' } } }",
+            "{ '\$project': { '_id': 0, 'total': 1 } }",
+        ],
+    )
+    fun sumReservationPriceByPaidIsTrue(): Double?
 }

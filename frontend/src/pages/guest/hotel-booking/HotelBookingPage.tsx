@@ -10,16 +10,20 @@ import axiosApi, { axiosAuthApi } from '../../../middleware/axiosApi.ts';
 import { ReservationGuest, Room } from '../../../types/room.ts';
 import ReservationDialog from './ReservationDialog.tsx';
 import { useTranslation } from 'react-i18next';
+import {useLocation} from "react-router-dom";
+
+type LocationState = { selectedRoom?: Room };
 
 export default function HotelBookingPage() {
+    const navState = useLocation().state as LocationState | undefined;
+    const selectedRoomFromNav = (navState)?.selectedRoom ?? null;
     const theme = useTheme();
     const { t } = useTranslation();
     const [rooms, setRooms] = useState<Room[]>([]);
     const [reservations, setReservations] = useState<ReservationGuest[]>([]);
     const [loading, setLoading] = useState(true);
     const [loadingReservations, setLoadingReservations] = useState(true);
-    const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
-    const [dialogOpen, setDialogOpen] = useState(false);
+    const [selectedRoom, setSelectedRoom] = useState<Room | null>(selectedRoomFromNav);
 
     useEffect(() => {
         axiosApi.get('/rooms')
@@ -30,11 +34,6 @@ export default function HotelBookingPage() {
             .then(res => setReservations(res.data))
             .finally(() => setLoadingReservations(false));
     }, []);
-
-    const handleReserve = (room: Room) => {
-        setSelectedRoom(room);
-        setDialogOpen(true);
-    };
 
     return (
         <main>
@@ -107,7 +106,7 @@ export default function HotelBookingPage() {
                     ) : (
                         rooms.map((room, index) => (
                             <Grid size={1} key={index}>
-                                <RoomCard room={room} onReserve={() => handleReserve(room)} size="small"/>
+                                <RoomCard room={room} onReserve={() => setSelectedRoom(room)} size="small"/>
                             </Grid>
                         ))
                     )}
@@ -115,8 +114,7 @@ export default function HotelBookingPage() {
             </SectionWrapper>
 
             <ReservationDialog
-                open={dialogOpen}
-                onClose={() => setDialogOpen(false)}
+                onClose={() => setSelectedRoom(null)}
                 room={selectedRoom}
             />
         </main>

@@ -6,12 +6,13 @@ import DashboardNavbar from '../navigation/DashboardNavbar.tsx';
 import IssueModal from '../../pages/manager/HotelManagement/IssueModal.tsx';
 import { Fab, Tooltip } from '@mui/material';
 import { BugReport } from '@mui/icons-material';
-import { useState } from 'react';
+import {useMemo, useState} from 'react';
+import {useTranslation} from "react-i18next";
 
 const subpages = [
-  { label: 'Available Services', path: 'available' },
-  { label: 'Booked Services', path: 'booked' },
-  { label: 'Book Hotel Room', path: 'hotel' },
+  { name: 'availableServices', path: 'available' },
+  { name: 'bookedServices', path: 'booked' },
+  { name: 'bookHotelRoom', path: 'hotel' },
 ];
 
 const globalStyles = (
@@ -20,6 +21,10 @@ const globalStyles = (
 
 function GuestLayout() {
   const [issueModalOpen, setIssueModalOpen] = useState(false);
+  const {t} = useTranslation();
+  const translatedTabs = useMemo(() =>
+    subpages.map(tab => ({ name: t(`pages.guest_navbar.${tab.name}`), link: '/guest/' + tab.path })
+  ), [t]);
 
   const handleOpenIssueModal = () => setIssueModalOpen(true);
   const handleCloseIssueModal = () => setIssueModalOpen(false);
@@ -30,12 +35,7 @@ function GuestLayout() {
       <div style={{ display: 'flex', gap: '1rem' }}>
         <Box width={{ xs: '100%', md: '70%' }}>
           {globalStyles}
-          <DashboardNavbar
-            tabs={subpages.map((s) => ({
-              name: s.label,
-              link: '/guest/' + s.path,
-            }))}
-          />
+          <DashboardNavbar tabs={translatedTabs} />
           <Outlet />
         </Box>
         <Box width="30%" display={{ xs: 'none', md: 'block' }}>

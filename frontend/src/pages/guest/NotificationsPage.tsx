@@ -30,25 +30,25 @@ function NotificationsPage() {
     if (!user) return;
     axiosAuthApi.get<Notification[]>('/user/notifications')
       .then(res => {
-        setLoading(false)
-        setNotifications(res.data)
-        const unreadCount = res.data.reduce((count, n) => n.isRead ? count : count + 1, 0);
-        dispatch(setNotificationsCount(unreadCount));
-        console.log("Response:", res.data);
+        setLoading(false);
+        setNotifications(res.data);
       })
       .catch(err => {
         setError(err.message);
         console.log("Error:", err);
       });
-  }, [dispatch, user]);
+  }, [user]);
 
   useEffect(() => {
     fetchNotifications();
-
     const intervalId = setInterval(fetchNotifications, 60_000);
-
     return () => clearInterval(intervalId);
   }, [fetchNotifications, user]);
+
+  useEffect(() => {
+    const unreadCount = notifications.reduce((count, n) => n.isRead ? count : count + 1, 0);
+    dispatch(setNotificationsCount(unreadCount));
+  }, [dispatch, notifications]);
 
 
   function markAsRead() {
@@ -60,15 +60,7 @@ function NotificationsPage() {
     }
     axiosAuthApi.patch('/user/notifications/mark-read', selectedUnread)
       .then(() => {
-        setNotifications(prev => {
-          const updated = prev.map(n =>
-            selected.has(n.id) ? {...n, isRead: true} : n
-          );
-          // Update notification count after marking as read
-          const unreadCount = updated.reduce((count, n) => n.isRead ? count : count + 1, 0);
-          dispatch(setNotificationsCount(unreadCount));
-          return updated;
-        });
+        setNotifications(prev => prev.map(n => selected.has(n.id) ? {...n, isRead: true} : n));
         setSelected(new Set());
       })
       .catch(err => {
@@ -80,13 +72,7 @@ function NotificationsPage() {
   function deleteSelected() {
     axiosAuthApi.delete('/user/notifications', {data: Array.from(selected)})
       .then(() => {
-        setNotifications(prev => {
-          const filtered = prev.filter(n => !selected.has(n.id));
-          // Update notification count after deletion
-          const unreadCount = filtered.reduce((count, n) => n.isRead ? count : count + 1, 0);
-          dispatch(setNotificationsCount(unreadCount));
-          return filtered;
-        });
+        setNotifications(prev => prev.filter(n => !selected.has(n.id)));
         setSelected(new Set());
       })
       .catch(err => {

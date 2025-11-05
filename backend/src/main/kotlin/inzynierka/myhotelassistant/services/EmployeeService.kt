@@ -40,6 +40,8 @@ class EmployeeService(
 
     fun getAllEmployees(pageable: Pageable): List<UserEntity> = userRepository.findByRoleIn(employeeRoles, pageable).content
 
+    fun getAllEmployeesWithEmployeeRole(): List<UserEntity> = userRepository.findByRole(Role.EMPLOYEE)
+
     @Throws(InvalidRoleNameException::class)
     fun createEmployee(employeeDTO: EmployeeManagementController.EmployeeDTO): UserEntity =
         UserEntity(

@@ -1,9 +1,10 @@
 package inzynierka.myhotelassistant.models.service
 
 import inzynierka.myhotelassistant.controllers.ReservationsController
-import inzynierka.myhotelassistant.controllers.user.AddUserController
 import inzynierka.myhotelassistant.models.reservation.ReservationEntity
 import inzynierka.myhotelassistant.models.reservation.ReservationStatus
+import inzynierka.myhotelassistant.models.user.GuestData
+import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.ReservationsRepository
 import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.repositories.RoomStandardRepository
@@ -199,9 +200,7 @@ class ReservationsService(
         reservation.status = ReservationStatus.CHECKED_IN
         reservation.paid = paid
         val savedReservation = reservationsRepository.save(reservation)
-        val guest =
-            userService.findById(reservation.guestId!!)
-                ?: throw IllegalArgumentException("Guest with id ${reservation.guestId} not found")
+        val guest = userService.findByIdOrThrow(reservation.guestId)
         guest.active = true
         userService.save(guest)
         notificationScheduler.notifyGuestOnReservationStatusChange(savedReservation, oldStatus, ReservationStatus.CHECKED_IN)
@@ -216,6 +215,9 @@ class ReservationsService(
         val oldStatus = reservation.status
         reservation.status = ReservationStatus.COMPLETED
         val savedReservation = reservationsRepository.save(reservation)
+        val guest = userService.findByIdOrThrow(reservation.guestId)
+        guest.active = false
+        userService.save(guest)
         notificationScheduler.notifyGuestOnReservationStatusChange(savedReservation, oldStatus, ReservationStatus.COMPLETED)
         return transformToDTO(savedReservation)
     }
@@ -237,8 +239,6 @@ class ReservationsService(
     }
 
     fun findAllReservations(): List<ReservationEntity> = reservationsRepository.findAll()
-
-    fun isAnyExist(): Boolean = reservationsRepository.count() > 0
 
     fun save(reservation: ReservationEntity): ReservationEntity = reservationsRepository.save(reservation)
 
@@ -312,22 +312,25 @@ class ReservationsService(
 
     fun createReservationWithNewGuest(
         dto: ReservationsController.ReservationCreateWithNewGuestDTO,
-    ): ReservationsController.ReservationCreateWithNewGuestResponseDTO {
-        val (guestId, addUserResponse) =
+    ): ReservationsController.ReservationWithGuestCode {
+        require(isRoomAvailable(dto.roomNumber, dto.checkInDate, dto.checkOutDate)) {
+            "Room ${dto.roomNumber} is not available from ${dto.checkInDate} to ${dto.checkOutDate}"
+        }
+        val savedGuest =
             userService.createAndSaveGuest(
-                AddUserController.AddUserRequest(
-                    email = dto.email,
+                UserService.NewUserDetails(
                     name = dto.name,
                     surname = dto.surname,
-                    roomNumber = dto.roomNumber,
-                    checkInDate = dto.checkInDate,
-                    checkOutDate = dto.checkOutDate,
+                    email = dto.email,
+                    checkIn = dto.checkInDate,
+                    active = dto.withCheckIn,
                 ),
             )
+        val code = userService.sendCodeForGuest(savedGuest.id!!, savedGuest.email, dto.checkOutDate)
         val reservation =
             ReservationEntity(
                 roomNumber = dto.roomNumber,
-                guestId = guestId,
+                guestId = savedGuest.id,
                 guestsCount = dto.guestCount,
                 checkIn = dto.checkInDate,
                 checkOut = dto.checkOutDate,
@@ -336,13 +339,32 @@ class ReservationsService(
             )
         reservation.status = if (dto.withCheckIn) ReservationStatus.CHECKED_IN else ReservationStatus.CONFIRMED
         val savedReservation = reservationsRepository.save(reservation)
+        bindReservationToGuest(savedGuest, savedReservation)
         notificationScheduler.notifyGuestOnSuccessfulReservation(savedReservation)
         val refreshedReservation = findByIdOrThrow(savedReservation.id!!)
 
-        return ReservationsController.ReservationCreateWithNewGuestResponseDTO(
+        return ReservationsController.ReservationWithGuestCode(
             reservation = transformToDTO(refreshedReservation),
-            userAccount = addUserResponse,
+            code = code,
         )
+    }
+
+    fun bindReservationToGuest(
+        savedGuest: UserEntity,
+        savedReservation: ReservationEntity,
+    ) {
+        if (savedGuest.guestData == null) {
+            savedGuest.guestData =
+                GuestData(
+                    currentReservation = savedReservation,
+                    bill = savedReservation.reservationPrice,
+                )
+        } else {
+            savedGuest.guestData?.currentReservation = savedReservation
+            savedGuest.guestData?.bill = savedReservation.reservationPrice
+        }
+
+        userService.save(savedGuest)
     }
 
     fun getAllOngoingReservations(): List<ReservationsController.ReservationDTO> {

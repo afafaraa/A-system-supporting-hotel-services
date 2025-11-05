@@ -1,7 +1,6 @@
 package inzynierka.myhotelassistant.controllers
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped
-import inzynierka.myhotelassistant.controllers.user.AddUserController
 import inzynierka.myhotelassistant.models.reservation.ReservationEntity
 import inzynierka.myhotelassistant.models.room.RoomAmenity
 import inzynierka.myhotelassistant.models.service.ReservationsService
@@ -190,9 +189,9 @@ class ReservationsController(
         val withCheckIn: Boolean,
     )
 
-    data class ReservationCreateWithNewGuestResponseDTO(
+    data class ReservationWithGuestCode(
         val reservation: ReservationDTO,
-        val userAccount: AddUserController.AddUserResponse,
+        val code: String,
     )
 
     @PostMapping("/with-new-guest")
@@ -200,7 +199,7 @@ class ReservationsController(
     @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
     fun createReservationWithNewGuest(
         @RequestBody @Valid reservationWithGuestDTO: ReservationCreateWithNewGuestDTO,
-    ): ReservationCreateWithNewGuestResponseDTO = reservationsService.createReservationWithNewGuest(reservationWithGuestDTO)
+    ): ReservationWithGuestCode = reservationsService.createReservationWithNewGuest(reservationWithGuestDTO)
 
     @GetMapping("/ongoing")
     @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).EMPLOYEE.name)")

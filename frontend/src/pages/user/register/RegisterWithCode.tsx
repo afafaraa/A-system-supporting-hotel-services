@@ -1,8 +1,6 @@
 import axiosApi from '../../../middleware/axiosApi.ts';
-import { setUserData } from '../../../components/auth/auth.tsx';
 import { isAxiosError } from 'axios';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Button, Typography } from '@mui/material';
 import KeyIcon from '@mui/icons-material/Key';
 import StyledInput from '../../../theme/styled-components/StyledInput.ts';
@@ -12,17 +10,18 @@ import LockIcon from '@mui/icons-material/Lock';
 import generatePasswordAdornment from '../../../components/ui/generatePasswordAdornment.tsx';
 import { useNavigate } from 'react-router-dom';
 import InputLabel from '../../../components/ui/InputLabel.tsx';
+import useTranslationWithPrefix from "../../../locales/useTranslationWithPrefix.tsx";
 
 function RegisterWithCode() {
   const [code, setCode] = useState('');
+  const [sentToEmail, setSentToEmail] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
   const { t } = useTranslation();
-  const tc = (key: string) => t(`pages.register.${key}`);
+  const {t: tc} = useTranslationWithPrefix('pages.register');
   const navigate = useNavigate();
 
   const disabled = code === '' || username === '' || password === '';
@@ -38,9 +37,8 @@ function RegisterWithCode() {
         username,
         password,
       });
-      if (res.data.accessToken && res.data.refreshToken) {
-        setUserData(res.data.accessToken, res.data.refreshToken, dispatch);
-      }
+      console.log(res.data);
+      setSentToEmail(res.data.email);
     } catch (err) {
       if (isAxiosError(err) && err.response && err.response.status === 400)
         setError('pages.register.invalidCodeError');
@@ -117,6 +115,11 @@ function RegisterWithCode() {
         {error && (
           <Typography component="p" variant="caption" color="error">
             {t(error)}
+          </Typography>
+        )}
+        {sentToEmail && (
+          <Typography component="p" variant="caption" color="success">
+            {tc('emailSent', {email: sentToEmail})}
           </Typography>
         )}
       </div>

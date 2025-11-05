@@ -111,38 +111,28 @@ class AuthController(
         val surname: String,
     )
 
+    data class EmailResponse(
+        val email: String,
+    )
+
     @PostMapping("/register/with-code")
     @ResponseStatus(HttpStatus.CREATED)
     fun completeRegistration(
         @RequestBody req: CompleteRegistrationRequest,
-    ): LoginResponse {
-        userService.completeRegistration(req)
-        return getToken(LoginRequest(req.username, req.password))
+    ): EmailResponse {
+        val savedUser = userService.completeRegistration(req)
+        emailVerificationService.sendVerificationLink(savedUser.id!!, savedUser.email)
+        return EmailResponse(savedUser.email)
     }
 
     @PostMapping("/register/no-code")
     @ResponseStatus(HttpStatus.CREATED)
     fun completeRegistrationNoCode(
         @RequestBody @Valid req: CompleteRegistrationRequestNoCode,
-    ): ResponseEntity<String> {
-        var savedUser: UserEntity
-        try {
-            savedUser = userService.completeRegistrationNoCode(req)
-        } catch (e: Exception) {
-            println("Error during registration: ${e.message}")
-            return ResponseEntity.internalServerError().body(e.message)
-        }
-        try {
-            emailVerificationService.sendVerificationLink(savedUser.id!!, savedUser.email)
-        } catch (e: Exception) {
-            println("Error during registration: ${e.message}")
-            return ResponseEntity.internalServerError().body(
-                "Couldn't send verification email. Make sure your email is correct and try again.",
-            )
-        }
-        return ResponseEntity.ok(
-            "A verification email has been sent to ${savedUser.email}. Please verify your email to complete the registration.",
-        )
+    ): EmailResponse {
+        val savedUser: UserEntity = userService.completeRegistrationNoCode(req)
+        emailVerificationService.sendVerificationLink(savedUser.id!!, savedUser.email)
+        return EmailResponse(savedUser.email)
     }
 
     @GetMapping("/verify/account")

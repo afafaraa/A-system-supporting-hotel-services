@@ -1,21 +1,12 @@
-export type Guest = {
-    id: number;
-    name: string;
-    surname: string;
+import UserDetails from "./userDetails.ts";
+
+export type Guest = UserDetails & {
     servicesCount: number;
     upcomingServicesCount: number;
     phone: string;
-    email: string;
     status: 'Checked-in' | 'Checked-out' | 'Upcoming';
-    guestData?: {
-        roomNumber: string,
-        checkInDate: Date,
-        checkOutDate: Date,
-        bill: number,
-    },
-  active?: boolean,
 }
 
 export type GuestStatus = "CHECKED_IN" | "CHECKED_OUT" | "UPCOMING";
 
-export type  GuestStatusFilter = "ALL" | GuestStatus;
+export type GuestStatusFilter = "ALL" | GuestStatus;

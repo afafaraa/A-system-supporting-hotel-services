@@ -22,8 +22,8 @@ import ThemeSwitcher from '../ui/ThemeSwitcher.tsx';
 import {
   selectUserDetails,
   setUserDetails,
-  UserDetails,
 } from '../../redux/slices/userDetailsSlice.ts';
+import UserDetails from '../../types/userDetails.ts';
 import { useEffect, useState } from 'react';
 import { axiosAuthApi } from '../../middleware/axiosApi.ts';
 import {
@@ -142,9 +142,9 @@ function Navbar() {
             lineHeight={1.3}
           >
             {user?.role === 'ROLE_GUEST' && userDetails
-              ? userDetails.guestData?.roomNumber
-                ? `Room ${userDetails.guestData?.roomNumber}`
-                : 'Guest'
+              ? userDetails.guestData?.currentReservation
+                ? t('common.room') + ' ' + userDetails.guestData?.currentReservation.roomNumber
+                : t('common.without_reservation')
               : user?.role?.split('_')[1]?.toLowerCase()}
           </Typography>
         </Stack>
@@ -168,9 +168,7 @@ function Navbar() {
           px: 'max(1rem, calc(13vw - 58.667px))',
           borderBottom: `1px solid ${theme.palette.divider}`,
         }}
-      >
-        {' '}
-        {/* padding 16 px to 96 px (sm to xl) */}
+      > {/* padding 16 px to 96 px (sm to xl) */}
         <Stack
           direction="row"
           justifyContent="space-between"

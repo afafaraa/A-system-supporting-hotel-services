@@ -48,7 +48,7 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
             <Box display="flex" alignItems="center" gap={1}>
               <RoomOutlined fontSize="small" sx={{ color: "text.secondary" }} />
               <Typography variant="body2" color="text.secondary">
-                {tc("room")} {guest.guestData?.roomNumber}
+                {tc("room")} {guest.guestData?.currentReservation.roomNumber}
               </Typography>
               <EmailOutlined
                 fontSize="small"
@@ -64,7 +64,7 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
           <Box display="flex" alignItems="center" gap={1}>
             <Typography variant="body2" color="text.primary">
               {tc("check_in")}:{" "}
-              {new Date(guest.guestData?.checkInDate ?? "")
+              {new Date(guest.guestData?.currentReservation.checkIn ?? "")
                 .toLocaleDateString("pl-PL")
                 .replace(/\./g, "/")}
             </Typography>
@@ -73,7 +73,7 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
             </Typography>
             <Typography variant="body2" color="text.primary">
               {tc("check_out")}:{" "}
-              {new Date(guest.guestData?.checkOutDate ?? "")
+              {new Date(guest.guestData?.currentReservation.checkOut ?? "")
                 .toLocaleDateString("pl-PL")
                 .replace(/\./g, "/")}
             </Typography>

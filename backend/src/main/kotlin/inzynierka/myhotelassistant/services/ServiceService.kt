@@ -10,7 +10,7 @@ import inzynierka.myhotelassistant.repositories.ServiceRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.lang.IllegalArgumentException
-import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class ServiceService(
@@ -22,7 +22,9 @@ class ServiceService(
             .findAllByDisabledFalse(pageable)
             .content
 
-    fun findById(id: String): Optional<ServiceEntity> = serviceRepository.findById(id)
+    fun findById(id: String): ServiceEntity? = serviceRepository.findById(id).getOrNull()
+
+    fun getServiceDetailsById(id: String): ServiceRepository.ServiceDetails? = serviceRepository.findServiceDetailsById(id)
 
     fun findByIdOrThrow(id: String): ServiceEntity =
         serviceRepository

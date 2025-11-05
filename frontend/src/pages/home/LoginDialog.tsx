@@ -1,20 +1,21 @@
 import LoginPage from '../user/LoginPage.tsx';
 import { Dialog } from '@mui/material';
+import {Room} from "../../types/room.ts";
 
 function LoginDialog({
-  open,
-  setOpen,
+  selectedRoom,
+  setSelectedRoom,
 }: {
-  open: boolean;
-  setOpen: (open: boolean) => void;
+  selectedRoom: Room | null;
+  setSelectedRoom: (open: null) => void;
 }) {
   return (
     <Dialog
       sx={{'& .MuiDialog-paper': {borderRadius: '15px'}}}
-      open={open}
-      onClose={() => setOpen(false)}
+      open={selectedRoom !== null}
+      onClose={() => setSelectedRoom(null)}
     >
-      <LoginPage />
+      <LoginPage selectedRoom={selectedRoom ?? undefined}/>
     </Dialog>
   );
 }

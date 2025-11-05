@@ -41,9 +41,9 @@ interface Room {
   amenities: string[];
 }
 
-interface ReservationWithUserAccount {
+interface ReservationWithGuestCode {
   reservation: Reservation,
-  userAccount: { username: string, password: string }
+  code: string,
 }
 
 function CheckInPage() {
@@ -67,7 +67,7 @@ function CheckInPage() {
 
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<boolean>(false);
-  const [successModalData, setSuccessModalData] = useState<ReservationWithUserAccount | null>(null);
+  const [successModalData, setSuccessModalData] = useState<ReservationWithGuestCode | null>(null);
 
   const buttonEnabled = (
     selectedRoom &&
@@ -105,6 +105,12 @@ function CheckInPage() {
       });
   }, [checkInDate, checkOutDate, selectedRoom, tc]);
 
+  useEffect(() => {
+    if (isSameDay(new Date(), checkInDate)) return;
+    setWithCheckIn(false);
+    setPaymentDone(false);
+  }, [checkInDate]);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setGuestDetails(prev => ({ ...prev, [name]: name === "guestCount" ? Number(value) : value }));
@@ -121,7 +127,7 @@ function CheckInPage() {
       specialRequests: specialRequests.trim() || null,
       withCheckIn: withCheckIn,
     }
-    axiosAuthApi.post<ReservationWithUserAccount>("/reservations/with-new-guest", payload)
+    axiosAuthApi.post<ReservationWithGuestCode>("/reservations/with-new-guest", payload)
       .then(res => {
         setSuccessModalData(res.data)
       })
@@ -225,7 +231,7 @@ function CheckInPage() {
           sx={{mt: 2.5}}
           label={tc("with-check-in")}
           control={<Checkbox
-            value={withCheckIn}
+            checked={withCheckIn}
             onChange={(event: ChangeEvent<HTMLInputElement>) => setWithCheckIn(event.target.checked) }
           />}
       />
@@ -234,7 +240,7 @@ function CheckInPage() {
           sx={{mt: 1}}
           label={tc("payment-confirmed")}
           control={<Checkbox
-            value={paymentDone}
+            checked={paymentDone}
             onChange={(event: ChangeEvent<HTMLInputElement>) => setPaymentDone(event.target.checked) }
           />}
       />
@@ -277,8 +283,7 @@ function CheckInPage() {
           <Divider sx={{my: 3}}/>
           <Typography fontWeight="bold" pb={1}>{tc("user-login-data")}</Typography>
             <Box fontSize="14px" lineHeight={1.5} fontWeight="bold">
-                <p>{tc("username")}: <span style={{fontWeight: "normal"}}>{successModalData.userAccount.username}</span></p>
-                <p>{tc("password")}: <span style={{fontWeight: "normal"}}>{successModalData.userAccount.password}</span></p>
+                <p>{tc("registration-code")}: <span style={{fontWeight: "normal"}}>{successModalData.code}</span></p>
             </Box>
 
         </DialogContent>
