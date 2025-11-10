@@ -207,7 +207,7 @@
         "CANCELED": "Anulowana",
         "REJECTED": "Odrzucona",
         "COMPLETED": "Zakończona",
-        "CANCELLED": "Anulowana"
+        "CHECKED_IN": "Zameldowana"
       }
     },
     "manager": {
