@@ -1,0 +1,237 @@
+openapi: 3.0.3
+info:
+  title: My Hotel Assistant API
+  description: API for hotel service management system
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@myhotelassistant.com
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.myhotelassistant.com
+    description: Production server
+tags:
+  - name: Employee Management
+    description: Endpoints for managing employees
+paths:
+  /management/employees:
+    post:
+      tags:
+        - Employee Management
+      summary: Add a new employee
+      operationId: addEmployee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeDTO'
+      responses:
+        '201':
+          description: Employee created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEntity'
+    get:
+      tags:
+        - Employee Management
+      summary: Get a list of employees
+      operationId: getEmployees
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: A list of employees
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserEntity'
+    delete:
+      tags:
+        - Employee Management
+      summary: Remove an employee
+      operationId: removeEmployee
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Employee removed successfully
+  /management/employees/username/{username}:
+    get:
+      tags:
+        - Employee Management
+      summary: Get an employee by username
+      operationId: getEmployeeWithUsername
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An employee object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEntity'
+  /management/employees/username/{username}/schedule:
+    get:
+      tags:
+        - Employee Management
+      summary: Get employee's week schedule
+      operationId: getEmployeeWeekSchedule
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: A list of schedule entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduleDTO'
+  /management/employees/{id}:
+    put:
+      tags:
+        - Employee Management
+      summary: Update an employee
+      operationId: updateEmployee
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeDTO'
+      responses:
+        '200':
+          description: Employee updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEntity'
+  /management/employees/role:
+    patch:
+      tags:
+        - Employee Management
+      summary: Change an employee's role
+      operationId: changeRole
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: role
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Role changed successfully
+components:
+  schemas:
+    EmployeeData:
+      type: object
+      properties:
+        position:
+          type: string
+        salary:
+          type: number
+        hireDate:
+          type: string
+          format: date-time
+    EmployeeDTO:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        surname:
+          type: string
+        role:
+          type: string
+        employeeData:
+          $ref: '#/components/schemas/EmployeeData'
+    UserEntity:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        surname:
+          type: string
+        authorized:
+          type: boolean
+        roles:
+          type: array
+          items:
+            type: string
+        employeeData:
+          $ref: '#/components/schemas/EmployeeData'
+        guestData:
+          type: object
+    ScheduleDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        employeeId:
+          type: integer
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        status:
+          type: string
+

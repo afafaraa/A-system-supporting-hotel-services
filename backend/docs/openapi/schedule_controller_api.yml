@@ -1,0 +1,451 @@
+openapi: 3.0.3
+info:
+  title: My Hotel Assistant API - Schedule
+  description: Schedule management endpoints
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@myhotelassistant.com
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.myhotelassistant.com
+    description: Production server
+
+tags:
+  - name: Schedule
+    description: Service scheduling endpoints
+
+paths:
+  /schedule/today/by-service-id/{serviceId}/available:
+    get:
+      tags:
+        - Schedule
+      summary: Get available schedules for service
+      description: Get today's available schedules for a specific service
+      operationId: getTodayAvailableSchedulesByServiceId
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          description: Service ID
+          schema:
+            type: string
+          example: "service123"
+        - name: date
+          in: query
+          required: true
+          description: Date in ISO format
+          schema:
+            type: string
+            format: date
+          example: "2024-01-15"
+      responses:
+        '200':
+          description: Successfully retrieved schedules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduleForWeekResponse'
+        '400':
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /schedule/get/cart/id/{id}:
+    get:
+      tags:
+        - Schedule
+      summary: Get schedule for cart
+      description: Get schedule details for cart display
+      operationId: getScheduleForCartById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Schedule ID
+          schema:
+            type: string
+          example: "schedule123"
+      responses:
+        '200':
+          description: Successfully retrieved schedule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleForCartResponse'
+        '404':
+          description: Schedule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /schedule:
+    get:
+      tags:
+        - Schedule
+      summary: Get week schedule
+      description: Get employee's schedule for the whole week
+      operationId: getWholeWeekSchedule
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: date
+          in: query
+          required: true
+          description: Date in ISO_ZONED_DATE_TIME format
+          schema:
+            type: string
+            format: date-time
+          example: "2024-01-15T00:00:00Z"
+      responses:
+        '200':
+          description: Successfully retrieved schedule
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduleDTO'
+        '400':
+          description: Invalid date format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /schedule/today:
+    get:
+      tags:
+        - Schedule
+      summary: Get today's schedule
+      description: Get employee's schedule for today
+      operationId: getTodaySchedule
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successfully retrieved schedule
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduleDTO'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /schedule/pending:
+    get:
+      tags:
+        - Schedule
+      summary: Get pending schedules
+      description: Get employee's pending schedule requests
+      operationId: getPendingSchedules
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successfully retrieved schedules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduleDTO'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /schedule/{scheduleId}/confirm:
+    patch:
+      tags:
+        - Schedule
+      summary: Confirm schedule
+      description: Confirm a requested schedule
+      operationId: confirmRequestedSchedule
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: scheduleId
+          in: path
+          required: true
+          description: Schedule ID
+          schema:
+            type: string
+          example: "schedule123"
+      responses:
+        '200':
+          description: Schedule confirmed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleDTO'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Schedule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /schedule/{scheduleId}/reject:
+    patch:
+      tags:
+        - Schedule
+      summary: Reject schedule
+      description: Reject a requested schedule
+      operationId: rejectRequestedSchedule
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: scheduleId
+          in: path
+          required: true
+          description: Schedule ID
+          schema:
+            type: string
+          example: "schedule123"
+        - name: reason
+          in: query
+          required: true
+          description: Reason for rejection
+          schema:
+            type: string
+          example: "Cannot fulfill the request"
+      responses:
+        '200':
+          description: Schedule rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleDTO'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Schedule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /schedule/{scheduleId}/complete:
+    patch:
+      tags:
+        - Schedule
+      summary: Complete schedule
+      description: Mark an active schedule as completed
+      operationId: completeActiveSchedule
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: scheduleId
+          in: path
+          required: true
+          description: Schedule ID
+          schema:
+            type: string
+          example: "schedule123"
+      responses:
+        '200':
+          description: Schedule completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleDTO'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Schedule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /schedule/{scheduleId}/cancel:
+    patch:
+      tags:
+        - Schedule
+      summary: Cancel schedule
+      description: Cancel an active schedule
+      operationId: cancelActiveSchedule
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: scheduleId
+          in: path
+          required: true
+          description: Schedule ID
+          schema:
+            type: string
+          example: "schedule123"
+        - name: reason
+          in: query
+          required: true
+          description: Reason for cancellation
+          schema:
+            type: string
+          example: "Service cannot be performed"
+      responses:
+        '200':
+          description: Schedule cancelled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleDTO'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Schedule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ScheduleForCartResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "schedule123"
+        name:
+          type: string
+          example: "Room Cleaning"
+        employeeId:
+          type: string
+          example: "emp456"
+        employeeFullName:
+          type: string
+          example: "John Doe"
+        imageUrl:
+          type: string
+          example: "https://example.com/images/cleaning.jpg"
+        price:
+          type: number
+          format: double
+          example: 50.00
+        datetime:
+          type: string
+          format: date-time
+          example: "2024-01-15T14:00:00"
+
+    ScheduleForWeekResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "schedule123"
+        employeeFullName:
+          type: string
+          nullable: true
+          example: "John Doe"
+        serviceDate:
+          type: string
+          format: date-time
+          example: "2024-01-15T14:00:00"
+        weekday:
+          type: string
+          enum: [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY]
+          example: "MONDAY"
+        isOrdered:
+          type: boolean
+          example: false
+        status:
+          type: string
+          enum: [REQUESTED, ACTIVE, COMPLETED, CANCELED]
+          example: "ACTIVE"
+
+    ScheduleDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "schedule123"
+        serviceId:
+          type: string
+          example: "service456"
+        employeeId:
+          type: string
+          example: "emp789"
+        guestId:
+          type: string
+          nullable: true
+          example: "guest101"
+        serviceDate:
+          type: string
+          format: date-time
+          example: "2024-01-15T14:00:00"
+        weekday:
+          type: string
+          enum: [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY]
+          example: "MONDAY"
+        status:
+          type: string
+          enum: [REQUESTED, ACTIVE, COMPLETED, CANCELED]
+          example: "ACTIVE"
+        serviceName:
+          type: string
+          nullable: true
+          example: "Room Cleaning"
+        guestFullName:
+          type: string
+          nullable: true
+          example: "Jane Smith"
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Error message"
+        status:
+          type: integer
+          example: 400
+        timestamp:
+          type: string
+          format: date-time
+

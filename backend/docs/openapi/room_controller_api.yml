@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: My Hotel Assistant API - Rooms
+  description: Room management endpoints
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@myhotelassistant.com
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.myhotelassistant.com
+    description: Production server
+
+tags:
+  - name: Rooms
+    description: Hotel room information endpoints
+
+paths:
+  /rooms:
+    get:
+      tags:
+        - Rooms
+      summary: Get all rooms
+      description: Retrieve all available rooms in the hotel
+      operationId: getAllRooms
+      responses:
+        '200':
+          description: Successfully retrieved rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoomEntity'
+
+  /rooms/available:
+    get:
+      tags:
+        - Rooms
+      summary: Get available rooms for date range
+      description: Retrieve all rooms available for the specified date range
+      operationId: getAllAvailableRoomsForDate
+      parameters:
+        - name: from
+          in: query
+          required: true
+          description: Check-in date
+          schema:
+            type: string
+            format: date
+          example: "2024-01-15"
+        - name: to
+          in: query
+          required: true
+          description: Check-out date
+          schema:
+            type: string
+            format: date
+          example: "2024-01-20"
+      responses:
+        '200':
+          description: Successfully retrieved available rooms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoomEntity'
+        '400':
+          description: Invalid date parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /rooms/by/number/{id}:
+    get:
+      tags:
+        - Rooms
+      summary: Get room by number
+      description: Retrieve detailed information about a specific room
+      operationId: getRoomByNumber
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Room number
+          schema:
+            type: string
+          example: "101"
+      responses:
+        '200':
+          description: Successfully retrieved room details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomEntity'
+        '404':
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    RoomEntity:
+      type: object
+      properties:
+        number:
+          type: string
+          example: "101"
+        standard:
+          type: string
+          example: "Deluxe"
+        floor:
+          type: integer
+          example: 1
+        capacity:
+          type: integer
+          example: 2
+        pricePerNight:
+          type: number
+          format: double
+          example: 150.00
+        amenities:
+          type: array
+          items:
+            type: string
+          example: ["WiFi", "TV", "Mini Bar", "Air Conditioning"]
+        description:
+          type: string
+          nullable: true
+          example: "Spacious room with city view"
+        imageUrl:
+          type: string
+          nullable: true
+          example: "https://example.com/images/room101.jpg"
+        available:
+          type: boolean
+          example: true
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Error message"
+        status:
+          type: integer
+          example: 400
+        timestamp:
+          type: string
+          format: date-time
+
