@@ -204,7 +204,7 @@
       "status": {
         "REQUESTED": "Pending",
         "CONFIRMED": "Confirmed",
-        "CANCELLED": "Cancelled",
+        "CANCELLED": "Cancelled"
       }
     },
     "manager": {
