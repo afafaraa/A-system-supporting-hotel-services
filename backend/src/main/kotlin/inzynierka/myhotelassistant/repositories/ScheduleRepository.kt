@@ -61,4 +61,16 @@ interface ScheduleRepository : MongoRepository<ScheduleEntity, String> {
         ],
     )
     fun sumPriceWhereNotNull(): Double?
+
+    @Aggregation(
+        pipeline = [
+            "{ '\$match': { 'orderTime': { '\$gte': { '\$date': '?0' }, '\$lte': { '\$date': '?1' } }, 'price': { '\$ne': null } } }",
+            "{ '\$group': { '_id': null, 'total': { '\$sum': '\$price' } } }",
+            "{ '\$project': { '_id': 0, 'total': 1 } }",
+        ],
+    )
+    fun sumPriceByOrderTimeBetween(
+        startTime: LocalDateTime,
+        endTime: LocalDateTime,
+    ): Double?
 }
