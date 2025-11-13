@@ -45,7 +45,6 @@ export interface Seasonality {
 }
 
 export interface ExtendedStats {
-  basicStats: BasicStat[];
   predictions: PredictionSummary;
   trends: Trends;
   seasonality: Seasonality;

@@ -17,13 +17,10 @@ class StatsController(
     fun getStats(): List<StatsService.ServiceStat> = statsService.getStats()
 
     @GetMapping("/extended")
-    fun getExtendedStats(): StatsService.ExtendedStatsResponse =
-        statsService.getExtendedStats()
+    fun getExtendedStats(): StatsService.ExtendedStatsResponse = statsService.getExtendedStats()
 
     @GetMapping("/ml/predict")
     fun predictRevenue(
-        @RequestParam(defaultValue = "30") daysAhead: Int
-    ): MLPredictionService.MLPredictionResult {
-        return mlPredictionService.predictWithML(daysAhead)
-    }
+        @RequestParam(defaultValue = "30") daysAhead: Int,
+    ): MLPredictionService.MLPredictionResult = mlPredictionService.predictWithML(daysAhead)
 }

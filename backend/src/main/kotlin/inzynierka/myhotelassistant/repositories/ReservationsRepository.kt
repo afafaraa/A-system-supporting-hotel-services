@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.repository.Aggregation
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.mongodb.repository.Query
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 interface ReservationsRepository : MongoRepository<ReservationEntity, String> {
     fun existsByRoomNumberAndCheckInLessThanAndCheckOutGreaterThanAndBlocksRoomIsTrue(
@@ -78,6 +79,7 @@ interface ReservationsRepository : MongoRepository<ReservationEntity, String> {
         ],
     )
     fun sumReservationPriceByPaidIsTrue(): Double?
+
     @Aggregation(
         pipeline = [
             "{ '\$match': { 'checkIn': { '\$gte': { '\$date': '?0' }, '\$lte': { '\$date': '?1' } }, 'paid': true } }",
@@ -90,16 +92,18 @@ interface ReservationsRepository : MongoRepository<ReservationEntity, String> {
         endDate: LocalDate,
     ): Double?
 
-    fun countAllByCheckInBetween(
-        startDate: LocalDate,
-        endDate: LocalDate,
+    fun countAllByCreatedAtBetween(
+        startDate: LocalDateTime,
+        endDate: LocalDateTime,
     ): Long
 
-    @Query("{ '\$or': [ " +
+    @Query(
+        "{ '\$or': [ " +
             "{ 'checkIn': { '\$gte': ?0, '\$lte': ?1 } }, " +
             "{ 'checkOut': { '\$gte': ?0, '\$lte': ?1 } }, " +
             "{ 'checkIn': { '\$lt': ?0 }, 'checkOut': { '\$gt': ?1 } } " +
-            "] }")
+            "] }",
+    )
     fun findAllByOverlappingDates(
         startDate: LocalDate,
         endDate: LocalDate,

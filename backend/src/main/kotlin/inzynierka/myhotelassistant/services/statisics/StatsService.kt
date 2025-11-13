@@ -1,8 +1,8 @@
 package inzynierka.myhotelassistant.services.statisics
 
 import inzynierka.myhotelassistant.models.reservation.ReservationStatus
-import inzynierka.myhotelassistant.repositories.ReservationsRepository
 import inzynierka.myhotelassistant.repositories.RepositoryExtensions
+import inzynierka.myhotelassistant.repositories.ReservationsRepository
 import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import org.springframework.stereotype.Service
@@ -10,6 +10,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.temporal.ChronoUnit
 import kotlin.math.abs
 
 @Service
@@ -27,7 +28,6 @@ class StatsService(
     )
 
     data class ExtendedStatsResponse(
-        val basicStats: List<ServiceStat>,
         val predictions: PredictionsData,
         val trends: TrendData,
         val seasonality: SeasonalityData,
@@ -82,7 +82,7 @@ class StatsService(
         val guestsToday = reservationsRepository.countAllByStatus(ReservationStatus.CHECKED_IN)
         val totalRevenue =
             (reservationsRepository.sumReservationPriceByPaidIsTrue() ?: 0.0) +
-                    (scheduleRepository.sumPriceWhereNotNull() ?: 0.0)
+                (scheduleRepository.sumPriceWhereNotNull() ?: 0.0)
 
         return listOf(
             ServiceStat(id = 1, name = "bookings_today", orderCount = bookingsToday),
@@ -93,13 +93,11 @@ class StatsService(
     }
 
     fun getExtendedStats(): ExtendedStatsResponse {
-        val basicStats = getStats()
         val predictions = calculatePredictions()
         val trends = calculateTrends()
         val seasonality = calculateSeasonality()
 
         return ExtendedStatsResponse(
-            basicStats = basicStats,
             predictions = predictions,
             trends = trends,
             seasonality = seasonality,
@@ -122,11 +120,12 @@ class StatsService(
         val occupancyForecast30Days = (last30DaysOccupancy + (trendSlope * 30)).coerceIn(0.0, 100.0)
 
         val dataPointsCount = countReservationsInPeriod(today.minusDays(30), today)
-        val confidence = when {
-            dataPointsCount > 50 -> "high"
-            dataPointsCount > 20 -> "medium"
-            else -> "low"
-        }
+        val confidence =
+            when {
+                dataPointsCount > 50 -> "high"
+                dataPointsCount > 20 -> "medium"
+                else -> "low"
+            }
 
         return PredictionsData(
             revenueForecast7Days = revenueForecast7Days,
@@ -143,9 +142,14 @@ class StatsService(
         val currentPeriodRevenue = calculateRevenueForPeriod(today.minusDays(30), today)
         val previousPeriodRevenue = calculateRevenueForPeriod(today.minusDays(60), today.minusDays(30))
 
-        val revenueGrowth = if (previousPeriodRevenue > 0) {
-            ((currentPeriodRevenue - previousPeriodRevenue) / previousPeriodRevenue) * 100
-        } else 0.0
+        val revenueGrowth =
+            if (previousPeriodRevenue > 1.0) {
+                ((currentPeriodRevenue - previousPeriodRevenue) / previousPeriodRevenue) * 100.0
+            } else if (currentPeriodRevenue > 0) {
+                100.0
+            } else {
+                0.0
+            }
 
         val currentOccupancy = calculateAvgOccupancyForPeriod(today.minusDays(30), today)
         val previousOccupancy = calculateAvgOccupancyForPeriod(today.minusDays(60), today.minusDays(30))
@@ -153,16 +157,23 @@ class StatsService(
 
         val currentBookings = countReservationsInPeriod(today.minusDays(30), today)
         val previousBookings = countReservationsInPeriod(today.minusDays(60), today.minusDays(30))
-        val bookingGrowth = if (previousBookings > 0) {
-            ((currentBookings - previousBookings).toDouble() / previousBookings) * 100
-        } else 0.0
+
+        val bookingGrowth =
+            if (previousBookings > 1) {
+                ((currentBookings - previousBookings).toDouble() / previousBookings) * 100.0
+            } else if (currentBookings > 0) {
+                100.0
+            } else {
+                0.0
+            }
 
         val avgGrowth = (revenueGrowth + occupancyGrowth + bookingGrowth) / 3.0
-        val trend = when {
-            avgGrowth > 5.0 -> "rising"
-            avgGrowth < -5.0 -> "declining"
-            else -> "stable"
-        }
+        val trend =
+            when {
+                avgGrowth > 5.0 -> "rising"
+                avgGrowth < -5.0 -> "declining"
+                else -> "stable"
+            }
 
         return TrendData(
             revenueGrowthPercent = revenueGrowth,
@@ -187,33 +198,48 @@ class StatsService(
         )
     }
 
-    private fun calculateRevenueForPeriod(startDate: LocalDate, endDate: LocalDate): Double {
-        val reservationRevenue = reservationsRepository.sumReservationPriceByCheckInBetweenAndPaidIsTrue(
-            startDate, endDate
-        ) ?: 0.0
+    private fun calculateRevenueForPeriod(
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ): Double {
+        val reservationRevenue =
+            reservationsRepository.sumReservationPriceByCheckInBetweenAndPaidIsTrue(
+                startDate,
+                endDate,
+            ) ?: 0.0
 
-        val serviceRevenue = scheduleRepository.sumPriceByOrderTimeBetween(
-            startDate.atStartOfDay(), endDate.atTime(LocalTime.MAX)
-        ) ?: 0.0
+        val serviceRevenue =
+            scheduleRepository.sumPriceByOrderTimeBetween(
+                startDate.atStartOfDay(),
+                endDate.atTime(LocalTime.MAX),
+            ) ?: 0.0
 
         return reservationRevenue + serviceRevenue
     }
 
-    private fun calculateAvgOccupancyForPeriod(startDate: LocalDate, endDate: LocalDate): Double {
+    private fun calculateAvgOccupancyForPeriod(
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ): Double {
         val totalRooms = roomRepository.count().toDouble()
         if (totalRooms == 0.0) return 0.0
 
-        val days = abs(startDate.until(endDate).days)
+        val days = abs(ChronoUnit.DAYS.between(startDate, endDate)).toInt()
         if (days == 0) return 0.0
 
-        val totalOccupiedRoomDays = repositoryExtensions.sumOccupiedRoomDaysBetween(
-            startDate, endDate
-        )
+        val totalOccupiedRoomDays =
+            repositoryExtensions.sumOccupiedRoomDaysBetween(
+                startDate,
+                endDate,
+            )
 
         return (totalOccupiedRoomDays.toDouble() / (totalRooms * days)) * 100.0
     }
 
-    private fun calculateOccupancyTrend(startDate: LocalDate, endDate: LocalDate): Double {
+    private fun calculateOccupancyTrend(
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ): Double {
         val dataPoints = mutableListOf<Pair<Int, Double>>()
         var currentDate = startDate
         var dayIndex = 0
@@ -236,16 +262,23 @@ class StatsService(
         val denominator = (n * sumX2 - sumX * sumX)
         return if (denominator != 0) {
             (n * sumXY - sumX * sumY) / denominator
-        } else 0.0
+        } else {
+            0.0
+        }
     }
 
-    private fun countReservationsInPeriod(startDate: LocalDate, endDate: LocalDate): Long {
-        return reservationsRepository.countAllByCheckInBetween(startDate, endDate)
-    }
+    private fun countReservationsInPeriod(
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ): Long =
+        reservationsRepository.countAllByCreatedAtBetween(
+            startDate.atStartOfDay(),
+            endDate.atTime(LocalTime.MAX),
+        )
 
     private fun calculateWeekdayWeekendDifference(
         startDate: LocalDate,
-        endDate: LocalDate
+        endDate: LocalDate,
     ): WeekdayWeekendComparison {
         var weekdaySum = 0.0
         var weekendSum = 0.0
@@ -277,7 +310,10 @@ class StatsService(
         )
     }
 
-    private fun calculateDayOfWeekStats(startDate: LocalDate, endDate: LocalDate): List<DayOfWeekStats> {
+    private fun calculateDayOfWeekStats(
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ): List<DayOfWeekStats> {
         val dayStats = mutableMapOf<DayOfWeek, MutableList<Pair<Double, Double>>>()
 
         var currentDate = startDate
@@ -285,7 +321,8 @@ class StatsService(
             val occupancy = calculateAvgOccupancyForPeriod(currentDate, currentDate.plusDays(1))
             val revenue = calculateRevenueForPeriod(currentDate, currentDate.plusDays(1))
 
-            dayStats.getOrPut(currentDate.dayOfWeek) { mutableListOf() }
+            dayStats
+                .getOrPut(currentDate.dayOfWeek) { mutableListOf() }
                 .add(Pair(occupancy, revenue))
 
             currentDate = currentDate.plusDays(1)
@@ -300,7 +337,10 @@ class StatsService(
         }
     }
 
-    private fun calculateMonthlyStats(startDate: LocalDate, endDate: LocalDate): List<MonthStats> {
+    private fun calculateMonthlyStats(
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ): List<MonthStats> {
         val monthStats = mutableMapOf<String, MutableList<Pair<Double, Double>>>()
 
         var currentDate = startDate
@@ -309,7 +349,8 @@ class StatsService(
             val occupancy = calculateAvgOccupancyForPeriod(currentDate, currentDate.plusDays(1))
             val revenue = calculateRevenueForPeriod(currentDate, currentDate.plusDays(1))
 
-            monthStats.getOrPut(monthKey) { mutableListOf() }
+            monthStats
+                .getOrPut(monthKey) { mutableListOf() }
                 .add(Pair(occupancy, revenue))
 
             currentDate = currentDate.plusDays(1)

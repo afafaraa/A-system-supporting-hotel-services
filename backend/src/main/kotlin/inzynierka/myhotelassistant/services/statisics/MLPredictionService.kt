@@ -1,6 +1,9 @@
 package inzynierka.myhotelassistant.services.statisics
 
-import inzynierka.myhotelassistant.repositories.*
+import inzynierka.myhotelassistant.repositories.RepositoryExtensions
+import inzynierka.myhotelassistant.repositories.ReservationsRepository
+import inzynierka.myhotelassistant.repositories.RoomRepository
+import inzynierka.myhotelassistant.repositories.ScheduleRepository
 import org.springframework.stereotype.Service
 import smile.data.DataFrame
 import smile.data.Tuple
@@ -21,7 +24,6 @@ class MLPredictionService(
     private val roomRepository: RoomRepository,
     private val repositoryExtensions: RepositoryExtensions,
 ) {
-
     data class MLPredictionResult(
         val predictions: List<DailyPrediction>,
         val accuracyRevenue: Double,
@@ -57,10 +59,12 @@ class MLPredictionService(
 
             val featureMatrix: Array<DoubleArray> = trainingData.features
             val dfFeatures = DataFrame.of(featureMatrix, *featureNames)
-            val dfRevenue = dfFeatures
-                .merge(DoubleVector.of("revenue", trainingData.revenues))
-            val dfOccupancy = dfFeatures
-                .merge(DoubleVector.of("occupancy", trainingData.occupancies))
+            val dfRevenue =
+                dfFeatures
+                    .merge(DoubleVector.of("revenue", trainingData.revenues))
+            val dfOccupancy =
+                dfFeatures
+                    .merge(DoubleVector.of("occupancy", trainingData.occupancies))
 
             val formulaRevenue = Formula.lhs("revenue")
             val formulaOccupancy = Formula.lhs("occupancy")
@@ -73,17 +77,18 @@ class MLPredictionService(
                 val date = today.plusDays(i.toLong())
                 val features = extractDateFeatures(date)
 
-
-                val predictedRevenue = try {
-                    revenueModel.predict(Tuple.of(features, dfRevenue.schema())).coerceAtLeast(0.0)
-                } catch (ex: Exception) {
-                    0.0
-                }
-                val predictedOccupancy = try {
-                    occupancyModel.predict(Tuple.of(features, dfOccupancy.schema())).coerceIn(0.0, 100.0)
-                } catch (ex: Exception) {
-                    0.0
-                }
+                val predictedRevenue =
+                    try {
+                        revenueModel.predict(Tuple.of(features, dfRevenue.schema())).coerceAtLeast(0.0)
+                    } catch (ex: Exception) {
+                        0.0
+                    }
+                val predictedOccupancy =
+                    try {
+                        occupancyModel.predict(Tuple.of(features, dfOccupancy.schema())).coerceIn(0.0, 100.0)
+                    } catch (ex: Exception) {
+                        0.0
+                    }
 
                 predictions.add(
                     DailyPrediction(
@@ -91,7 +96,7 @@ class MLPredictionService(
                         predictedRevenue = ((predictedRevenue.times(100)).roundToInt() / 100).toDouble(),
                         predictedOccupancy = predictedOccupancy.roundToInt(),
                         confidence = calculateConfidence(i, trainingData.revenues.size),
-                    )
+                    ),
                 )
             }
 
@@ -109,7 +114,10 @@ class MLPredictionService(
         }
     }
 
-    private fun prepareTrainingData(startDate: LocalDate, endDate: LocalDate): TrainingData {
+    private fun prepareTrainingData(
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ): TrainingData {
         val dates = mutableListOf<LocalDate>()
         val revenues = mutableListOf<Double>()
         val occupancies = mutableListOf<Double>()
@@ -132,19 +140,22 @@ class MLPredictionService(
         )
     }
 
-    private fun extractDateFeatures(date: LocalDate): DoubleArray = doubleArrayOf(
-        date.dayOfWeek.value.toDouble(),
-        date.dayOfMonth.toDouble(),
-        date.monthValue.toDouble(),
-        if (date.dayOfWeek.value >= 6) 1.0 else 0.0,
-        date.dayOfYear.toDouble() / 365.0,
-    )
+    private fun extractDateFeatures(date: LocalDate): DoubleArray =
+        doubleArrayOf(
+            date.dayOfWeek.value.toDouble(),
+            date.dayOfMonth.toDouble(),
+            date.monthValue.toDouble(),
+            if (date.dayOfWeek.value >= 6) 1.0 else 0.0,
+            date.dayOfYear.toDouble() / 365.0,
+        )
 
     private fun calculateRevenueForDay(date: LocalDate): Double {
-        val reservationRevenue = reservationsRepository
-            .sumReservationPriceByCheckInBetweenAndPaidIsTrue(date, date.plusDays(1)) ?: 0.0
-        val serviceRevenue = scheduleRepository
-            .sumPriceByOrderTimeBetween(date.atStartOfDay(), date.plusDays(1).atStartOfDay()) ?: 0.0
+        val reservationRevenue =
+            reservationsRepository
+                .sumReservationPriceByCheckInBetweenAndPaidIsTrue(date, date.plusDays(1)) ?: 0.0
+        val serviceRevenue =
+            scheduleRepository
+                .sumPriceByOrderTimeBetween(date.atStartOfDay(), date.plusDays(1).atStartOfDay()) ?: 0.0
         return reservationRevenue + serviceRevenue
     }
 
@@ -155,7 +166,10 @@ class MLPredictionService(
         return (occupiedRooms / totalRooms) * 100.0
     }
 
-    private fun calculateConfidence(daysAhead: Int, dataSize: Int): Double {
+    private fun calculateConfidence(
+        daysAhead: Int,
+        dataSize: Int,
+    ): Double {
         val distanceFactor = 1.0 - (daysAhead / 100.0).coerceIn(0.0, 0.5)
         val dataFactor = (dataSize / 100.0).coerceIn(0.3, 1.0)
         return (distanceFactor * dataFactor * 100.0).coerceIn(0.0, 100.0)
@@ -165,22 +179,26 @@ class MLPredictionService(
         model: Any,
         features: Array<DoubleArray>,
         actual: DoubleArray,
-        schema: StructType
+        schema: StructType,
     ): Double {
         val predictions = DoubleArray(actual.size)
         for (i in features.indices) {
             val tuple = Tuple.of(features[i], schema)
-            val pred = when (model) {
-                is RandomForest -> model.predict(tuple)
-                is LinearModel -> model.predict(tuple)
-                else -> 0.0
-            }
+            val pred =
+                when (model) {
+                    is RandomForest -> model.predict(tuple)
+                    is LinearModel -> model.predict(tuple)
+                    else -> 0.0
+                }
             predictions[i] = pred
         }
         return calculateR2(predictions, actual)
     }
 
-    private fun calculateR2(pred: DoubleArray, actual: DoubleArray): Double {
+    private fun calculateR2(
+        pred: DoubleArray,
+        actual: DoubleArray,
+    ): Double {
         if (actual.isEmpty()) return 0.0
         val mean = actual.average()
         val ssTotal = actual.sumOf { (it - mean).pow(2) }
@@ -188,11 +206,15 @@ class MLPredictionService(
         return if (ssTotal > 0) (1.0 - ssRes / ssTotal).coerceIn(0.0, 1.0) else 0.0
     }
 
-    private fun createFallbackPrediction(daysAhead: Int, reason: String): MLPredictionResult {
+    private fun createFallbackPrediction(
+        daysAhead: Int,
+        reason: String,
+    ): MLPredictionResult {
         val today = LocalDate.now()
-        val fallbackPredictions = (1..daysAhead).map { i ->
-            DailyPrediction(today.plusDays(i.toLong()), 0.0, 0, 0.0)
-        }
+        val fallbackPredictions =
+            (1..daysAhead).map { i ->
+                DailyPrediction(today.plusDays(i.toLong()), 0.0, 0, 0.0)
+            }
 
         return MLPredictionResult(
             predictions = fallbackPredictions,
