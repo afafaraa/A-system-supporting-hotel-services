@@ -56,7 +56,7 @@ const VerifyAccount = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        height: "100vh",
+        height: "100dvh",
         bgcolor: "background.default",
       }}
     >

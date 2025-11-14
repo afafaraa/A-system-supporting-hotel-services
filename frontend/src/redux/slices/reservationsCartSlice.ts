@@ -10,16 +10,33 @@ export type ReservationCartItem = {
 
 interface ReservationsCartState {
   items: Array<ReservationCartItem>;
+  username: string | null;
 }
 
 const initialState: ReservationsCartState = {
   items: [],
+  username: null,
 };
+
+const getStorageKey = (username: string | null) => {
+  return username ? `RESERVATIONS_CART_${username}` : 'RESERVATIONS_CART';
+}
 
 const reservationsCartSlice = createSlice({
   name: 'reservationsCart',
   initialState,
   reducers: {
+    setUsernameAndInitializeReservationsCart: (state, action: PayloadAction<ReservationsCartState["username"]>) => {
+      state.username = action.payload;
+      const storageKey = getStorageKey(state.username);
+      try {
+        const reservationsCart = localStorage.getItem(storageKey);
+        state.items = reservationsCart ? JSON.parse(reservationsCart) : [];
+      } catch (error) {
+        console.log("Error parsing reservations cart from localStorage:", error);
+        localStorage.removeItem(storageKey);
+      }
+    },
     addReservation: (state, action: PayloadAction<ReservationCartItem>) => {
       const isDuplicate = state.items.some(
         (item) =>
@@ -30,12 +47,14 @@ const reservationsCartSlice = createSlice({
 
       if (!isDuplicate) {
         state.items.push(action.payload);
-        localStorage.setItem('RESERVATIONS_CART', JSON.stringify(state.items));
+        const storageKey = getStorageKey(state.username);
+        localStorage.setItem(storageKey, JSON.stringify(state.items));
       }
     },
     setReservations: (state, action: PayloadAction<Array<ReservationCartItem>>) => {
       state.items = action.payload;
-      localStorage.setItem('RESERVATIONS_CART', JSON.stringify(state.items));
+      const storageKey = getStorageKey(state.username);
+      localStorage.setItem(storageKey, JSON.stringify(state.items));
     },
     removeReservation: (state, action: PayloadAction<ReservationCartItem>) => {
       state.items = state.items.filter((item) => {
@@ -45,11 +64,13 @@ const reservationsCartSlice = createSlice({
           item.checkOut === action.payload.checkOut;
         return !(sameRoom && sameDates);
       });
-      localStorage.setItem('RESERVATIONS_CART', JSON.stringify(state.items));
+      const storageKey = getStorageKey(state.username);
+      localStorage.setItem(storageKey, JSON.stringify(state.items));
     },
     clearReservationsCart: (state) => {
       state.items = [];
-      localStorage.removeItem('RESERVATIONS_CART');
+      const storageKey = getStorageKey(state.username);
+      localStorage.removeItem(storageKey);
     },
   },
 });
@@ -57,7 +78,7 @@ const reservationsCartSlice = createSlice({
 export const selectReservationsCart = (state: RootState) => state.reservationsCart.items;
 export const selectReservationsCartCount = (state: RootState) => state.reservationsCart.items.length;
 
-export const { addReservation, setReservations, removeReservation, clearReservationsCart } = reservationsCartSlice.actions;
+export const { setUsernameAndInitializeReservationsCart, addReservation, setReservations, removeReservation, clearReservationsCart } = reservationsCartSlice.actions;
 
 export default reservationsCartSlice.reducer;
 

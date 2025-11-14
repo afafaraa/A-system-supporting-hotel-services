@@ -14,17 +14,18 @@ import ShoppingCartItem from './ShoppingCartItem.tsx';
 import { selectUserDetails } from '../../../redux/slices/userDetailsSlice.ts';
 import {
   selectServicesCart,
-  clearServicesCart,
+  clearServicesCart, setServices,
 } from '../../../redux/slices/servicesCartSlice.ts';
 import {
   selectReservationsCart,
-  clearReservationsCart,
+  clearReservationsCart, setReservations,
 } from '../../../redux/slices/reservationsCartSlice.ts';
 import { axiosAuthApi } from '../../../middleware/axiosApi.ts';
 import { RoomStandard } from '../../../types/room.ts';
 import { selectUser } from '../../../redux/slices/userSlice.ts';
 import { useTranslation } from 'react-i18next';
 import { isAxiosError } from 'axios';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 export type CartProps = {
   id: string;
@@ -83,7 +84,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
 
   const fetchServicesData = useCallback(async () => {
     const servicesList: CartProps[] = [];
-
+    const itemsForRemoval: Set<string> = new Set<string>();
     for (const item of servicesCart) {
       try {
         const response = await axiosAuthApi.get(
@@ -93,16 +94,18 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
         cartItem.type = 'SERVICE';
         if (cartItem) servicesList.push(cartItem);
       } catch (e) {
+        itemsForRemoval.add(item.id);
         console.error('Failed to fetch service data:', e);
       }
     }
-
+    if (itemsForRemoval.size > 0)
+      dispatch(setServices(servicesCart.filter(item => !itemsForRemoval.has(item.id))));
     setServicesCartData(servicesList);
-  }, [servicesCart]);
+  }, [dispatch, servicesCart]);
 
   const fetchReservationsData = useCallback(async () => {
     const reservationsList: CartProps[] = [];
-
+    const itemsForRemoval: Set<string> = new Set<string>();
     for (const item of reservationsCart) {
       try {
         const response = await axiosAuthApi.get(`/rooms/by/number/${item.id}`);
@@ -114,12 +117,14 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
         cartItem.type = 'RESERVATION';
         if (cartItem) reservationsList.push(cartItem);
       } catch (e) {
+        itemsForRemoval.add(item.id);
         console.error('Failed to fetch reservation data:', e);
       }
     }
-
+    if (itemsForRemoval.size > 0)
+      dispatch(setReservations(reservationsCart.filter(item => !itemsForRemoval.has(item.id))));
     setReservationsCartData(reservationsList);
-  }, [reservationsCart]);
+  }, [dispatch, reservationsCart]);
 
   useEffect(() => {
     if (open) {
@@ -262,7 +267,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
           top: 0,
           left: 0,
           width: '100vw',
-          height: '100vh',
+          height: '100dvh',
           backgroundColor: 'rgba(0,0,0,0.5)',
           zIndex: 1200,
         }}
@@ -293,9 +298,22 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
           <Typography fontSize="20px" fontWeight={600}>
             Shopping Cart ({totalCartItems})
           </Typography>
-          <IconButton onClick={setOpen}>
-            <CloseIcon />
-          </IconButton>
+          <div style={{display: "flex", flexDirection: "row", gap: "10px", alignItems: "center"}}>
+            <Button
+              fullWidth
+              size="small"
+              color="error"
+              variant="outlined"
+              onClick={clearShoppingCart}
+              disabled={isProcessing}
+              startIcon={<DeleteOutlinedIcon />}
+            >
+              Clear Cart
+            </Button>
+            <IconButton onClick={setOpen}>
+              <CloseIcon />
+            </IconButton>
+          </div>
         </Box>
 
         {error && (
@@ -369,9 +387,10 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
           </div>
         </Box>
 
-        <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+        <div style={{ display: 'flex', gap: '10px'}}>
           <Button
             fullWidth
+            variant="outlined"
             sx={{ mb: 1 }}
             onClick={orderServices}
             disabled={totalCartItems === 0 || isProcessing}
@@ -380,6 +399,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
           </Button>
           <Button
             fullWidth
+            variant="contained"
             sx={{ mb: 1 }}
             onClick={initiateCheckout}
             disabled={totalCartItems === 0 || isProcessing}
@@ -391,15 +411,6 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
             )}
           </Button>
         </div>
-        <Button
-          fullWidth
-          variant="outlined"
-          color="error"
-          onClick={clearShoppingCart}
-          disabled={isProcessing}
-        >
-          Clear Cart
-        </Button>
       </Box>
     </>
   );
