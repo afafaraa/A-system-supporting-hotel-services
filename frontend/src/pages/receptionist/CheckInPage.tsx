@@ -36,7 +36,10 @@ interface Room {
   floor: number;
   capacity: number;
   pricePerNight: number;
-  standard: string;
+  standard: {
+    name: string;
+    description?: string;
+  };
   description?: string;
   amenities: string[];
 }
@@ -169,7 +172,7 @@ function CheckInPage() {
       >
         {availableRooms.map(room => (
           <MenuItem key={room.number} value={room.number}>
-            {tc("room-option", { number: room.number, standard: room.standard, capacity: room.capacity, price: room.pricePerNight })}
+            {tc("room-option", { number: room.number, standard: room.standard.name, capacity: room.capacity, price: room.pricePerNight })}
           </MenuItem>
         ))}
       </TextField>

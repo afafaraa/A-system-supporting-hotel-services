@@ -232,8 +232,8 @@ class ReservationsService(
             roomRepository.findByNumber(roomNumber)
                 ?: throw IllegalArgumentException("Room with number $roomNumber not found")
         val standard =
-            roomStandardRepository.findById(roomNumber).getOrNull()
-                ?: throw IllegalArgumentException("Room with number $roomNumber not found")
+            roomStandardRepository.findById(room.standardId).getOrNull()
+                ?: throw IllegalArgumentException("Standard with room with number $roomNumber not found")
         val basePrice = room.pricePerNight ?: standard.basePrice
         return basePrice * days // TODO: apply discounts, seasonal prices, etc.
     }
