@@ -171,11 +171,14 @@
     "shopping_cart": {
       "title": "Koszyk",
       "noItems": "Brak produktów w koszyku",
+      "clearCart": "Wyczyść koszyk",
+      "summary": "Podsumowanie zamówienia",
       "cartValue": "Wartość koszyka",
       "currentBill": "Bieżący rachunek",
-      "pay": "Zapłać",
       "addToBill": "Dodaj do rachunku",
-      "continueShopping": "Kontynuuj zakupy"
+      "proceedToPayment": "Przejdź do płatności",
+      "services": "Usługi",
+      "reservations": "Rezerwacje"
     },
     "order_service": {
       "availability": "Dostępność",
@@ -190,7 +193,8 @@
       "selectDate": "Wybierz datę",
       "selectTime": "Wybierz godzinę",
       "specialRequests": "Specjalne życzenia",
-      "noSlotsAvailable": "Brak dostępnych terminów"
+      "noSlotsAvailable": "Brak dostępnych terminów",
+      "addedToCartMessage": "Wybrana usługa została pomyślnie dodana do koszyka"
     },
     "reservations": {
       "myReservations": "Moje rezerwacje pokoi",

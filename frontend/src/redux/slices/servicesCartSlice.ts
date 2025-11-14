@@ -5,6 +5,8 @@ import {ServiceDetailsResponse} from "../../types/service_type_attributes.ts";
 export type ServiceCartItem = {
   id: string;
   attributes?: ServiceDetailsResponse;
+  specialRequests: string | null;
+  customPrice?: number;
 };
 
 interface ServicesCartState {
@@ -16,6 +18,10 @@ const initialState: ServicesCartState = {
   items: [],
   username: null,
 };
+
+const compareItems = (item1: ServiceCartItem, item2: ServiceCartItem): boolean => {
+  return (item1.specialRequests === item2.specialRequests)
+}
 
 const getStorageKey = (username: string | null) => {
   return username ? `SERVICES_CART_${username}` : 'SERVICES_CART';
@@ -37,20 +43,18 @@ const servicesCartSlice = createSlice({
       }
     },
     addService: (state, action: PayloadAction<ServiceCartItem>) => {
-      const isDuplicate = state.items.some((item) => item.id === action.payload.id);
-
-      if (!isDuplicate) {
-        state.items.push(action.payload);
-        const storageKey = getStorageKey(state.username);
-        localStorage.setItem(storageKey, JSON.stringify(state.items));
-      }
+      const duplicateIndex = state.items.findIndex((item) => item.id === action.payload.id);
+      if (duplicateIndex == -1) state.items.push(action.payload);
+      else if (!compareItems(state.items[duplicateIndex], action.payload)) state.items[duplicateIndex] = action.payload;
+      const storageKey = getStorageKey(state.username);
+      localStorage.setItem(storageKey, JSON.stringify(state.items));
     },
     setServices: (state, action: PayloadAction<Array<ServiceCartItem>>) => {
       state.items = action.payload;
       const storageKey = getStorageKey(state.username);
       localStorage.setItem(storageKey, JSON.stringify(state.items));
     },
-    removeService: (state, action: PayloadAction<ServiceCartItem>) => {
+    removeService: (state, action: PayloadAction<{id: ServiceCartItem["id"]}>) => {
       state.items = state.items.filter((item) => item.id !== action.payload.id);
       const storageKey = getStorageKey(state.username);
       localStorage.setItem(storageKey, JSON.stringify(state.items));

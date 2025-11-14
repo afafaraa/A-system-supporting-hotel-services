@@ -171,11 +171,14 @@
     "shopping_cart": {
       "title": "Shopping cart",
       "noItems": "No items in cart",
+      "clearCart": "Clear cart",
+      "summary": "Summary",
       "cartValue": "Cart value",
       "currentBill": "Current bill",
-      "pay": "Pay",
       "addToBill": "Add to bill",
-      "continueShopping": "Continue shopping"
+      "proceedToPayment": "Proceed to Payment",
+      "services": "Services",
+      "reservations": "Reservations"
     },
     "order_service": {
       "availability": "Availability",
@@ -190,7 +193,8 @@
       "selectDate": "Select date",
       "selectTime": "Select time",
       "specialRequests": "Special Requests",
-      "noSlotsAvailable": "No slots available"
+      "noSlotsAvailable": "No slots available",
+      "addedToCartMessage": "Selected service was successfully added to the cart"
     },
     "reservations": {
       "myReservations": "My Room Reservations",

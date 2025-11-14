@@ -6,7 +6,6 @@ import {
   Box,
   IconButton,
   useTheme,
-  CircularProgress,
   Divider,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -26,6 +25,7 @@ import { selectUser } from '../../../redux/slices/userSlice.ts';
 import { useTranslation } from 'react-i18next';
 import { isAxiosError } from 'axios';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import useTranslationWithPrefix from "../../../locales/useTranslationWithPrefix.tsx";
 
 export type CartProps = {
   id: string;
@@ -42,6 +42,7 @@ export type CartProps = {
   checkOut?: string;
   guestCount?: number;
   roomNumber?: number;
+  specialRequests?: string;
 };
 
 type ShoppingCartPopupProps = {
@@ -57,6 +58,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   const reservationsCart = useSelector(selectReservationsCart);
   const theme = useTheme();
   const { t } = useTranslation();
+  const {t: tc} = useTranslationWithPrefix("pages.shopping_cart");
 
   const [servicesCartData, setServicesCartData] = useState<CartProps[]>([]);
   const [reservationsCartData, setReservationsCartData] = useState<CartProps[]>([]);
@@ -92,6 +94,8 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
         );
         const cartItem: CartProps = response.data;
         cartItem.type = 'SERVICE';
+        if (item.customPrice) cartItem.price = item.customPrice;
+        if (item.specialRequests) cartItem.specialRequests = item.specialRequests;
         if (cartItem) servicesList.push(cartItem);
       } catch (e) {
         itemsForRemoval.add(item.id);
@@ -115,6 +119,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
         cartItem.checkOut = item.checkOut;
         cartItem.guestCount = item.guestCount;
         cartItem.type = 'RESERVATION';
+        if (item.specialRequests) cartItem.specialRequests = item.specialRequests;
         if (cartItem) reservationsList.push(cartItem);
       } catch (e) {
         itemsForRemoval.add(item.id);
@@ -128,8 +133,8 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
 
   useEffect(() => {
     if (open) {
-      fetchServicesData();
-      fetchReservationsData();
+      fetchServicesData().then(null);
+      fetchReservationsData().then(null);
     }
   }, [servicesCart, reservationsCart, open, fetchServicesData, fetchReservationsData]);
 
@@ -280,12 +285,14 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: { xs: '90%', sm: '35%' },
-          maxHeight: '90vh',
+          width: 'min(95vw, 500px)',
+          maxHeight: '95dvh',
           backgroundColor: 'background.paper',
           borderRadius: 2,
           zIndex: 1300,
           p: 4,
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         <Box
@@ -296,7 +303,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
           }}
         >
           <Typography fontSize="20px" fontWeight={600}>
-            Shopping Cart ({totalCartItems})
+            {tc("title")} ({totalCartItems})
           </Typography>
           <div style={{display: "flex", flexDirection: "row", gap: "10px", alignItems: "center"}}>
             <Button
@@ -308,7 +315,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
               disabled={isProcessing}
               startIcon={<DeleteOutlinedIcon />}
             >
-              Clear Cart
+              {tc("clearCart")}
             </Button>
             <IconButton onClick={setOpen}>
               <CloseIcon />
@@ -322,11 +329,11 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
           </Typography>
         )}
 
-        <Box sx={{ flex: 1, overflowY: 'auto', mb: 2 }}>
+        <Box sx={{ flexGrow: 1, overflowY: 'auto'}}>
           {servicesCartData.length > 0 && (
             <>
               <Typography variant="h6" sx={{ mt: 2, mb: 1, fontWeight: 600 }}>
-                Services ({servicesCartData.length})
+                {tc("services")} ({servicesCartData.length})
               </Typography>
               {servicesCartData.map((item, index) => (
                 <ShoppingCartItem
@@ -344,7 +351,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
             <>
               {servicesCartData.length > 0 && <Divider sx={{ my: 2 }} />}
               <Typography variant="h6" sx={{ mt: 2, mb: 1, fontWeight: 600 }}>
-                Reservations ({reservationsCartData.length})
+                {tc("reservations")} ({reservationsCartData.length})
               </Typography>
               {reservationsCartData.map((item, index) => (
                 <ShoppingCartItem
@@ -360,27 +367,28 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
 
           {totalCartItems === 0 && (
             <Typography variant="body2" sx={{ mt: 2 }}>
-              Your cart is empty
+              {tc("noItems")}
             </Typography>
           )}
         </Box>
 
+        <div style={{position: 'sticky', bottom: 0, marginTop: '1rem'}}>
         <Box
           sx={{
             borderRadius: '10px',
             backgroundColor: theme.palette.primary.light,
             padding: '20px',
-            margin: '15px 0',
+            marginBottom: '12px',
           }}
         >
-          <Typography fontWeight="600">Total Summary:</Typography>
+          <Typography fontWeight="600">{tc("summary")}:</Typography>
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
             }}
           >
-            <Typography variant="body1">Total price:</Typography>
+            <Typography variant="body1">{tc("cartValue")}:</Typography>
             <Typography variant="body1" fontWeight="700">
               {totalPrice.toFixed(2)} $
             </Typography>
@@ -391,25 +399,21 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
           <Button
             fullWidth
             variant="outlined"
-            sx={{ mb: 1 }}
             onClick={orderServices}
             disabled={totalCartItems === 0 || isProcessing}
           >
-            Add to Tab
+            {tc("addToBill")}
           </Button>
           <Button
             fullWidth
             variant="contained"
-            sx={{ mb: 1 }}
             onClick={initiateCheckout}
             disabled={totalCartItems === 0 || isProcessing}
+            loading={isProcessing}
           >
-            {isProcessing ? (
-              <CircularProgress size={24} />
-            ) : (
-              'Proceed to Payment'
-            )}
+            {tc("proceedToPayment")}
           </Button>
+        </div>
         </div>
       </Box>
     </>

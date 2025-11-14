@@ -1,9 +1,8 @@
 import {SectionCard} from "../../../theme/styled-components/SectionCard.ts";
 import Box from "@mui/system/Box";
 import {Button, ButtonGroup, Grid, MenuItem, Select, SelectChangeEvent, Stack, Typography} from "@mui/material";
-import {Dispatch, SetStateAction, useState} from "react";
-import {OptionObject, SelectionAttributes, SelectionAttributesResponse} from "../../../types/service_type_attributes.ts"
-import {onAddToCartFunction} from "./ServiceAttributeDetails.tsx";
+import {Dispatch, SetStateAction, useEffect, useState} from "react";
+import {OptionObject, SelectionAttributes} from "../../../types/service_type_attributes.ts"
 
 
 interface OrderItem {
@@ -14,25 +13,29 @@ interface OrderItem {
 
 interface Props {
   details: SelectionAttributes;
-  onAddToCart: onAddToCartFunction;
+  setServiceAttributes: Dispatch<SetStateAction<{desc: string | null; price: number | null;}>>;
 }
 
-function ServiceSelectionCard({details, onAddToCart}: Props) {
+function ServiceSelectionCard({details, setServiceAttributes}: Props) {
   const [order, setOrder] = useState<OrderItem[]>([]);
+
+  useEffect(() => {
+    const text = "".concat(...order.map(item => item.quantity + " x " + item.option.label + "\n")).trim();
+    const orderPrice = order.reduce((sum, item) => sum + item.option.price * item.quantity, 0);
+    setServiceAttributes({desc: text, price: orderPrice});
+  }, [order, setServiceAttributes]);
 
   return (<>
     <SelectionCard details={details} setOrder={setOrder} />
-    <OrderSummary details={details} order={order} setOrder={setOrder} onAddToCart={onAddToCart} />
+    <OrderSummary details={details} order={order} setOrder={setOrder} />
   </>)
 }
 
 const SelectionCard = ({details, setOrder}: {details: SelectionAttributes, setOrder: Dispatch<SetStateAction<OrderItem[]>>}) => {
   return (
     <SectionCard>
-      <p>Type: {details.type}</p>
-      <p>{details.multipleSelection ? 'Multiple selection allowed' : 'Single selection only'}</p>
       {Object.entries(details.options).map(([key, options]) => (
-        <Box key={key} mt={2}>
+        <Box key={key} mb={2}>
           <Typography fontSize="120%" fontWeight="bold">{key}</Typography>
           <Grid container gap={2} columns={{xs: 1, md: 2}} mt={1}>
             {options.map((option, index) => (
@@ -108,7 +111,7 @@ function OptionCardSingleButton({group, option, setOrder}: {
   );
 }
 
-const OrderSummary = ({details, order, setOrder, onAddToCart}: {details: SelectionAttributes, order: OrderItem[], setOrder: Dispatch<SetStateAction<OrderItem[]>>, onAddToCart: onAddToCartFunction}) => {
+const OrderSummary = ({details, order, setOrder}: {details: SelectionAttributes, order: OrderItem[], setOrder: Dispatch<SetStateAction<OrderItem[]>>}) => {
 
   const handleAddQuantityButton = (option: OptionObject, value: number) => {
     setOrder(prev => {
@@ -122,15 +125,6 @@ const OrderSummary = ({details, order, setOrder, onAddToCart}: {details: Selecti
       updatedOrder[itemIndex].quantity = newQuantity;
       return updatedOrder;
     })
-  }
-
-  const handleOrderButton = () => {
-    const packedOrder: SelectionAttributesResponse = {
-      type: details.type,
-      selectedOptions: Object.fromEntries(order.map(item => [item.group + '.' + item.option.label, item.quantity])),
-    }
-    onAddToCart(packedOrder);
-    setOrder([]);
   }
 
   return (
@@ -162,7 +156,6 @@ const OrderSummary = ({details, order, setOrder, onAddToCart}: {details: Selecti
               {order.reduce((sum, item) => sum + item.option.price * item.quantity, 0).toFixed(2)} $
             </Typography>
           </Box>
-          <Button variant="contained" onClick={handleOrderButton} sx={{borderRadius: "12px"}}>Dodaj do zamówienia</Button>
         </Stack>
       )}
     </SectionCard>

@@ -69,7 +69,7 @@ function ShoppingCartItem({
         <Typography sx={{ fontSize: '16px', fontWeight: '600' }}>
           {item.type === 'SERVICE'
             ? item.name
-            : ((item.standard + ' Room')
+            : ((item.standard?.name + ' Room')
                 .toLowerCase()
                 .split(' ')
                 .filter((word) => word.trim().length > 0)
@@ -85,20 +85,28 @@ function ShoppingCartItem({
           }}
         >
           <div>
-            {item.type === 'SERVICE' ? item.price : calculateTotalPrice}$
+            {item.type === 'SERVICE' ? item.price?.toFixed(2) : calculateTotalPrice}$
           </div>
           <div>
             {item.type === 'SERVICE'
-              ? new Date(item.datetime ?? '').toLocaleDateString()
-              : new Date(item.checkIn ?? '').toLocaleDateString()}
+              ? new Date(item.datetime ?? '').toLocaleDateString(t('date.locale'))
+              : new Date(item.checkIn ?? '').toLocaleDateString(t('date.locale'))}
           </div>
             -
           <div>
             {item.type === 'SERVICE'
               ? item.employeeFullName
-              : new Date(item.checkOut ?? '').toLocaleDateString()}
+              : new Date(item.checkOut ?? '').toLocaleDateString(t('date.locale'))}
           </div>
         </div>
+        {item.specialRequests && (<>
+          <Typography sx={{ fontSize: '15px', fontWeight: '600', mt: 1, mb: 0.2 }}>
+            {t('common.special_requests')}:
+          </Typography>
+          <Typography style={{fontSize: '14px', whiteSpace: 'pre-wrap', lineHeight: 1.2}} color="text.secondary">
+            {item.specialRequests}
+          </Typography>
+        </>)}
       </div>
 
       <Tooltip title={t('buttons.delete')}>

@@ -1,23 +1,19 @@
 import {ServiceProps} from "../available-services/AvailableServiceCard.tsx";
-import {useEffect, useState} from "react";
+import {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import {SectionCard} from "../../../theme/styled-components/SectionCard.ts";
 import ServiceSelectionCard from "./ServiceSelectionCard.tsx";
-import {ServiceDetails, SelectionAttributes, ServiceDetailsResponse} from "../../../types/service_type_attributes.ts"
-import {useDispatch} from "react-redux";
-import {addService} from "../../../redux/slices/servicesCartSlice.ts";
+import {ServiceDetails, SelectionAttributes} from "../../../types/service_type_attributes.ts"
 
-
-export type onAddToCartFunction = (serviceDetails: ServiceDetailsResponse) => void;
 
 interface Props {
-  service: ServiceProps
+  service: ServiceProps;
+  setServiceAttributes: Dispatch<SetStateAction<{desc: string | null; price: number | null;}>>;
 }
 
-function ServiceAttributeDetails({service}: Props) {
+function ServiceAttributeDetails({service, setServiceAttributes}: Props) {
   const [serviceDetails, setServiceDetails] = useState<ServiceDetails | '' | null>(null);
   const [sectionLoading, setSectionLoading] = useState(true);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     setSectionLoading(true);
@@ -30,21 +26,13 @@ function ServiceAttributeDetails({service}: Props) {
       .finally(() => setSectionLoading(false));
   }, [service.id]);
 
-  const handleAddServiceToCart: onAddToCartFunction = (serviceDetails: ServiceDetailsResponse) => {
-    console.log("Order details:", serviceDetails);
-    dispatch(addService({
-      id: service.id,
-      attributes: serviceDetails,
-    }));
-  }
-
   if (sectionLoading) return <SectionCard> <p>Loading...</p> </SectionCard>;
   if (serviceDetails === '') return null
   if (serviceDetails === null) return <SectionCard> <p>Błąd pobierania danych</p> </SectionCard>;
 
   switch (serviceDetails.type) {
     case 'SELECTION':
-      return <ServiceSelectionCard details={serviceDetails as SelectionAttributes} onAddToCart={handleAddServiceToCart} />;
+      return <ServiceSelectionCard details={serviceDetails as SelectionAttributes} setServiceAttributes={setServiceAttributes} />;
     default:
       return <SectionCard> <p>Nieobsługiwany typ usługi: {serviceDetails.type}</p> </SectionCard>;
   }

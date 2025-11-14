@@ -6,6 +6,7 @@ export type ReservationCartItem = {
   checkIn: string;
   checkOut: string;
   guestCount: number;
+  specialRequests?: string;
 };
 
 interface ReservationsCartState {

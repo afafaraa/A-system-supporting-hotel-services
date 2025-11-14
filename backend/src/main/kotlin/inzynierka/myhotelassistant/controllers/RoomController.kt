@@ -116,7 +116,7 @@ class RoomController(
     @GetMapping("/by/number/{id}")
     fun getRoomByNumber(
         @PathVariable("id") id: String,
-    ): RoomEntity = roomService.findRoomByNumber(id)
+    ): RoomWithStandardDTO = roomService.toDTO(roomService.findRoomByNumber(id))
 
     @GetMapping("/{roomNumber}/availability")
     fun checkRoomAvailability(
