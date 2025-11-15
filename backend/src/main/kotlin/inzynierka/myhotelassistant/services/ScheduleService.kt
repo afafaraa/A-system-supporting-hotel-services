@@ -122,8 +122,5 @@ class ScheduleService(
         return scheduleDateConverter.convert(schedule)
     }
 
-    fun findByGuestIdAndStatusIn(
-        guestId: String,
-        statuses: List<OrderStatus>,
-    ): List<ScheduleEntity> = scheduleRepository.findByGuestIdAndStatusIn(guestId, statuses)
+    fun findByGuestId(guestId: String): List<ScheduleEntity> = scheduleRepository.findByGuestId(guestId)
 }

@@ -35,10 +35,7 @@ interface ScheduleRepository : MongoRepository<ScheduleEntity, String> {
 
     fun findAllByServiceId(serviceId: String): List<ScheduleEntity>
 
-    fun findByGuestIdAndStatusIn(
-        guestId: String,
-        statuses: List<OrderStatus>,
-    ): List<ScheduleEntity>
+    fun findByGuestId(guestId: String): List<ScheduleEntity>
 
     fun findAllByStatusIn(statuses: List<OrderStatus>): List<ScheduleEntity>
 

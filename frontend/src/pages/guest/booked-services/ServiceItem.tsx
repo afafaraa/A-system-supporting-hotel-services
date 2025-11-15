@@ -120,9 +120,10 @@ function ServiceItem({
           <Typography
             variant="caption"
             color="text.secondary"
-            sx={{ display: 'block', mb: 1 }}
+            fontSize="13px"
+            sx={{ display: 'block', mt: 0.5 }}
           >
-            <strong>{t('pages.booked_services.specialRequests')}:</strong>{' '}
+            <strong>{t('common.special_requests')}:</strong>{' '}
             {item.specialRequests}
           </Typography>
         )}

@@ -3,6 +3,7 @@ package inzynierka.myhotelassistant.controllers
 import com.stripe.Stripe
 import com.stripe.model.checkout.Session
 import com.stripe.param.checkout.SessionCreateParams
+import inzynierka.myhotelassistant.dto.OrderRequest
 import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.services.PaymentService
 import jakarta.annotation.PostConstruct
@@ -87,17 +88,9 @@ class PaymentController(
         }
     }
 
-    data class CartItemDTO(
-        val id: String,
-        val type: String,
-        val checkIn: String? = null,
-        val checkOut: String? = null,
-        val guestCount: Int? = null,
-    )
-
     data class CheckoutRequest(
-        val cartItems: List<CartItemDTO>,
-        val currency: String = "eur",
+        val cartItems: OrderRequest,
+        val currency: String = "usd",
         val successUrl: String,
         val cancelUrl: String,
         val customerEmail: String?,

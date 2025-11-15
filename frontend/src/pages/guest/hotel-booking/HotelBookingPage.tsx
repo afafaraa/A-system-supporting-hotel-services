@@ -71,6 +71,17 @@ export default function HotelBookingPage() {
                                 <Typography fontSize="12px" color="text.secondary">
                                     {t('pages.reservations.reservationDetails', { count: reservation.guestCount, price: reservation.reservationPrice })}
                                 </Typography>
+                                {reservation.specialRequests && (
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                        fontSize="13px"
+                                        sx={{ display: 'block', mt: 0.5 }}
+                                    >
+                                        <strong>{t('common.special_requests')}:</strong>{' '}
+                                        {reservation.specialRequests}
+                                    </Typography>
+                                )}
                             </div>
 
                             <Typography

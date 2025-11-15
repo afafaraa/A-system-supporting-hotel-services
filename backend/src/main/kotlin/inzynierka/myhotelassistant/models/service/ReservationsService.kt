@@ -137,6 +137,7 @@ class ReservationsService(
                     guestCount = reservation.guestsCount,
                     reservationPrice = reservation.reservationPrice,
                     status = reservation.status.name,
+                    specialRequests = reservation.specialRequests,
                 )
             }
     }

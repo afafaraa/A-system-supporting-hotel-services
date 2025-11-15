@@ -1,7 +1,7 @@
 package inzynierka.myhotelassistant.controllers.user
 
 import inzynierka.myhotelassistant.controllers.ReservationsController
-import inzynierka.myhotelassistant.models.reservation.ReservationEntity
+import inzynierka.myhotelassistant.dto.OrderRequest
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.service.ReservationsService
 import inzynierka.myhotelassistant.models.user.UserEntity
@@ -13,13 +13,13 @@ import inzynierka.myhotelassistant.services.notifications.NotificationScheduler
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import java.security.Principal
 import java.time.LocalDateTime
 
 @RestController
@@ -32,45 +32,10 @@ class GuestController(
     private val reservationsService: ReservationsService,
     private val notificationScheduler: NotificationScheduler,
 ) {
-    data class EmployeeNameResponse(
-        val name: String,
-        val surname: String,
-    )
-
-    data class OrderServicesRequestBody(
-        val id: String,
-        val username: String,
-    )
-
-    data class OrderServicesBatchRequest(
-        val ids: List<String>,
-        val username: String,
-    )
-
-    data class ScheduleForPastAndRequestedServicesResponse(
-        val id: String,
-        val name: String,
-        val employeeId: String,
-        val employeeFullName: String,
-        val imageUrl: String,
-        val price: Double,
-        val datetime: LocalDateTime,
-        val status: OrderStatus,
-    )
-
     data class CancelOrderRequest(
         val orderId: String,
         val username: String,
     )
-
-    @GetMapping("/employee/get/id/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    fun getScheduledEmployeeNameById(
-        @PathVariable id: String,
-    ): EmployeeNameResponse? {
-        val user = userService.findByIdOrThrow(id)
-        return EmployeeNameResponse(name = user.name, surname = user.surname)
-    }
 
     @PostMapping("/order/cancel")
     @ResponseStatus(HttpStatus.OK)
@@ -81,74 +46,51 @@ class GuestController(
         orderService.cancel(user, req.orderId)
     }
 
-    @PostMapping("/order/services")
-    @ResponseStatus(HttpStatus.CREATED)
-    fun orderServicesFromSchedule(
-        @RequestBody req: OrderServicesRequestBody,
+    @PostMapping("/order/add-to-tab")
+    fun addServicesAndReservationsToTab(
+        principal: Principal,
+        @RequestBody req: OrderRequest,
     ) {
-        val guest = userService.findByUsernameOrThrow(req.username)
-        val schedule = orderService.order(guest, req.id)
-        notificationScheduler.notifyGuestOnSuccessfulOrder(schedule)
-    }
+        val guest = userService.findByUsernameOrThrow(principal.name)
 
-    @PostMapping("/order/services/add-to-tab")
-    @ResponseStatus(HttpStatus.OK)
-    fun addServicesToTab(
-        @RequestBody req: OrderServicesBatchRequest,
-    ) {
-        val guest = userService.findByUsernameOrThrow(req.username)
-        req.ids.forEach { scheduleId ->
-            orderService.order(guest, scheduleId)
+        req.schedules.forEach { (scheduleId, specialRequests) ->
+            val schedule = orderService.order(guest, scheduleId, specialRequests)
+            notificationScheduler.notifyGuestOnSuccessfulOrder(schedule)
+        }
+
+        req.reservations.forEach { reservation ->
+            val reservation =
+                reservationsService.createReservation(
+                    ReservationsController.ReservationCreateDTO(
+                        roomNumber = reservation.roomNumber,
+                        guestsCount = reservation.guestsCount,
+                        checkIn = reservation.checkIn,
+                        checkOut = reservation.checkOut,
+                        specialRequests = reservation.specialRequests,
+                        guestUsername = guest.username,
+                    ),
+                )
+            reservationsService.bindReservationToGuest(guest, reservation)
         }
     }
 
-    @PostMapping("/reservation/add-to-tab")
-    @ResponseStatus(HttpStatus.CREATED)
-    fun addReservationToTab(
-        @RequestBody req: ReservationsController.ReservationCreateDTO,
-    ) {
-        val reservation: ReservationEntity = reservationsService.createReservation(req)
-        val guest = userService.findByUsernameOrThrow(req.guestUsername)
-        reservationsService.bindReservationToGuest(guest, reservation)
-    }
+    data class ScheduleForPastAndRequestedServicesResponse(
+        val id: String,
+        val name: String,
+        val employeeId: String,
+        val employeeFullName: String,
+        val imageUrl: String?,
+        val price: Double,
+        val datetime: LocalDateTime,
+        val status: OrderStatus,
+        val specialRequests: String?,
+    )
 
-    @GetMapping("/order/get/all/requested/{username}")
+    @GetMapping("/orders")
     @ResponseStatus(HttpStatus.OK)
-    fun getAllPendingOrdersForUser(
-        @PathVariable username: String,
-    ): List<ScheduleForPastAndRequestedServicesResponse> {
-        val userId = userService.findByUsernameOrThrow(username).id!!
-        return findAllByStatusAndUserId(listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE), userId)
-    }
-
-    @GetMapping("/order/get/all/past/{username}")
-    @ResponseStatus(HttpStatus.OK)
-    fun getAllPastOrdersForUser(
-        @PathVariable username: String,
-    ): List<ScheduleForPastAndRequestedServicesResponse> {
-        val userId = userService.findByUsernameOrThrow(username).id!!
-        return findAllByStatusAndUserId(listOf(OrderStatus.COMPLETED, OrderStatus.CANCELED), userId)
-    }
-
-    @GetMapping("/order/get/all/{username}")
-    @ResponseStatus(HttpStatus.OK)
-    fun getAllOrdersForUser(
-        @PathVariable username: String,
-    ): List<ScheduleForPastAndRequestedServicesResponse> {
-        val userId = userService.findByUsernameOrThrow(username).id!!
-        return findAllByStatusAndUserId(
-            listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE, OrderStatus.COMPLETED, OrderStatus.CANCELED),
-            userId,
-        )
-    }
-
-    @GetMapping("/bill/get/{username}")
-    @ResponseStatus(HttpStatus.OK)
-    fun getBill(
-        @PathVariable username: String,
-    ): Double {
-        val guest = userService.findByUsernameOrThrow(username)
-        return guest.guestData?.bill ?: 0.0
+    fun getAllOrdersForUser(principal: Principal): List<ScheduleForPastAndRequestedServicesResponse> {
+        val userId = userService.findByUsernameOrThrow(principal.name).id!!
+        return findAllByUserId(userId)
     }
 
     @GetMapping("/management")
@@ -161,12 +103,9 @@ class GuestController(
         return userService.getAllGuests(pageable)
     }
 
-    private fun findAllByStatusAndUserId(
-        statusList: List<OrderStatus>,
-        userId: String,
-    ): List<ScheduleForPastAndRequestedServicesResponse> =
+    private fun findAllByUserId(userId: String): List<ScheduleForPastAndRequestedServicesResponse> =
         scheduleService
-            .findByGuestIdAndStatusIn(userId, statusList)
+            .findByGuestId(userId)
             .mapNotNull { scheduleItem ->
                 val employeeFullName = userService.findUserNameById(scheduleItem.employeeId)
                 val service = serviceService.getServiceDetailsById(scheduleItem.serviceId)
@@ -179,10 +118,11 @@ class GuestController(
                     service.name,
                     scheduleItem.employeeId,
                     employeeFullName,
-                    service.image ?: "",
+                    service.image,
                     service.price,
                     scheduleItem.serviceDate,
                     scheduleItem.status,
+                    scheduleItem.specialRequests,
                 )
             }
 }

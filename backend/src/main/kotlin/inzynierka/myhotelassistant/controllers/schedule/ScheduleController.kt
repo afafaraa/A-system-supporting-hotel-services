@@ -31,7 +31,7 @@ class ScheduleController(
         val name: String,
         val employeeId: String,
         val employeeFullName: String,
-        val imageUrl: String,
+        val imageUrl: String?,
         val price: Double,
         val datetime: LocalDateTime,
     )
@@ -78,7 +78,7 @@ class ScheduleController(
             service.name,
             scheduleItem.employeeId,
             assignedEmployee.name + " " + assignedEmployee.surname,
-            service.image ?: "",
+            service.image,
             service.price,
             scheduleItem.serviceDate,
         )

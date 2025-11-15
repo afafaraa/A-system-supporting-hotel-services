@@ -13,37 +13,40 @@ import ShoppingCartItem from './ShoppingCartItem.tsx';
 import { selectUserDetails } from '../../../redux/slices/userDetailsSlice.ts';
 import {
   selectServicesCart,
-  clearServicesCart, setServices,
+  clearServicesCart, setServices, removeService,
 } from '../../../redux/slices/servicesCartSlice.ts';
 import {
   selectReservationsCart,
-  clearReservationsCart, setReservations,
+  clearReservationsCart, setReservations, removeReservation,
 } from '../../../redux/slices/reservationsCartSlice.ts';
 import { axiosAuthApi } from '../../../middleware/axiosApi.ts';
-import { RoomStandard } from '../../../types/room.ts';
-import { selectUser } from '../../../redux/slices/userSlice.ts';
 import { useTranslation } from 'react-i18next';
 import { isAxiosError } from 'axios';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import useTranslationWithPrefix from "../../../locales/useTranslationWithPrefix.tsx";
 
-export type CartProps = {
+export type ServiceCartProps = {
+  type: 'SERVICE';
   id: string;
-  type: 'SERVICE' | 'RESERVATION';
-  name?: string;
-  employeeId?: string;
-  employeeFullName?: string;
+  name: string;
+  employeeId: string;
+  employeeFullName: string;
   imageUrl?: string;
-  price?: number;
-  datetime?: string;
-  standard?: RoomStandard;
-  pricePerNight?: number;
-  checkIn?: string;
-  checkOut?: string;
-  guestCount?: number;
-  roomNumber?: number;
+  price: number;
+  datetime: string | Date;
   specialRequests?: string;
-};
+}
+
+export type ReservationCartProps = {
+  type: 'RESERVATION',
+  roomNumber: string;
+  reservationPrice: number;
+  roomStandardName: string
+  checkIn: string;
+  checkOut: string;
+  guestCount: number;
+  specialRequests?: string;
+}
 
 type ShoppingCartPopupProps = {
   open: boolean;
@@ -52,7 +55,6 @@ type ShoppingCartPopupProps = {
 
 const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);
   const userDetails = useSelector(selectUserDetails);
   const servicesCart = useSelector(selectServicesCart);
   const reservationsCart = useSelector(selectReservationsCart);
@@ -60,43 +62,24 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   const { t } = useTranslation();
   const {t: tc} = useTranslationWithPrefix("pages.shopping_cart");
 
-  const [servicesCartData, setServicesCartData] = useState<CartProps[]>([]);
-  const [reservationsCartData, setReservationsCartData] = useState<CartProps[]>([]);
+  const [servicesCartData, setServicesCartData] = useState<ServiceCartProps[]>([]);
+  const [reservationsCartData, setReservationsCartData] = useState<ReservationCartProps[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const calculateReservationPrice = (
-    checkIn?: string,
-    checkOut?: string,
-    pricePerNight?: number
-  ): number => {
-    if (!checkIn || !checkOut || !pricePerNight) return 0;
-
-    const checkInDate = new Date(checkIn);
-    const checkOutDate = new Date(checkOut);
-    const nights = Math.max(
-      1,
-      Math.floor(
-        (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24)
-      )
-    );
-
-    return nights * pricePerNight;
-  };
-
   const fetchServicesData = useCallback(async () => {
-    const servicesList: CartProps[] = [];
+    const servicesList: ServiceCartProps[] = [];
     const itemsForRemoval: Set<string> = new Set<string>();
     for (const item of servicesCart) {
       try {
-        const response = await axiosAuthApi.get(
+        const response = await axiosAuthApi.get<ServiceCartProps>(
           `/schedule/get/cart/id/${item.id}`
         );
-        const cartItem: CartProps = response.data;
+        const cartItem: ServiceCartProps = response.data;
         cartItem.type = 'SERVICE';
         if (item.customPrice) cartItem.price = item.customPrice;
         if (item.specialRequests) cartItem.specialRequests = item.specialRequests;
-        if (cartItem) servicesList.push(cartItem);
+        servicesList.push(cartItem);
       } catch (e) {
         itemsForRemoval.add(item.id);
         console.error('Failed to fetch service data:', e);
@@ -108,19 +91,25 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   }, [dispatch, servicesCart]);
 
   const fetchReservationsData = useCallback(async () => {
-    const reservationsList: CartProps[] = [];
+    const reservationsList: ReservationCartProps[] = [];
     const itemsForRemoval: Set<string> = new Set<string>();
     for (const item of reservationsCart) {
       try {
-        const response = await axiosAuthApi.get(`/rooms/by/number/${item.id}`);
-        const cartItem: CartProps = response.data;
-        cartItem.id = response.data.number;
-        cartItem.checkIn = item.checkIn;
-        cartItem.checkOut = item.checkOut;
-        cartItem.guestCount = item.guestCount;
-        cartItem.type = 'RESERVATION';
-        if (item.specialRequests) cartItem.specialRequests = item.specialRequests;
-        if (cartItem) reservationsList.push(cartItem);
+        const response = await axiosAuthApi.get<{price: number, standardName: string}>(
+          `/rooms/${item.id}/for-cart`,
+          {params: {from: new Date(item.checkIn).toISOString().split('T')[0], to: new Date(item.checkOut).toISOString().split('T')[0]}}
+        );
+        const cartItem: ReservationCartProps = {
+          type: 'RESERVATION',
+          roomNumber: item.id,
+          reservationPrice: response.data.price,
+          roomStandardName: response.data.standardName,
+          checkIn: item.checkIn,
+          checkOut: item.checkOut,
+          guestCount: item.guestCount,
+          specialRequests: item.specialRequests,
+        };
+        reservationsList.push(cartItem);
       } catch (e) {
         itemsForRemoval.add(item.id);
         console.error('Failed to fetch reservation data:', e);
@@ -147,7 +136,20 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   };
 
   const totalCartItems = servicesCartData.length + reservationsCartData.length;
-  const allCartItems = useMemo(() => [...servicesCartData, ...reservationsCartData], [servicesCartData, reservationsCartData]);
+
+  const orderPayload = () => ({
+    schedules: servicesCartData.map(item => ({
+      id: item.id,
+      specialRequests: item.specialRequests
+    })),
+      reservations: reservationsCartData.map(item => ({
+      roomNumber: item.roomNumber,
+      checkIn: new Date(item.checkIn).toISOString().split('T')[0],
+      checkOut: new Date(item.checkOut).toISOString().split('T')[0],
+      guestsCount: item.guestCount,
+      specialRequests: item.specialRequests
+    })),
+  })
 
   const initiateCheckout = async () => {
     setIsProcessing(true);
@@ -159,21 +161,11 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
         return;
       }
 
-      const cartItems = allCartItems.map((item) => ({
-        id: item.id,
-        type: item.type,
-        ...(item.type === 'RESERVATION' && {
-          checkIn: item.checkIn,
-          checkOut: item.checkOut,
-          guestCount: item.guestCount,
-        }),
-      }));
-
       const response = await axiosAuthApi.post(
         '/payment/create-checkout-session',
         {
-          cartItems,
-          currency: 'eur',
+          cartItems: orderPayload(),
+          currency: 'usd',
           successUrl: `${window.location.origin}/payment/success`,
           cancelUrl: `${window.location.origin}/payment/cancel`,
           customerEmail: userDetails?.email,
@@ -197,32 +189,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
     setIsProcessing(true);
     setError(null);
     try {
-      for (const item of servicesCartData) {
-        await axiosAuthApi.post(`/guest/order/services`, {
-          id: item.id,
-          username: user?.username,
-        });
-      }
-
-      for (const item of reservationsCartData) {
-        const normalizeDate = (d?: string) => {
-          if (!d) return d;
-          const dt = new Date(d);
-          return dt.toISOString().slice(0, 10);
-        };
-
-        const payload = {
-          roomNumber: String(item.roomNumber ?? item.id),
-          checkIn: normalizeDate(item.checkIn),
-          checkOut: normalizeDate(item.checkOut),
-          guestsCount: item.guestCount ?? 1,
-          specialRequests: item.name ?? '',
-          guestUsername: user?.username,
-        };
-
-        await axiosAuthApi.post(`/guest/reservation/add-to-tab`, payload);
-      }
-
+      await axiosAuthApi.post('/guest/order/add-to-tab', orderPayload());
       clearShoppingCart();
     } catch (e) {
       if (isAxiosError(e)) {
@@ -243,24 +210,13 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   };
 
   const totalPrice = useMemo(
-    () =>
-      allCartItems.reduce((acc, curr) => {
-        if (curr.type === 'SERVICE') {
-          return acc + (curr.price ?? 0);
-        }
-        if (curr.type === 'RESERVATION') {
-          return (
-            acc +
-            calculateReservationPrice(
-              curr.checkIn,
-              curr.checkOut,
-              curr.pricePerNight
-            )
-          );
-        }
-        return acc;
-      }, 0),
-    [allCartItems]
+    () => {
+      const servicesTotal = servicesCartData
+        .reduce((acc, curr) => acc + curr.price, 0);
+      const reservationsTotal = reservationsCartData
+        .reduce((acc, curr) => acc + curr.reservationPrice, 0);
+      return servicesTotal + reservationsTotal;
+    }, [reservationsCartData, servicesCartData]
   );
 
   if (!open) return null;
@@ -338,10 +294,11 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
               {servicesCartData.map((item, index) => (
                 <ShoppingCartItem
                   key={`service-${index}`}
-                  index={index}
                   item={item}
-                  cart={servicesCartData}
-                  setCart={setServicesCartData}
+                  removeItself={() => {
+                    dispatch(removeService({id: item.id}));
+                    setServicesCartData(cart => cart.filter((c) => !(c.id === item.id)));
+                  }}
                 />
               ))}
             </>
@@ -356,10 +313,16 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
               {reservationsCartData.map((item, index) => (
                 <ShoppingCartItem
                   key={`reservation-${index}`}
-                  index={index}
                   item={item}
-                  cart={reservationsCartData}
-                  setCart={setReservationsCartData}
+                  removeItself={() => {
+                    dispatch(removeReservation({
+                      id: item.roomNumber,
+                      checkIn: item.checkIn,
+                      checkOut: item.checkOut,
+                      guestCount: item.guestCount,
+                    }));
+                    setReservationsCartData(cart => cart.filter((c) => !(c.roomNumber === item.roomNumber)));
+                  }}
                 />
               ))}
             </>

@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 
-@Document(collection = "schedule")
+@Document(collection = "schedules")
 data class ScheduleEntity(
     @Id var id: String? = null,
     var serviceId: String,

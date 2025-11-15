@@ -29,6 +29,7 @@ class OrderService(
 
         scheduledService.guestId = null
         scheduledService.status = OrderStatus.AVAILABLE
+        scheduledService.specialRequests = null
         guest.guestData?.let { data ->
             data.bill -= scheduledService.price!!
         }
@@ -39,6 +40,7 @@ class OrderService(
     fun order(
         guest: UserEntity,
         scheduleId: String,
+        specialRequests: String? = null,
     ): ScheduleEntity {
         val schedule = scheduleService.findByIdOrThrow(scheduleId)
         val service = serviceService.findByIdOrThrow(schedule.serviceId)
@@ -47,6 +49,7 @@ class OrderService(
         schedule.orderTime = LocalDateTime.now()
         schedule.status = OrderStatus.REQUESTED
         schedule.price = currentPrice
+        schedule.specialRequests = specialRequests
         guest.guestData?.let { data ->
             data.bill += schedule.price!!
         }
