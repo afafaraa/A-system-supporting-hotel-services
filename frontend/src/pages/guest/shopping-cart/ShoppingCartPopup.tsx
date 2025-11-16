@@ -162,7 +162,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
         return;
       }
 
-      const response = await axiosAuthApi.post(
+      const response = await axiosAuthApi.post<{url: string, sessionId: string}>(
         '/payment/create-checkout-session',
         {
           cartItems: orderPayload(),

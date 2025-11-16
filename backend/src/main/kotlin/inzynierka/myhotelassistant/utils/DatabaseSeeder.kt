@@ -570,14 +570,14 @@ class DatabaseSeeder(
                         variant = NotificationVariant.ALERT,
                         message = "This is a test notification.",
                         isRead = true,
-                        createdAt = LocalDateTime.of(2025, 4, 21, 14, 23, 21),
+                        createdAt = LocalDateTime.now(),
                     ),
                     NotificationEntity(
                         userId = userId,
                         title = "Another Test Failure Notification",
                         variant = NotificationVariant.FAILURE,
                         message = "This is another test notification.",
-                        createdAt = LocalDateTime.of(2025, 5, 4, 10, 9, 11),
+                        createdAt = LocalDateTime.now(),
                     ),
                     NotificationEntity(
                         userId = userId,
@@ -585,21 +585,21 @@ class DatabaseSeeder(
                         variant = NotificationVariant.NOTICE,
                         message = "Don't forget to check out tomorrow!",
                         isRead = true,
-                        createdAt = LocalDateTime.of(2024, 8, 30, 7, 30, 49),
+                        createdAt = LocalDateTime.now(),
                     ),
                     NotificationEntity(
                         userId = userId,
                         title = "Service Update",
                         variant = NotificationVariant.CONFIRMATION,
                         message = "Your room cleaning service has been scheduled.",
-                        createdAt = LocalDateTime.of(2025, 1, 7, 21, 37, 6),
+                        createdAt = LocalDateTime.now(),
                     ),
                     NotificationEntity(
                         userId = userId,
                         title = "Special Offer",
                         variant = NotificationVariant.ADVERTISEMENT,
                         message = "Enjoy a 20% discount on your next spa session!",
-                        createdAt = LocalDateTime.of(2025, 12, 17, 17, 13, 57),
+                        createdAt = LocalDateTime.now(),
                     ),
                 )
             notificationRepository.saveAll(notifications)

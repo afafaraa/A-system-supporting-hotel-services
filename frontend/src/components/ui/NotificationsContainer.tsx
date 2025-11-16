@@ -19,7 +19,9 @@ function NotificationsContainer() {
   useEffect(() => {
     axiosAuthApi.get<Notification[]>('/user/notifications')
       .then(res => {
-        setNotifications(res.data.filter(n => !n.isRead))
+        setNotifications(res.data
+          .filter(n => !n.isRead)
+          .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
       })
       .catch(err => {
         console.log("Error:", err);
