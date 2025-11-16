@@ -4,6 +4,7 @@ import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import {SectionCard} from "../../../theme/styled-components/SectionCard.ts";
 import ServiceSelectionCard from "./ServiceSelectionCard.tsx";
 import {ServiceDetails, SelectionAttributes} from "../../../types/service_type_attributes.ts"
+import {useTranslation} from "react-i18next";
 
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 function ServiceAttributeDetails({service, setServiceAttributes}: Props) {
   const [serviceDetails, setServiceDetails] = useState<ServiceDetails | '' | null>(null);
   const [sectionLoading, setSectionLoading] = useState(true);
+  const {t} = useTranslation();
 
   useEffect(() => {
     setSectionLoading(true);
@@ -34,7 +36,7 @@ function ServiceAttributeDetails({service, setServiceAttributes}: Props) {
     case 'SELECTION':
       return <ServiceSelectionCard details={serviceDetails as SelectionAttributes} setServiceAttributes={setServiceAttributes} />;
     default:
-      return <SectionCard> <p>Nieobsługiwany typ usługi: {serviceDetails.type}</p> </SectionCard>;
+      return <SectionCard> <p>{t('pages.order_service.unsupportedAttributeType')}: {serviceDetails.type}</p> </SectionCard>;
   }
 }
 

@@ -3,6 +3,7 @@ import Box from "@mui/system/Box";
 import {Button, ButtonGroup, Grid, MenuItem, Select, SelectChangeEvent, Stack, Typography} from "@mui/material";
 import {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {OptionObject, SelectionAttributes} from "../../../types/service_type_attributes.ts"
+import useTranslationWithPrefix from "../../../locales/useTranslationWithPrefix.tsx";
 
 
 interface OrderItem {
@@ -32,11 +33,12 @@ function ServiceSelectionCard({details, setServiceAttributes}: Props) {
 }
 
 const SelectionCard = ({details, setOrder}: {details: SelectionAttributes, setOrder: Dispatch<SetStateAction<OrderItem[]>>}) => {
+  const {t: tc} = useTranslationWithPrefix('pages.order_service.selection_card');
   return (
     <SectionCard>
       {Object.entries(details.options).map(([key, options]) => (
         <Box key={key} mb={2}>
-          <Typography fontSize="120%" fontWeight="bold">{key}</Typography>
+          <Typography fontSize="120%" fontWeight="bold">{tc('keys.' + key, {defaultValue: key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()})}</Typography>
           <Grid container gap={2} columns={{xs: 1, md: 2}} mt={1}>
             {options.map((option, index) => (
               <Grid key={option.label} size="grow">
@@ -64,6 +66,7 @@ const SelectionCard = ({details, setOrder}: {details: SelectionAttributes, setOr
 
 function OptionCardButtons({group, option, setOrder}: {group: string, option: OptionObject, setOrder: Dispatch<SetStateAction<OrderItem[]>>}) {
   const [quantity, setQuantity] = useState(1);
+  const {t: tc} = useTranslationWithPrefix('pages.order_service.selection_card');
 
   const handleQuantityChange = (event: SelectChangeEvent) =>
     setQuantity(parseInt(event.target.value));
@@ -84,7 +87,7 @@ function OptionCardButtons({group, option, setOrder}: {group: string, option: Op
 
   return (
     <Stack direction="row" alignItems="center" gap={1} mt={1}>
-      <Button size="small" variant="outlined" sx={{borderRadius: "12px"}} onClick={handleAddToOrder}>Dodaj do zamówienia</Button>
+      <Button size="small" variant="outlined" sx={{borderRadius: "12px"}} onClick={handleAddToOrder}>{tc("addToOrder")}</Button>
       <Select size="small" variant="outlined" type="number" value={quantity.toString()} onChange={handleQuantityChange} sx={{fontSize: "0.8125rem", height: "32px"}}>
         {Array.from({length: 10}, (_, i) => i + 1).map(num => <MenuItem key={num} value={num}>{num}</MenuItem>)}
       </Select>
@@ -97,6 +100,8 @@ function OptionCardSingleButton({group, option, setOrder}: {
   option: OptionObject;
   setOrder: Dispatch<SetStateAction<OrderItem[]>>
 }) {
+  const {t: tc} = useTranslationWithPrefix('pages.order_service.selection_card');
+
   const handleAddToOrder = () => {
     setOrder(prev => {
       const itemIndex = prev.findIndex(item => item.option.label === option.label);
@@ -106,12 +111,13 @@ function OptionCardSingleButton({group, option, setOrder}: {
   }
   return (
     <Button size="small" variant="outlined" onClick={handleAddToOrder} sx={{borderRadius: "12px", mt: 1}}>
-      Dodaj do zamówienia
+      {tc("addToOrder")}
     </Button>
   );
 }
 
 const OrderSummary = ({details, order, setOrder}: {details: SelectionAttributes, order: OrderItem[], setOrder: Dispatch<SetStateAction<OrderItem[]>>}) => {
+  const {t: tc} = useTranslationWithPrefix('pages.order_service.selection_card');
 
   const handleAddQuantityButton = (option: OptionObject, value: number) => {
     setOrder(prev => {
@@ -129,7 +135,7 @@ const OrderSummary = ({details, order, setOrder}: {details: SelectionAttributes,
 
   return (
     <SectionCard mt="inherit">
-      {order.length === 0 ? <Typography fontSize="110%">Brak wybranych opcji</Typography> : (
+      {order.length === 0 ? <Typography fontSize="110%">{tc("emptySelection")}.</Typography> : (
         <Stack gap={2}>
           {order.map((item, index) => (
             <Box key={index} display="flex" justifyContent="space-between" alignItems="center">
@@ -151,7 +157,7 @@ const OrderSummary = ({details, order, setOrder}: {details: SelectionAttributes,
             </Box>
           ))}
           <Box display="flex" justifyContent="space-between" alignItems="center" pt={2} borderTop="1px solid" borderColor="divider">
-            <Typography fontSize="120%" fontWeight="bold">Razem:</Typography>
+            <Typography fontSize="120%" fontWeight="bold">{tc("orderPrice")}:</Typography>
             <Typography fontSize="120%" fontWeight="bold">
               {order.reduce((sum, item) => sum + item.option.price * item.quantity, 0).toFixed(2)} $
             </Typography>

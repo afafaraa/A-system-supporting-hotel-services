@@ -181,6 +181,7 @@
       "reservations": "Reservations"
     },
     "order_service": {
+      "goBack": "Go back to services",
       "availability": "Availability",
       "available": "Available",
       "unavailable": "Unavailable",
@@ -198,7 +199,18 @@
       "orderDetails": "Order Details",
       "serviceReviews": "Service Reviews",
       "serviceReviewsSubtitle": "See what other guests are saying about this service",
-      "noReviews": "No reviews for this service yet."
+      "noReviews": "No reviews for this service yet.",
+      "unsupportedAttributeType": "Unsupported service type",
+      "selection_card": {
+        "keys": {
+          "soups": "Soups",
+          "main_courses": "Main Courses",
+          "desserts": "Desserts"
+        },
+        "addToOrder": "Add to order",
+        "emptySelection": "No items selected",
+        "orderPrice": "Order price"
+      }
     },
     "reservations": {
       "myReservations": "My Room Reservations",

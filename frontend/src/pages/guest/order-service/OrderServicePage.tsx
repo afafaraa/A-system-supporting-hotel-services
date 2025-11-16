@@ -103,7 +103,7 @@ function OrderServicePage() {
 
   return (
     <main style={{ width: '100%' }}>
-      <AppLink to="/guest/available" display="inline-block" color="text.primary" mb={1}>{"< Go back"}</AppLink>
+      <AppLink to="/guest/available" display="inline-block" color="text.primary" mb={1}>{'< ' + t('pages.order_service.goBack')}</AppLink>
       <Stack flexDirection={{xs: "column", lg: "row"}} gap={3} alignItems="flex-start">
         <Stack flexDirection="column" gap="inherit" flexGrow={1} width="100%">
           <ServiceDescription
