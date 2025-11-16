@@ -53,8 +53,8 @@ class GuestController(
     ) {
         val guest = userService.findByUsernameOrThrow(principal.name)
 
-        req.schedules.forEach { (scheduleId, specialRequests) ->
-            val schedule = orderService.order(guest, scheduleId, specialRequests)
+        req.schedules.forEach { (scheduleId, specialRequests, customPrice) ->
+            val schedule = orderService.order(guest, scheduleId, specialRequests, customPrice)
             notificationScheduler.notifyGuestOnSuccessfulOrder(schedule)
         }
 

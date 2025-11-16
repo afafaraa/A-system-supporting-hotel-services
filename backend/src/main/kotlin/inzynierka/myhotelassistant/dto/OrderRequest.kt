@@ -9,6 +9,7 @@ data class OrderRequest(
     data class ScheduleIdWithSpecialRequests(
         val id: String,
         val specialRequests: String?,
+        val customPrice: Double?,
     )
 
     data class NewReservationRequest(

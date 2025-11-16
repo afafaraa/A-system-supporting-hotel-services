@@ -182,8 +182,8 @@
     },
     "order_service": {
       "availability": "Dostępność",
-      "available": "Dostępne",
-      "unavailable": "Niedostępne",
+      "available": "Dostępna",
+      "unavailable": "Niedostępna",
       "price": "Cena",
       "duration": "Czas trwania",
       "addToCart": "Dodaj do koszyka",
@@ -194,7 +194,11 @@
       "selectTime": "Wybierz godzinę",
       "specialRequests": "Specjalne życzenia",
       "noSlotsAvailable": "Brak dostępnych terminów",
-      "addedToCartMessage": "Wybrana usługa została pomyślnie dodana do koszyka"
+      "addedToCartMessage": "Wybrana usługa została pomyślnie dodana do koszyka",
+      "orderDetails": "Szczegóły zamówienia",
+      "serviceReviews": "Opinie o usłudze",
+      "serviceReviewsSubtitle": "Zobacz, co inni goście mówią o tej usłudze",
+      "noReviews": "Brak opinii o tej usłudze."
     },
     "reservations": {
       "myReservations": "Moje rezerwacje pokoi",

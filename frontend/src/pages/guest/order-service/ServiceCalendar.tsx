@@ -114,7 +114,7 @@ function ServiceCalendar({
 
           {serviceAttributeDesc && (<>
             <Typography fontWeight={600} mt={3} mb={1}>
-              Szczegóły zamówienia
+              {t('pages.order_service.orderDetails')}
             </Typography>
             <TextField
               multiline={true}

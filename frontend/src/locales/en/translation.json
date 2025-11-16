@@ -194,7 +194,11 @@
       "selectTime": "Select time",
       "specialRequests": "Special Requests",
       "noSlotsAvailable": "No slots available",
-      "addedToCartMessage": "Selected service was successfully added to the cart"
+      "addedToCartMessage": "Selected service was successfully added to the cart",
+      "orderDetails": "Order Details",
+      "serviceReviews": "Service Reviews",
+      "serviceReviewsSubtitle": "See what other guests are saying about this service",
+      "noReviews": "No reviews for this service yet."
     },
     "reservations": {
       "myReservations": "My Room Reservations",

@@ -11,6 +11,7 @@ import { ReservationGuest, Room } from '../../../types/room.ts';
 import ReservationDialog from './ReservationDialog.tsx';
 import { useTranslation } from 'react-i18next';
 import {useLocation} from "react-router-dom";
+import {formatDateRange} from "../../../utils/dateFormatting.ts";
 
 type LocationState = { selectedRoom?: Room };
 
@@ -26,12 +27,13 @@ export default function HotelBookingPage() {
     const [selectedRoom, setSelectedRoom] = useState<Room | null>(selectedRoomFromNav);
 
     useEffect(() => {
-        axiosApi.get('/rooms')
+        axiosApi.get<Room[]>('/rooms')
             .then(res => setRooms(res.data))
             .finally(() => setLoading(false));
 
-        axiosAuthApi.get('/reservations/mine')
-            .then(res => setReservations(res.data))
+        axiosAuthApi.get<ReservationGuest[]>('/reservations/mine')
+            .then(res => setReservations(res.data
+              .sort((r1, r2) => new Date(r1.checkIn).getTime() - new Date(r2.checkIn).getTime())))
             .finally(() => setLoadingReservations(false));
     }, []);
 
@@ -66,10 +68,10 @@ export default function HotelBookingPage() {
                                     Room {reservation.room.standard.name} - Number {reservation.room.number}
                                 </Typography>
                                 <Typography fontSize="12px" color="text.secondary">
-                                    {new Date(reservation.checkIn).toLocaleDateString()} – {new Date(reservation.checkOut).toLocaleDateString()}
+                                    {formatDateRange(reservation.checkIn, reservation.checkOut)}
                                 </Typography>
                                 <Typography fontSize="12px" color="text.secondary">
-                                    {t('pages.reservations.reservationDetails', { count: reservation.guestCount, price: reservation.reservationPrice })}
+                                    {t('pages.reservations.reservationDetails', { count: reservation.guestCount, price: reservation.reservationPrice.toFixed(2) })}
                                 </Typography>
                                 {reservation.specialRequests && (
                                     <Typography

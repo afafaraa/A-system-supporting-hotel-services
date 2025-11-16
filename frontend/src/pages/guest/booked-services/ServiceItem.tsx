@@ -138,7 +138,7 @@ function ServiceItem({
             fontWeight={700}
             color={theme.palette.primary.main}
           >
-            {item.price}$
+            {item.price.toFixed(2)}$
           </Typography>
           {item.status === 'COMPLETED' && (
             <Button

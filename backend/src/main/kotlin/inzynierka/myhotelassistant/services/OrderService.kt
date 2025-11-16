@@ -41,10 +41,11 @@ class OrderService(
         guest: UserEntity,
         scheduleId: String,
         specialRequests: String? = null,
+        customPrice: Double? = null,
     ): ScheduleEntity {
         val schedule = scheduleService.findByIdOrThrow(scheduleId)
         val service = serviceService.findByIdOrThrow(schedule.serviceId)
-        val currentPrice = service.price
+        val currentPrice = if (customPrice != null && service.price == 0.0) customPrice else service.price
         schedule.guestId = guest.id
         schedule.orderTime = LocalDateTime.now()
         schedule.status = OrderStatus.REQUESTED

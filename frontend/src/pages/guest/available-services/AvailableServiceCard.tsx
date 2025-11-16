@@ -131,7 +131,7 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
             }}
           >
             <Box sx={{ fontWeight: 'bold', color: theme.palette.primary.main }}>
-              {service.price.toFixed(2)}$
+              {service.price == 0.0 ? '— ' : service.price.toFixed(2)}$
             </Box>
 
             <Box

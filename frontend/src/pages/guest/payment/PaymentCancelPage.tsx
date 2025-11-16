@@ -24,10 +24,10 @@ const PaymentCancelPage = () => {
         Your payment was cancelled. Your cart items are still saved.
       </Typography>
       <Box sx={{ display: 'flex', gap: 2 }}>
-        <Button variant="contained" onClick={() => navigate('/guest/dashboard')}>
+        <Button variant="contained" onClick={() => navigate("/guest")}>
           Go to Dashboard
         </Button>
-        <Button variant="outlined" onClick={() => navigate('/')}>
+        <Button variant="outlined" onClick={() => navigate('/home')}>
           Back to Home
         </Button>
       </Box>

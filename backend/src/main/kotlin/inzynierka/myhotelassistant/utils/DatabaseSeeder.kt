@@ -40,7 +40,6 @@ import java.time.temporal.ChronoUnit
 import kotlin.collections.forEach
 import kotlin.jvm.optionals.getOrNull
 import kotlin.math.max
-import kotlin.math.roundToInt
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
@@ -448,7 +447,7 @@ class DatabaseSeeder(
                     ServiceEntity(
                         name = serviceData.name,
                         description = serviceData.description,
-                        price = (5 + random.nextDouble(5.0, 50.0)).let { (it * 100).roundToInt() / 100.0 },
+                        price = serviceData.price,
                         type = serviceData.serviceType,
                         attributes = serviceData.attributes,
                         disabled = false,
@@ -652,6 +651,7 @@ class DatabaseSeeder(
         val description: String,
         val imageUrl: String,
         val serviceType: ServiceType,
+        val price: Double = 0.0,
         val attributes: ServiceTypeAttributes? = null,
     )
 
@@ -662,111 +662,122 @@ class DatabaseSeeder(
                 "Order delicious meals and beverages from our extensive menu, delivered straight to your room.",
                 "https://i.pinimg.com/1200x/b5/1e/c0/b51ec055f32d175f1c1ae0db5cdaf4d0.jpg",
                 ServiceType.SELECTION,
-                ServiceTypeAttributes.Selection(
-                    multipleSelection = true,
-                    options =
-                        linkedMapOf(
-                            "soups" to
-                                listOf(
-                                    ServiceTypeAttributes.OptionObject(
-                                        label = "Tomato Soup",
-                                        description = "Fresh tomatoes blended into a creamy soup.",
-                                        price = 5.99,
-                                        image = "https://i.pinimg.com/1200x/dc/88/5e/dc885e424e2cc36080e3ffaee09b6dfb.jpg",
+                price = 0.0,
+                attributes =
+                    ServiceTypeAttributes.Selection(
+                        multipleSelection = true,
+                        options =
+                            linkedMapOf(
+                                "soups" to
+                                    listOf(
+                                        ServiceTypeAttributes.OptionObject(
+                                            label = "Tomato Soup",
+                                            description = "Fresh tomatoes blended into a creamy soup.",
+                                            price = 5.99,
+                                            image = "https://i.pinimg.com/1200x/dc/88/5e/dc885e424e2cc36080e3ffaee09b6dfb.jpg",
+                                        ),
+                                        ServiceTypeAttributes.OptionObject(
+                                            label = "Chicken Noodle Soup",
+                                            description = "Hearty chicken broth with noodles and vegetables.",
+                                            price = 6.99,
+                                            image = "https://i.pinimg.com/1200x/22/80/7c/22807cd7d1f29e5894b5ca68a557a8c1.jpg",
+                                        ),
                                     ),
-                                    ServiceTypeAttributes.OptionObject(
-                                        label = "Chicken Noodle Soup",
-                                        description = "Hearty chicken broth with noodles and vegetables.",
-                                        price = 6.99,
-                                        image = "https://i.pinimg.com/1200x/22/80/7c/22807cd7d1f29e5894b5ca68a557a8c1.jpg",
+                                "main_courses" to
+                                    listOf(
+                                        ServiceTypeAttributes.OptionObject(
+                                            label = "Grilled Salmon",
+                                            description = "Fresh salmon fillet grilled to perfection, served with vegetables.",
+                                            price = 15.99,
+                                            image = "https://i.pinimg.com/1200x/a8/ac/21/a8ac21fd838e87e55e23589a826ecfff.jpg",
+                                        ),
+                                        ServiceTypeAttributes.OptionObject(
+                                            label = "Steak",
+                                            description = "Juicy steak cooked to your liking, served with fries and salad.",
+                                            price = 18.99,
+                                            image = "https://i.pinimg.com/736x/fa/74/a1/fa74a1051787c3d9ce707215be6eedd8.jpg",
+                                        ),
                                     ),
-                                ),
-                            "main_courses" to
-                                listOf(
-                                    ServiceTypeAttributes.OptionObject(
-                                        label = "Grilled Salmon",
-                                        description = "Fresh salmon fillet grilled to perfection, served with vegetables.",
-                                        price = 15.99,
-                                        image = "https://i.pinimg.com/1200x/a8/ac/21/a8ac21fd838e87e55e23589a826ecfff.jpg",
+                                "desserts" to
+                                    listOf(
+                                        ServiceTypeAttributes.OptionObject(
+                                            label = "Cheesecake",
+                                            description = "Creamy cheesecake with a graham cracker crust.",
+                                            price = 6.49,
+                                            image = "https://i.pinimg.com/736x/93/09/62/930962eed0b30e9e861d5e097dfdfd14.jpg",
+                                        ),
+                                        ServiceTypeAttributes.OptionObject(
+                                            label = "Chocolate Lava Cake",
+                                            description = "Warm chocolate cake with a gooey center, served with vanilla ice cream.",
+                                            price = 6.99,
+                                            image = "https://i.pinimg.com/736x/ef/bc/8e/efbc8e27d543d6fa0c0559967c104896.jpg",
+                                        ),
                                     ),
-                                    ServiceTypeAttributes.OptionObject(
-                                        label = "Steak",
-                                        description = "Juicy steak cooked to your liking, served with fries and salad.",
-                                        price = 18.99,
-                                        image = "https://i.pinimg.com/736x/fa/74/a1/fa74a1051787c3d9ce707215be6eedd8.jpg",
-                                    ),
-                                ),
-                            "desserts" to
-                                listOf(
-                                    ServiceTypeAttributes.OptionObject(
-                                        label = "Cheesecake",
-                                        description = "Creamy cheesecake with a graham cracker crust.",
-                                        price = 6.49,
-                                        image = "https://i.pinimg.com/736x/93/09/62/930962eed0b30e9e861d5e097dfdfd14.jpg",
-                                    ),
-                                    ServiceTypeAttributes.OptionObject(
-                                        label = "Chocolate Lava Cake",
-                                        description = "Warm chocolate cake with a gooey center, served with vanilla ice cream.",
-                                        price = 6.99,
-                                        image = "https://i.pinimg.com/736x/ef/bc/8e/efbc8e27d543d6fa0c0559967c104896.jpg",
-                                    ),
-                                ),
-                        ),
-                ),
+                            ),
+                    ),
             ),
             ServiceData(
                 "Room cleaning",
                 "Thorough cleaning of your room, including dusting, vacuuming, and sanitizing surfaces.",
                 "https://i.pinimg.com/736x/b0/9b/77/b09b77d8e801fac4a0d2baa99dbff57b.jpg",
                 ServiceType.GENERAL_SERVICE,
+                price = 11.90,
             ),
             ServiceData(
                 "Laundry",
                 "Professional washing, drying, and folding of your clothes using eco-friendly detergents.",
                 "https://i.pinimg.com/736x/9d/42/6d/9d426da81011154cfa1e7aa01782c1ca.jpg",
                 ServiceType.GENERAL_SERVICE,
+                price = 10.0,
             ),
             ServiceData(
                 "Spa access",
                 "Relax in our luxury spa with sauna, jacuzzi, and massage services.",
                 "https://i.pinimg.com/736x/9f/88/01/9f880100ad711d2173157e9c9452ec19.jpg",
                 ServiceType.PLACE_RESERVATION,
+                price = 42.50,
             ),
             ServiceData(
                 "Gym session",
                 "Access to a fully equipped fitness center with personal trainers available.",
                 "https://i.pinimg.com/736x/3f/1b/c7/3f1bc780ba6582314b5e71b7a46efe1e.jpg",
                 ServiceType.PLACE_RESERVATION,
+                price = 25.0,
             ),
             ServiceData(
                 "Airport shuttle",
                 "Convenient transport to and from the airport with comfortable seating and AC.",
                 "https://i.pinimg.com/736x/69/56/cb/6956cbcb567a3206dd01d2e00848d21a.jpg",
                 ServiceType.GENERAL_SERVICE,
+                price = 15.0,
             ),
             ServiceData(
                 "Breakfast delivery",
                 "Enjoy a fresh breakfast delivered straight to your room every morning.",
                 "https://i.pinimg.com/736x/4a/d0/c7/4ad0c71087dfaa177127736d6ff65898.jpg",
                 ServiceType.GENERAL_SERVICE,
+                price = 15.0,
             ),
             ServiceData(
                 "City tour",
                 "Guided tour of the city's main attractions, history, and local culture.",
                 "https://i.pinimg.com/736x/cb/ba/bb/cbbabb1bd63a761bad5fe0db8db7465c.jpg",
                 ServiceType.GENERAL_SERVICE,
+                price = 80.0,
             ),
             ServiceData(
                 "Valet parking",
                 "Fast and secure valet parking service available 24/7.",
                 "https://i.pinimg.com/736x/4b/4a/a6/4b4aa6644b4e9db0d14d202917b18c1b.jpg",
                 ServiceType.GENERAL_SERVICE,
+                price = 5.0,
             ),
             ServiceData(
                 "Tennis court",
                 "Access to our outdoor tennis court, including equipment rental.",
                 "https://i.pinimg.com/736x/f4/4c/44/f44c44e8fa684046a1133ad6ef97b93f.jpg",
                 ServiceType.PLACE_RESERVATION,
+                price = 12.0,
             ),
         )
 }

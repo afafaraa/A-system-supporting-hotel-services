@@ -140,7 +140,8 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   const orderPayload = () => ({
     schedules: servicesCartData.map(item => ({
       id: item.id,
-      specialRequests: item.specialRequests
+      specialRequests: item.specialRequests,
+      customPrice: item.price,
     })),
       reservations: reservationsCartData.map(item => ({
       roomNumber: item.roomNumber,

@@ -88,7 +88,7 @@ function ServiceDescription({
             >
               {t('pages.order_service.price')}
             </p>
-            <p style={{ fontWeight: 600 }}>{service.price}</p>
+            <p style={{ fontWeight: 600 }}>{service.price === 0.0 ? '—' : service.price.toFixed(2)}</p>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center' }}>

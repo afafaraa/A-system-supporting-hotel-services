@@ -12,6 +12,7 @@ import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import {useTranslation} from "react-i18next";
+import ServiceReviews from "./ServiceReviews.tsx";
 
 export type OrderServiceProps = {
   id: string;
@@ -114,6 +115,7 @@ function OrderServicePage() {
             service={service}
             setServiceAttributes={setServiceAttributes}
           />
+          <ServiceReviews ratings={service.rating}/>
         </Stack>
         <ServiceCalendar
           selectedDate={selectedDate}
