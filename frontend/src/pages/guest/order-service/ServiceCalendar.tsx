@@ -8,10 +8,13 @@ import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { OrderServiceProps } from './OrderServicePage.tsx';
 import { useTranslation } from 'react-i18next';
-import {addDays} from "date-fns";
+import {addDays, min} from "date-fns";
 import {getDateFnsLocale} from "../../../locales/i18n.ts";
 import {SectionCard} from "../../../theme/styled-components/SectionCard.ts";
 import Box from "@mui/system/Box";
+import {selectUserDetails} from "../../../redux/slices/userDetailsSlice.ts";
+import {useSelector} from "react-redux";
+import {useMemo} from "react";
 
 function ServiceCalendar({
   selectedDate,
@@ -35,6 +38,15 @@ function ServiceCalendar({
   setSpecialRequests: (value: string | null) => void;
 }) {
   const { t } = useTranslation();
+  const userDetails = useSelector(selectUserDetails)
+
+  const maxDateForward = useMemo(() => {
+    const guestCheckout = userDetails?.guestData?.currentReservation.checkOut;
+    const defaultMaxDate = addDays(new Date(), 30);
+    return guestCheckout
+      ? min([defaultMaxDate, new Date(guestCheckout)])
+      : defaultMaxDate;
+  }, [userDetails?.guestData?.currentReservation.checkOut])
 
   const minAllowedTime = new Date();
   minAllowedTime.setHours(minAllowedTime.getHours() + 2);
@@ -60,7 +72,7 @@ function ServiceCalendar({
               value={selectedDate}
               onChange={(newDate: Date | null) => handleDateChange(newDate)}
               disablePast
-              maxDate={addDays(new Date(), 30)}
+              maxDate={maxDateForward}
               sx={{
                 border: theme => `1px solid ${theme.palette.divider}`,
                 borderRadius: '12px',

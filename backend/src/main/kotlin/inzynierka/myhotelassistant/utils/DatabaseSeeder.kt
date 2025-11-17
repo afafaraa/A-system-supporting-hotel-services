@@ -8,6 +8,7 @@ import inzynierka.myhotelassistant.models.room.RoomAmenity
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.models.room.RoomStandardEntity
 import inzynierka.myhotelassistant.models.room.RoomStatus
+import inzynierka.myhotelassistant.models.schedule.CancellationReason
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.service.RatingEntity
 import inzynierka.myhotelassistant.models.service.ReservationsService
@@ -25,6 +26,7 @@ import inzynierka.myhotelassistant.repositories.RatingRepository
 import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.repositories.RoomStandardRepository
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
+import inzynierka.myhotelassistant.repositories.ServiceRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
 import inzynierka.myhotelassistant.services.RoomService
 import inzynierka.myhotelassistant.services.ServiceService
@@ -39,8 +41,9 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.collections.forEach
 import kotlin.jvm.optionals.getOrNull
-import kotlin.math.max
+import kotlin.math.min
 import kotlin.random.Random
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.times
@@ -59,6 +62,7 @@ class DatabaseSeeder(
     private val reservationsService: ReservationsService,
     roomStandardRepository: RoomStandardRepository,
     private val roomService: RoomService,
+    private val serviceRepository: ServiceRepository,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val standardRoomStandard =
@@ -439,7 +443,7 @@ class DatabaseSeeder(
                             WeekdayHour(
                                 day = day,
                                 startHour = startHour,
-                                endHour = startHour + random.nextInt(4, 10),
+                                endHour = startHour + random.nextInt(6, 10),
                             )
                         }.toMutableList()
 
@@ -462,60 +466,82 @@ class DatabaseSeeder(
         }
     }
 
+    private fun <T> MutableSet<T>.popRandom(n: Int): List<T> {
+        val result = mutableListOf<T>()
+        repeat(min(n, this.size)) {
+            val element = this.random()
+            this.remove(element)
+            result += element
+        }
+        return result
+    }
+
+    data class DurationAndPrice(
+        val duration: Duration,
+        val price: Double,
+    )
+
     fun addOrders() {
-        val schedules = scheduleRepository.findAll()
+        val services = serviceRepository.findAll()
+        val schedules =
+            scheduleRepository
+                .findAllByStatusIn(listOf(OrderStatus.AVAILABLE))
+                .filter { it.guestId == null } // just in case
         val guests = userRepo.findByRole(Role.GUEST)
         if (schedules.isEmpty() || guests.isEmpty()) return
+        val serviceDetails = services.associate { it.id to DurationAndPrice(it.duration, it.price) }
 
         val now = LocalDateTime.now()
         val requestedStatuses = listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE)
         val pastStatuses = listOf(OrderStatus.COMPLETED, OrderStatus.CANCELED)
 
-        val availableSchedules = schedules.filter { it.guestId == null }
-        val pastSchedules = availableSchedules.filter { it.serviceDate.isBefore(now) }.shuffled().toMutableList()
-        val futureSchedules = availableSchedules.filter { !it.serviceDate.isBefore(now) }.shuffled().toMutableList()
+        val pastSchedules =
+            schedules
+                .filter {
+                    val serviceDuration = serviceDetails[it.serviceId]?.duration?.inWholeMinutes ?: 0L
+                    val serviceEndDate = it.serviceDate.plusMinutes(serviceDuration)
+                    serviceEndDate.isBefore(now)
+                }.toMutableSet()
+        val futureSchedules = schedules.filter { !pastSchedules.contains(it) }.toMutableSet()
 
         for (guest in guests) {
             if (pastSchedules.isEmpty() && futureSchedules.isEmpty()) break
 
-            val requestedCount = if (futureSchedules.isEmpty()) 0 else Random.nextInt(15, 30)
-            var schedules = futureSchedules.takeLast(requestedCount)
-            futureSchedules.subList(max(0, schedules.size - requestedCount), schedules.size).clear()
-
-            schedules.forEach { schedule ->
+            val futureSchedulesFragment = futureSchedules.popRandom(Random.nextInt(15, 30))
+            futureSchedulesFragment.forEach { schedule ->
                 schedule.status = requestedStatuses.random()
                 schedule.guestId = guest.id
                 schedule.orderTime = now.minusHours(Random.nextLong(1, 48))
-                val service = serviceService.findByIdOrThrow(schedule.serviceId)
-                schedule.price = service.price
-                if (Random.nextInt(0, 10) == 0) {
+                val servicePrice = serviceDetails[schedule.serviceId]?.price ?: 0.0
+                schedule.price = if (servicePrice != 0.0) servicePrice else ((70..300).random() / 10.0)
+                if (Random.nextInt(0, 10) < 2) {
                     schedule.specialRequests = "Example special request for particular service. Request generated randomly."
                 }
                 guest.guestData?.let { data -> data.bill += schedule.price!! }
-                scheduleRepository.save(schedule)
             }
+            scheduleRepository.saveAll(futureSchedulesFragment)
 
-            val pastCount = if (pastSchedules.isEmpty()) 0 else Random.nextInt(10, 20)
-            schedules = pastSchedules.takeLast(pastCount)
-            pastSchedules.subList(max(0, pastSchedules.size - pastCount), pastSchedules.size).clear()
-
-            schedules.forEach { schedule ->
+            val pastSchedulesFragment = pastSchedules.popRandom(Random.nextInt(10, 20))
+            pastSchedulesFragment.forEach { schedule ->
                 schedule.status = pastStatuses.random()
                 schedule.guestId = guest.id
                 schedule.orderTime = schedule.serviceDate.minusHours(Random.nextLong(1, 48))
-                val service = serviceService.findByIdOrThrow(schedule.serviceId)
-                schedule.price = service.price
+                val servicePrice = serviceDetails[schedule.serviceId]?.price ?: 0.0
+                schedule.price = if (servicePrice != 0.0) servicePrice else ((70..300).random() / 10.0)
                 if (schedule.status == OrderStatus.COMPLETED) {
                     guest.guestData?.let { data -> data.bill += schedule.price!! }
+                } else if (schedule.status == OrderStatus.CANCELED) {
+                    schedule.cancellationReason = CancellationReason.entries.random()
                 }
-                scheduleRepository.save(schedule)
             }
+            scheduleRepository.saveAll(pastSchedulesFragment)
 
             userRepo.save(guest)
         }
     }
 
     private fun addRatings() {
+        val ratingWeights = listOf(1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5)
         val currentTime: Long = System.currentTimeMillis()
         val random = Random(currentTime)
         val pastStatuses = listOf(OrderStatus.COMPLETED, OrderStatus.CANCELED)
@@ -523,7 +549,7 @@ class DatabaseSeeder(
         val ratings =
             schedules
                 .filter { it.guestId != null } // for only ordered schedules (should have guestId)
-                .filter { random.nextInt(0, 5) == 0 } // 20% chance of schedule rating
+                .filter { random.nextInt(0, 10) < 4 } // 40% chance of schedule rating
                 .map {
                     RatingEntity(
                         serviceId = it.serviceId,
@@ -531,7 +557,7 @@ class DatabaseSeeder(
                         employeeId = it.employeeId,
                         guestId = it.guestId!!,
                         fullName = userRepo.findById(it.guestId!!).getOrNull()?.let { user -> user.name + " " + user.surname } ?: "Unknown",
-                        rating = random.nextInt(1, 5),
+                        rating = ratingWeights.random(),
                         comment = "Example comment for particular service. Rating generated randomly.",
                     )
                 }
@@ -612,9 +638,9 @@ class DatabaseSeeder(
     private fun createReservations() {
         val guests = userRepo.findByRole(Role.GUEST)
         val rooms = roomRepo.findAll()
+        val now = LocalDate.now()
         repeat(4) {
             guests.forEach { guest ->
-                val now = LocalDate.now()
                 val checkIn = now.plusDays(Random.nextInt(-4, 2).toLong())
                 val checkOut = checkIn.plusDays(Random.nextInt(1, 4).toLong())
                 val room = rooms.shuffled().find { room -> reservationsService.isRoomAvailable(room.number, checkIn, checkOut) }

@@ -16,7 +16,6 @@ interface EmployeeData {
 }
 
 interface GuestData {
-  checkOutDate: string,
   currentReservation: {
     id: string,
     roomNumber: string,

@@ -9,7 +9,6 @@ import {
   FormControlLabel,
   Box,
   Typography,
-  Paper,
   CircularProgress,
   Grid,
   FilledInputProps
@@ -325,26 +324,32 @@ function ServiceFormModal({ open, initial, onClose, onSaved }: Props) {
             {tc("icon")}
           </Typography>
           <Box display="flex" alignItems="center" gap={2} mb={1}>
-            <Paper
-              sx={{
-                p: 1,
-                borderRadius: 2,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                bgcolor: 'primary.light',
-                width: 60,
-                height: 60,
-                overflow: 'hidden',
-                boxShadow: 0,
-              }}
-            >
-              {form.type == 'GENERAL_SERVICE' ? (
-                <MeetingRoom color="primary" fontSize="large" />
-              ) : (
-                <RoomService color="primary" fontSize="large" />
-              )}
-            </Paper>
+            {form.image ?
+              <img src={form.image} alt={form.name + " image"}
+                   style={{width: 60, height: 60, objectFit: "cover", borderRadius: 10, flexShrink: 0}}
+              />
+              :
+              <Box
+                sx={{
+                  p: 1,
+                  borderRadius: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  bgcolor: 'primary.light',
+                  width: 60,
+                  height: 60,
+                  overflow: 'hidden',
+                  flexShrink: 0,
+                }}
+              >
+                {form.type == 'GENERAL_SERVICE' ? (
+                  <MeetingRoom color="primary" fontSize="large" />
+                ) : (
+                  <RoomService color="primary" fontSize="large" />
+                )}
+              </Box>
+            }
 
             <Box
               onDrop={handleDrop}

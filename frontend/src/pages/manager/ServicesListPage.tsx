@@ -19,8 +19,6 @@ import {
   Edit,
   DeleteOutline,
   Search,
-  MeetingRoom,
-  RoomService,
 } from "@mui/icons-material";
 import RoomServiceOutlinedIcon from '@mui/icons-material/RoomServiceOutlined';
 import ServiceFormModal from "./modals/ServiceFormModal";
@@ -30,6 +28,7 @@ import { useTranslation } from "react-i18next";
 import { SectionCard } from "../../theme/styled-components/SectionCard";
 import { ServiceCard } from "../../theme/styled-components/ServiceCard";
 import SectionTitle from "../../components/ui/SectionTitle.tsx";
+import ServiceIcon from "../../components/ui/ServiceIcon.tsx";
 
 function ServicesListPage() {
   const { t } = useTranslation();
@@ -196,34 +195,14 @@ function ServicesListPage() {
       {filteredServices.map((s) => (
         <ServiceCard key={s.id}>
           <Box display="flex" alignItems="center" gap={2}>
-            <Box
-              sx={{
-                p: 1,
-                borderRadius: 2,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                bgcolor: "primary.light",
-                width: 48,
-                height: 48,
-                overflow: "hidden",
-                flexShrink: 0,
-              }}
-            >
-              {s.type == "GENERAL_SERVICE" ? (
-                <MeetingRoom color="primary" fontSize="large" />
-              ) : (
-                <RoomService color="primary" fontSize="large" />
-              )}
-            </Box>
-            <Box>
+            <ServiceIcon imageUrl={s.image} imageAlt={s.name + " image"}>
               <Typography fontWeight="bold">{s.name}</Typography>
               <Typography variant="body2" color="text.secondary">
                 {s.description}
               </Typography>
               <Box display="flex" alignItems="center" gap={2} mt={0.5}>
                 <Typography variant="body2" fontWeight="bold">
-                  {s.price}$
+                  {s.price == 0.0 ? '— ' : s.price.toFixed(2)}$
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {s.duration} min
@@ -235,7 +214,7 @@ function ServicesListPage() {
                   sx={{ fontWeight: "bold" }}
                 />
               </Box>
-            </Box>
+            </ServiceIcon>
           </Box>
 
           <Box display="flex" gap={1} flexGrow={1} justifyContent="flex-end">
