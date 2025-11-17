@@ -482,11 +482,15 @@ class DatabaseSeeder(
     )
 
     fun addOrders() {
-        val services = serviceRepository.findAll()
+        val schedulesCount = scheduleRepository.count()
         val schedules =
             scheduleRepository
                 .findAllByStatusIn(listOf(OrderStatus.AVAILABLE))
                 .filter { it.guestId == null } // just in case
+        if (schedulesCount != schedules.size.toLong()) {
+            logger.info("Some orders already exists. Skipping adding new orders.")
+        }
+        val services = serviceRepository.findAll()
         val guests = userRepo.findByRole(Role.GUEST)
         if (schedules.isEmpty() || guests.isEmpty()) return
         val serviceDetails = services.associate { it.id to DurationAndPrice(it.duration, it.price) }
@@ -541,6 +545,10 @@ class DatabaseSeeder(
     }
 
     private fun addRatings() {
+        if (ratingRepository.count() != 0L) {
+            logger.info("Some ratings were already added to the database. Skipping adding ratings.")
+            return
+        }
         val ratingWeights = listOf(1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5)
         val currentTime: Long = System.currentTimeMillis()
         val random = Random(currentTime)
@@ -637,6 +645,11 @@ class DatabaseSeeder(
 
     private fun createReservations() {
         val guests = userRepo.findByRole(Role.GUEST)
+        println("${reservationsService.count()} ${guests.size.toLong()}")
+        if (reservationsService.count() > guests.size.toLong()) {
+            logger.info("Some reservations already exists. Skipping adding new reservations")
+            return
+        }
         val rooms = roomRepo.findAll()
         val now = LocalDate.now()
         repeat(4) {

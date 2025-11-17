@@ -372,4 +372,6 @@ class ReservationsService(
         val reservations = reservationsRepository.findAllByStatus(ReservationStatus.CHECKED_IN)
         return reservations.map { transformToDTO(it) }
     }
+
+    fun count() = reservationsRepository.count()
 }
