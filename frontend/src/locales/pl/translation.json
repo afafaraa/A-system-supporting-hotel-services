@@ -657,7 +657,9 @@
           "check-out-button": "Wymelduj",
           "success-message": "Pomyślnie wymeldowano rezerwację",
           "only-checked-in-error": "Tylko zameldowane rezerwacje mogą zostać wymeldowane",
-          "error-during-check-out": "Błąd podczas wymeldowania"
+          "error-during-check-out": "Błąd podczas wymeldowania",
+          "check-out-bill": "Rachunek",
+          "bill-payment-confirmation": "Potwierdzam, że kwota rachunku została uregulowana"
         }
       },
       "guest-arrival-departures": {

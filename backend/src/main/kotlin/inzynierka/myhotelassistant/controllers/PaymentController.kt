@@ -28,6 +28,14 @@ class PaymentController(
         Stripe.apiKey = stripeApiKey
     }
 
+    data class CheckoutRequest(
+        val cartItems: OrderRequest,
+        val currency: String = "usd",
+        val successUrl: String,
+        val cancelUrl: String,
+        val customerEmail: String?,
+    )
+
     data class CreateCheckoutSessionResponse(
         val url: String,
         val sessionId: String,
@@ -87,12 +95,4 @@ class PaymentController(
             throw HttpException.InvalidArgumentException("Failed to create checkout session: ${e.message}")
         }
     }
-
-    data class CheckoutRequest(
-        val cartItems: OrderRequest,
-        val currency: String = "usd",
-        val successUrl: String,
-        val cancelUrl: String,
-        val customerEmail: String?,
-    )
 }

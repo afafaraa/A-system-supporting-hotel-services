@@ -1,5 +1,6 @@
 package inzynierka.myhotelassistant.repositories
 
+import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.UserEntity
 import org.springframework.data.domain.Page
@@ -50,4 +51,10 @@ interface UserRepository : MongoRepository<UserEntity, String> {
     )
 
     fun findUserEmailById(id: String): UserEmail?
+
+    data class UserGuestData(
+        val guestData: GuestData?,
+    )
+
+    fun getUserGuestDataById(id: String): UserGuestData?
 }

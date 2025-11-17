@@ -1,15 +1,34 @@
-import {Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography} from "@mui/material";
+import {
+  Alert,
+  Button, Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  Typography
+} from "@mui/material";
 import HowToRegOutlinedIcon from '@mui/icons-material/HowToRegOutlined';
 import Reservation from "../../../types/reservation.ts";
 import {ReservationDetails, ReservationTitle} from "./CommonReservationDialogComponents.tsx";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
-import {useState} from "react";
+import {ChangeEvent, useEffect, useState} from "react";
 import useTranslationWithPrefix from "../../../locales/useTranslationWithPrefix.tsx";
+import {SectionCard} from "../../../theme/styled-components/SectionCard.ts";
 
 
 function CheckOutReservationDialog({reservation, onSuccess, onClose}: {reservation: Reservation | null, onSuccess: (reservation: Reservation) => void, onClose: () => void}) {
   const {t: tc} = useTranslationWithPrefix("pages.receptionist.reservation-dialog.check-out");
   const [error, setError] = useState<string | null>(null);
+  const [userBill, setUserBill] = useState<number | null>(null);
+  const [paymentChecked, setPaymentChecked] = useState(false);
+
+  useEffect(() => {
+    if (reservation === null) return;
+    axiosAuthApi.get<{bill: number}>(`/user/${reservation.guestId}/bill`)
+      .then(res => setUserBill(res.data.bill))
+      .catch(err => setError(err.message));
+  }, [reservation]);
 
   const handleClose = () => {
     setError(null);
@@ -33,6 +52,14 @@ function CheckOutReservationDialog({reservation, onSuccess, onClose}: {reservati
         </DialogTitle>
         <DialogContent>
           <ReservationDetails reservation={reservation}/>
+          <SectionCard size={2} sx={{color: "primary.contrastText", bgcolor: "primary.main", borderWidth: 0, fontSize: "90%"}} mt={1}>
+            {tc("check-out-bill")}: <Typography display="inline-block" fontWeight={600}>{userBill?.toFixed(2) ?? '...'} $</Typography>
+          </SectionCard>
+          <FormControlLabel sx={{"& .MuiTypography-root": {fontSize: "14px"}, mt: 1}}
+                            control={<Checkbox required checked={paymentChecked}
+                                               onChange={(e: ChangeEvent<HTMLInputElement>) => setPaymentChecked(e.target.checked)}/>}
+                            label={tc("bill-payment-confirmation")}
+          />
         </DialogContent>
 
         <DialogActions>
@@ -52,6 +79,7 @@ function CheckOutReservationDialog({reservation, onSuccess, onClose}: {reservati
               </Button>
               <Button
                 onClick={handleCheckOut}
+                disabled={!paymentChecked}
                 color="primary"
                 variant="contained"
                 startIcon={<HowToRegOutlinedIcon />}

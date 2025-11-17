@@ -20,6 +20,7 @@ import {formatDateRange} from "../../../utils/dateFormatting.ts";
 import CheckInReservationDialog from "./CheckInReservationDialog.tsx";
 import CheckOutReservationDialog from "./CheckOutReservationDialog.tsx";
 import useTranslationWithPrefix from "../../../locales/useTranslationWithPrefix.tsx";
+import {useTranslation} from "react-i18next";
 
 const StyledBadge = styled(Badge)<BadgeProps>({'& .MuiBadge-badge': {right: -18, top: 11}});
 type ReservationLists = "OVERDUE" | "TODAY" | "UPCOMING";
@@ -284,6 +285,7 @@ const colorFromStatus: Record<string, string> = {
 
 const ReservationCard = ({reservation, onClick, children}: {reservation: Reservation, onClick: () => void, children?: ReactNode}) => {
   const {t: tc} = useTranslationWithPrefix("pages.receptionist.guest-arrival-departures");
+  const {t} = useTranslation();
 
   return (
     <SectionCard size={2} mt={2} sx={{bgcolor: "transparent"}}
@@ -293,8 +295,8 @@ const ReservationCard = ({reservation, onClick, children}: {reservation: Reserva
         <Typography fontSize="16px" fontWeight={500}>{tc("room-label")} {reservation.roomNumber} | {reservation.roomStandard.name}</Typography>
         <Typography fontSize="12px" color="text.secondary">{tc("guest-label")}: {reservation.guestFullName}</Typography>
         <Typography fontSize="12px" color="text.secondary">{formatDateRange(reservation.checkIn, reservation.checkOut)}</Typography>
-        <Typography fontSize="14px" mt={0.5} color={colorFromStatus[reservation.status] || "text.primary"} borderRadius="9px">
-          {reservation.status}
+        <Typography fontSize="14px" mt={0.5} color={colorFromStatus[reservation.status] || "text.primary"} borderRadius="9px" textTransform="uppercase">
+          {t("pages.reservations.status." + reservation.status)}
         </Typography>
       </ServiceIcon>
       <Box display="flex" justifyContent="flex-end" flexGrow={1}>{children}</Box>

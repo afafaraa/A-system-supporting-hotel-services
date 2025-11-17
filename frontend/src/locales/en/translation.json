@@ -657,7 +657,9 @@
           "check-out-button": "Check out",
           "success-message": "You successfully checked-out the reservation",
           "only-checked-in-error": "Only checked-in reservations can be checked-out",
-          "error-during-check-out": "Error during check-out"
+          "error-during-check-out": "Error during check-out",
+          "check-out-bill": "Check-out bill",
+          "bill-payment-confirmation": "I confirm that the invoice amount has been settled"
         }
       },
       "guest-arrival-departures": {
