@@ -489,10 +489,11 @@ class DatabaseSeeder(
                 .filter { it.guestId == null } // just in case
         if (schedulesCount != schedules.size.toLong()) {
             logger.info("Some orders already exists. Skipping adding new orders.")
+            return
         }
-        val services = serviceRepository.findAll()
         val guests = userRepo.findByRole(Role.GUEST)
         if (schedules.isEmpty() || guests.isEmpty()) return
+        val services = serviceRepository.findAll()
         val serviceDetails = services.associate { it.id to DurationAndPrice(it.duration, it.price) }
 
         val now = LocalDateTime.now()
@@ -645,7 +646,6 @@ class DatabaseSeeder(
 
     private fun createReservations() {
         val guests = userRepo.findByRole(Role.GUEST)
-        println("${reservationsService.count()} ${guests.size.toLong()}")
         if (reservationsService.count() > guests.size.toLong()) {
             logger.info("Some reservations already exists. Skipping adding new reservations")
             return
