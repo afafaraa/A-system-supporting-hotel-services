@@ -1,10 +1,14 @@
 import UserDetails from "./userDetails.ts";
+import { Service } from "./service.ts";
 
 export type Guest = UserDetails & {
-    servicesCount: number;
-    upcomingServicesCount: number;
-    phone: string;
-    status: 'Checked-in' | 'Checked-out' | 'Upcoming';
+}
+
+export type GuestDetails = UserDetails & {
+    guest: Guest;
+    upcomingServices: Service[];
+    completedServices: Service[];
+    cancelledServices: Service[];
 }
 
 export type GuestStatus = "CHECKED_IN" | "CHECKED_OUT" | "UPCOMING";

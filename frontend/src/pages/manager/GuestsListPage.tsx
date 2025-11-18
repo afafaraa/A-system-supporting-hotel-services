@@ -14,26 +14,25 @@ import {
 } from "@mui/material";
 import { PersonOutline, Search } from "@mui/icons-material";
 import GuestCard from "./GuestCard";
-import { Guest, GuestStatusFilter } from "../../types";
+import { GuestDetails, GuestStatusFilter } from "../../types";
 import GuestDetailsModal from "./modals/GuestDetailsModal";
 import { SectionCard } from "../../theme/styled-components/SectionCard";
 import { useTranslation } from "react-i18next";
 import { axiosAuthApi } from '../../middleware/axiosApi';
 import SectionTitle from "../../components/ui/SectionTitle.tsx";
-import UserDetails from "../../types/userDetails.ts";
 
 
 function GuestsListPage() {
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.manager.guests.${key}`);
 
-  const [guests, setGuests] = useState<Guest[]>([]);
+  const [guests, setGuests] = useState<GuestDetails[]>([]);
   const [page] = useState(0);
   const [searchOpen, setSearchOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedGuest, setSelectedGuest] = useState<Guest | null>(null);
+  const [selectedGuest, setSelectedGuest] = useState<GuestDetails | null>(null);
 
   const [filterName, setFilterName] = useState("");
   const [filterStatus, setFilterStatus] = useState<GuestStatusFilter>("ALL");
@@ -42,23 +41,14 @@ function GuestsListPage() {
     setLoading(true)
 
     try {
-      const res = await axiosAuthApi.get<UserDetails[]>('/guest/management', {
+      const res = await axiosAuthApi.get<GuestDetails[]>('/guest/management/guests/details', {
         params: { page: page, size: 10 },
       });
-      const mapped: Guest[] = res.data.map((u) => ({
-        ...u,
-        servicesCount: 0,
-        upcomingServicesCount: 0,
-        phone: "",
-        status: mapStatus(
-          u.guestData?.currentReservation.checkIn ? u.guestData.currentReservation.checkIn.toString() : "",
-          u.guestData?.currentReservation.checkOut ? u.guestData.currentReservation.checkOut.toString() : ""
-        ),
-      }));
-      setGuests(mapped);
+      console.log(res.data);
+      setGuests(res.data);
     } catch (err) {
-      console.error(err)
-      setError('Failed to fetch employees')
+      console.error(err);
+      setError('Failed to fetch guests.')
     } finally {
       setLoading(false)
     }
@@ -68,19 +58,6 @@ function GuestsListPage() {
     fetchGuests()
   }, [fetchGuests])
 
-  const mapStatus = (
-    checkInDate: string,
-    checkOutDate: string
-  ): "Checked-in" | "Checked-out" | "Upcoming" => {
-    const now = new Date();
-    const checkIn = new Date(checkInDate);
-    const checkOut = new Date(checkOutDate);
-
-    if (now < checkIn) return "Upcoming";
-    if (now > checkOut) return "Checked-out";
-    return "Checked-in";
-  };
-
   const filteredGuests = useMemo(() => {
     return guests.filter((guest) => {
       const nameMatch =
@@ -89,7 +66,7 @@ function GuestsListPage() {
         guest.surname.toLowerCase().includes(filterName.toLowerCase());
       const statusMatch =
         filterStatus === "ALL" ||
-        guest.status.replace("-", "_").toUpperCase() === filterStatus;
+        guest.guest.guestData?.currentReservation.status.replace("-", "_").toUpperCase() === filterStatus;
       return statusMatch && nameMatch;
     });
   }, [guests, filterName, filterStatus]);
@@ -167,9 +144,9 @@ function GuestsListPage() {
               }
             >
               <MenuItem value="ALL">{tc("ALL")}</MenuItem>
-              <MenuItem value="CHECKED_IN">{tc("Checked-in")}</MenuItem>
-              <MenuItem value="CHECKED_OUT">{tc("Checked-out")}</MenuItem>
-              <MenuItem value="UPCOMING">{tc("Upcoming")}</MenuItem>
+              <MenuItem value="CHECKED_IN">{tc("checked-in")}</MenuItem>
+              <MenuItem value="CHECKED_OUT">{tc("checked-out")}</MenuItem>
+              <MenuItem value="UPCOMING">{tc("upcoming")}</MenuItem>
             </Select>
           </FormControl>
         </Box>

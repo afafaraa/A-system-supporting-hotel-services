@@ -44,10 +44,16 @@ export interface Seasonality {
   peakDaysOfWeek: PeakDay[];
 }
 
+export interface TopService {
+  serviceName: string;
+  currentWeekCount: number;
+  improvementPercentage: number;
+}
 export interface ExtendedStats {
   predictions: PredictionSummary;
   trends: Trends;
   seasonality: Seasonality;
+  topServices: TopService[];
 }
 
 export interface MlPredictionItem {

@@ -224,9 +224,9 @@
         "subtitle": "View and manage hotel guests and their information",
         "searchPlaceholder": "Search guests...",
         "ALL": "All",
-        "Checked-out": "Checked-out",
-        "Checked-in": "Checked-in",
-        "Upcoming": "Upcoming",
+        "checked-out": "Checked-out",
+        "checked-in": "Checked-in",
+        "upcoming": "Upcoming",
         "room": "Room",
         "check_in": "Check-in",
         "check_out": "Check-out",
@@ -244,7 +244,8 @@
         "service_history": "Service History",
         "completed_service": "completed service",
         "at": "at",
-        "guest_info": "Guest Info"
+        "guest_info": "Guest Info",
+        "no_special_requests": "No special requests"
       },
       "services_list": {
         "title": "Service Management",
@@ -382,7 +383,12 @@
         "avgRevenue": "Average Revenue",
         "peakMonths": "Peak Months by Revenue",
         "totalRevenue": "Total Revenue",
-        "month": "Month"
+        "month": "Month",
+        "count": "Number of Services Purchased",
+        "change": "Percentage Change",
+        "topServices": "Top Services",
+        "newService": "New Service",
+        "trending": "Trending Service"
       },
       "employee_details": {
         "title": "Employee Information",

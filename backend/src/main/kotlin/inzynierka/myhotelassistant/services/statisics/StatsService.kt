@@ -5,6 +5,7 @@ import inzynierka.myhotelassistant.repositories.RepositoryExtensions
 import inzynierka.myhotelassistant.repositories.ReservationsRepository
 import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
+import inzynierka.myhotelassistant.repositories.ServiceRepository
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -19,6 +20,7 @@ class StatsService(
     private val reservationsRepository: ReservationsRepository,
     private val roomRepository: RoomRepository,
     private val repositoryExtensions: RepositoryExtensions,
+    private val serviceRepository: ServiceRepository,
 ) {
     data class ServiceStat(
         val id: Int,
@@ -31,6 +33,7 @@ class StatsService(
         val predictions: PredictionsData,
         val trends: TrendData,
         val seasonality: SeasonalityData,
+        val topServices: List<TopService>,
     )
 
     data class PredictionsData(
@@ -72,6 +75,12 @@ class StatsService(
         val avgRevenue: Double,
     )
 
+    data class TopService(
+        val serviceName: String,
+        val currentWeekCount: Long,
+        val improvementPercentage: Double,
+    )
+
     fun getStats(): List<ServiceStat> {
         val today = LocalDate.now()
         val startOfDay: LocalDateTime = today.atStartOfDay()
@@ -96,11 +105,13 @@ class StatsService(
         val predictions = calculatePredictions()
         val trends = calculateTrends()
         val seasonality = calculateSeasonality()
+        val topServices = getTopServices()
 
         return ExtendedStatsResponse(
             predictions = predictions,
             trends = trends,
             seasonality = seasonality,
+            topServices = topServices,
         )
     }
 
@@ -364,4 +375,39 @@ class StatsService(
             )
         }
     }
+
+    private fun getTopServices(): List<TopService> {
+        val today = LocalDate.now()
+        val prevWeek = today.minusWeeks(1)
+        val prevTwoWeeks = today.minusWeeks(2)
+
+        val top4 = scheduleRepository.getTopServices(prevWeek.atStartOfDay(), today.atStartOfDay(), 4)
+
+        return top4.map { current ->
+            val previousCount =
+                scheduleRepository.countByServiceIdAndOrderTimeBetween(
+                    current.serviceId,
+                    prevTwoWeeks.atStartOfDay(),
+                    prevWeek.atStartOfDay(),
+                )
+                    ?: 0L
+            val improvementPercentage = calculatePercentage(previousCount, current.count)
+
+            TopService(
+                serviceName = serviceRepository.findById(current.serviceId).get().name,
+                currentWeekCount = current.count,
+                improvementPercentage = improvementPercentage,
+            )
+        }
+    }
+
+    private fun calculatePercentage(
+        previousCount: Long,
+        currentCount: Long,
+    ): Double =
+        when {
+            previousCount > 0 -> ((currentCount - previousCount).toDouble() / previousCount) * 100
+            currentCount > 0 -> 100.0
+            else -> 0.0
+        }
 }

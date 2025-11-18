@@ -224,9 +224,9 @@
         "subtitle": "Wyświetl gości hotelowych i informacje o nich",
         "searchPlaceholder": "Szukaj Gościa...",
         "ALL": "Wszyscy",
-        "Checked-out": "Wymeldowany",
-        "Checked-in": "Zameldowany",
-        "Upcoming": "Nadchodzące",
+        "checked-out": "Wymeldowany",
+        "checked-in": "Zameldowany",
+        "upcoming": "Nadchodzące",
         "room": "Pokój",
         "check_in": "Od",
         "check_out": "Do",
@@ -244,7 +244,8 @@
         "service_history": "Historia usług",
         "completed_service": "wykonane usługi",
         "at": "o",
-        "guest_info": "Informacje"
+        "guest_info": "Informacje",
+        "no_special_requests": "Brak specjalnych życzeń"
       },
       "services_list": {
         "title": "Zarządzanie usługami",
@@ -382,7 +383,12 @@
         "avgRevenue": "Średnie Przychody",
         "peakMonths": "Miesiące Szczytowe według Przychodów",
         "totalRevenue": "Całkowite Przychody",
-        "month": "Miesiąc"
+        "month": "Miesiąc",
+        "count": "Liczba Zamówionych Usług",
+        "change": "Procentowa Zmiana",
+        "topServices": "Najlepsze Usługi",
+        "newService": "Nowa Usługa",
+        "trending": "Popularna Usługa"
       },
       "employee_details": {
         "title": "Informacje o Pracowniku",
