@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { isAxiosError } from 'axios';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import useTranslationWithPrefix from "../../../locales/useTranslationWithPrefix.tsx";
+import {toLocalISODate} from "../../../utils/dateFormatting.ts";
 
 export type ServiceCartProps = {
   type: 'SERVICE';
@@ -97,7 +98,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
       try {
         const response = await axiosAuthApi.get<{price: number, standardName: string}>(
           `/rooms/${item.id}/for-cart`,
-          {params: {from: new Date(item.checkIn).toISOString().split('T')[0], to: new Date(item.checkOut).toISOString().split('T')[0]}}
+          {params: {from: toLocalISODate(new Date(item.checkIn)), to: toLocalISODate(new Date(item.checkOut))}}
         );
         const cartItem: ReservationCartProps = {
           type: 'RESERVATION',
@@ -145,8 +146,8 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
     })),
       reservations: reservationsCartData.map(item => ({
       roomNumber: item.roomNumber,
-      checkIn: new Date(item.checkIn).toISOString().split('T')[0],
-      checkOut: new Date(item.checkOut).toISOString().split('T')[0],
+      checkIn: toLocalISODate(new Date(item.checkIn)),
+      checkOut: toLocalISODate(new Date(item.checkOut)),
       guestsCount: item.guestCount,
       specialRequests: item.specialRequests
     })),

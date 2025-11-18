@@ -1,6 +1,5 @@
 package inzynierka.myhotelassistant.controllers.schedule
 import inzynierka.myhotelassistant.dto.ScheduleDTO
-import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.services.EmployeeService
 import inzynierka.myhotelassistant.services.ScheduleService
@@ -15,9 +14,8 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import java.security.Principal
 import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZonedDateTime
-import java.time.format.DateTimeParseException
 
 @RestController
 @RequestMapping("/schedule")
@@ -49,7 +47,7 @@ class ScheduleController(
     @ResponseStatus(HttpStatus.OK)
     fun getTodayAvailableSchedulesByServiceId(
         @PathVariable serviceId: String,
-        @RequestParam date: String,
+        @RequestParam date: LocalDate,
     ): List<ScheduleForWeekResponse> =
         scheduleService
             .getTodayAvailableSchedulesByServiceId(serviceId, date)
@@ -87,16 +85,9 @@ class ScheduleController(
     @GetMapping(params = ["date"])
     @ResponseStatus(HttpStatus.OK)
     fun getWholeWeekSchedule(
-        @RequestParam date: String,
+        @RequestParam date: LocalDate,
         principal: Principal,
-    ): List<ScheduleDTO> {
-        try {
-            val parsedDate = ZonedDateTime.parse(date).toLocalDate()
-            return scheduleService.getMyWeekSchedule(parsedDate, principal.name)
-        } catch (_: DateTimeParseException) {
-            throw InvalidArgumentException("Invalid date format. Expected format is ISO_ZONED_DATE_TIME.")
-        }
-    }
+    ): List<ScheduleDTO> = scheduleService.getMyWeekSchedule(date, principal.name)
 
     @GetMapping("/today")
     @ResponseStatus(HttpStatus.OK)

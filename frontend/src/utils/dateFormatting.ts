@@ -1,4 +1,4 @@
-import {addMinutes} from "date-fns";
+import {addMinutes, format} from "date-fns";
 import {t} from "i18next";
 
 export const formatDateFromTimestamp = (timestamp: string): string => {
@@ -35,3 +35,5 @@ export const formatDateRange = (start: string | Date, end: string | Date): strin
 export const formatNumericDayMonth = (date: Date): string => {
   return date.toLocaleDateString(t('date.locale'), { day: '2-digit', month: '2-digit' })
 }
+
+export const toLocalISODate = (date: Date): string => format(date, "yyyy-MM-dd");

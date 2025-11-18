@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.ZonedDateTime
 import java.time.format.DateTimeParseException
 import java.time.temporal.TemporalAdjusters
 
@@ -33,15 +32,14 @@ class ScheduleService(
 
     fun getTodayAvailableSchedulesByServiceId(
         serviceId: String,
-        date: String,
+        date: LocalDate,
     ): List<ScheduleEntity> {
         try {
-            val parsedDate = ZonedDateTime.parse(date).toLocalDate()
             return scheduleRepository.findByServiceIdAndStatusAndServiceDateBetween(
                 serviceId = serviceId,
                 status = OrderStatus.AVAILABLE,
-                startDate = parsedDate.atStartOfDay(),
-                endDate = parsedDate.atTime(LocalTime.MAX),
+                startDate = date.atStartOfDay(),
+                endDate = date.atTime(LocalTime.MAX),
             )
         } catch (_: DateTimeParseException) {
             throw InvalidArgumentException("Invalid date format. Expected format is ISO_ZONED_DATE_TIME.")

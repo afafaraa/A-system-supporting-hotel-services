@@ -25,12 +25,5 @@ class GetUserController(
     @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
     fun getBilling(
         @PathVariable userId: String,
-    ): UserBill {
-        println("Zapytanie o rachunek gościa o id: $userId")
-        val user = userService.findByIdOrThrow(userId)
-        println("Znaleziony gość: $user")
-        val rachunek = userService.getUserGuestDataById(userId)
-        println("Rachunek: $rachunek")
-        return UserBill(rachunek.bill)
-    }
+    ) = UserBill(userService.getUserGuestDataById(userId).bill)
 }

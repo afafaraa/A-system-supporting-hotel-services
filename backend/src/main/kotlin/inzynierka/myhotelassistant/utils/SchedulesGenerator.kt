@@ -52,13 +52,18 @@ class SchedulesGenerator(
 
         val schedulesCount = services.associate { it.id!! to 0 }.toMutableMap()
 
-        val groupedByLastDate = services.groupBy {
-            scheduleRepository.findFirstByServiceIdAndServiceDateBetweenOrderByServiceDateDesc(
-                serviceId = it.id!!,
-                startDate = start.atTime(LocalTime.MIN),
-                endDate = end.atTime(LocalTime.MAX),
-            )?.serviceDate?.toLocalDate()?.plusDays(1) ?: start
-        }.mapValues { it.value.shuffled() }
+        val groupedByLastDate =
+            services
+                .groupBy {
+                    scheduleRepository
+                        .findFirstByServiceIdAndServiceDateBetweenOrderByServiceDateDesc(
+                            serviceId = it.id!!,
+                            startDate = start.atTime(LocalTime.MIN),
+                            endDate = end.atTime(LocalTime.MAX),
+                        )?.serviceDate
+                        ?.toLocalDate()
+                        ?.plusDays(1) ?: start
+                }.mapValues { it.value.shuffled() }
 
         fun getServicePossibleStartTimes(
             service: ServiceEntity,
@@ -67,12 +72,15 @@ class SchedulesGenerator(
             val serviceDurationMinutes = service.duration.inWholeMinutes
             val availableWeekdayHours = service.weekday.filter { it.day == date.dayOfWeek }
             if (availableWeekdayHours.isEmpty()) return emptyList()
-            val possibleStartTimes = availableWeekdayHours.map { weekdayHour ->
-                val startTime = LocalTime.of(weekdayHour.startHour, 0)
-                val endTime = LocalTime.of(weekdayHour.endHour, 0)
-                generateSequence(startTime) { it.plusMinutes(15) }
-                    .takeWhile { !it.plusMinutes(serviceDurationMinutes).isAfter(endTime) }
-            }.flatMap { it }.shuffled()
+            val possibleStartTimes =
+                availableWeekdayHours
+                    .map { weekdayHour ->
+                        val startTime = LocalTime.of(weekdayHour.startHour, 0)
+                        val endTime = LocalTime.of(weekdayHour.endHour, 0)
+                        generateSequence(startTime) { it.plusMinutes(15) }
+                            .takeWhile { !it.plusMinutes(serviceDurationMinutes).isAfter(endTime) }
+                    }.flatMap { it }
+                    .shuffled()
             return possibleStartTimes
         }
 
@@ -90,8 +98,9 @@ class SchedulesGenerator(
                         }
                     !hasOverlap
                 }
-            if (chosenEmployee != null)
+            if (chosenEmployee != null) {
                 employeeAvailability[chosenEmployee.id]?.add(proposedDateTime to breakEndTime)
+            }
             return chosenEmployee
         }
 
@@ -101,21 +110,25 @@ class SchedulesGenerator(
             groupedByLastDate[currDate]?.let { services ->
                 servicesToGenerate.addAll(services.map { it to getServicePossibleStartTimes(it, currDate) })
             }
-            var anyNewSchedules = true // to enter the loop
+            val activeServices = servicesToGenerate.toMutableList()
             var iterCount = 0 // safety to prevent infinite loops
-            while (anyNewSchedules) { // making sure that we used all available datetime slots
-                anyNewSchedules = false
+            while (activeServices.isNotEmpty()) { // making sure that we used all available datetime slots
                 iterCount += 1
                 if (iterCount > 100) {
                     logger.warn("Reached maximum iterations while generating schedules for date $currDate")
                     break
                 }
-                for ((service, possibleStartTimes) in servicesToGenerate.sortedBy { (s, _) -> schedulesCount[s.id!!] }) {
+                activeServices.sortBy { (s, _) -> schedulesCount[s.id!!] }
+                val servicesIterator = activeServices.listIterator()
+                while (servicesIterator.hasNext()) {
+                    var generated = false
+                    val (service, possibleStartTimes) = servicesIterator.next()
                     for (potentialStartTime in possibleStartTimes) {
                         val proposedDateTime = currDate.atTime(potentialStartTime)
                         val serviceEndTime = proposedDateTime.plusMinutes(service.duration.inWholeMinutes)
-                        val chosenEmployee = chooseEmployeeForSchedule(proposedDateTime, serviceEndTime)
-                            ?: continue
+                        val chosenEmployee =
+                            chooseEmployeeForSchedule(proposedDateTime, serviceEndTime)
+                                ?: continue
                         val scheduleEntity =
                             ScheduleEntity(
                                 serviceId = service.id!!,
@@ -124,9 +137,12 @@ class SchedulesGenerator(
                                 employeeId = chosenEmployee.id!!,
                             )
                         schedulesToSave.add(scheduleEntity)
-                        anyNewSchedules = true // if we found at least one slot, we need to check again
+                        generated = true
                         schedulesCount[service.id] = schedulesCount.getOrDefault(service.id, 0) + 1
                         break
+                    }
+                    if (!generated) {
+                        servicesIterator.remove()
                     }
                 }
             }
@@ -135,7 +151,9 @@ class SchedulesGenerator(
         for (service in services) {
             val count = schedulesCount[service.id!!] ?: 0
             if (count == 0) continue
-            logger.info("Generated $count new schedules for service '${service.name}' (${service.duration.inWholeMinutes}min) in period $start to $end")
+            logger.info(
+                "Generated $count new schedules for service '${service.name}' (${service.duration.inWholeMinutes}min) in period $start to $end",
+            )
         }
         scheduleRepository.saveAll(schedulesToSave)
     }

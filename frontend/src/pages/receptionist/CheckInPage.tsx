@@ -18,6 +18,7 @@ import Reservation from "../../types/reservation.ts";
 import {ReservationDetails} from "./guest-arrival-departues/CommonReservationDialogComponents.tsx";
 import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
 import useTranslationWithPrefix from "../../locales/useTranslationWithPrefix.tsx";
+import {toLocalISODate} from "../../utils/dateFormatting.ts";
 
 const StyledDatePicker = styled(DatePicker)({
   "& .MuiPickersOutlinedInput-root": {borderRadius: "12px"},
@@ -84,7 +85,7 @@ function CheckInPage() {
     setAvailableRoomsStatus({status: "loading", text: tc("loading-available-rooms")});
     setSelectedRoom(null);
     setAvailableRooms([]);
-    axiosApi.get<Room[]>("/rooms/available", {params: {from: checkInDate.toISOString().split('T')[0], to: checkOutDate.toISOString().split('T')[0]}})
+    axiosApi.get<Room[]>("/rooms/available", {params: {from: toLocalISODate(checkInDate), to: toLocalISODate(checkOutDate)}})
       .then(res => {
         setAvailableRooms(res.data);
         setAvailableRoomsStatus({status: "success", text: tc("available-rooms-found", {count: res.data.length})});
@@ -98,7 +99,7 @@ function CheckInPage() {
     if (!selectedRoom) return;
     setReservationPriceStatus({status: "loading", text: tc("loading-reservation-price")});
     setReservationPrice(null);
-    axiosApi.get(`/rooms/${selectedRoom}/price`, {params: {from: checkInDate.toISOString().split('T')[0], to: checkOutDate.toISOString().split('T')[0]}})
+    axiosApi.get(`/rooms/${selectedRoom}/price`, {params: {from: toLocalISODate(checkInDate), to: toLocalISODate(checkOutDate)}})
       .then(res => {
         setReservationPrice(res.data);
         setReservationPriceStatus({status: "success", text: null})
@@ -125,8 +126,8 @@ function CheckInPage() {
     const payload = {
       ...guestDetails,
       roomNumber: selectedRoom,
-      checkInDate: checkInDate.toISOString().split('T')[0],
-      checkOutDate: checkOutDate.toISOString().split('T')[0],
+      checkInDate: toLocalISODate(checkInDate),
+      checkOutDate: toLocalISODate(checkOutDate),
       specialRequests: specialRequests.trim() || null,
       withCheckIn: withCheckIn,
     }

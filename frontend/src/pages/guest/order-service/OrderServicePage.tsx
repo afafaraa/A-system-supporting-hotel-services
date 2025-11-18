@@ -13,6 +13,7 @@ import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import {useTranslation} from "react-i18next";
 import ServiceReviews from "./ServiceReviews.tsx";
+import {toLocalISODate} from "../../../utils/dateFormatting.ts";
 
 export type OrderServiceProps = {
   id: string;
@@ -55,7 +56,7 @@ function OrderServicePage() {
 
   const fetchSchedule = useCallback((date: Date) => {
     axiosAuthApi
-      .get(`/schedule/today/by-service-id/${params.id}/available?date=${date.toISOString()}`)
+      .get(`/schedule/today/by-service-id/${params.id}/available?date=${toLocalISODate(date)}`)
       .then(response => {
         const scheduleItems = response.data.map((s: OrderServiceProps) => ({
           ...s,
