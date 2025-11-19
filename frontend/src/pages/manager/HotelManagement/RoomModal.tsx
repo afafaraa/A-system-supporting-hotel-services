@@ -63,12 +63,12 @@ function RoomModal({ open, room, standards, onClose, onSave }: RoomModalProps) {
       return;
     }
     try {
-      const payload = {
-        ...formData,
-        standardId: formData.standard.id,
+      const { standard, ...rest } = formData;
+      const payload: Omit<Room, 'standard'> & { standardId?: string } = {
+        ...rest,
+        standardId: standard.id,
       };
 
-      delete (payload as any).standard;
       let res;
       if (isEditMode) {
         res = await axiosAuthApi.put('/rooms', payload);

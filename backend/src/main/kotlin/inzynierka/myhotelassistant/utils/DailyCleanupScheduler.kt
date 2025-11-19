@@ -25,9 +25,8 @@ class DailyCleanupScheduler(
     /**
      * Runs daily at 03:00:
      * 1) Removes expired registration codes.
-     * 2) Deactivates guest accounts after check-out. (doesn't work anymore)
-     * 3) Removes read notifications.
-     * 4) Removes old available schedules.
+     * 2) Removes read notifications.
+     * 3) Removes old available schedules.
      */
     @Scheduled(cron = "0 0 3 * * *")
     fun runDailyCleanup() {
@@ -36,11 +35,6 @@ class DailyCleanupScheduler(
 
         var deletedCount = registrationCodeRepository.deleteByExpiresAtBefore(now)
         logger.info("Deleted $deletedCount expired registration codes")
-
-//        deletedCount = userRepository.deleteByRoleAndCheckOutDateBefore(Role.GUEST, now)
-//        if (deletedCount > 0) {
-//            logger.info("Deleted $deletedCount expired guests accounts (till $now).")
-//        }
 
         deletedCount = notificationService.removeReadNotifications(notificationExpirationDays)
         if (deletedCount > 0) {

@@ -202,7 +202,7 @@ function ServicesListPage() {
               </Typography>
               <Box display="flex" alignItems="center" gap={2} mt={0.5}>
                 <Typography variant="body2" fontWeight="bold">
-                  {s.price == 0.0 ? '— ' : s.price.toFixed(2)}$
+                  {s.price < 0.01 ? '— ' : s.price.toFixed(2)}$
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {s.duration} min

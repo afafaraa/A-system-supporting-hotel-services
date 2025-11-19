@@ -24,7 +24,7 @@ class PaymentService(
         request.cartItems.schedules.forEach { item ->
             val schedule = scheduleService.findByIdOrThrow(item.id)
             val service = serviceService.findByIdOrThrow(schedule.serviceId)
-            val servicePrice = if (item.customPrice != null && service.price == 0.0) item.customPrice else service.price
+            val servicePrice = if (item.customPrice != null && service.price < 0.01) item.customPrice else service.price
             val priceCents = (servicePrice * 100).toInt()
             totalAmountCents += priceCents
 

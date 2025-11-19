@@ -113,7 +113,7 @@ class SchedulesGenerator(
         }
     }
 
-    @Scheduled(cron = "0 50 23 * * ?") // every day at 23:50
+    @Scheduled(cron = "\${app.schedules-generator.cron:0 50 23 * * ?}") // every day at 23:50
     private fun createSchedulesForSingleDay() {
         val date = LocalDate.now().plusDays(daysAhead.toLong())
         logger.info(
@@ -169,7 +169,7 @@ class SchedulesGenerator(
         var iterCount = 0 // safety to prevent infinite loops
         while (checkedServices.isNotEmpty()) { // making sure that we used all available datetime slots
             iterCount += 1
-            if (iterCount > 100) {
+            if (iterCount > 10) {
                 logger.warn("Reached maximum iterations while generating schedules for date $date")
                 break
             }

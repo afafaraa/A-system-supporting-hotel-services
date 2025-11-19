@@ -1,6 +1,6 @@
 export interface Room {
   number: string;
-  floor: number;
+  floor?: number;
   capacity: number;
   pricePerNight: number;
   standard: RoomStandard;
@@ -10,7 +10,7 @@ export interface Room {
 }
 
 export interface RoomStandard {
-  id: string;
+  id?: string;
   name: string;
   capacity: number;
   basePrice: number;

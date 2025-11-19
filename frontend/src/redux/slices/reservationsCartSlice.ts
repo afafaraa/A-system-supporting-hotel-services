@@ -34,7 +34,7 @@ const reservationsCartSlice = createSlice({
         const reservationsCart = localStorage.getItem(storageKey);
         state.items = reservationsCart ? JSON.parse(reservationsCart) : [];
       } catch (error) {
-        console.log("Error parsing reservations cart from localStorage:", error);
+        console.error("Error parsing reservations cart from localStorage:", error);
         localStorage.removeItem(storageKey);
       }
     },

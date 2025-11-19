@@ -38,13 +38,13 @@ const servicesCartSlice = createSlice({
         const storedCart = localStorage.getItem(storageKey);
         state.items = storedCart ? JSON.parse(storedCart) : [];
       } catch (error) {
-        console.log("Error parsing services cart from localStorage:", error);
+        console.error("Error parsing services cart from localStorage:", error);
         localStorage.removeItem(storageKey);
       }
     },
     addService: (state, action: PayloadAction<ServiceCartItem>) => {
       const duplicateIndex = state.items.findIndex((item) => item.id === action.payload.id);
-      if (duplicateIndex == -1) state.items.push(action.payload);
+      if (duplicateIndex === -1) state.items.push(action.payload);
       else if (!compareItems(state.items[duplicateIndex], action.payload)) state.items[duplicateIndex] = action.payload;
       const storageKey = getStorageKey(state.username);
       localStorage.setItem(storageKey, JSON.stringify(state.items));

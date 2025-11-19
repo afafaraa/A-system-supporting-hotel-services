@@ -533,7 +533,7 @@ class DatabaseSeeder(
                 schedule.guestId = guest.id
                 schedule.orderTime = now.minusHours(Random.nextLong(1, 48))
                 val servicePrice = serviceDetails[schedule.serviceId]?.price ?: 0.0
-                schedule.price = if (servicePrice != 0.0) servicePrice else ((70..300).random() / 10.0)
+                schedule.price = if (servicePrice >= 0.01) servicePrice else ((70..300).random() / 10.0)
                 if (Random.nextInt(0, 10) < 2) {
                     schedule.specialRequests = "Example special request for particular service. Request generated randomly."
                 }
@@ -547,7 +547,7 @@ class DatabaseSeeder(
                 schedule.guestId = guest.id
                 schedule.orderTime = schedule.serviceDate.minusHours(Random.nextLong(1, 48))
                 val servicePrice = serviceDetails[schedule.serviceId]?.price ?: 0.0
-                schedule.price = if (servicePrice != 0.0) servicePrice else ((70..300).random() / 10.0)
+                schedule.price = if (servicePrice >= 0.01) servicePrice else ((70..300).random() / 10.0)
                 if (schedule.status == OrderStatus.COMPLETED) {
                     guest.guestData?.let { data -> data.bill += schedule.price!! }
                 } else if (schedule.status == OrderStatus.CANCELED) {

@@ -44,6 +44,7 @@ app:
     expiration:
       days: 30
   schedules-generator:
+    cron: 0 50 23 * * ?
     days-ahead: 21
   upload:
     dir: ${java.io.tmpdir}/uploads
