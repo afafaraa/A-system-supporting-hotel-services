@@ -225,7 +225,7 @@ function Navbar() {
       {user && (
         <ShoppingCartPopup
           open={shoppingCartOpen}
-          setOpen={() => setShoppingCartOpen(false)}
+          closeItself={() => setShoppingCartOpen(false)}
         />
       )}
     </>

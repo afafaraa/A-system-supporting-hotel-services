@@ -178,7 +178,13 @@
       "addToBill": "Add to bill",
       "proceedToPayment": "Proceed to Payment",
       "services": "Services",
-      "reservations": "Reservations"
+      "reservations": "Reservations",
+      "see_services": "See your services",
+      "see_reservations": "See your reservations",
+      "add_to_tab_success_message": "Successfully ordered {{order}} to your tab.",
+      "services2": "services",
+      "reservations2": "reservations",
+      "and": "and"
     },
     "order_service": {
       "goBack": "Go back to services",

@@ -5,7 +5,6 @@ import {
   Typography,
   Box,
   IconButton,
-  useTheme,
   Divider,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -25,6 +24,9 @@ import { isAxiosError } from 'axios';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import useTranslationWithPrefix from "../../../locales/useTranslationWithPrefix.tsx";
 import {toLocalISODate} from "../../../utils/dateFormatting.ts";
+import {useNavigate} from "react-router-dom";
+import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
+import {SectionCard} from "../../../theme/styled-components/SectionCard.ts";
 
 export type ServiceCartProps = {
   type: 'SERVICE';
@@ -51,15 +53,15 @@ export type ReservationCartProps = {
 
 type ShoppingCartPopupProps = {
   open: boolean;
-  setOpen: () => void;
+  closeItself: () => void;
 };
 
-const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
+const ShoppingCartPopup = ({ open, closeItself }: ShoppingCartPopupProps) => {
   const dispatch = useDispatch();
   const userDetails = useSelector(selectUserDetails);
   const servicesCart = useSelector(selectServicesCart);
   const reservationsCart = useSelector(selectReservationsCart);
-  const theme = useTheme();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const {t: tc} = useTranslationWithPrefix("pages.shopping_cart");
 
@@ -67,6 +69,17 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   const [reservationsCartData, setReservationsCartData] = useState<ReservationCartProps[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [addToTabSuccess, setAddToTabSuccess] = useState<{services: number, reservations: number} | null>(null);
+
+  const handleClose = () => {
+    setAddToTabSuccess(null);
+    closeItself();
+  }
+
+  const navigateToPage = (path: string) => {
+    handleClose();
+    navigate(path);
+  }
 
   const fetchServicesData = useCallback(async () => {
     const servicesList: ServiceCartProps[] = [];
@@ -192,6 +205,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
     setError(null);
     try {
       await axiosAuthApi.post('/guest/order/add-to-tab', orderPayload());
+      setAddToTabSuccess({services: servicesCartData.length, reservations: reservationsCartData.length});
       clearShoppingCart();
     } catch (e) {
       if (isAxiosError(e)) {
@@ -234,7 +248,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
           backgroundColor: 'rgba(0,0,0,0.5)',
           zIndex: 1200,
         }}
-        onClick={setOpen}
+        onClick={handleClose}
       />
 
       <Box
@@ -275,7 +289,7 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
             >
               {tc("clearCart")}
             </Button>
-            <IconButton onClick={setOpen}>
+            <IconButton onClick={handleClose}>
               <CloseIcon />
             </IconButton>
           </div>
@@ -337,11 +351,11 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
           )}
         </Box>
 
-        <div style={{position: 'sticky', bottom: 0, marginTop: '1rem'}}>
+        <div style={{position: 'sticky', marginTop: '1rem'}}>
         <Box
           sx={{
             borderRadius: '10px',
-            backgroundColor: theme.palette.primary.light,
+            backgroundColor: 'primary.light',
             padding: '20px',
             marginBottom: '12px',
           }}
@@ -381,6 +395,47 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
         </div>
         </div>
       </Box>
+
+      {addToTabSuccess !== null && (
+        <div className="flex-centered"
+             style={{position: "fixed", top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0,0,0,0.3)', zIndex: 1301}}
+             onClick={(e) => {e.stopPropagation(); setAddToTabSuccess(null);}}
+        >
+          <SectionCard size={6} sx={{ width: 'min(93vw, 480px)', position: 'relative', padding: '40px 30px' }}>
+            <IconButton
+              onClick={() => setAddToTabSuccess(null)}
+              sx={{ position: "absolute", top: 8, right: 8 }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography display="flex" alignItems="center" justifyContent="flex-start" gap="8px" fontSize="15px" fontWeight={500} textAlign="left" lineHeight={1.2}>
+              <TaskAltOutlinedIcon color="success" fontSize="large" />
+              {tc("add_to_tab_success_message", {order: [
+                addToTabSuccess.services !== 0 && `${addToTabSuccess.services} ${tc("services2")}`,
+                addToTabSuccess.reservations !== 0 && `${addToTabSuccess.reservations} ${tc("reservations2")}`,
+              ]
+                  .filter((v) => v !== false)
+                  .join(` ${tc("and")} `)})}
+            </Typography>
+            <div style={{display: "flex", justifyContent: "center", marginTop: "16px", gap: "10px", flexWrap: "wrap"}}>
+              <Button
+                sx={{flex: '1', minWidth: 'fit-content'}}
+                variant="contained"
+                onClick={() => navigateToPage('/guest/booked')}
+              >
+                {tc("see_services")}
+              </Button>
+              <Button
+                sx={{flex: '1', minWidth: 'fit-content'}}
+                variant="outlined"
+                onClick={() => navigateToPage('/guest/hotel')}
+              >
+                {tc("see_reservations")}
+              </Button>
+            </div>
+          </SectionCard>
+        </div>
+      )}
     </>
   );
 };

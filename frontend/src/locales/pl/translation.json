@@ -178,7 +178,13 @@
       "addToBill": "Dodaj do rachunku",
       "proceedToPayment": "Przejdź do płatności",
       "services": "Usługi",
-      "reservations": "Rezerwacje"
+      "reservations": "Rezerwacje",
+      "see_services": "Zobacz swoje usługi",
+      "see_reservations": "Zobacz swoje rezerwacje",
+      "add_to_tab_success_message": "Pomyślnie zamówiłeś {{order}} do twojego rachunku.",
+      "services2": "usług",
+      "reservations2": "rezerwacji",
+      "and": "i"
     },
     "order_service": {
       "goBack": "Wróć do dostępnych usług",
