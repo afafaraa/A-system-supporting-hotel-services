@@ -345,6 +345,21 @@ class DatabaseSeeder(
                 ),
             )
         }
+        if (!userRepo.existsByUsername("employee4")) {
+            userRepo.save(
+                UserEntity(
+                    role = Role.EMPLOYEE,
+                    username = "employee4",
+                    password = passwordEncoder.encode("employee4_password"),
+                    email = "d.wilson@gmail.com",
+                    name = "David",
+                    active = true,
+                    emailAuthorized = true,
+                    surname = "Wilson",
+                    employeeData = EmployeeData(Department.MAINTENANCE, listOf(Sector.SECURITY, Sector.ROOM_SERVICE)),
+                ),
+            )
+        }
     }
 
     private fun addTestGuests() {

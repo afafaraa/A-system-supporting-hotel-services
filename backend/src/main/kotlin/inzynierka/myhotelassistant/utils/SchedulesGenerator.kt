@@ -32,7 +32,7 @@ class SchedulesGenerator(
     // @PostConstruct
     fun createSchedules() {
         val startDate = LocalDate.now()
-        val endDate = startDate.plusDays(daysAhead.toLong())
+        val endDate = startDate.plusDays(daysAhead.toLong() - 1)
         createSchedules(startDate, endDate)
 
         // Past schedules for testing purposes
@@ -113,7 +113,7 @@ class SchedulesGenerator(
         }
     }
 
-    @Scheduled(cron = "0 50 23 * * ?") // every day at 23:50
+    @Scheduled(cron = "0 20 22 * * ?") // every day at 23:50
     private fun createSchedulesForSingleDay() {
         val date = LocalDate.now().plusDays(daysAhead.toLong())
         logger.info(

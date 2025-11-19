@@ -111,22 +111,25 @@ function LoginPage({selectedRoom}: {selectedRoom?: Room}){
         <p>Quick log-in:</p>
         <button onClick={() => {
           setUsername("user"); setPassword("password"); login();
-        }}>[guest] user</button>
+        }}>[guest] Test User</button>
         <button onClick={() => {
           setUsername("admin"); setPassword("password"); login();
-        }}>[admin] admin</button>
+        }}>[admin] Test Admin</button>
         <button onClick={() => {
           setUsername("employee1"); setPassword("password"); login();
-        }}>[employee] employee1</button>
-        <button onClick={() => {
-          setUsername("employee2"); setPassword("password123"); login();
-        }}>[reception] employee2</button>
+        }}>[employee] Joe Doe</button>
         <button onClick={() => {
           setUsername("employee3"); setPassword("easy"); login();
-        }}>[employee] employee3</button>
+        }}>[employee] Charlie Brown</button>
+        <button onClick={() => {
+          setUsername("employee4"); setPassword("employee4_password"); login();
+        }}>[employee] David Wilson</button>
+        <button onClick={() => {
+          setUsername("employee2"); setPassword("password123"); login();
+        }}>[reception] Anna Smith</button>
         <button onClick={() => {
           setUsername("manager"); setPassword("password"); login();
-        }}>[manager] manager</button>
+        }}>[manager] Jim Brown</button>
       </Box>
     </>
   );
