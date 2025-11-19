@@ -16,6 +16,7 @@ import {CancellationReason} from "../../types/cancellation_reasons.ts";
 import {formatTimeRange} from "../../utils/dateFormatting.ts";
 import ServiceIcon from "../../components/ui/ServiceIcon.tsx";
 import OrderStatusChip from "../../components/ui/OrderStatusChip.tsx";
+import {isAfter} from "date-fns";
 
 type Props = {
   open: boolean;
@@ -35,6 +36,11 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
     action: "confirm" | "complete" | "cancel" | "reject",
     reason?: CancellationReason,
   ) => {
+    const now = new Date();
+    if (action === "complete" && isAfter(new Date(schedule.date), now)) {
+      setError(t("common.cannot_complete_service_before_schedule"));
+      return;
+    }
     setError(null);
     setLoading(true);
     const apiPath = `/schedule/${schedule.id}/${action}` + (reason ? `?reason=${reason}` : "");
@@ -128,7 +134,7 @@ function ScheduleDetailsDialog({open, onClose, schedule, onScheduleUpdated}: Pro
           </Box>
         }
 
-        {error && <Typography color="error" variant="body2">{error}</Typography>}
+        {error && <Typography color="error" variant="body2" mt={1}>{error}</Typography>}
 
       </DialogContent>
 

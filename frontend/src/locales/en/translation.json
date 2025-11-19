@@ -730,7 +730,8 @@
       "management": "Management"
     },
     "special_requests": "Special requests",
-    "without_reservation": "Without reservation"
+    "without_reservation": "Without reservation",
+    "cannot_complete_service_before_schedule": "You cannot complete a schedule before its scheduled time."
   },
   "ui": {
     "show_more": "Show more ↓",

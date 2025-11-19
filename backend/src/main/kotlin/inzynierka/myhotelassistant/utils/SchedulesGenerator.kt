@@ -8,11 +8,15 @@ import inzynierka.myhotelassistant.repositories.ServiceRepository
 import inzynierka.myhotelassistant.services.EmployeeService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import kotlin.collections.any
+import kotlin.collections.get
+import kotlin.collections.map
+import kotlin.collections.set
 
 @Component
 class SchedulesGenerator(
@@ -27,13 +31,40 @@ class SchedulesGenerator(
 
     // @PostConstruct
     fun createSchedules() {
-        val startDate = LocalDateTime.now().toLocalDate()
+        val startDate = LocalDate.now()
         val endDate = startDate.plusDays(daysAhead.toLong())
         createSchedules(startDate, endDate)
 
         // Past schedules for testing purposes
         createSchedules(startDate.minusWeeks(2), startDate.minusDays(1))
     }
+
+    private fun getServicePossibleStartTimes(
+        service: ServiceEntity,
+        date: LocalDate,
+    ): List<LocalTime> {
+        val serviceDurationMinutes = service.duration.inWholeMinutes
+        val availableWeekdayHours = service.weekday.filter { it.day == date.dayOfWeek }
+        if (availableWeekdayHours.isEmpty()) return emptyList()
+        val possibleStartTimes =
+            availableWeekdayHours
+                .map { weekdayHour ->
+                    val startTime = LocalTime.of(weekdayHour.startHour, 0)
+                    val endTime = LocalTime.of(weekdayHour.endHour, 0)
+                    generateSequence(startTime) { it.plusMinutes(15) }
+                        .takeWhile { !it.plusMinutes(serviceDurationMinutes).isAfter(endTime) }
+                }.flatMap { it }
+                .shuffled()
+        return possibleStartTimes
+    }
+
+    private fun getEmployeeAvailabilityEmptyMap(
+        employees: List<UserEntity>,
+    ): MutableMap<String, MutableList<Pair<LocalDateTime, LocalDateTime>>> =
+        employees
+            .associate { employee ->
+                employee.id!! to mutableListOf<Pair<LocalDateTime, LocalDateTime>>()
+            }.toMutableMap()
 
     private fun createSchedules(
         start: LocalDate,
@@ -42,14 +73,7 @@ class SchedulesGenerator(
         logger.info("Starting schedule generation for period $start to $end")
         val services = serviceRepository.findAll()
         val employees = employeeService.getAllEmployeesWithEmployeeRole()
-        val schedulesToSave = mutableListOf<ScheduleEntity>()
-
-        val employeeAvailability: MutableMap<String, MutableList<Pair<LocalDateTime, LocalDateTime>>> =
-            employees
-                .associate { employee ->
-                    employee.id!! to mutableListOf<Pair<LocalDateTime, LocalDateTime>>()
-                }.toMutableMap()
-
+        val employeeAvailability = getEmployeeAvailabilityEmptyMap(employees)
         val schedulesCount = services.associate { it.id!! to 0 }.toMutableMap()
 
         val groupedByLastDate =
@@ -65,25 +89,61 @@ class SchedulesGenerator(
                         ?.plusDays(1) ?: start
                 }.mapValues { it.value.shuffled() }
 
-        fun getServicePossibleStartTimes(
-            service: ServiceEntity,
-            date: LocalDate,
-        ): List<LocalTime> {
-            val serviceDurationMinutes = service.duration.inWholeMinutes
-            val availableWeekdayHours = service.weekday.filter { it.day == date.dayOfWeek }
-            if (availableWeekdayHours.isEmpty()) return emptyList()
-            val possibleStartTimes =
-                availableWeekdayHours
-                    .map { weekdayHour ->
-                        val startTime = LocalTime.of(weekdayHour.startHour, 0)
-                        val endTime = LocalTime.of(weekdayHour.endHour, 0)
-                        generateSequence(startTime) { it.plusMinutes(15) }
-                            .takeWhile { !it.plusMinutes(serviceDurationMinutes).isAfter(endTime) }
-                    }.flatMap { it }
-                    .shuffled()
-            return possibleStartTimes
+        var currDate = groupedByLastDate.keys.min()
+        val servicesToGenerate = mutableListOf<Pair<ServiceEntity, List<LocalTime>>>()
+        while (!currDate.isAfter(end)) {
+            groupedByLastDate[currDate]?.let { services ->
+                servicesToGenerate.addAll(services.map { it to getServicePossibleStartTimes(it, currDate) })
+            }
+            generateForTheDay(
+                date = currDate,
+                servicesWithDateTimes = servicesToGenerate,
+                employees = employees,
+                schedulesCount = schedulesCount,
+                employeeAvailability = employeeAvailability,
+            )
+            currDate = currDate.plusDays(1)
         }
+        for (service in services) {
+            val count = schedulesCount[service.id!!] ?: 0
+            if (count == 0) continue
+            logger.info(
+                "Generated $count new schedules for service '${service.name}' (${service.duration.inWholeMinutes}min) in period $start to $end",
+            )
+        }
+    }
 
+    @Scheduled(cron = "0 50 23 * * ?") // every day at 23:50
+    private fun createSchedulesForSingleDay() {
+        val date = LocalDate.now().plusDays(daysAhead.toLong())
+        logger.info(
+            "Scheduled task: Starting schedule generation for date $date",
+        )
+        val services =
+            serviceRepository
+                .findAll()
+                .filter {
+                    !scheduleRepository.existsByServiceIdAndServiceDateBetween(
+                        serviceId = it.id!!,
+                        startDate = date.atTime(LocalTime.MIN),
+                        endDate = date.atTime(LocalTime.MAX),
+                    )
+                }
+        generateForTheDay(
+            date = date,
+            servicesWithDateTimes = services.map { it to getServicePossibleStartTimes(it, date) },
+            employees = employeeService.getAllEmployeesWithEmployeeRole(),
+        )
+    }
+
+    private fun generateForTheDay(
+        date: LocalDate,
+        servicesWithDateTimes: List<Pair<ServiceEntity, List<LocalTime>>>,
+        employees: List<UserEntity>,
+        schedulesCount: MutableMap<String, Int> = servicesWithDateTimes.associate { (s, _) -> s.id!! to 0 }.toMutableMap(),
+        employeeAvailability: MutableMap<String, MutableList<Pair<LocalDateTime, LocalDateTime>>> =
+            getEmployeeAvailabilityEmptyMap(employees),
+    ) {
         fun chooseEmployeeForSchedule(
             proposedDateTime: LocalDateTime,
             serviceEndTime: LocalDateTime,
@@ -104,57 +164,51 @@ class SchedulesGenerator(
             return chosenEmployee
         }
 
-        var currDate = groupedByLastDate.keys.min()
-        val servicesToGenerate = mutableListOf<Pair<ServiceEntity, List<LocalTime>>>()
-        while (!currDate.isAfter(end)) {
-            groupedByLastDate[currDate]?.let { services ->
-                servicesToGenerate.addAll(services.map { it to getServicePossibleStartTimes(it, currDate) })
+        val schedulesToSave = mutableListOf<ScheduleEntity>()
+        val checkedServices = servicesWithDateTimes.toMutableList()
+        var iterCount = 0 // safety to prevent infinite loops
+        while (checkedServices.isNotEmpty()) { // making sure that we used all available datetime slots
+            iterCount += 1
+            if (iterCount > 100) {
+                logger.warn("Reached maximum iterations while generating schedules for date $date")
+                break
             }
-            val activeServices = servicesToGenerate.toMutableList()
-            var iterCount = 0 // safety to prevent infinite loops
-            while (activeServices.isNotEmpty()) { // making sure that we used all available datetime slots
-                iterCount += 1
-                if (iterCount > 100) {
-                    logger.warn("Reached maximum iterations while generating schedules for date $currDate")
+            checkedServices.sortBy { (s, _) -> schedulesCount[s.id!!] }
+            val servicesIterator = checkedServices.listIterator()
+            while (servicesIterator.hasNext()) {
+                var generated = false
+                val (service, possibleStartTimes) = servicesIterator.next()
+                for (potentialStartTime in possibleStartTimes) {
+                    val proposedDateTime = date.atTime(potentialStartTime)
+                    val serviceEndTime = proposedDateTime.plusMinutes(service.duration.inWholeMinutes)
+                    val chosenEmployee =
+                        chooseEmployeeForSchedule(proposedDateTime, serviceEndTime)
+                            ?: continue
+                    val scheduleEntity =
+                        ScheduleEntity(
+                            serviceId = service.id!!,
+                            serviceDate = proposedDateTime,
+                            weekday = date.dayOfWeek,
+                            employeeId = chosenEmployee.id!!,
+                        )
+                    schedulesToSave.add(scheduleEntity)
+                    generated = true
+                    schedulesCount[service.id] = schedulesCount.getOrDefault(service.id, 0) + 1
                     break
                 }
-                activeServices.sortBy { (s, _) -> schedulesCount[s.id!!] }
-                val servicesIterator = activeServices.listIterator()
-                while (servicesIterator.hasNext()) {
-                    var generated = false
-                    val (service, possibleStartTimes) = servicesIterator.next()
-                    for (potentialStartTime in possibleStartTimes) {
-                        val proposedDateTime = currDate.atTime(potentialStartTime)
-                        val serviceEndTime = proposedDateTime.plusMinutes(service.duration.inWholeMinutes)
-                        val chosenEmployee =
-                            chooseEmployeeForSchedule(proposedDateTime, serviceEndTime)
-                                ?: continue
-                        val scheduleEntity =
-                            ScheduleEntity(
-                                serviceId = service.id!!,
-                                serviceDate = proposedDateTime,
-                                weekday = currDate.dayOfWeek,
-                                employeeId = chosenEmployee.id!!,
-                            )
-                        schedulesToSave.add(scheduleEntity)
-                        generated = true
-                        schedulesCount[service.id] = schedulesCount.getOrDefault(service.id, 0) + 1
-                        break
-                    }
-                    if (!generated) {
-                        servicesIterator.remove()
-                    }
+                if (!generated) {
+                    servicesIterator.remove()
                 }
             }
-            currDate = currDate.plusDays(1)
         }
-        for (service in services) {
+        scheduleRepository.saveAll(schedulesToSave)
+
+        for ((service, _) in servicesWithDateTimes) {
             val count = schedulesCount[service.id!!] ?: 0
             if (count == 0) continue
             logger.info(
-                "Generated $count new schedules for service '${service.name}' (${service.duration.inWholeMinutes}min) in period $start to $end",
+                "Generated $count new schedules for service '${service.name}' (${service.duration.inWholeMinutes}min) on date $date",
             )
         }
-        scheduleRepository.saveAll(schedulesToSave)
     }
 }

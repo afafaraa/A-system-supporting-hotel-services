@@ -17,6 +17,7 @@ import {styled} from "@mui/material/styles";
 import ServiceIcon from "../../components/ui/ServiceIcon.tsx";
 import OrderStatusChip from "../../components/ui/OrderStatusChip.tsx";
 import CommentOutlinedIcon from "@mui/icons-material/CommentOutlined";
+import {isAfter} from "date-fns";
 
 type ConfirmationProps = {
   schedule: Schedule;
@@ -56,6 +57,11 @@ function RequestedSchedulesPage() {
     reason?: CancellationReason,
   ) => {
     e?.stopPropagation();
+    const now = new Date();
+    if (action === "complete" && isAfter(new Date(schedule.date), now)) {
+      setActionError(t("common.cannot_complete_service_before_schedule"));
+      return;
+    }
     setActionLoading(true);
     setError(null);
     const apiPath = `/schedule/${schedule.id}/${action}` + (reason ? `?reason=${reason}` : "");
@@ -183,7 +189,7 @@ function RequestedSchedulesPage() {
         onClose={() => setActionError(null)}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert onClose={() => setActionError(null)} severity="error" sx={{ width: "100%" }}>
+        <Alert onClose={() => setActionError(null)} severity="error" variant="filled" sx={{ width: "100%" }}>
           {actionError}
         </Alert>
       </Snackbar>
