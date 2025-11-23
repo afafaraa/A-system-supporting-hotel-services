@@ -11,11 +11,8 @@ import {
 } from '@mui/material';
 import {
   Hotel,
-  AccountTree,
-  RestaurantMenu,
   Settings,
   Build,
-  Payments,
   ChevronLeft,
 } from '@mui/icons-material';
 import { HotelSection } from '../../../types/hotel_sections';
@@ -39,9 +36,6 @@ function SideMenu({ active, onSelect }: SideMenuProps) {
     { key: 'rooms', label: tc('rooms_title'), icon: <Hotel /> },
     { key: 'maintenance', label: tc('maintenance_title'), icon: <Build /> },
     { key: 'settings', label: tc('settings_title'), icon: <Settings /> },
-    { key: 'structure', label: tc('structure_title'), icon: <AccountTree /> },
-    { key: 'menu', label: tc('menu_title'), icon: <RestaurantMenu /> },
-    { key: 'finance', label: tc('finance_title'), icon: <Payments /> },
   ] as const;
 
   return (

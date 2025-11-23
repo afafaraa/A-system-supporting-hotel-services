@@ -40,6 +40,11 @@ interface ScheduleRepository : MongoRepository<ScheduleEntity, String> {
         statuses: List<OrderStatus>,
     ): List<ScheduleEntity>
 
+    fun findByGuestIdInAndStatusIn(
+        guestIds: List<String>,
+        statuses: List<OrderStatus>,
+    ): List<ScheduleEntity>
+
     fun findAllByStatusIn(statuses: List<OrderStatus>): List<ScheduleEntity>
 
     fun findByStatusInAndServiceDateBetween(
@@ -61,4 +66,42 @@ interface ScheduleRepository : MongoRepository<ScheduleEntity, String> {
         ],
     )
     fun sumPriceWhereNotNull(): Double?
+
+    @Aggregation(
+        pipeline = [
+            "{ '\$match': { 'orderTime': { '\$gte': { '\$date': '?0' }, '\$lte': { '\$date': '?1' } }, 'price': { '\$ne': null } } }",
+            "{ '\$group': { '_id': null, 'total': { '\$sum': '\$price' } } }",
+            "{ '\$project': { '_id': 0, 'total': 1 } }",
+        ],
+    )
+    fun sumPriceByOrderTimeBetween(
+        startTime: LocalDateTime,
+        endTime: LocalDateTime,
+    ): Double?
+
+    data class ServiceCount(
+        val serviceId: String = "",
+        val count: Long = 0,
+    )
+
+    @Aggregation(
+        pipeline = [
+            "{ \$match: { orderTime: { \$gte: { \$date: ?0 }, \$lte: { \$date: ?1 } }, status: { \$ne: 'AVAILABLE' } } }",
+            "{ \$group: { _id:  '\$serviceId', count:  { \$sum: 1 } } }",
+            "{ \$sort:  { count:  -1 } }",
+            "{ \$limit: ?2 }",
+            "{ \$project:  { serviceId: '\$_id', count: 1, _id: 0 } }",
+        ],
+    )
+    fun getTopServices(
+        startTime: LocalDateTime,
+        endTime: LocalDateTime,
+        limit: Int,
+    ): List<ServiceCount>
+
+    fun countByServiceIdAndOrderTimeBetween(
+        serviceId: String,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime,
+    ): Long?
 }
