@@ -24,7 +24,5 @@ COPY --from=builder /build/build/libs/*.jar app.jar
 
 EXPOSE 8080
 
-# Run the wait script with sh to avoid exec/shebang issues caused by CRLF/BOM on Windows hosts
 ENTRYPOINT ["sh", "/usr/local/bin/wait-for-mongo.sh"]
-# Use sh -c so JAVA_OPTS environment variable is expanded correctly
 CMD ["sh","-c","java $JAVA_OPTS -jar app.jar"]

@@ -79,8 +79,8 @@ class SecurityConfig(
                         "/js/**",
                         "/Coffee.jpg",
                         "/open/**",
-                        "/api/uploads/files/**",
-                        "/api/rooms/**",
+                        "/uploads/files/**",
+                        "/rooms/**",
                         "/swagger-ui.html",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
@@ -88,11 +88,11 @@ class SecurityConfig(
                         "/swagger-resources/**",
                         "/webjars/**",
                     ).permitAll()
-                    .requestMatchers("/api/secured/**")
+                    .requestMatchers("/secured/**")
                     .hasAnyRole(Role.ADMIN.name)
-                    .requestMatchers("/api/management/**")
+                    .requestMatchers("/management/**")
                     .hasAnyRole(Role.MANAGER.name)
-                    .requestMatchers("/api/employee/**")
+                    .requestMatchers("/employee/**")
                     .hasAnyRole(Role.EMPLOYEE.name)
                     .anyRequest()
                     .authenticated()
@@ -135,7 +135,11 @@ class SecurityConfig(
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
 
-        configuration.allowedOrigins = listOf(appProperties.frontend.url)
+        configuration.allowedOrigins = listOf(
+            "http://localhost:5173", // dev frontend
+            "http://localhost:80",   // prod browser
+            "http://frontend:80"     // prod docker
+        )
         println("Allowed CORS origin: ${appProperties.frontend.url}")
         configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
         configuration.allowedHeaders = listOf("*")

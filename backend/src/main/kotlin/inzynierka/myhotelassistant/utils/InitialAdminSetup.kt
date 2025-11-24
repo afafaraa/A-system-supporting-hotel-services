@@ -36,7 +36,7 @@ class InitialAdminSetup(
                 return@CommandLineRunner
             }
 
-            // 1️⃣ Try creating admin from environment variables
+            // Try creating admin from environment variables
             val envUsername = System.getenv("ADMIN_USERNAME")
             val envPassword = System.getenv("ADMIN_PASSWORD")
             val envEmail = System.getenv("ADMIN_EMAIL")
@@ -58,7 +58,7 @@ class InitialAdminSetup(
                 return@CommandLineRunner
             }
 
-            // 2️⃣ Fall back to interactive setup if environment variables are missing
+            // Fall back to interactive setup if environment variables are missing
             if (System.console() != null) {
                 logger.info("No admin found. Starting interactive setup...")
                 setupAdminInteractively()
