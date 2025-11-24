@@ -12,11 +12,8 @@ This project supports two environments: **Development (dev)** and **Production (
 
 **Commands:**
 ```bash
-# Start backend and MongoDB in containers, then start frontend dev server
-make dev
-
-# Or manually:
-make dev-up-build     # Start backend + MongoDB with rebuild
+# Start dev environment:
+make dev-up     # Start backend + MongoDB with rebuild
 make dev-frontend     # Start frontend dev server (separate terminal)
 
 # Stop containers
@@ -38,15 +35,10 @@ make dev-down
 **Commands:**
 ```bash
 # Start all services in containers
-make prod-up-build
-
-# Or use default commands (they point to prod):
-make up-build
+make prod-up
 
 # Stop containers
 make prod-down
-# or
-make down
 ```
 
 **Access:**
@@ -58,10 +50,3 @@ make down
 
 - `docker-compose.dev.yml` - Development environment (no frontend container)
 - `docker-compose.prod.yml` - Default file (mirrors prod configuration)
-
-## Environment Variables
-
-The backend automatically receives the correct frontend URL:
-- **Dev**: `APP_FRONTEND_URL=http://localhost:5173`
-- **Prod**: `APP_FRONTEND_URL=http://localhost:80`
-
