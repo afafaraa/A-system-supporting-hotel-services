@@ -5,10 +5,11 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @ConfigurationProperties(prefix = "app")
-class AppProperties {
-    lateinit var frontend: Frontend
-
-    class Frontend {
-        lateinit var url: String
-    }
+data class AppProperties(
+    var frontend: Frontend = Frontend(),
+) {
+    data class Frontend(
+        var url: String = "http://localhost:5273",
+        var port: String = url.split(":").last(),
+    )
 }

@@ -28,6 +28,7 @@ class EmailSenderTest {
         appProperties =
             AppProperties().apply {
                 frontend.url = "http://localhost:5173"
+                frontend.port = "5173"
             }
         emailSender = EmailSender(mailSender, appProperties, null)
     }
