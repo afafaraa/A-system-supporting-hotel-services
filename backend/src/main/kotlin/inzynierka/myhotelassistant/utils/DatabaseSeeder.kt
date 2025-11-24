@@ -48,7 +48,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.times
 
-@Profile("dev")
+@Profile("dev", "prod")
 @Component
 class DatabaseSeeder(
     private val userRepo: UserRepository,

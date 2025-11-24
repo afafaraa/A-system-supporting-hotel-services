@@ -25,13 +25,13 @@ class InitialAdminSetup(
     fun adminSetupRunner() =
         CommandLineRunner {
             if (env.activeProfiles.contains("dev")) {
-                logger.info("Skipping admin setup in dev environment.")
+                logger.info("Skipping interactive  admin setup in dev environment.")
                 return@CommandLineRunner
             }
 
             val admins = userRepo.findByRole(Role.ADMIN)
             if (admins.isNotEmpty()) {
-                logger.info("Admin account(s) already exist. Skipping setup.")
+                logger.info("Admin account(s) already exist. Skipping interactive setup.")
                 logger.info(admins.toString())
                 return@CommandLineRunner
             }
@@ -45,14 +45,15 @@ class InitialAdminSetup(
 
             if (envUsername != null && envPassword != null && envEmail != null) {
                 logger.info("Creating admin from environment variables...")
-                val admin = UserEntity(
-                    username = envUsername,
-                    password = passwordEncoder.encode(envPassword),
-                    email = envEmail,
-                    name = envFirstName,
-                    surname = envLastName,
-                    role = Role.ADMIN
-                )
+                val admin =
+                    UserEntity(
+                        username = envUsername,
+                        password = passwordEncoder.encode(envPassword),
+                        email = envEmail,
+                        name = envFirstName,
+                        surname = envLastName,
+                        role = Role.ADMIN,
+                    )
                 userRepo.save(admin)
                 logger.info("Admin '${admin.username}' created from environment variables.")
                 return@CommandLineRunner
@@ -65,7 +66,7 @@ class InitialAdminSetup(
             } else {
                 logger.error("No admin found and no environment variables provided. Startup aborted!")
                 throw IllegalStateException(
-                    "Cannot create admin: provide ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_EMAIL"
+                    "Cannot create admin: provide ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_EMAIL",
                 )
             }
         }

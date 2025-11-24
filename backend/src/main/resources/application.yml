@@ -5,7 +5,7 @@ spring:
   application:
     name: MyHotelAssistant
   profiles:
-    active: prod
+    active: dev
   task:
     scheduling:
       pool:
@@ -36,7 +36,7 @@ app:
   security:
     password-length: 10
   frontend:
-    url: http://localhost
+    url: http://localhost:5173
   reservations:
     cancellation:
       days-before: 7
