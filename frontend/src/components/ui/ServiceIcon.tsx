@@ -17,7 +17,7 @@ function ServiceIcon({children, icon = RoomServiceOutlinedIcon, imageUrl, imageA
     <Box mb={mb} display="flex" flexDirection="row" alignItems="center" gap={{xs: 1.5, sm: 3}}>
       {!imgError && imageUrl ?
         <img src={imageUrl} alt={imageAlt}
-             style={{width: 60, height: 60, objectFit: "cover", borderRadius: 10}}
+             style={{width: 60, height: 60, objectFit: "cover", borderRadius: 10, flexShrink: 0}}
              onError={() => setImgError(true)}
         />
         :

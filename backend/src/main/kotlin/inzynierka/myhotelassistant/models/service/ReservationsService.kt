@@ -137,6 +137,7 @@ class ReservationsService(
                     guestCount = reservation.guestsCount,
                     reservationPrice = reservation.reservationPrice,
                     status = reservation.status.name,
+                    specialRequests = reservation.specialRequests,
                 )
             }
     }
@@ -232,8 +233,8 @@ class ReservationsService(
             roomRepository.findByNumber(roomNumber)
                 ?: throw IllegalArgumentException("Room with number $roomNumber not found")
         val standard =
-            roomStandardRepository.findById(roomNumber).getOrNull()
-                ?: throw IllegalArgumentException("Room with number $roomNumber not found")
+            roomStandardRepository.findById(room.standardId).getOrNull()
+                ?: throw IllegalArgumentException("Standard with room with number $roomNumber not found")
         val basePrice = room.pricePerNight ?: standard.basePrice
         return basePrice * days // TODO: apply discounts, seasonal prices, etc.
     }
@@ -371,4 +372,6 @@ class ReservationsService(
         val reservations = reservationsRepository.findAllByStatus(ReservationStatus.CHECKED_IN)
         return reservations.map { transformToDTO(it) }
     }
+
+    fun count() = reservationsRepository.count()
 }

@@ -171,16 +171,26 @@
     "shopping_cart": {
       "title": "Koszyk",
       "noItems": "Brak produktów w koszyku",
+      "clearCart": "Wyczyść koszyk",
+      "summary": "Podsumowanie zamówienia",
       "cartValue": "Wartość koszyka",
       "currentBill": "Bieżący rachunek",
-      "pay": "Zapłać",
       "addToBill": "Dodaj do rachunku",
-      "continueShopping": "Kontynuuj zakupy"
+      "proceedToPayment": "Przejdź do płatności",
+      "services": "Usługi",
+      "reservations": "Rezerwacje",
+      "see_services": "Zobacz swoje usługi",
+      "see_reservations": "Zobacz swoje rezerwacje",
+      "add_to_tab_success_message": "Pomyślnie zamówiłeś {{order}} do twojego rachunku.",
+      "services2": "usług",
+      "reservations2": "rezerwacji",
+      "and": "i"
     },
     "order_service": {
+      "goBack": "Wróć do dostępnych usług",
       "availability": "Dostępność",
-      "available": "Dostępne",
-      "unavailable": "Niedostępne",
+      "available": "Dostępna",
+      "unavailable": "Niedostępna",
       "price": "Cena",
       "duration": "Czas trwania",
       "addToCart": "Dodaj do koszyka",
@@ -190,7 +200,23 @@
       "selectDate": "Wybierz datę",
       "selectTime": "Wybierz godzinę",
       "specialRequests": "Specjalne życzenia",
-      "noSlotsAvailable": "Brak dostępnych terminów"
+      "noSlotsAvailable": "Brak dostępnych terminów",
+      "addedToCartMessage": "Wybrana usługa została pomyślnie dodana do koszyka",
+      "orderDetails": "Szczegóły zamówienia",
+      "serviceReviews": "Opinie o usłudze",
+      "serviceReviewsSubtitle": "Zobacz, co inni goście mówią o tej usłudze",
+      "noReviews": "Brak opinii o tej usłudze.",
+      "unsupportedAttributeType": "Nieobsługiwany typ usługi",
+      "selection_card": {
+        "keys": {
+          "soups": "Zupy",
+          "main_courses": "Dania główne",
+          "desserts": "Desery"
+        },
+        "addToOrder": "Dodaj do zamówienia",
+        "emptySelection": "Brak wybranych pozycji",
+        "orderPrice": "Suma"
+      }
     },
     "reservations": {
       "myReservations": "Moje rezerwacje pokoi",
@@ -682,7 +708,9 @@
           "check-out-button": "Wymelduj",
           "success-message": "Pomyślnie wymeldowano rezerwację",
           "only-checked-in-error": "Tylko zameldowane rezerwacje mogą zostać wymeldowane",
-          "error-during-check-out": "Błąd podczas wymeldowania"
+          "error-during-check-out": "Błąd podczas wymeldowania",
+          "check-out-bill": "Rachunek",
+          "bill-payment-confirmation": "Potwierdzam, że kwota rachunku została uregulowana"
         }
       },
       "guest-arrival-departures": {
@@ -747,7 +775,8 @@
       "management": "Zarządzanie"
     },
     "special_requests": "Specjalne życzenia",
-    "without_reservation": "Bez rezerwacji"
+    "without_reservation": "Bez rezerwacji",
+    "cannot_complete_service_before_schedule": "Nie można zakończyć usługi przed jej zaplanowanym rozpoczęciem."
   },
   "ui": {
     "show_more": "Pokaż więcej ↓",

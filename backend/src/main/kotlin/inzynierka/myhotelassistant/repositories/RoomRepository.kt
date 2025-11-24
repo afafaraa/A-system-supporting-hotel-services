@@ -9,4 +9,10 @@ interface RoomRepository : MongoRepository<RoomEntity, String> {
     fun findByNumber(number: String): RoomEntity?
 
     fun findAllByStandardId(standardId: String): List<RoomEntity>
+
+    data class RoomStandardId(
+        val standardId: String,
+    )
+
+    fun findRoomStandardIdByNumber(number: String): RoomStandardId?
 }

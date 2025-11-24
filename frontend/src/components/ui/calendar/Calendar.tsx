@@ -11,7 +11,7 @@ import {Schedule} from "../../../types/schedule.ts";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
 import {isAxiosError} from "axios";
 import ScheduleDetailsDialog from "../../../pages/employee/ScheduleDetailsDialog.tsx";
-import {formatNumericDayMonth} from "../../../utils/dateFormatting.ts";
+import {formatNumericDayMonth, toLocalISODate} from "../../../utils/dateFormatting.ts";
 import FormatListBulletedOutlinedIcon from '@mui/icons-material/FormatListBulletedOutlined';
 import ViewWeekOutlinedIcon from '@mui/icons-material/ViewWeekOutlined';
 import CalendarList from "./CalendarList.tsx";
@@ -52,7 +52,7 @@ function Calendar({title, subtitle, fetchingUrl}: CalendarProps) {
 
   useEffect(() => {
     if (schedules.has(yearWeek)) return;
-    axiosAuthApi.get<Schedule[]>(fetchingUrl + addDays(currentWeekStart, 1).toISOString())
+    axiosAuthApi.get<Schedule[]>(fetchingUrl + toLocalISODate(addDays(currentWeekStart, 1)))
       .then(res => {
         const updated = new Map(schedules);
         updated.set(yearWeek, res.data);

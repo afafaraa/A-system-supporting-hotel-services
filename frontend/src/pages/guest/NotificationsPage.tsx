@@ -31,7 +31,8 @@ function NotificationsPage() {
     axiosAuthApi.get<Notification[]>('/user/notifications')
       .then(res => {
         setLoading(false);
-        setNotifications(res.data);
+        setNotifications(res.data
+          .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
       })
       .catch(err => {
         setError(err.message);

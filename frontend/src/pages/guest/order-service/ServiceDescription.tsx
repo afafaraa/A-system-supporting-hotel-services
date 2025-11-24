@@ -5,9 +5,6 @@ import {
   useTheme,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { OrderServiceProps } from './OrderServicePage.tsx';
-import { addService } from '../../../redux/slices/servicesCartSlice.ts';
-import { useDispatch } from 'react-redux';
 import { ServiceProps } from '../available-services/AvailableServiceCard.tsx';
 import TimelapseIcon from '@mui/icons-material/Timelapse';
 import Chip from "@mui/material/Chip";
@@ -15,23 +12,15 @@ import {SectionCard} from "../../../theme/styled-components/SectionCard.ts";
 
 function ServiceDescription({
   service,
-  timeSlots,
   selectedTime,
+  handleAddToCart,
 }: {
   service: ServiceProps;
-  timeSlots: OrderServiceProps[];
   selectedTime: string;
+  handleAddToCart: () => void;
 }) {
   const theme = useTheme();
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-
-  const handleAddToCart = () => {
-    if (!selectedTime) return;
-    const slot = timeSlots.find((s) => s.id === selectedTime);
-    if (!slot) return;
-    dispatch(addService({ id: selectedTime }));
-  };
 
   return (
     <SectionCard>
@@ -99,7 +88,7 @@ function ServiceDescription({
             >
               {t('pages.order_service.price')}
             </p>
-            <p style={{ fontWeight: 600 }}>{service.price}</p>
+            <p style={{ fontWeight: 600 }}>{service.price < 0.01 ? '—' : service.price.toFixed(2)}</p>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center' }}>

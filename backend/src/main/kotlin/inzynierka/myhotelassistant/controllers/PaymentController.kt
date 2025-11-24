@@ -3,6 +3,7 @@ package inzynierka.myhotelassistant.controllers
 import com.stripe.Stripe
 import com.stripe.model.checkout.Session
 import com.stripe.param.checkout.SessionCreateParams
+import inzynierka.myhotelassistant.dto.OrderRequest
 import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.services.PaymentService
 import jakarta.annotation.PostConstruct
@@ -26,6 +27,14 @@ class PaymentController(
     fun init() {
         Stripe.apiKey = stripeApiKey
     }
+
+    data class CheckoutRequest(
+        val cartItems: OrderRequest,
+        val currency: String = "usd",
+        val successUrl: String,
+        val cancelUrl: String,
+        val customerEmail: String?,
+    )
 
     data class CreateCheckoutSessionResponse(
         val url: String,
@@ -86,20 +95,4 @@ class PaymentController(
             throw HttpException.InvalidArgumentException("Failed to create checkout session: ${e.message}")
         }
     }
-
-    data class CartItemDTO(
-        val id: String,
-        val type: String,
-        val checkIn: String? = null,
-        val checkOut: String? = null,
-        val guestCount: Int? = null,
-    )
-
-    data class CheckoutRequest(
-        val cartItems: List<CartItemDTO>,
-        val currency: String = "eur",
-        val successUrl: String,
-        val cancelUrl: String,
-        val customerEmail: String?,
-    )
 }

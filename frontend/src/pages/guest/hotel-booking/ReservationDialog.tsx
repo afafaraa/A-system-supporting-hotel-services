@@ -25,6 +25,7 @@ function ReservationDialog({
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [guestCount, setGuestCount] = useState(1);
+  const [specialRequests, setSpecialRequests] = useState<string | null>(null);
   const [status, setStatus] = useState<
     'idle' | 'checking' | 'available' | 'unavailable'
   >('idle');
@@ -38,6 +39,7 @@ function ReservationDialog({
         checkIn: checkIn,
         checkOut: checkOut,
         guestCount: guestCount,
+        specialRequests: specialRequests ?? undefined,
       })
     );
   };
@@ -68,7 +70,7 @@ function ReservationDialog({
       }
     };
 
-    fetchAvailability();
+    fetchAvailability().then(null);
   }, [checkIn, checkOut, room]);
 
   if (!room) return null;
@@ -117,6 +119,8 @@ function ReservationDialog({
         />
 
         <TextField
+          value={specialRequests ?? ""}
+          onChange={(e) => setSpecialRequests(e.target.value)}
           label="Special Requests"
           placeholder="Any special requirements or preferences..."
           multiline

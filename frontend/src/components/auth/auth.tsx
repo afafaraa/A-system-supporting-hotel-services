@@ -3,8 +3,8 @@ import axiosApi from "../../middleware/axiosApi";
 import { jwtDecode } from "jwt-decode";
 import {AppDispatch} from "../../redux/store.ts";
 import {clearUserDetails} from "../../redux/slices/userDetailsSlice.ts";
-import { setServices, ServiceCartItem } from '../../redux/slices/servicesCartSlice.ts';
-import { setReservations, ReservationCartItem } from '../../redux/slices/reservationsCartSlice.ts';
+import {setUsernameAndInitializeServicesCart} from '../../redux/slices/servicesCartSlice.ts';
+import {setUsernameAndInitializeReservationsCart} from '../../redux/slices/reservationsCartSlice.ts';
 
 interface CustomJwtPayload {
     iat: number,
@@ -19,36 +19,17 @@ function removeTokensFromLocalStorage() {
     localStorage.removeItem('REFRESH_TOKEN');
 }
 
-function initializeCartsFromLocalStorage(dispatch: AppDispatch) {
+function initializeCartsFromLocalStorage(username: string, dispatch: AppDispatch) {
     // Initialize services cart
-    const servicesCart = localStorage.getItem('SERVICES_CART');
-    if (servicesCart) {
-        try {
-            const parsedServices: ServiceCartItem[] = JSON.parse(servicesCart);
-            dispatch(setServices(parsedServices));
-        } catch (error) {
-            console.log("Error parsing services cart from localStorage:", error);
-            localStorage.removeItem('SERVICES_CART');
-        }
-    }
+    dispatch(setUsernameAndInitializeServicesCart(username));
 
     // Initialize reservations cart
-    const reservationsCart = localStorage.getItem('RESERVATIONS_CART');
-    if (reservationsCart) {
-        try {
-            const parsedReservations: ReservationCartItem[] = JSON.parse(reservationsCart);
-            dispatch(setReservations(parsedReservations));
-        } catch (error) {
-            console.log("Error parsing reservations cart from localStorage:", error);
-            localStorage.removeItem('RESERVATIONS_CART');
-        }
-    }
+    dispatch(setUsernameAndInitializeReservationsCart(username));
 }
 
 export async function initializeUserFromLocalStorage(dispatch: AppDispatch) {
     const accessToken = localStorage.getItem('ACCESS_TOKEN');
     const refreshToken = localStorage.getItem('REFRESH_TOKEN');
-    initializeCartsFromLocalStorage(dispatch);
     if (!accessToken || !refreshToken) {
         console.log("No tokens found");
         removeTokensFromLocalStorage();
@@ -64,6 +45,7 @@ export async function initializeUserFromLocalStorage(dispatch: AppDispatch) {
     }
     if (accessTokenData.exp > currentTime + 30) {
         console.log("Access token valid");
+        initializeCartsFromLocalStorage(accessTokenData.sub, dispatch);
         dispatch(setUser({
             username: accessTokenData.sub,
             role: accessTokenData.role,
@@ -84,6 +66,7 @@ export async function initializeUserFromLocalStorage(dispatch: AppDispatch) {
     if (newAccessToken) {
         const newAccessTokenData = jwtDecode<CustomJwtPayload>(newAccessToken);
         localStorage.setItem('ACCESS_TOKEN', newAccessToken);
+        initializeCartsFromLocalStorage(accessTokenData.sub, dispatch);
         dispatch(setUser({
             username: accessTokenData.sub,
             role: accessTokenData.role,

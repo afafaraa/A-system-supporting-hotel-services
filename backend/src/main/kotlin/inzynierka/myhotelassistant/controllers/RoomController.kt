@@ -30,7 +30,7 @@ class RoomController(
         val number: String,
         val floor: Int,
         val capacity: Int,
-        val pricePerNight: Double?,
+        val pricePerNight: Double,
         val standard: RoomStandardEntity,
         val description: String?,
         val amenities: Set<RoomAmenity>,
@@ -46,6 +46,21 @@ class RoomController(
         @RequestParam from: LocalDate,
         @RequestParam to: LocalDate,
     ): Double = reservationsService.calculateReservationPrice(roomNumber, from, to)
+
+    data class RoomForCartResponse(
+        val price: Double,
+        val standardName: String,
+    )
+
+    @GetMapping("/{roomNumber}/for-cart")
+    fun getRoomForCart(
+        @PathVariable roomNumber: String,
+        @RequestParam from: LocalDate,
+        @RequestParam to: LocalDate,
+    ) = RoomForCartResponse(
+        price = reservationsService.calculateReservationPrice(roomNumber, from, to),
+        standardName = roomService.findStandardByRoomNumber(roomNumber).name,
+    )
 
     @GetMapping("/available")
     fun getAllAvailableRoomsForDate(
@@ -116,7 +131,7 @@ class RoomController(
     @GetMapping("/by/number/{id}")
     fun getRoomByNumber(
         @PathVariable("id") id: String,
-    ): RoomEntity = roomService.findRoomByNumber(id)
+    ): RoomWithStandardDTO = roomService.toDTO(roomService.findRoomByNumber(id))
 
     @GetMapping("/{roomNumber}/availability")
     fun checkRoomAvailability(

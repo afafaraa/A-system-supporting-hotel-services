@@ -8,6 +8,7 @@ import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.repositories.RoomStandardRepository
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class RoomService(
@@ -57,6 +58,11 @@ class RoomService(
         roomStandardRepository
             .findById(id)
             .orElseThrow { IllegalArgumentException("Room standard with id $id was not found") }
+
+    fun findStandardByRoomNumber(roomNumber: String): RoomStandardEntity =
+        roomRepository.findRoomStandardIdByNumber(roomNumber)?.let {
+            roomStandardRepository.findById(it.standardId).getOrNull()
+        } ?: throw IllegalArgumentException("Room standard with room number $roomNumber was not found")
 
     fun createStandard(standard: RoomStandardEntity): RoomStandardEntity {
         require(!roomStandardRepository.existsByName(standard.name)) {
@@ -121,7 +127,7 @@ class RoomService(
             number = room.number,
             floor = room.floor,
             capacity = room.capacity,
-            pricePerNight = room.pricePerNight,
+            pricePerNight = room.pricePerNight ?: standard.basePrice,
             standard = standard,
             description = room.description,
             amenities = room.amenities,

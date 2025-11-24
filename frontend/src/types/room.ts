@@ -30,4 +30,5 @@ export type ReservationGuest = {
   guestCount: number;
   reservationPrice: number;
   status: 'Confirmed' | 'Pending' | 'Cancelled';
+  specialRequests?: string;
 };

@@ -29,6 +29,13 @@ const ReservationTitle = ({reservation}: {reservation: Reservation}) => {
   );
 }
 
+const colorFromStatus: Record<string, string> = {
+  "REQUESTED": "error",
+  "CONFIRMED": "info",
+  "CHECKED_IN": "success",
+  "CANCELED": "text.primary"
+} as const;
+
 const ReservationDetails = ({reservation}: {reservation: Reservation}) => {
   const {t} = useTranslation();
   const {t: tc} = useTranslationWithPrefix("pages.receptionist.reservation-dialog.common");
@@ -38,7 +45,9 @@ const ReservationDetails = ({reservation}: {reservation: Reservation}) => {
         {reservation.id}
       </DialogSection>
       <DialogSection title={tc("reservation-status")}>
-        {reservation.status}
+        <Typography fontSize="inherit" color={colorFromStatus[reservation.status] ?? "text.primary"} textTransform="uppercase">
+          {t("pages.reservations.status." + reservation.status)}
+        </Typography>
       </DialogSection>
       <DialogSection title={tc("stay-dates")}>
         {formatDateRange(reservation.checkIn, reservation.checkOut)}

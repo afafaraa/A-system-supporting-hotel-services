@@ -52,11 +52,8 @@ function BookedServicesPage() {
   const fetchRequestedServices = useCallback(async () => {
     try {
       if (user) {
-        console.log(user)
-        const response = await axiosAuthApi.get(
-          `/guest/order/get/all/${user.username}`
-        );
-        setServices(response.data || []);
+        const response = await axiosAuthApi.get<RequestedServiceProps[]>('/guest/orders');
+        setServices(response.data.sort((s1, s2) => new Date(s1.datetime).getTime() - new Date(s2.datetime).getTime()) || []);
       }
     } catch (e) {
       console.error(e);
@@ -64,7 +61,7 @@ function BookedServicesPage() {
   }, [user]);
 
   useEffect(() => {
-    fetchRequestedServices();
+    fetchRequestedServices().then(null);
   }, [fetchRequestedServices]);
 
   const counts = useMemo(() => {

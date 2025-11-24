@@ -1,5 +1,5 @@
 import axiosApi from "../../middleware/axiosApi";
-import {useEffect, useState} from 'react';
+import {FormEvent, useEffect, useState} from 'react';
 import {Navigate, useNavigate} from "react-router-dom";
 import Button from '@mui/material/Button';
 import {Box, Typography, useTheme} from "@mui/material";
@@ -69,6 +69,11 @@ function LoginPage({selectedRoom}: {selectedRoom?: Room}){
       .finally(() => setLoading(false));
   }
 
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    login();
+  };
+
   return (
     <>
       <ShadowCard>
@@ -85,6 +90,7 @@ function LoginPage({selectedRoom}: {selectedRoom?: Room}){
           <Typography variant="subtitle2" fontWeight="medium" color="text.secondary" mt={0.5} sx={{textWrap: "pretty"}}>{tc("subtitle")}</Typography>
         </Box>
 
+        <Box component="form" onSubmit={handleSubmit}>
         <InputLabel label={<><PersonIcon sx={{fontSize: "120%"}} /> {tc("username")}</>} htmlFor="username" mt={3} />
         <StyledInput type="text" value={username} onChange={(e) => setUsername(e.target.value)} id="username" placeholder={tc("username")}/>
 
@@ -94,32 +100,36 @@ function LoginPage({selectedRoom}: {selectedRoom?: Room}){
 
         <AppLink to="/reset-password-email" color="text.secondary" mt={3}>{tc("resetPassword")}</AppLink>
         <AppLink to="/register/no-code" color="text.primary" mt={0.8}>{tc("registerWithCode")}</AppLink>
-        <Button disabled={disabled} fullWidth variant="contained" onClick={login} loading={loading} sx={{mt: 3}}>
+        <Button disabled={disabled} fullWidth variant="contained" type="submit" loading={loading} sx={{mt: 3}}>
           {tc("loginButton")}
         </Button>
         {error && <Typography component="p" variant="caption" color="error" sx={{mt: 2}}>{t(error)}</Typography>}
+        </Box>
       </ShadowCard>
 
       <Box position="fixed" my="auto" left={4} display={{xs: "none", sm: "flex"}} flexDirection="column" gap={0.8}>
         <p>Quick log-in:</p>
         <button onClick={() => {
           setUsername("user"); setPassword("password"); login();
-        }}>[guest] user</button>
+        }}>[guest] Test User</button>
         <button onClick={() => {
           setUsername("admin"); setPassword("password"); login();
-        }}>[admin] admin</button>
+        }}>[admin] Test Admin</button>
         <button onClick={() => {
           setUsername("employee1"); setPassword("password"); login();
-        }}>[employee] employee1</button>
-        <button onClick={() => {
-          setUsername("employee2"); setPassword("password123"); login();
-        }}>[reception] employee2</button>
+        }}>[employee] Joe Doe</button>
         <button onClick={() => {
           setUsername("employee3"); setPassword("easy"); login();
-        }}>[employee] employee3</button>
+        }}>[employee] Charlie Brown</button>
+        <button onClick={() => {
+          setUsername("employee4"); setPassword("employee4_password"); login();
+        }}>[employee] David Wilson</button>
+        <button onClick={() => {
+          setUsername("employee2"); setPassword("password123"); login();
+        }}>[reception] Anna Smith</button>
         <button onClick={() => {
           setUsername("manager"); setPassword("password"); login();
-        }}>[manager] manager</button>
+        }}>[manager] Jim Brown</button>
       </Box>
     </>
   );

@@ -5,8 +5,6 @@ import {
   Typography,
   Box,
   IconButton,
-  useTheme,
-  CircularProgress,
   Divider,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -14,117 +12,132 @@ import ShoppingCartItem from './ShoppingCartItem.tsx';
 import { selectUserDetails } from '../../../redux/slices/userDetailsSlice.ts';
 import {
   selectServicesCart,
-  clearServicesCart,
+  clearServicesCart, setServices, removeService,
 } from '../../../redux/slices/servicesCartSlice.ts';
 import {
   selectReservationsCart,
-  clearReservationsCart,
+  clearReservationsCart, setReservations, removeReservation,
 } from '../../../redux/slices/reservationsCartSlice.ts';
 import { axiosAuthApi } from '../../../middleware/axiosApi.ts';
-import { RoomStandard } from '../../../types/room.ts';
-import { selectUser } from '../../../redux/slices/userSlice.ts';
 import { useTranslation } from 'react-i18next';
 import { isAxiosError } from 'axios';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import useTranslationWithPrefix from "../../../locales/useTranslationWithPrefix.tsx";
+import {toLocalISODate} from "../../../utils/dateFormatting.ts";
+import {useNavigate} from "react-router-dom";
+import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined';
+import {SectionCard} from "../../../theme/styled-components/SectionCard.ts";
 
-export type CartProps = {
+export type ServiceCartProps = {
+  type: 'SERVICE';
   id: string;
-  type: 'SERVICE' | 'RESERVATION';
-  name?: string;
-  employeeId?: string;
-  employeeFullName?: string;
+  name: string;
+  employeeId: string;
+  employeeFullName: string;
   imageUrl?: string;
-  price?: number;
-  datetime?: string;
-  standard?: RoomStandard;
-  pricePerNight?: number;
-  checkIn?: string;
-  checkOut?: string;
-  guestCount?: number;
-  roomNumber?: number;
-};
+  price: number;
+  datetime: string | Date;
+  specialRequests?: string;
+}
+
+export type ReservationCartProps = {
+  type: 'RESERVATION',
+  roomNumber: string;
+  reservationPrice: number;
+  roomStandardName: string
+  checkIn: string;
+  checkOut: string;
+  guestCount: number;
+  specialRequests?: string;
+}
 
 type ShoppingCartPopupProps = {
   open: boolean;
-  setOpen: () => void;
+  closeItself: () => void;
 };
 
-const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
+const ShoppingCartPopup = ({ open, closeItself }: ShoppingCartPopupProps) => {
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);
   const userDetails = useSelector(selectUserDetails);
   const servicesCart = useSelector(selectServicesCart);
   const reservationsCart = useSelector(selectReservationsCart);
-  const theme = useTheme();
+  const navigate = useNavigate();
   const { t } = useTranslation();
+  const {t: tc} = useTranslationWithPrefix("pages.shopping_cart");
 
-  const [servicesCartData, setServicesCartData] = useState<CartProps[]>([]);
-  const [reservationsCartData, setReservationsCartData] = useState<CartProps[]>([]);
+  const [servicesCartData, setServicesCartData] = useState<ServiceCartProps[]>([]);
+  const [reservationsCartData, setReservationsCartData] = useState<ReservationCartProps[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [addToTabSuccess, setAddToTabSuccess] = useState<{services: number, reservations: number} | null>(null);
 
-  const calculateReservationPrice = (
-    checkIn?: string,
-    checkOut?: string,
-    pricePerNight?: number
-  ): number => {
-    if (!checkIn || !checkOut || !pricePerNight) return 0;
+  const handleClose = () => {
+    setAddToTabSuccess(null);
+    closeItself();
+  }
 
-    const checkInDate = new Date(checkIn);
-    const checkOutDate = new Date(checkOut);
-    const nights = Math.max(
-      1,
-      Math.floor(
-        (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24)
-      )
-    );
-
-    return nights * pricePerNight;
-  };
+  const navigateToPage = (path: string) => {
+    handleClose();
+    navigate(path);
+  }
 
   const fetchServicesData = useCallback(async () => {
-    const servicesList: CartProps[] = [];
-
+    const servicesList: ServiceCartProps[] = [];
+    const itemsForRemoval: Set<string> = new Set<string>();
     for (const item of servicesCart) {
       try {
-        const response = await axiosAuthApi.get(
+        const response = await axiosAuthApi.get<ServiceCartProps>(
           `/schedule/get/cart/id/${item.id}`
         );
-        const cartItem: CartProps = response.data;
+        const cartItem: ServiceCartProps = response.data;
         cartItem.type = 'SERVICE';
-        if (cartItem) servicesList.push(cartItem);
+        if (item.customPrice) cartItem.price = item.customPrice;
+        if (item.specialRequests) cartItem.specialRequests = item.specialRequests;
+        servicesList.push(cartItem);
       } catch (e) {
+        itemsForRemoval.add(item.id);
         console.error('Failed to fetch service data:', e);
       }
     }
-
+    if (itemsForRemoval.size > 0)
+      dispatch(setServices(servicesCart.filter(item => !itemsForRemoval.has(item.id))));
     setServicesCartData(servicesList);
-  }, [servicesCart]);
+  }, [dispatch, servicesCart]);
 
   const fetchReservationsData = useCallback(async () => {
-    const reservationsList: CartProps[] = [];
-
+    const reservationsList: ReservationCartProps[] = [];
+    const itemsForRemoval: Set<string> = new Set<string>();
     for (const item of reservationsCart) {
       try {
-        const response = await axiosAuthApi.get(`/rooms/by/number/${item.id}`);
-        const cartItem: CartProps = response.data;
-        cartItem.id = response.data.number;
-        cartItem.checkIn = item.checkIn;
-        cartItem.checkOut = item.checkOut;
-        cartItem.guestCount = item.guestCount;
-        cartItem.type = 'RESERVATION';
-        if (cartItem) reservationsList.push(cartItem);
+        const response = await axiosAuthApi.get<{price: number, standardName: string}>(
+          `/rooms/${item.id}/for-cart`,
+          {params: {from: toLocalISODate(new Date(item.checkIn)), to: toLocalISODate(new Date(item.checkOut))}}
+        );
+        const cartItem: ReservationCartProps = {
+          type: 'RESERVATION',
+          roomNumber: item.id,
+          reservationPrice: response.data.price,
+          roomStandardName: response.data.standardName,
+          checkIn: item.checkIn,
+          checkOut: item.checkOut,
+          guestCount: item.guestCount,
+          specialRequests: item.specialRequests,
+        };
+        reservationsList.push(cartItem);
       } catch (e) {
+        itemsForRemoval.add(item.id);
         console.error('Failed to fetch reservation data:', e);
       }
     }
-
+    if (itemsForRemoval.size > 0)
+      dispatch(setReservations(reservationsCart.filter(item => !itemsForRemoval.has(item.id))));
     setReservationsCartData(reservationsList);
-  }, [reservationsCart]);
+  }, [dispatch, reservationsCart]);
 
   useEffect(() => {
     if (open) {
-      fetchServicesData();
-      fetchReservationsData();
+      fetchServicesData().then(null);
+      fetchReservationsData().then(null);
     }
   }, [servicesCart, reservationsCart, open, fetchServicesData, fetchReservationsData]);
 
@@ -137,7 +150,21 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   };
 
   const totalCartItems = servicesCartData.length + reservationsCartData.length;
-  const allCartItems = useMemo(() => [...servicesCartData, ...reservationsCartData], [servicesCartData, reservationsCartData]);
+
+  const orderPayload = () => ({
+    schedules: servicesCartData.map(item => ({
+      id: item.id,
+      specialRequests: item.specialRequests,
+      customPrice: item.price,
+    })),
+      reservations: reservationsCartData.map(item => ({
+      roomNumber: item.roomNumber,
+      checkIn: toLocalISODate(new Date(item.checkIn)),
+      checkOut: toLocalISODate(new Date(item.checkOut)),
+      guestsCount: item.guestCount,
+      specialRequests: item.specialRequests
+    })),
+  })
 
   const initiateCheckout = async () => {
     setIsProcessing(true);
@@ -149,21 +176,11 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
         return;
       }
 
-      const cartItems = allCartItems.map((item) => ({
-        id: item.id,
-        type: item.type,
-        ...(item.type === 'RESERVATION' && {
-          checkIn: item.checkIn,
-          checkOut: item.checkOut,
-          guestCount: item.guestCount,
-        }),
-      }));
-
-      const response = await axiosAuthApi.post(
+      const response = await axiosAuthApi.post<{url: string, sessionId: string}>(
         '/payment/create-checkout-session',
         {
-          cartItems,
-          currency: 'eur',
+          cartItems: orderPayload(),
+          currency: 'usd',
           successUrl: `${window.location.origin}/payment/success`,
           cancelUrl: `${window.location.origin}/payment/cancel`,
           customerEmail: userDetails?.email,
@@ -187,32 +204,8 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
     setIsProcessing(true);
     setError(null);
     try {
-      for (const item of servicesCartData) {
-        await axiosAuthApi.post(`/guest/order/services`, {
-          id: item.id,
-          username: user?.username,
-        });
-      }
-
-      for (const item of reservationsCartData) {
-        const normalizeDate = (d?: string) => {
-          if (!d) return d;
-          const dt = new Date(d);
-          return dt.toISOString().slice(0, 10);
-        };
-
-        const payload = {
-          roomNumber: String(item.roomNumber ?? item.id),
-          checkIn: normalizeDate(item.checkIn),
-          checkOut: normalizeDate(item.checkOut),
-          guestsCount: item.guestCount ?? 1,
-          specialRequests: item.name ?? '',
-          guestUsername: user?.username,
-        };
-
-        await axiosAuthApi.post(`/guest/reservation/add-to-tab`, payload);
-      }
-
+      await axiosAuthApi.post('/guest/order/add-to-tab', orderPayload());
+      setAddToTabSuccess({services: servicesCartData.length, reservations: reservationsCartData.length});
       clearShoppingCart();
     } catch (e) {
       if (isAxiosError(e)) {
@@ -233,24 +226,13 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
   };
 
   const totalPrice = useMemo(
-    () =>
-      allCartItems.reduce((acc, curr) => {
-        if (curr.type === 'SERVICE') {
-          return acc + (curr.price ?? 0);
-        }
-        if (curr.type === 'RESERVATION') {
-          return (
-            acc +
-            calculateReservationPrice(
-              curr.checkIn,
-              curr.checkOut,
-              curr.pricePerNight
-            )
-          );
-        }
-        return acc;
-      }, 0),
-    [allCartItems]
+    () => {
+      const servicesTotal = servicesCartData
+        .reduce((acc, curr) => acc + curr.price, 0);
+      const reservationsTotal = reservationsCartData
+        .reduce((acc, curr) => acc + curr.reservationPrice, 0);
+      return servicesTotal + reservationsTotal;
+    }, [reservationsCartData, servicesCartData]
   );
 
   if (!open) return null;
@@ -262,11 +244,11 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
           top: 0,
           left: 0,
           width: '100vw',
-          height: '100vh',
+          height: '100dvh',
           backgroundColor: 'rgba(0,0,0,0.5)',
           zIndex: 1200,
         }}
-        onClick={setOpen}
+        onClick={handleClose}
       />
 
       <Box
@@ -275,12 +257,14 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: { xs: '90%', sm: '35%' },
-          maxHeight: '90vh',
+          width: 'min(95vw, 500px)',
+          maxHeight: '95dvh',
           backgroundColor: 'background.paper',
           borderRadius: 2,
           zIndex: 1300,
           p: 4,
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         <Box
@@ -291,11 +275,24 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
           }}
         >
           <Typography fontSize="20px" fontWeight={600}>
-            Shopping Cart ({totalCartItems})
+            {tc("title")} ({totalCartItems})
           </Typography>
-          <IconButton onClick={setOpen}>
-            <CloseIcon />
-          </IconButton>
+          <div style={{display: "flex", flexDirection: "row", gap: "10px", alignItems: "center"}}>
+            <Button
+              fullWidth
+              size="small"
+              color="error"
+              variant="outlined"
+              onClick={clearShoppingCart}
+              disabled={isProcessing}
+              startIcon={<DeleteOutlinedIcon />}
+            >
+              {tc("clearCart")}
+            </Button>
+            <IconButton onClick={handleClose}>
+              <CloseIcon />
+            </IconButton>
+          </div>
         </Box>
 
         {error && (
@@ -304,19 +301,20 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
           </Typography>
         )}
 
-        <Box sx={{ flex: 1, overflowY: 'auto', mb: 2 }}>
+        <Box sx={{ flexGrow: 1, overflowY: 'auto'}}>
           {servicesCartData.length > 0 && (
             <>
               <Typography variant="h6" sx={{ mt: 2, mb: 1, fontWeight: 600 }}>
-                Services ({servicesCartData.length})
+                {tc("services")} ({servicesCartData.length})
               </Typography>
               {servicesCartData.map((item, index) => (
                 <ShoppingCartItem
                   key={`service-${index}`}
-                  index={index}
                   item={item}
-                  cart={servicesCartData}
-                  setCart={setServicesCartData}
+                  removeItself={() => {
+                    dispatch(removeService({id: item.id}));
+                    setServicesCartData(cart => cart.filter((c) => !(c.id === item.id)));
+                  }}
                 />
               ))}
             </>
@@ -326,15 +324,21 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
             <>
               {servicesCartData.length > 0 && <Divider sx={{ my: 2 }} />}
               <Typography variant="h6" sx={{ mt: 2, mb: 1, fontWeight: 600 }}>
-                Reservations ({reservationsCartData.length})
+                {tc("reservations")} ({reservationsCartData.length})
               </Typography>
               {reservationsCartData.map((item, index) => (
                 <ShoppingCartItem
                   key={`reservation-${index}`}
-                  index={index}
                   item={item}
-                  cart={reservationsCartData}
-                  setCart={setReservationsCartData}
+                  removeItself={() => {
+                    dispatch(removeReservation({
+                      id: item.roomNumber,
+                      checkIn: item.checkIn,
+                      checkOut: item.checkOut,
+                      guestCount: item.guestCount,
+                    }));
+                    setReservationsCartData(cart => cart.filter((c) => !(c.roomNumber === item.roomNumber)));
+                  }}
                 />
               ))}
             </>
@@ -342,65 +346,96 @@ const ShoppingCartPopup = ({ open, setOpen }: ShoppingCartPopupProps) => {
 
           {totalCartItems === 0 && (
             <Typography variant="body2" sx={{ mt: 2 }}>
-              Your cart is empty
+              {tc("noItems")}
             </Typography>
           )}
         </Box>
 
+        <div style={{position: 'sticky', marginTop: '1rem'}}>
         <Box
           sx={{
             borderRadius: '10px',
-            backgroundColor: theme.palette.primary.light,
+            backgroundColor: 'primary.light',
             padding: '20px',
-            margin: '15px 0',
+            marginBottom: '12px',
           }}
         >
-          <Typography fontWeight="600">Total Summary:</Typography>
+          <Typography fontWeight="600">{tc("summary")}:</Typography>
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
             }}
           >
-            <Typography variant="body1">Total price:</Typography>
+            <Typography variant="body1">{tc("cartValue")}:</Typography>
             <Typography variant="body1" fontWeight="700">
               {totalPrice.toFixed(2)} $
             </Typography>
           </div>
         </Box>
 
-        <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+        <div style={{ display: 'flex', gap: '10px'}}>
           <Button
             fullWidth
-            sx={{ mb: 1 }}
+            variant="outlined"
             onClick={orderServices}
             disabled={totalCartItems === 0 || isProcessing}
           >
-            Add to Tab
+            {tc("addToBill")}
           </Button>
           <Button
             fullWidth
-            sx={{ mb: 1 }}
+            variant="contained"
             onClick={initiateCheckout}
             disabled={totalCartItems === 0 || isProcessing}
+            loading={isProcessing}
           >
-            {isProcessing ? (
-              <CircularProgress size={24} />
-            ) : (
-              'Proceed to Payment'
-            )}
+            {tc("proceedToPayment")}
           </Button>
         </div>
-        <Button
-          fullWidth
-          variant="outlined"
-          color="error"
-          onClick={clearShoppingCart}
-          disabled={isProcessing}
-        >
-          Clear Cart
-        </Button>
+        </div>
       </Box>
+
+      {addToTabSuccess !== null && (
+        <div className="flex-centered"
+             style={{position: "fixed", top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0,0,0,0.3)', zIndex: 1301}}
+             onClick={(e) => {e.stopPropagation(); setAddToTabSuccess(null);}}
+        >
+          <SectionCard size={6} sx={{ width: 'min(93vw, 480px)', position: 'relative', padding: '40px 30px' }}>
+            <IconButton
+              onClick={() => setAddToTabSuccess(null)}
+              sx={{ position: "absolute", top: 8, right: 8 }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <Typography display="flex" alignItems="center" justifyContent="flex-start" gap="8px" fontSize="15px" fontWeight={500} textAlign="left" lineHeight={1.2}>
+              <TaskAltOutlinedIcon color="success" fontSize="large" />
+              {tc("add_to_tab_success_message", {order: [
+                addToTabSuccess.services !== 0 && `${addToTabSuccess.services} ${tc("services2")}`,
+                addToTabSuccess.reservations !== 0 && `${addToTabSuccess.reservations} ${tc("reservations2")}`,
+              ]
+                  .filter((v) => v !== false)
+                  .join(` ${tc("and")} `)})}
+            </Typography>
+            <div style={{display: "flex", justifyContent: "center", marginTop: "16px", gap: "10px", flexWrap: "wrap"}}>
+              <Button
+                sx={{flex: '1', minWidth: 'fit-content'}}
+                variant="contained"
+                onClick={() => navigateToPage('/guest/booked')}
+              >
+                {tc("see_services")}
+              </Button>
+              <Button
+                sx={{flex: '1', minWidth: 'fit-content'}}
+                variant="outlined"
+                onClick={() => navigateToPage('/guest/hotel')}
+              >
+                {tc("see_reservations")}
+              </Button>
+            </div>
+          </SectionCard>
+        </div>
+      )}
     </>
   );
 };

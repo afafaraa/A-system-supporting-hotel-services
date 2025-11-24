@@ -7,6 +7,7 @@ import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.models.RegistrationCode
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
+import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
@@ -55,6 +56,10 @@ class UserService(
             .roles(user.role.name)
             .build()
     }
+
+    fun getUserGuestDataById(id: String): GuestData =
+        userRepository.getUserGuestDataById(id)?.guestData
+            ?: throw EntityNotFoundException("Guest data for user with given id was not found")
 
     fun findUserNameById(id: String): String? = userRepository.findUserNameById(id)?.let { it.name + " " + it.surname }
 

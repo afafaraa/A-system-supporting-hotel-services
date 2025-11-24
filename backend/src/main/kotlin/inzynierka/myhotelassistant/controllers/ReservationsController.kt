@@ -60,6 +60,7 @@ class ReservationsController(
         val guestCount: Int,
         val reservationPrice: Double,
         val status: String,
+        val specialRequests: String? = null,
     )
 
     @GetMapping

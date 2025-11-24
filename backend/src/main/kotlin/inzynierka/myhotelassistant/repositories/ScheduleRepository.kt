@@ -33,12 +33,20 @@ interface ScheduleRepository : MongoRepository<ScheduleEntity, String> {
         endDate: LocalDateTime,
     ): ScheduleEntity?
 
+    fun existsByServiceIdAndServiceDateBetween(
+        serviceId: String,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime,
+    ): Boolean
+
+    fun deleteByStatusAndServiceDateBefore(
+        status: OrderStatus,
+        beforeDate: LocalDateTime,
+    ): Long
+
     fun findAllByServiceId(serviceId: String): List<ScheduleEntity>
 
-    fun findByGuestIdAndStatusIn(
-        guestId: String,
-        statuses: List<OrderStatus>,
-    ): List<ScheduleEntity>
+    fun findByGuestId(guestId: String): List<ScheduleEntity>
 
     fun findByGuestIdInAndStatusIn(
         guestIds: List<String>,

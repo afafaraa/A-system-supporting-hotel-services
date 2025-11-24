@@ -8,6 +8,7 @@ import inzynierka.myhotelassistant.models.room.RoomAmenity
 import inzynierka.myhotelassistant.models.room.RoomEntity
 import inzynierka.myhotelassistant.models.room.RoomStandardEntity
 import inzynierka.myhotelassistant.models.room.RoomStatus
+import inzynierka.myhotelassistant.models.schedule.CancellationReason
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.service.RatingEntity
 import inzynierka.myhotelassistant.models.service.ReservationsService
@@ -25,6 +26,7 @@ import inzynierka.myhotelassistant.repositories.RatingRepository
 import inzynierka.myhotelassistant.repositories.RoomRepository
 import inzynierka.myhotelassistant.repositories.RoomStandardRepository
 import inzynierka.myhotelassistant.repositories.ScheduleRepository
+import inzynierka.myhotelassistant.repositories.ServiceRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
 import inzynierka.myhotelassistant.services.RoomService
 import inzynierka.myhotelassistant.services.ServiceService
@@ -39,9 +41,9 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.collections.forEach
 import kotlin.jvm.optionals.getOrNull
-import kotlin.math.max
-import kotlin.math.roundToInt
+import kotlin.math.min
 import kotlin.random.Random
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.times
@@ -58,8 +60,9 @@ class DatabaseSeeder(
     private val schedulesGenerator: SchedulesGenerator,
     private val ratingRepository: RatingRepository,
     private val reservationsService: ReservationsService,
-    private val roomStandardRepository: RoomStandardRepository,
+    roomStandardRepository: RoomStandardRepository,
     private val roomService: RoomService,
+    private val serviceRepository: ServiceRepository,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val standardRoomStandard =
@@ -342,6 +345,21 @@ class DatabaseSeeder(
                 ),
             )
         }
+        if (!userRepo.existsByUsername("employee4")) {
+            userRepo.save(
+                UserEntity(
+                    role = Role.EMPLOYEE,
+                    username = "employee4",
+                    password = passwordEncoder.encode("employee4_password"),
+                    email = "d.wilson@gmail.com",
+                    name = "David",
+                    active = true,
+                    emailAuthorized = true,
+                    surname = "Wilson",
+                    employeeData = EmployeeData(Department.MAINTENANCE, listOf(Sector.SECURITY, Sector.ROOM_SERVICE)),
+                ),
+            )
+        }
     }
 
     private fun addTestGuests() {
@@ -440,7 +458,7 @@ class DatabaseSeeder(
                             WeekdayHour(
                                 day = day,
                                 startHour = startHour,
-                                endHour = startHour + random.nextInt(4, 10),
+                                endHour = startHour + random.nextInt(6, 10),
                             )
                         }.toMutableList()
 
@@ -448,7 +466,7 @@ class DatabaseSeeder(
                     ServiceEntity(
                         name = serviceData.name,
                         description = serviceData.description,
-                        price = (5 + random.nextDouble(5.0, 50.0)).let { (it * 100).roundToInt() / 100.0 },
+                        price = serviceData.price,
                         type = serviceData.serviceType,
                         attributes = serviceData.attributes,
                         disabled = false,
@@ -463,60 +481,91 @@ class DatabaseSeeder(
         }
     }
 
+    private fun <T> MutableSet<T>.popRandom(n: Int): List<T> {
+        val result = mutableListOf<T>()
+        repeat(min(n, this.size)) {
+            val element = this.random()
+            this.remove(element)
+            result += element
+        }
+        return result
+    }
+
+    data class DurationAndPrice(
+        val duration: Duration,
+        val price: Double,
+    )
+
     fun addOrders() {
-        val schedules = scheduleRepository.findAll()
+        val schedulesCount = scheduleRepository.count()
+        val schedules =
+            scheduleRepository
+                .findAllByStatusIn(listOf(OrderStatus.AVAILABLE))
+                .filter { it.guestId == null } // just in case
+        if (schedulesCount != schedules.size.toLong()) {
+            logger.info("Some orders already exists. Skipping adding new orders.")
+            return
+        }
         val guests = userRepo.findByRole(Role.GUEST)
         if (schedules.isEmpty() || guests.isEmpty()) return
+        val services = serviceRepository.findAll()
+        val serviceDetails = services.associate { it.id to DurationAndPrice(it.duration, it.price) }
 
         val now = LocalDateTime.now()
         val requestedStatuses = listOf(OrderStatus.REQUESTED, OrderStatus.ACTIVE)
         val pastStatuses = listOf(OrderStatus.COMPLETED, OrderStatus.CANCELED)
 
-        val availableSchedules = schedules.filter { it.guestId == null }
-        val pastSchedules = availableSchedules.filter { it.serviceDate.isBefore(now) }.shuffled().toMutableList()
-        val futureSchedules = availableSchedules.filter { !it.serviceDate.isBefore(now) }.shuffled().toMutableList()
+        val pastSchedules =
+            schedules
+                .filter {
+                    val serviceDuration = serviceDetails[it.serviceId]?.duration?.inWholeMinutes ?: 0L
+                    val serviceEndDate = it.serviceDate.plusMinutes(serviceDuration)
+                    serviceEndDate.isBefore(now)
+                }.toMutableSet()
+        val futureSchedules = schedules.filter { !pastSchedules.contains(it) }.toMutableSet()
 
         for (guest in guests) {
             if (pastSchedules.isEmpty() && futureSchedules.isEmpty()) break
 
-            val requestedCount = if (futureSchedules.isEmpty()) 0 else Random.nextInt(15, 30)
-            var schedules = futureSchedules.takeLast(requestedCount)
-            futureSchedules.subList(max(0, schedules.size - requestedCount), schedules.size).clear()
-
-            schedules.forEach { schedule ->
+            val futureSchedulesFragment = futureSchedules.popRandom(Random.nextInt(15, 30))
+            futureSchedulesFragment.forEach { schedule ->
                 schedule.status = requestedStatuses.random()
                 schedule.guestId = guest.id
                 schedule.orderTime = now.minusHours(Random.nextLong(1, 48))
-                val service = serviceService.findByIdOrThrow(schedule.serviceId)
-                schedule.price = service.price
-                if (Random.nextInt(0, 10) == 0) {
+                val servicePrice = serviceDetails[schedule.serviceId]?.price ?: 0.0
+                schedule.price = if (servicePrice >= 0.01) servicePrice else ((70..300).random() / 10.0)
+                if (Random.nextInt(0, 10) < 2) {
                     schedule.specialRequests = "Example special request for particular service. Request generated randomly."
                 }
                 guest.guestData?.let { data -> data.bill += schedule.price!! }
-                scheduleRepository.save(schedule)
             }
+            scheduleRepository.saveAll(futureSchedulesFragment)
 
-            val pastCount = if (pastSchedules.isEmpty()) 0 else Random.nextInt(10, 20)
-            schedules = pastSchedules.takeLast(pastCount)
-            pastSchedules.subList(max(0, pastSchedules.size - pastCount), pastSchedules.size).clear()
-
-            schedules.forEach { schedule ->
+            val pastSchedulesFragment = pastSchedules.popRandom(Random.nextInt(10, 20))
+            pastSchedulesFragment.forEach { schedule ->
                 schedule.status = pastStatuses.random()
                 schedule.guestId = guest.id
                 schedule.orderTime = schedule.serviceDate.minusHours(Random.nextLong(1, 48))
-                val service = serviceService.findByIdOrThrow(schedule.serviceId)
-                schedule.price = service.price
+                val servicePrice = serviceDetails[schedule.serviceId]?.price ?: 0.0
+                schedule.price = if (servicePrice >= 0.01) servicePrice else ((70..300).random() / 10.0)
                 if (schedule.status == OrderStatus.COMPLETED) {
                     guest.guestData?.let { data -> data.bill += schedule.price!! }
+                } else if (schedule.status == OrderStatus.CANCELED) {
+                    schedule.cancellationReason = CancellationReason.entries.random()
                 }
-                scheduleRepository.save(schedule)
             }
+            scheduleRepository.saveAll(pastSchedulesFragment)
 
             userRepo.save(guest)
         }
     }
 
     private fun addRatings() {
+        if (ratingRepository.count() != 0L) {
+            logger.info("Some ratings were already added to the database. Skipping adding ratings.")
+            return
+        }
+        val ratingWeights = listOf(1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5)
         val currentTime: Long = System.currentTimeMillis()
         val random = Random(currentTime)
         val pastStatuses = listOf(OrderStatus.COMPLETED, OrderStatus.CANCELED)
@@ -524,7 +573,7 @@ class DatabaseSeeder(
         val ratings =
             schedules
                 .filter { it.guestId != null } // for only ordered schedules (should have guestId)
-                .filter { random.nextInt(0, 5) == 0 } // 20% chance of schedule rating
+                .filter { random.nextInt(0, 10) < 4 } // 40% chance of schedule rating
                 .map {
                     RatingEntity(
                         serviceId = it.serviceId,
@@ -532,7 +581,7 @@ class DatabaseSeeder(
                         employeeId = it.employeeId,
                         guestId = it.guestId!!,
                         fullName = userRepo.findById(it.guestId!!).getOrNull()?.let { user -> user.name + " " + user.surname } ?: "Unknown",
-                        rating = random.nextInt(1, 5),
+                        rating = ratingWeights.random(),
                         comment = "Example comment for particular service. Rating generated randomly.",
                     )
                 }
@@ -571,14 +620,14 @@ class DatabaseSeeder(
                         variant = NotificationVariant.ALERT,
                         message = "This is a test notification.",
                         isRead = true,
-                        createdAt = LocalDateTime.of(2025, 4, 21, 14, 23, 21),
+                        createdAt = LocalDateTime.now(),
                     ),
                     NotificationEntity(
                         userId = userId,
                         title = "Another Test Failure Notification",
                         variant = NotificationVariant.FAILURE,
                         message = "This is another test notification.",
-                        createdAt = LocalDateTime.of(2025, 5, 4, 10, 9, 11),
+                        createdAt = LocalDateTime.now(),
                     ),
                     NotificationEntity(
                         userId = userId,
@@ -586,21 +635,21 @@ class DatabaseSeeder(
                         variant = NotificationVariant.NOTICE,
                         message = "Don't forget to check out tomorrow!",
                         isRead = true,
-                        createdAt = LocalDateTime.of(2024, 8, 30, 7, 30, 49),
+                        createdAt = LocalDateTime.now(),
                     ),
                     NotificationEntity(
                         userId = userId,
                         title = "Service Update",
                         variant = NotificationVariant.CONFIRMATION,
                         message = "Your room cleaning service has been scheduled.",
-                        createdAt = LocalDateTime.of(2025, 1, 7, 21, 37, 6),
+                        createdAt = LocalDateTime.now(),
                     ),
                     NotificationEntity(
                         userId = userId,
                         title = "Special Offer",
                         variant = NotificationVariant.ADVERTISEMENT,
                         message = "Enjoy a 20% discount on your next spa session!",
-                        createdAt = LocalDateTime.of(2025, 12, 17, 17, 13, 57),
+                        createdAt = LocalDateTime.now(),
                     ),
                 )
             notificationRepository.saveAll(notifications)
@@ -612,10 +661,14 @@ class DatabaseSeeder(
 
     private fun createReservations() {
         val guests = userRepo.findByRole(Role.GUEST)
+        if (reservationsService.count() > guests.size.toLong()) {
+            logger.info("Some reservations already exists. Skipping adding new reservations")
+            return
+        }
         val rooms = roomRepo.findAll()
+        val now = LocalDate.now()
         repeat(4) {
             guests.forEach { guest ->
-                val now = LocalDate.now()
                 val checkIn = now.plusDays(Random.nextInt(-4, 2).toLong())
                 val checkOut = checkIn.plusDays(Random.nextInt(1, 4).toLong())
                 val room = rooms.shuffled().find { room -> reservationsService.isRoomAvailable(room.number, checkIn, checkOut) }
@@ -652,6 +705,7 @@ class DatabaseSeeder(
         val description: String,
         val imageUrl: String,
         val serviceType: ServiceType,
+        val price: Double = 0.0,
         val attributes: ServiceTypeAttributes? = null,
     )
 
@@ -662,111 +716,122 @@ class DatabaseSeeder(
                 "Order delicious meals and beverages from our extensive menu, delivered straight to your room.",
                 "https://i.pinimg.com/1200x/b5/1e/c0/b51ec055f32d175f1c1ae0db5cdaf4d0.jpg",
                 ServiceType.SELECTION,
-                ServiceTypeAttributes.Selection(
-                    multipleSelection = true,
-                    options =
-                        linkedMapOf(
-                            "soups" to
-                                listOf(
-                                    ServiceTypeAttributes.OptionObject(
-                                        label = "Tomato Soup",
-                                        description = "Fresh tomatoes blended into a creamy soup.",
-                                        price = 5.99,
-                                        image = "https://i.pinimg.com/1200x/dc/88/5e/dc885e424e2cc36080e3ffaee09b6dfb.jpg",
+                price = 0.0,
+                attributes =
+                    ServiceTypeAttributes.Selection(
+                        multipleSelection = true,
+                        options =
+                            linkedMapOf(
+                                "soups" to
+                                    listOf(
+                                        ServiceTypeAttributes.OptionObject(
+                                            label = "Tomato Soup",
+                                            description = "Fresh tomatoes blended into a creamy soup.",
+                                            price = 5.99,
+                                            image = "https://i.pinimg.com/1200x/dc/88/5e/dc885e424e2cc36080e3ffaee09b6dfb.jpg",
+                                        ),
+                                        ServiceTypeAttributes.OptionObject(
+                                            label = "Chicken Noodle Soup",
+                                            description = "Hearty chicken broth with noodles and vegetables.",
+                                            price = 6.99,
+                                            image = "https://i.pinimg.com/1200x/22/80/7c/22807cd7d1f29e5894b5ca68a557a8c1.jpg",
+                                        ),
                                     ),
-                                    ServiceTypeAttributes.OptionObject(
-                                        label = "Chicken Noodle Soup",
-                                        description = "Hearty chicken broth with noodles and vegetables.",
-                                        price = 6.99,
-                                        image = "https://i.pinimg.com/1200x/22/80/7c/22807cd7d1f29e5894b5ca68a557a8c1.jpg",
+                                "main_courses" to
+                                    listOf(
+                                        ServiceTypeAttributes.OptionObject(
+                                            label = "Grilled Salmon",
+                                            description = "Fresh salmon fillet grilled to perfection, served with vegetables.",
+                                            price = 15.99,
+                                            image = "https://i.pinimg.com/1200x/a8/ac/21/a8ac21fd838e87e55e23589a826ecfff.jpg",
+                                        ),
+                                        ServiceTypeAttributes.OptionObject(
+                                            label = "Steak",
+                                            description = "Juicy steak cooked to your liking, served with fries and salad.",
+                                            price = 18.99,
+                                            image = "https://i.pinimg.com/736x/fa/74/a1/fa74a1051787c3d9ce707215be6eedd8.jpg",
+                                        ),
                                     ),
-                                ),
-                            "main_courses" to
-                                listOf(
-                                    ServiceTypeAttributes.OptionObject(
-                                        label = "Grilled Salmon",
-                                        description = "Fresh salmon fillet grilled to perfection, served with vegetables.",
-                                        price = 15.99,
-                                        image = "https://i.pinimg.com/1200x/a8/ac/21/a8ac21fd838e87e55e23589a826ecfff.jpg",
+                                "desserts" to
+                                    listOf(
+                                        ServiceTypeAttributes.OptionObject(
+                                            label = "Cheesecake",
+                                            description = "Creamy cheesecake with a graham cracker crust.",
+                                            price = 6.49,
+                                            image = "https://i.pinimg.com/736x/93/09/62/930962eed0b30e9e861d5e097dfdfd14.jpg",
+                                        ),
+                                        ServiceTypeAttributes.OptionObject(
+                                            label = "Chocolate Lava Cake",
+                                            description = "Warm chocolate cake with a gooey center, served with vanilla ice cream.",
+                                            price = 6.99,
+                                            image = "https://i.pinimg.com/736x/ef/bc/8e/efbc8e27d543d6fa0c0559967c104896.jpg",
+                                        ),
                                     ),
-                                    ServiceTypeAttributes.OptionObject(
-                                        label = "Steak",
-                                        description = "Juicy steak cooked to your liking, served with fries and salad.",
-                                        price = 18.99,
-                                        image = "https://i.pinimg.com/736x/fa/74/a1/fa74a1051787c3d9ce707215be6eedd8.jpg",
-                                    ),
-                                ),
-                            "desserts" to
-                                listOf(
-                                    ServiceTypeAttributes.OptionObject(
-                                        label = "Cheesecake",
-                                        description = "Creamy cheesecake with a graham cracker crust.",
-                                        price = 6.49,
-                                        image = "https://i.pinimg.com/736x/93/09/62/930962eed0b30e9e861d5e097dfdfd14.jpg",
-                                    ),
-                                    ServiceTypeAttributes.OptionObject(
-                                        label = "Chocolate Lava Cake",
-                                        description = "Warm chocolate cake with a gooey center, served with vanilla ice cream.",
-                                        price = 6.99,
-                                        image = "https://i.pinimg.com/736x/ef/bc/8e/efbc8e27d543d6fa0c0559967c104896.jpg",
-                                    ),
-                                ),
-                        ),
-                ),
+                            ),
+                    ),
             ),
             ServiceData(
                 "Room cleaning",
                 "Thorough cleaning of your room, including dusting, vacuuming, and sanitizing surfaces.",
-                "http://localhost:8080/Coffee.jpg",
+                "https://i.pinimg.com/736x/b0/9b/77/b09b77d8e801fac4a0d2baa99dbff57b.jpg",
                 ServiceType.GENERAL_SERVICE,
+                price = 11.90,
             ),
             ServiceData(
                 "Laundry",
                 "Professional washing, drying, and folding of your clothes using eco-friendly detergents.",
-                "http://localhost:8080/Coffee.jpg",
+                "https://i.pinimg.com/736x/9d/42/6d/9d426da81011154cfa1e7aa01782c1ca.jpg",
                 ServiceType.GENERAL_SERVICE,
+                price = 10.0,
             ),
             ServiceData(
                 "Spa access",
                 "Relax in our luxury spa with sauna, jacuzzi, and massage services.",
-                "http://localhost:8080/Coffee.jpg",
+                "https://i.pinimg.com/736x/9f/88/01/9f880100ad711d2173157e9c9452ec19.jpg",
                 ServiceType.PLACE_RESERVATION,
+                price = 42.50,
             ),
             ServiceData(
                 "Gym session",
                 "Access to a fully equipped fitness center with personal trainers available.",
-                "http://localhost:8080/Coffee.jpg",
+                "https://i.pinimg.com/736x/3f/1b/c7/3f1bc780ba6582314b5e71b7a46efe1e.jpg",
                 ServiceType.PLACE_RESERVATION,
+                price = 25.0,
             ),
             ServiceData(
                 "Airport shuttle",
                 "Convenient transport to and from the airport with comfortable seating and AC.",
-                "http://localhost:8080/Coffee.jpg",
+                "https://i.pinimg.com/736x/69/56/cb/6956cbcb567a3206dd01d2e00848d21a.jpg",
                 ServiceType.GENERAL_SERVICE,
+                price = 15.0,
             ),
             ServiceData(
                 "Breakfast delivery",
                 "Enjoy a fresh breakfast delivered straight to your room every morning.",
-                "http://localhost:8080/Coffee.jpg",
+                "https://i.pinimg.com/736x/4a/d0/c7/4ad0c71087dfaa177127736d6ff65898.jpg",
                 ServiceType.GENERAL_SERVICE,
+                price = 15.0,
             ),
             ServiceData(
                 "City tour",
                 "Guided tour of the city's main attractions, history, and local culture.",
-                "http://localhost:8080/Coffee.jpg",
+                "https://i.pinimg.com/736x/cb/ba/bb/cbbabb1bd63a761bad5fe0db8db7465c.jpg",
                 ServiceType.GENERAL_SERVICE,
+                price = 80.0,
             ),
             ServiceData(
                 "Valet parking",
                 "Fast and secure valet parking service available 24/7.",
-                "http://localhost:8080/Coffee.jpg",
+                "https://i.pinimg.com/736x/4b/4a/a6/4b4aa6644b4e9db0d14d202917b18c1b.jpg",
                 ServiceType.GENERAL_SERVICE,
+                price = 5.0,
             ),
             ServiceData(
                 "Tennis court",
                 "Access to our outdoor tennis court, including equipment rental.",
-                "http://localhost:8080/Coffee.jpg",
+                "https://i.pinimg.com/736x/f4/4c/44/f44c44e8fa684046a1133ad6ef97b93f.jpg",
                 ServiceType.PLACE_RESERVATION,
+                price = 12.0,
             ),
         )
 }

@@ -171,13 +171,23 @@
     "shopping_cart": {
       "title": "Shopping cart",
       "noItems": "No items in cart",
+      "clearCart": "Clear cart",
+      "summary": "Summary",
       "cartValue": "Cart value",
       "currentBill": "Current bill",
-      "pay": "Pay",
       "addToBill": "Add to bill",
-      "continueShopping": "Continue shopping"
+      "proceedToPayment": "Proceed to Payment",
+      "services": "Services",
+      "reservations": "Reservations",
+      "see_services": "See your services",
+      "see_reservations": "See your reservations",
+      "add_to_tab_success_message": "Successfully ordered {{order}} to your tab.",
+      "services2": "services",
+      "reservations2": "reservations",
+      "and": "and"
     },
     "order_service": {
+      "goBack": "Go back to services",
       "availability": "Availability",
       "available": "Available",
       "unavailable": "Unavailable",
@@ -190,7 +200,23 @@
       "selectDate": "Select date",
       "selectTime": "Select time",
       "specialRequests": "Special Requests",
-      "noSlotsAvailable": "No slots available"
+      "noSlotsAvailable": "No slots available",
+      "addedToCartMessage": "Selected service was successfully added to the cart",
+      "orderDetails": "Order Details",
+      "serviceReviews": "Service Reviews",
+      "serviceReviewsSubtitle": "See what other guests are saying about this service",
+      "noReviews": "No reviews for this service yet.",
+      "unsupportedAttributeType": "Unsupported service type",
+      "selection_card": {
+        "keys": {
+          "soups": "Soups",
+          "main_courses": "Main Courses",
+          "desserts": "Desserts"
+        },
+        "addToOrder": "Add to order",
+        "emptySelection": "No items selected",
+        "orderPrice": "Order price"
+      }
     },
     "reservations": {
       "myReservations": "My Room Reservations",
@@ -682,7 +708,9 @@
           "check-out-button": "Check out",
           "success-message": "You successfully checked-out the reservation",
           "only-checked-in-error": "Only checked-in reservations can be checked-out",
-          "error-during-check-out": "Error during check-out"
+          "error-during-check-out": "Error during check-out",
+          "check-out-bill": "Check-out bill",
+          "bill-payment-confirmation": "I confirm that the invoice amount has been settled"
         }
       },
       "guest-arrival-departures": {
@@ -747,7 +775,8 @@
       "management": "Management"
     },
     "special_requests": "Special requests",
-    "without_reservation": "Without reservation"
+    "without_reservation": "Without reservation",
+    "cannot_complete_service_before_schedule": "You cannot complete a schedule before its scheduled time."
   },
   "ui": {
     "show_more": "Show more ↓",

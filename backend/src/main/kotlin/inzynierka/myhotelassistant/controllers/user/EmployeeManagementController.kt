@@ -1,7 +1,6 @@
 package inzynierka.myhotelassistant.controllers.user
 
 import inzynierka.myhotelassistant.dto.ScheduleDTO
-import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
 import inzynierka.myhotelassistant.models.user.EmployeeData
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.EmployeeService
@@ -24,8 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import java.time.ZonedDateTime
-import java.time.format.DateTimeParseException
+import java.time.LocalDate
 
 @RestController
 @RequestMapping("/management/employees")
@@ -93,15 +91,8 @@ class EmployeeManagementController(
     @ResponseStatus(HttpStatus.OK)
     fun getEmployeeWeekSchedule(
         @PathVariable username: String,
-        @RequestParam date: String,
-    ): List<ScheduleDTO> {
-        try {
-            val parsedDate = ZonedDateTime.parse(date).toLocalDate()
-            return scheduleService.getEmployeeWeekScheduleByUsername(username, parsedDate)
-        } catch (_: DateTimeParseException) {
-            throw InvalidArgumentException("Invalid date format. Expected format is ISO_ZONED_DATE_TIME.")
-        }
-    }
+        @RequestParam date: LocalDate,
+    ): List<ScheduleDTO> = scheduleService.getEmployeeWeekScheduleByUsername(username, date)
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
