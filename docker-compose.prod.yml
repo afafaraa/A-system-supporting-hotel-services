@@ -1,0 +1,38 @@
+services:
+
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    environment:
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=StrongPassword123
+      - ADMIN_EMAIL=admin@example.com
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/mongo-hotel
+      - APP_FRONTEND_URL=http://frontend:80   # use container name of frontend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+      - frontend
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "80:80"
+
+volumes:
+  mongo_data:

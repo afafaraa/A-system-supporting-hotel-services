@@ -1,11 +1,11 @@
 spring:
+  mvc:
+    servlet:
+      path: /api
   application:
     name: MyHotelAssistant
   profiles:
-    active: dev
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/mongo-hotel
+    active: prod
   task:
     scheduling:
       pool:
@@ -36,7 +36,7 @@ app:
   security:
     password-length: 10
   frontend:
-    url: http://localhost:5173
+    url: http://localhost
   reservations:
     cancellation:
       days-before: 7
@@ -54,3 +54,5 @@ app:
       - image/jpg
       - image/png
       - image/webp
+server:
+  address: 0.0.0.0

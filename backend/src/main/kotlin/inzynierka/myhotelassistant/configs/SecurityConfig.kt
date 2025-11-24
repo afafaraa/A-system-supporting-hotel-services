@@ -79,8 +79,8 @@ class SecurityConfig(
                         "/js/**",
                         "/Coffee.jpg",
                         "/open/**",
-                        "/uploads/files/**",
-                        "/rooms/**",
+                        "/api/uploads/files/**",
+                        "/api/rooms/**",
                         "/swagger-ui.html",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
@@ -88,11 +88,11 @@ class SecurityConfig(
                         "/swagger-resources/**",
                         "/webjars/**",
                     ).permitAll()
-                    .requestMatchers("/secured/**")
+                    .requestMatchers("/api/secured/**")
                     .hasAnyRole(Role.ADMIN.name)
-                    .requestMatchers("/management/**")
+                    .requestMatchers("/api/management/**")
                     .hasAnyRole(Role.MANAGER.name)
-                    .requestMatchers("/employee/**")
+                    .requestMatchers("/api/employee/**")
                     .hasAnyRole(Role.EMPLOYEE.name)
                     .anyRequest()
                     .authenticated()
@@ -134,11 +134,17 @@ class SecurityConfig(
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOriginPatterns = listOf(appProperties.frontend.url, "http://192.168.*:${appProperties.frontend.port}")
-        configuration.allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE")
-        configuration.allowedHeaders = listOf("Authorization", "Content-Type")
+
+        configuration.allowedOrigins = listOf(appProperties.frontend.url)
+        println("Allowed CORS origin: ${appProperties.frontend.url}")
+        configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+        configuration.allowedHeaders = listOf("*")
+        configuration.exposedHeaders = listOf("Authorization")
+        configuration.allowCredentials = true
+
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source
     }
+
 }

@@ -1,0 +1,7 @@
+app:
+  frontend:
+    url: http://yourdomain.com
+spring:
+  data:
+    mongodb:
+      uri: mongodb://mongo:27017/mongo-hotel

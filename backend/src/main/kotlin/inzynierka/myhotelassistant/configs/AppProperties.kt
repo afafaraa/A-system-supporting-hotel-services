@@ -1,15 +1,14 @@
 package inzynierka.myhotelassistant.configs
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.stereotype.Component
+import org.springframework.context.annotation.Configuration
 
-@Component
+@Configuration
 @ConfigurationProperties(prefix = "app")
-data class AppProperties(
-    var frontend: Frontend = Frontend(),
-) {
-    data class Frontend(
-        var url: String = "http://localhost:5273",
-        var port: String = url.split(":").last(),
-    )
+class AppProperties {
+    lateinit var frontend: Frontend
+
+    class Frontend {
+        lateinit var url: String
+    }
 }

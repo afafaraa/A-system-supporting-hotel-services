@@ -1,0 +1,7 @@
+app:
+  frontend:
+    url: http://localhost:5173
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/mongo-hotel
