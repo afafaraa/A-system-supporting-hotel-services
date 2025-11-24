@@ -2,12 +2,16 @@ package inzynierka.myhotelassistant.services
 
 import inzynierka.myhotelassistant.controllers.AuthController
 import inzynierka.myhotelassistant.controllers.user.AddUserController
+import inzynierka.myhotelassistant.controllers.user.GuestController.GuestDetailsResponse
 import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.models.RegistrationCode
+import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.user.GuestData
 import inzynierka.myhotelassistant.models.user.Role
 import inzynierka.myhotelassistant.models.user.UserEntity
+import inzynierka.myhotelassistant.repositories.ScheduleRepository
+import inzynierka.myhotelassistant.repositories.ServiceRepository
 import inzynierka.myhotelassistant.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
@@ -28,6 +32,8 @@ class UserService(
     private val userRepository: UserRepository,
     private val codeService: RegistrationCodeService,
     private val passwordEncoder: PasswordEncoder,
+    private val scheduleRepository: ScheduleRepository,
+    private val serviceRepository: ServiceRepository,
 ) : UserDetailsService {
     @field:Value("\${app.security.password-length}")
     private var passwordLength: Int = 10
@@ -179,4 +185,60 @@ class UserService(
     fun getCurrentUser(username: String) = findByUsernameOrThrow(username)
 
     fun getAllGuests(pageable: Pageable): List<UserEntity> = userRepository.findByRoleIn(listOf(Role.GUEST), pageable).content
+
+    fun getAllGuestsWithDetails(pageable: Pageable): List<GuestDetailsResponse> {
+        val guests = getAllGuests(pageable)
+
+        val guestIds = guests.mapNotNull { it.id }
+
+        val allSchedules =
+            scheduleRepository.findByGuestIdInAndStatusIn(
+                guestIds,
+                listOf(OrderStatus.REQUESTED, OrderStatus.COMPLETED, OrderStatus.CANCELED),
+            )
+
+        val serviceIds = allSchedules.map { it.serviceId }.distinct()
+
+        val servicesMap =
+            serviceRepository
+                .findAllById(serviceIds)
+                .associateBy { it.id }
+
+        val schedulesByGuest = allSchedules.groupBy { it.guestId }
+
+        return guests.map { guest ->
+            val guestSchedules = guest.id?.let { schedulesByGuest[it] } ?: emptyList()
+
+            val upcomingServices =
+                guestSchedules
+                    .filter { it.status == OrderStatus.REQUESTED }
+                    .sortedBy { it.serviceDate }
+                    .mapNotNull { schedule ->
+                        schedule.serviceId.let { servicesMap[it] }
+                    }
+
+            val completedServices =
+                guestSchedules
+                    .filter { it.status == OrderStatus.COMPLETED }
+                    .sortedByDescending { it.serviceDate }
+                    .mapNotNull { schedule ->
+                        schedule.serviceId.let { servicesMap[it] }
+                    }
+
+            val cancelledServices =
+                guestSchedules
+                    .filter { it.status == OrderStatus.CANCELED }
+                    .sortedByDescending { it.serviceDate }
+                    .mapNotNull { schedule ->
+                        schedule.serviceId.let { servicesMap[it] }
+                    }
+
+            GuestDetailsResponse(
+                guest = guest,
+                upcomingServices = upcomingServices,
+                completedServices = completedServices,
+                cancelledServices = cancelledServices,
+            )
+        }
+    }
 }

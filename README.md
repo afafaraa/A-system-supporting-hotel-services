@@ -52,5 +52,5 @@ npm run dev
 3. Open your browser and go to `http://localhost:5173` (frontend)
 
 ## Useful links
-### [📘 API documentation](docs/API.md)
+### [📘 API documentation](/backend/docs/README.md)
 

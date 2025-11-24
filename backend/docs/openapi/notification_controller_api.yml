@@ -1,0 +1,115 @@
+openapi: 3.0.3
+info:
+  title: My Hotel Assistant API
+  description: API for hotel service management system
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@myhotelassistant.com
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.myhotelassistant.com
+    description: Production server
+tags:
+  - name: Notifications
+    description: Endpoints for managing user notifications
+paths:
+  /user/notifications:
+    get:
+      tags:
+        - Notifications
+      summary: Get notifications for the current user
+      operationId: getNotifications
+      responses:
+        '200':
+          description: A list of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotificationDTO'
+    delete:
+      tags:
+        - Notifications
+      summary: Remove selected notifications
+      operationId: removeSelectedNotifications
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: Notifications removed
+  /user/notifications?username={username}:
+    get:
+      tags:
+        - Notifications
+      summary: Get notifications for a given user
+      operationId: getNotificationsGivenUsername
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotificationDTO'
+  /user/notifications/unread-count:
+    get:
+      tags:
+        - Notifications
+      summary: Get the count of unread notifications
+      operationId: getUnreadNotificationsCount
+      responses:
+        '200':
+          description: The number of unread notifications
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+  /user/notifications/mark-read:
+    patch:
+      tags:
+        - Notifications
+      summary: Mark notifications as read
+      operationId: markAsRead
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: Notifications marked as read
+components:
+  schemas:
+    NotificationDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        message:
+          type: string
+        read:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+

@@ -1,0 +1,343 @@
+openapi: 3.0.3
+info:
+  title: My Hotel Assistant API
+  description: API for hotel service management system
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@myhotelassistant.com
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.myhotelassistant.com
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: Authentication and authorization endpoints
+
+paths:
+  /open/token:
+    post:
+      tags:
+        - Authentication
+      summary: Login and get access token
+      description: Authenticate user and receive access and refresh tokens
+      operationId: getToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successful authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Unauthorized - Invalid credentials or unverified email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /open/refresh:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh access token
+      description: Get a new access token using refresh token
+      operationId: refreshAccessToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid or expired refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /open/send-reset-password-email:
+    post:
+      tags:
+        - Authentication
+      summary: Send password reset email
+      description: Request a password reset link to be sent via email
+      operationId: sendResetPasswordEmail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailRequest'
+      responses:
+        '200':
+          description: Reset email sent if user exists
+        '400':
+          description: Invalid email format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /open/reset-password:
+    post:
+      tags:
+        - Authentication
+      summary: Reset password
+      description: Reset user password with token received via email
+      operationId: resetPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        '200':
+          description: Password reset successfully
+        '400':
+          description: Invalid or expired token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /open/register/with-code:
+    post:
+      tags:
+        - Authentication
+      summary: Complete registration with invitation code
+      description: Register a new user using an invitation code
+      operationId: completeRegistration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteRegistrationRequest'
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Invalid registration data or code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /open/register/no-code:
+    post:
+      tags:
+        - Authentication
+      summary: Complete registration without code
+      description: Register a new user without invitation code (requires email verification)
+      operationId: completeRegistrationNoCode
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteRegistrationRequestNoCode'
+      responses:
+        '201':
+          description: User registered successfully, verification email sent
+        '400':
+          description: Invalid registration data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /open/verify/account:
+    get:
+      tags:
+        - Authentication
+      summary: Verify email address
+      description: Verify user email using token from verification link
+      operationId: verifyEmail
+      parameters:
+        - name: token
+          in: query
+          required: true
+          description: Email verification token
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Email verified successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Email verified successfully. You can now log in."
+        '400':
+          description: Invalid or expired verification token
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Invalid or expired verification link."
+
+  /open/activate:
+    post:
+      tags:
+        - Authentication
+      summary: Activate account with code
+      description: Activate user account using activation code
+      operationId: activateWithCode
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+              example: "ABC123XYZ"
+      responses:
+        '200':
+          description: Account activated successfully
+        '400':
+          description: Invalid activation code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: "john.doe"
+        password:
+          type: string
+          format: password
+          example: "SecurePassword123!"
+
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          nullable: true
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        refreshToken:
+          type: string
+          nullable: true
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+    RefreshRequest:
+      type: object
+      required:
+        - refreshToken
+      properties:
+        refreshToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+    EmailRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+
+    ResetPasswordRequest:
+      type: object
+      required:
+        - newPassword
+        - token
+      properties:
+        newPassword:
+          type: string
+          format: password
+          example: "NewSecurePassword123!"
+        token:
+          type: string
+          example: "reset-token-xyz"
+
+    CompleteRegistrationRequest:
+      type: object
+      required:
+        - code
+        - username
+        - password
+      properties:
+        code:
+          type: string
+          example: "INVITE123"
+        username:
+          type: string
+          example: "john.doe"
+        password:
+          type: string
+          format: password
+          example: "SecurePassword123!"
+
+    CompleteRegistrationRequestNoCode:
+      type: object
+      required:
+        - username
+        - password
+        - email
+        - name
+        - surname
+      properties:
+        username:
+          type: string
+          example: "john.doe"
+        password:
+          type: string
+          format: password
+          example: "SecurePassword123!"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        name:
+          type: string
+          example: "John"
+        surname:
+          type: string
+          example: "Doe"
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Error message"
+        status:
+          type: integer
+          example: 400
+        timestamp:
+          type: string
+          format: date-time
+

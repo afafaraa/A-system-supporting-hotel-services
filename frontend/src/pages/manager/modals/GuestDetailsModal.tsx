@@ -10,7 +10,7 @@ import {
   Paper,
   Grid,
 } from "@mui/material";
-import { Guest, Service } from "../../../types";
+import { GuestDetails } from "../../../types";
 import NavigationTabs from "../../../pages/manager/tempComponents/NavigationTabs";
 import {
   Close,
@@ -25,71 +25,15 @@ import { useTranslation } from "react-i18next";
 
 interface GuestDetailsProps {
   open: boolean;
-  guest: Guest;
+  guest: GuestDetails;
   onClose: () => void;
 }
-
-const upcomingServices: Service[] = [
-  {
-    id: "1",
-    name: "Breakfast Service",
-    weekday: [{ day: "MONDAY", startHour: 8, endHour: 18 }],
-    duration: 60,
-    type: "GENERAL_SERVICE",
-    disabled: false,
-    price: 25,
-    image: "https://example.com/spa-massage.jpg",
-  },
-  {
-    id: "2",
-    name: "Breakfast Service",
-    weekday: [{ day: "MONDAY", startHour: 8, endHour: 18 }],
-    duration: 60,
-    type: "GENERAL_SERVICE",
-    disabled: false,
-    price: 25,
-    image: "https://example.com/spa-massage.jpg",
-  },
-  {
-    id: "3",
-    name: "Breakfast Service",
-    weekday: [{ day: "MONDAY", startHour: 8, endHour: 18 }],
-    duration: 60,
-    type: "GENERAL_SERVICE",
-    disabled: false,
-    price: 25,
-    image: "https://example.com/spa-massage.jpg",
-  },
-  {
-    id: "4",
-    name: "Breakfast Service",
-    weekday: [{ day: "MONDAY", startHour: 8, endHour: 18 }],
-    duration: 60,
-    type: "GENERAL_SERVICE",
-    disabled: false,
-    price: 25,
-    image: "https://example.com/spa-massage.jpg",
-  },
-];
-
-const serviceHistory: Service[] = [
-  {
-    id: "5",
-    name: "Breakfast Service",
-    weekday: [{ day: "MONDAY", startHour: 8, endHour: 18 }],
-    duration: 60,
-    type: "GENERAL_SERVICE",
-    disabled: false,
-    price: 25,
-    image: "https://example.com/spa-massage.jpg",
-  },
-];
 
 function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
   const { t } = useTranslation();
   const tc = (key: string) => t(`pages.manager.guests.${key}`);
   const [activeTab, setActiveTab] = useState(0);
-  const tabs = [tc("guest_info"), `${tc("services")} (${guest?.servicesCount || 0})`];
+  const tabs = [tc("guest_info"), `${tc("services")} (${guest.completedServices.length + guest.upcomingServices.length  || 0})`];
 
   return (
     <Dialog
@@ -135,8 +79,8 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                 borderRadius: 3,
               }}
             >
-              {guest.name[0]}
-              {guest.surname[0]}
+              {guest.guest.name[0]}
+              {guest.guest.surname[0]}
             </Avatar>
             <Box display="flex" flexDirection="column">
               <Typography
@@ -148,15 +92,15 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                   gap: 1,
                 }}
               >
-                {guest.name} {guest.surname}
+                {guest.guest.name} {guest.guest.surname}
               </Typography>
               <Box display="flex" alignItems="center" gap={1}>
                 <Chip
-                  label={tc(guest.status)}
+                  label={tc(guest.guest.guestData?.currentReservation?.status.toLowerCase().replace(/_/g, "-") || "")}
                   sx={{
                     bgcolor: (theme) =>
                       theme.palette.status[
-                      guest.status
+                      guest.guest.guestData?.currentReservation.status
                         .toUpperCase()
                         .replace(
                           /-/g,
@@ -174,7 +118,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
             </Box>
           </Box>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-            {tc("room")} {guest.guestData?.currentReservation.roomNumber} | {guest.servicesCount} {tc("booked")}
+            {tc("room")} {guest.guest.guestData?.currentReservation.roomNumber} | {guest.upcomingServices.length} {tc("booked")}
           </Typography>
           <NavigationTabs
             activeTab={activeTab}
@@ -200,7 +144,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                     </Box>
                     <Box display="flex" alignItems="center" gap={1} mb={1}>
                       <RoomOutlined fontSize="small" color="action" />
-                      <Typography variant="body2">{tc("room")} {guest.guestData?.currentReservation.roomNumber}</Typography>
+                      <Typography variant="body2">{tc("room")} {guest.guest.guestData?.currentReservation.roomNumber}</Typography>
                     </Box>
                     <Box display="flex" alignItems="center" gap={1}>
                       <Language fontSize="small" color="action" />
@@ -231,7 +175,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                         {tc("check_in")} {tc("date")}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {new Date(guest.guestData?.currentReservation.checkIn ?? "")
+                        {new Date(guest.guest.guestData?.currentReservation.checkIn ?? "")
                           .toLocaleDateString("pl-PL")
                           .replace(/\./g, "/")}
                       </Typography>
@@ -250,7 +194,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                         {tc("check_out")} {tc("date")}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {new Date(guest.guestData?.currentReservation.checkOut ?? "")
+                        {new Date(guest.guest.guestData?.currentReservation.checkOut ?? "")
                           .toLocaleDateString("pl-PL")
                           .replace(/\./g, "/")}
                       </Typography>
@@ -273,7 +217,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                         fontWeight="bold"
                         color="primary"
                       >
-                        {guest.guestData?.bill.toFixed(2)}$
+                        {guest.guest.guestData?.bill.toFixed(2)}$
                       </Typography>
                     </Box>
                   </Paper>
@@ -305,7 +249,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                   {tc("special_requests")}:
                 </Typography>
                 <Typography variant="body2" color="text.secondary" fontSize="smaller">
-                  High floor, city view preferred
+                  {guest.guest.guestData?.currentReservation.specialRequests || tc("no_special_requests")}
                 </Typography>
               </Paper>
             </>
@@ -317,9 +261,9 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                 {tc("upcoming_services")}
               </Typography>
               <Typography variant="body2" color="text.secondary" mb={2}>
-                {upcomingServices.length} {tc("upcoming_services").toLowerCase()}
+                {guest.upcomingServices.length} {tc("upcoming_services").toLowerCase()}
               </Typography>
-              {upcomingServices.map((service) => (
+              {guest.upcomingServices.map((service) => (
                 <Paper
                   key={service.id}
                   variant="outlined"
@@ -342,7 +286,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                         justifyContent: "center",
                         bgcolor: "primary.light",
                         width: 48,
-                        height: 48,
+                        height: 48, 
                         overflow: "hidden",
                       }}
                     >
@@ -351,7 +295,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                     <Box display="flex" flexDirection="column" gap={0.5}>
                       <Typography fontWeight="bold">{service.name}</Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {guest.name} {guest.surname} | {tc("room")} {guest.guestData?.currentReservation.roomNumber}
+                        {guest.guest.name} {guest.guest.surname} | {tc("room")} {guest.guest.guestData?.currentReservation.roomNumber}
                       </Typography>
                       <Typography variant="body2" color="text.primary">
                         09/08/2025 {tc("at")} {service.weekday[0].startHour}:00
@@ -386,9 +330,9 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                 {tc("service_history")}
               </Typography>
               <Typography variant="body2" color="text.secondary" mb={2}>
-                {serviceHistory.length} {tc("completed_service")}
+                {guest.completedServices.length + guest.cancelledServices.length} {tc("completed_service")}
               </Typography>
-              {serviceHistory.map((service) => (
+              {guest.completedServices.concat(guest.cancelledServices).map((service) => (
                 <Paper
                   key={service.id}
                   variant="outlined"
@@ -420,7 +364,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                     <Box display="flex" flexDirection="column" gap={0.5}>
                       <Typography fontWeight="bold">{service.name}</Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {guest.name} {guest.surname} | {tc("room")} {guest.guestData?.currentReservation.roomNumber}
+                        {guest.guest.name} {guest.guest.surname} | {tc("room")} {guest.guest.guestData?.currentReservation.roomNumber}
                       </Typography>
                       <Typography variant="body2" color="text.primary">
                         09/08/2025 {tc("at")} {service.weekday[0].startHour}:00

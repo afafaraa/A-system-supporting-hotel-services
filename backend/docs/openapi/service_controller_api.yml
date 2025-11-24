@@ -1,0 +1,489 @@
+openapi: 3.0.3
+info:
+  title: My Hotel Assistant API - Services
+  description: Service management endpoints
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@myhotelassistant.com
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.myhotelassistant.com
+    description: Production server
+
+tags:
+  - name: Services
+    description: Hotel service management endpoints
+
+paths:
+  /services/available:
+    get:
+      tags:
+        - Services
+      summary: Get available services
+      description: Retrieve all available services with pagination
+      operationId: getAvailableServices
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            default: 0
+          example: 0
+        - name: size
+          in: query
+          description: Page size
+          schema:
+            type: integer
+            default: 20
+          example: 20
+      responses:
+        '200':
+          description: Successfully retrieved services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServiceCreateResponseDTO'
+
+  /services/one/{id}:
+    get:
+      tags:
+        - Services
+      summary: Get service by ID
+      description: Retrieve detailed information about a specific service
+      operationId: getServiceById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Service ID
+          schema:
+            type: string
+          example: "service123"
+      responses:
+        '200':
+          description: Successfully retrieved service
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceCreateResponseDTO'
+        '404':
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /services/rate:
+    post:
+      tags:
+        - Services
+      summary: Rate a service
+      description: Submit a rating for a completed service
+      operationId: rateService
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RateServiceRequestBody'
+      responses:
+        '200':
+          description: Rating submitted successfully
+        '400':
+          description: Invalid rating data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /services:
+    post:
+      tags:
+        - Services
+      summary: Create service
+      description: Create a new service (Manager only)
+      operationId: createService
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceCreateRequestDTO'
+      responses:
+        '201':
+          description: Service created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceCreateResponseDTO'
+        '400':
+          description: Invalid service data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /services/{serviceId}/attributes:
+    get:
+      tags:
+        - Services
+      summary: Get service attributes
+      description: Retrieve attributes for a specific service type
+      operationId: getServiceAttributes
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          description: Service ID
+          schema:
+            type: string
+          example: "service123"
+      responses:
+        '200':
+          description: Successfully retrieved attributes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceTypeAttributes'
+        '404':
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    patch:
+      tags:
+        - Services
+      summary: Update service attributes
+      description: Update attributes for a service (Manager only)
+      operationId: updateServiceAttributes
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          description: Service ID
+          schema:
+            type: string
+          example: "service123"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceTypeAttributes'
+      responses:
+        '200':
+          description: Attributes updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceEntity'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /services/{id}:
+    patch:
+      tags:
+        - Services
+      summary: Update service
+      description: Update an existing service (Manager only)
+      operationId: updateService
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Service ID
+          schema:
+            type: string
+          example: "service123"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceCreateRequestDTO'
+      responses:
+        '200':
+          description: Service updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceCreateResponseDTO'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Service not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Services
+      summary: Delete service
+      description: Delete a service with specified option (Manager only)
+      operationId: deleteServiceWithOption
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Service ID
+          schema:
+            type: string
+          example: "service123"
+        - name: deleteOption
+          in: query
+          required: true
+          description: "Deletion option: 1=soft delete, 2=hard delete"
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Service deleted successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Service deleted"
+        '400':
+          description: Invalid request
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Invalid request"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Service not found
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Service not found"
+        '500':
+          description: Server error
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Server error"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ServiceCreateResponseDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "service123"
+        name:
+          type: string
+          example: "Room Cleaning"
+        description:
+          type: string
+          example: "Professional room cleaning service"
+        price:
+          type: number
+          format: double
+          example: 50.00
+        image:
+          type: string
+          nullable: true
+          example: "https://example.com/images/cleaning.jpg"
+        available:
+          type: boolean
+          example: true
+        category:
+          type: string
+          example: "Cleaning"
+        averageRating:
+          type: number
+          format: double
+          nullable: true
+          example: 4.5
+        ratingsCount:
+          type: integer
+          example: 10
+
+    ServiceCreateRequestDTO:
+      type: object
+      required:
+        - name
+        - description
+        - price
+        - category
+      properties:
+        name:
+          type: string
+          example: "Room Cleaning"
+        description:
+          type: string
+          example: "Professional room cleaning service"
+        price:
+          type: number
+          format: double
+          example: 50.00
+        image:
+          type: string
+          nullable: true
+          example: "https://example.com/images/cleaning.jpg"
+        category:
+          type: string
+          example: "Cleaning"
+        available:
+          type: boolean
+          default: true
+          example: true
+
+    ServiceEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "service123"
+        name:
+          type: string
+          example: "Room Cleaning"
+        description:
+          type: string
+          example: "Professional room cleaning service"
+        price:
+          type: number
+          format: double
+          example: 50.00
+        image:
+          type: string
+          nullable: true
+          example: "https://example.com/images/cleaning.jpg"
+        available:
+          type: boolean
+          example: true
+        category:
+          type: string
+          example: "Cleaning"
+        attributes:
+          $ref: '#/components/schemas/ServiceTypeAttributes'
+
+    ServiceTypeAttributes:
+      type: object
+      additionalProperties: true
+      description: Dynamic attributes based on service type
+      example:
+        duration: 60
+        cleaningType: "deep"
+
+    RateServiceRequestBody:
+      type: object
+      required:
+        - scheduleId
+        - username
+        - rating
+      properties:
+        scheduleId:
+          type: string
+          example: "schedule123"
+        username:
+          type: string
+          example: "john.doe"
+        comment:
+          type: string
+          example: "Great service!"
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 5
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Error message"
+        status:
+          type: integer
+          example: 400
+        timestamp:
+          type: string
+          format: date-time
+

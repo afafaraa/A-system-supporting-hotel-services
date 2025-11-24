@@ -4,6 +4,7 @@ import inzynierka.myhotelassistant.controllers.ReservationsController
 import inzynierka.myhotelassistant.dto.OrderRequest
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.service.ReservationsService
+import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.OrderService
 import inzynierka.myhotelassistant.services.ScheduleService
@@ -35,6 +36,13 @@ class GuestController(
     data class CancelOrderRequest(
         val orderId: String,
         val username: String,
+    )
+
+    data class GuestDetailsResponse(
+        val guest: UserEntity,
+        val upcomingServices: List<ServiceEntity>,
+        val completedServices: List<ServiceEntity>,
+        val cancelledServices: List<ServiceEntity>,
     )
 
     @PostMapping("/order/cancel")
@@ -125,4 +133,21 @@ class GuestController(
                     scheduleItem.specialRequests,
                 )
             }
+
+    @GetMapping("/management/guests/details")
+    @ResponseStatus(HttpStatus.OK)
+    fun getAllGuestsWithDetails(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int,
+    ): List<GuestDetailsResponse> {
+        val pageable = PageRequest.of(page, size)
+        return try {
+            val result = userService.getAllGuestsWithDetails(pageable)
+            println("Successfully fetched ${result.size} guests with details")
+            result
+        } catch (e: Exception) {
+            println("Error fetching guestsdetails$e")
+            throw e
+        }
+    }
 }

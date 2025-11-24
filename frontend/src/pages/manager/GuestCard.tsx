@@ -6,13 +6,13 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import { Guest } from "../../types";
+import { GuestDetails } from "../../types";
 import { RoomOutlined, EmailOutlined } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 import { GuestCardPaper } from "../../theme/styled-components/GuestCardPaper";
 
 interface GuestCardProps {
-  guest: Guest;
+  guest: GuestDetails;
   onClick: () => void;
 }
 
@@ -36,26 +36,26 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
               fontWeight: "bold",
             }}
           >
-            {guest.name[0]}
-            {guest.surname[0]}
+            {guest.guest.name[0]}
+            {guest.guest.surname[0]}
           </Avatar>
         </Box>
         <Box display="flex" flexDirection="column" gap={0.5}>
           <Typography fontWeight="bold">
-            {guest.name} {guest.surname}
+            {guest.guest.name} {guest.guest.surname}
           </Typography>
           {!isMobile ? (
             <Box display="flex" alignItems="center" gap={1}>
               <RoomOutlined fontSize="small" sx={{ color: "text.secondary" }} />
               <Typography variant="body2" color="text.secondary">
-                {tc("room")} {guest.guestData?.currentReservation.roomNumber}
+                {tc("room")} {guest.guest.guestData?.currentReservation.roomNumber}
               </Typography>
               <EmailOutlined
                 fontSize="small"
                 sx={{ color: "text.secondary", ml: 3 }}
               />
                 <Typography variant="body2" color="text.secondary">
-                {guest.email}
+                {guest.guest.email}
               </Typography>
             </Box>
           ) : (
@@ -64,7 +64,7 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
           <Box display="flex" alignItems="center" gap={1}>
             <Typography variant="body2" color="text.primary">
               {tc("check_in")}:{" "}
-              {new Date(guest.guestData?.currentReservation.checkIn ?? "")
+              {new Date(guest.guest.guestData?.currentReservation.checkIn ?? "")
                 .toLocaleDateString("pl-PL")
                 .replace(/\./g, "/")}
             </Typography>
@@ -73,7 +73,7 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
             </Typography>
             <Typography variant="body2" color="text.primary">
               {tc("check_out")}:{" "}
-              {new Date(guest.guestData?.currentReservation.checkOut ?? "")
+              {new Date(guest.guest.guestData?.currentReservation.checkOut ?? "")
                 .toLocaleDateString("pl-PL")
                 .replace(/\./g, "/")}
             </Typography>
@@ -94,11 +94,11 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
           alignItems="center"
         >
           <Chip
-            label={tc(guest.status)}
+            label={tc(guest.guest.guestData?.currentReservation?.status.toLowerCase().replace(/_/g, "-") || "")}
             sx={{
               bgcolor: (theme) =>
                 theme.palette.status[
-                guest.status
+                guest.guest.guestData?.currentReservation?.status
                   .toUpperCase()
                   .replace(/-/g, "_") as keyof typeof theme.palette.status
                 ],
@@ -109,10 +109,10 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
             }}
           />
           <Typography variant="body2" color="text.secondary">
-            {guest.servicesCount} {tc("services").toLowerCase()}
+            {guest.completedServices.length + guest.upcomingServices.length} {tc("services").toLowerCase()}
           </Typography>
           <Typography variant="body2" color="primary.main">
-            {guest.upcomingServicesCount} {tc("Upcoming").toLowerCase()}
+            {guest.upcomingServices.length} {tc("upcoming")}
           </Typography>
         </Box>
         <Box
@@ -125,7 +125,7 @@ function GuestCard({ guest, onClick }: GuestCardProps) {
             {tc("balance")}
           </Typography>
           <Typography fontSize="1.1rem" fontWeight="bold" color="primary.main">
-            {guest.guestData?.bill.toFixed(2)}$
+            {guest.guest.guestData?.bill.toFixed(2)}$
           </Typography>
         </Box>
       </Box>
