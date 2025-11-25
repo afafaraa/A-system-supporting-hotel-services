@@ -4,4 +4,4 @@ app:
 spring:
   data:
     mongodb:
-      uri: ${SPRING_DATA_MONGODB_URI:mongodb://mongo:27017/mongo-hotel?ssl=false}
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://mongo:27017/mongo-hotel}
