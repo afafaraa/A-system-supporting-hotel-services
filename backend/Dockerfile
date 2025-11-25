@@ -25,4 +25,4 @@ COPY --from=builder /build/build/libs/*.jar app.jar
 EXPOSE 8080
 
 ENTRYPOINT ["sh", "/usr/local/bin/wait-for-mongo.sh"]
-CMD ["sh","-c","java $JAVA_OPTS -jar app.jar"]
+CMD ["sh", "-c", "java $JAVA_OPTS -jar app.jar --server.port=${PORT:-8080}"]
