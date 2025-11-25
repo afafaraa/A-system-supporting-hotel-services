@@ -1,6 +1,12 @@
 #!/bin/sh
-until nc -z mongo 27017; do
-  echo "Waiting for MongoDB..."
+
+MONGO_HOST=${MONGOHOST:-mongo}
+MONGO_PORT=${MONGOPORT:-27017}
+
+echo "Waiting for MongoDB at $MONGO_HOST:$MONGO_PORT..."
+
+until nc -z "$MONGO_HOST" "$MONGO_PORT"; do
+  echo "MongoDB not available yet..."
   sleep 2
 done
 
