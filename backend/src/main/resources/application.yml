@@ -31,7 +31,7 @@ logging:
     inzynierka.myhotelassistant: DEBUG
 stripe:
   api:
-    key: ${STRIPE_SECRET_KEY:paste_api_key_here}
+    key: ${STRIPE_SECRET_KEY:}
 app:
   security:
     password-length: 10
