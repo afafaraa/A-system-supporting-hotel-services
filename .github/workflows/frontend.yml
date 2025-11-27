@@ -51,7 +51,7 @@ jobs:
 
       - name: Set up Docker Compose
         run: |
-          docker-compose -f ../docker-compose.yml up -d --build
+          docker compose -f ../docker-compose.yml up -d --build
 
       - name: Wait for backend to be ready
         run: |
@@ -72,4 +72,4 @@ jobs:
 
       - name: Tear down Docker Compose
         if: always()
-        run: docker-compose -f ../docker-compose.yml down -v
+        run: docker compose -f ../docker-compose.yml down -v
