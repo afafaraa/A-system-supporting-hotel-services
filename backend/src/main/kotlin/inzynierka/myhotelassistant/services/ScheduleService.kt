@@ -1,5 +1,6 @@
 package inzynierka.myhotelassistant.services
 
+import inzynierka.myhotelassistant.controllers.schedule.ScheduleController
 import inzynierka.myhotelassistant.dto.ScheduleDTO
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
@@ -121,4 +122,9 @@ class ScheduleService(
     }
 
     fun findByGuestId(guestId: String): List<ScheduleEntity> = scheduleRepository.findByGuestId(guestId)
+
+    fun getSchedulesForTransactionsHistory(scheduleIds: List<String>): List<ScheduleController.ScheduleForTransactionsHistory> {
+        val schedules = scheduleRepository.findAllById(scheduleIds)
+        return schedules.map { scheduleDateConverter.convertForTransactionsHistory(it) }
+    }
 }

@@ -15,6 +15,13 @@ interface EmployeeData {
   hireDate: string | Date,
 }
 
+export interface BillElement {
+  type: "RESERVATION" | "SERVICE",
+  id: string,
+  price: number,
+  addedDate: string | Date,
+}
+
 interface GuestData {
   currentReservation: {
     id: string,
@@ -28,6 +35,7 @@ interface GuestData {
     status: 'REQUESTED' | 'CONFIRMED' | 'CANCELED' | 'REJECTED' | 'COMPLETED' | 'CHECKED_IN',
   },
   bill: number,
+  billElements: BillElement[],
 }
 
 export default UserDetails;

@@ -537,7 +537,7 @@ class DatabaseSeeder(
                 if (Random.nextInt(0, 10) < 2) {
                     schedule.specialRequests = "Example special request for particular service. Request generated randomly."
                 }
-                guest.guestData?.let { data -> data.bill += schedule.price!! }
+                guest.guestData?.addServiceToBill(schedule.id!!, schedule.price!!, schedule.orderTime!!)
             }
             scheduleRepository.saveAll(futureSchedulesFragment)
 
@@ -549,7 +549,7 @@ class DatabaseSeeder(
                 val servicePrice = serviceDetails[schedule.serviceId]?.price ?: 0.0
                 schedule.price = if (servicePrice >= 0.01) servicePrice else ((70..300).random() / 10.0)
                 if (schedule.status == OrderStatus.COMPLETED) {
-                    guest.guestData?.let { data -> data.bill += schedule.price!! }
+                    guest.guestData?.addServiceToBill(schedule.id!!, schedule.price!!, schedule.orderTime!!)
                 } else if (schedule.status == OrderStatus.CANCELED) {
                     schedule.cancellationReason = CancellationReason.entries.random()
                 }
@@ -689,7 +689,8 @@ class DatabaseSeeder(
                         } else {
                             listOf(ReservationStatus.REQUESTED, ReservationStatus.CONFIRMED, ReservationStatus.CHECKED_IN).random()
                         }
-                    reservationsService.save(reservation)
+                    val savedReservation = reservationsService.save(reservation)
+                    guest.guestData?.addReservationToBill(savedReservation.id!!, savedReservation.reservationPrice)
                     logger.info("Placed reservation for guest '${guest.username}' in room '${room.number}'")
                 } else {
                     logger.warn(

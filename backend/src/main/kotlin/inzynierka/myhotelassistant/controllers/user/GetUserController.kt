@@ -1,5 +1,6 @@
 package inzynierka.myhotelassistant.controllers.user
 
+import inzynierka.myhotelassistant.models.user.GuestData.BillElement
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.UserService
 import org.springframework.security.access.prepost.PreAuthorize
@@ -19,11 +20,17 @@ class GetUserController(
 
     data class UserBill(
         val bill: Double,
+        val billElements: List<BillElement>,
     )
 
     @GetMapping("{userId}/bill")
     @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)")
     fun getBilling(
         @PathVariable userId: String,
-    ) = UserBill(userService.getUserGuestDataById(userId).bill)
+    ) = userService.getUserGuestDataById(userId).let {
+        UserBill(
+            bill = it.getBill(),
+            billElements = it.getBillElements(),
+        )
+    }
 }

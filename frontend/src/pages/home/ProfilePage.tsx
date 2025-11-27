@@ -12,17 +12,34 @@ import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LanguageSwitcher from "../../components/ui/LanguageSwitcher.tsx";
 import ThemeToggleGroup from "../../components/ui/ThemeToggleGroup.tsx";
-import React from "react";
+import React, {useEffect} from "react";
 import {SectionCard} from "../../theme/styled-components/SectionCard.ts";
 import SectionTitle from "../../components/ui/SectionTitle.tsx";
 import {useTranslation} from "react-i18next";
 import useTranslationWithPrefix from "../../locales/useTranslationWithPrefix.tsx";
+import BillElementCard from "../../components/ui/BillElementCard.tsx";
+import fetchBillElementsData from "../../utils/fetchBillElementsData.ts";
+import {SimpleSchedule, SimpleReservation} from "../../components/ui/BillElementCard.tsx";
+import {useNavigate} from "react-router-dom";
 
 function ProfilePage() {
   const {t} = useTranslation();
   const {t: tc} = useTranslationWithPrefix("pages.profile");
   const user = useSelector(selectUser);
   const userDetails = useSelector(selectUserDetails);
+  const [balanceItemsExtended, setBalanceItemsExtended] = React.useState(false);
+  const [fetchedSchedules, setFetchedSchedules] = React.useState<Record<string, SimpleSchedule> | null>(null);
+  const [fetchedReservations, setFetchedReservations] = React.useState<Record<string, SimpleReservation> | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!userDetails?.guestData?.billElements || userDetails.guestData.billElements.length === 0) return;
+    fetchBillElementsData(userDetails.guestData.billElements)
+      .then(({schedulesRecord, reservationsRecord}) => {
+        setFetchedSchedules(schedulesRecord);
+        setFetchedReservations(reservationsRecord);
+      });
+  }, [userDetails?.guestData?.billElements]);
 
   if (!user) return null;
 
@@ -114,7 +131,7 @@ function ProfilePage() {
           </Stack>
         </Stack>
         <Divider sx={{ my: 3 }} />
-        <Button variant="contained" fullWidth>{tc("view_all")}</Button>
+        <Button variant="contained" fullWidth onClick={() => navigate("/guest/hotel")}>{tc("view_all")}</Button>
     </SectionCard>
   )
 
@@ -147,10 +164,27 @@ function ProfilePage() {
         <Typography color="background.default">{tc("current_bill")}</Typography>
         <Typography fontWeight="bold" color="background.default" fontSize="2.5rem">{userDetails?.guestData?.bill.toFixed(2)} $</Typography>
       </SectionCard>
-      <Typography mt={3}>{tc("recent_transactions")}:</Typography>
-      {[1, 2, 3].map(item => (
-        <SectionCard key={item} sx={{p: 3, borderRadius: 3, mt: 2}}>Placeholder {item}</SectionCard>
-      ))}
+      <Typography mt={3} mb={1}>{tc("recent_transactions")}:</Typography>
+      <Box sx={{overflow: "scroll", transition: "max-height 0.3s ease", maxHeight: balanceItemsExtended ? "500px" : "300px"}}>
+        {userDetails?.guestData?.billElements && (
+          userDetails?.guestData?.billElements.length === 0 ? (
+            <SectionCard size={3} mt={2}>
+              <Typography>{tc("no_transactions")}</Typography>
+            </SectionCard>
+          ) : (
+            userDetails?.guestData?.billElements.map(item =>
+              <BillElementCard key={item.id} item={item} data={
+                (fetchedSchedules && fetchedSchedules[item.id]) ??
+                (fetchedReservations && fetchedReservations[item.id]) ??
+                undefined
+              } />
+            )
+          )
+        )}
+      </Box>
+      <Button variant="outlined" disabled={userDetails?.guestData?.billElements.length === 0} sx={{display: "block", marginX: "auto", mt: 1, px: 5}} onClick={() => setBalanceItemsExtended(p => !p)}>
+        {balanceItemsExtended ? tc("collapse") : tc("extend")}
+      </Button>
 
     </SectionCard>
   )

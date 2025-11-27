@@ -52,6 +52,12 @@ class ReservationsController(
         val roomStandard: String,
     )
 
+    data class ReservationWithRoomStandardDTO(
+        @field:JsonUnwrapped
+        val reservation: ReservationEntity,
+        val roomStandard: String,
+    )
+
     data class ReservationGuestDTO(
         val id: String,
         val room: RoomDTO,
@@ -66,6 +72,15 @@ class ReservationsController(
     @GetMapping
     @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).EMPLOYEE.name)")
     fun getAllReservations(): List<ReservationEntity> = reservationsService.findAllReservations()
+
+    @GetMapping("/by-ids")
+    @PreAuthorize(
+        "hasAnyRole(T(inzynierka.myhotelassistant.models.user.Role).GUEST.name," +
+            "T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)",
+    )
+    fun getAllReservationsForByIds(
+        @RequestParam(name = "ids") reservationIds: List<String>,
+    ): List<ReservationWithRoomStandardDTO> = reservationsService.getAllReservationsByIds(reservationIds)
 
     @GetMapping("/{status}")
     @PreAuthorize("hasRole(T(inzynierka.myhotelassistant.models.user.Role).EMPLOYEE.name)")

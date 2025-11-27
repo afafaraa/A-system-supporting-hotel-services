@@ -30,9 +30,7 @@ class OrderService(
         scheduledService.guestId = null
         scheduledService.status = OrderStatus.AVAILABLE
         scheduledService.specialRequests = null
-        guest.guestData?.let { data ->
-            data.bill -= scheduledService.price!!
-        }
+        guest.guestData?.removeElementFromBill(scheduledService.id!!)
         scheduleService.save(scheduledService)
         userService.save(guest)
     }
@@ -51,9 +49,7 @@ class OrderService(
         schedule.status = OrderStatus.REQUESTED
         schedule.price = currentPrice
         schedule.specialRequests = specialRequests
-        guest.guestData?.let { data ->
-            data.bill += schedule.price!!
-        }
+        guest.guestData?.addServiceToBill(schedule.id!!, schedule.price!!)
         scheduleService.save(schedule)
         userService.save(guest)
         return schedule

@@ -355,15 +355,11 @@ class ReservationsService(
         savedReservation: ReservationEntity,
     ) {
         if (savedGuest.guestData == null) {
-            savedGuest.guestData =
-                GuestData(
-                    currentReservation = savedReservation,
-                    bill = savedReservation.reservationPrice,
-                )
+            savedGuest.guestData = GuestData(savedReservation)
         } else {
             savedGuest.guestData?.currentReservation = savedReservation
-            savedGuest.guestData?.bill = savedReservation.reservationPrice
         }
+        savedGuest.guestData?.addReservationToBill(savedReservation.id!!, savedReservation.reservationPrice)
 
         userService.save(savedGuest)
     }
@@ -374,4 +370,15 @@ class ReservationsService(
     }
 
     fun count() = reservationsRepository.count()
+
+    fun getAllReservationsByIds(reservationIds: List<String>): List<ReservationsController.ReservationWithRoomStandardDTO> =
+        reservationsRepository.findAllById(reservationIds).map { reservation ->
+            val room =
+                roomRepository.findByNumber(reservation.roomNumber)
+                    ?: throw IllegalArgumentException("Room with number ${reservation.roomNumber} not found")
+            val roomStandard =
+                roomStandardRepository.findById(room.standardId).getOrNull()
+                    ?: throw IllegalArgumentException("Room standard for room ${reservation.roomNumber} not found")
+            ReservationsController.ReservationWithRoomStandardDTO(reservation, roomStandard.name)
+        }
 }
