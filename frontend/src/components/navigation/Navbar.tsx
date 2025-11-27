@@ -101,7 +101,7 @@ function Navbar() {
   );
 
   const UserCard = () => (
-    <Link to="/profile" style={{ textDecoration: 'none' }}>
+    <Link to="/profile" style={{ textDecoration: 'none' }} data-cy="userCard">
       <Stack direction="row" spacing={2} alignItems="center" px={1}>
         <Box
           fontWeight="bold"
@@ -200,7 +200,7 @@ function Navbar() {
 
               <UserCard />
 
-              <IconButton onClick={() => navigate('/logout')}>
+              <IconButton onClick={() => navigate('/logout')} data-cy="logoutButton">
                 <LogoutOutlinedIcon />
               </IconButton>
             </Stack>

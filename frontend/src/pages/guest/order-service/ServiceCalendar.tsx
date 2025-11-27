@@ -93,6 +93,7 @@ function ServiceCalendar({
             value={selectedTime}
             onChange={(e) => setSelectedTime(e.target.value)}
             sx={{"& .MuiOutlinedInput-root": {backgroundColor: "background.default"}}}
+            data-cy="employeeList"
           >
             {availableTimeSlots.length === 0 ? (
               <MenuItem disabled>

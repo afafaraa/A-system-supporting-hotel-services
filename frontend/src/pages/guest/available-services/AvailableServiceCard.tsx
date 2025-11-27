@@ -165,6 +165,7 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
                 sx={{ marginTop: 2 }}
                 variant="contained"
                 size="small"
+                data-cy="bookButton"
               >
                 {t('pages.available_services.bookNow')}
               </Button>
