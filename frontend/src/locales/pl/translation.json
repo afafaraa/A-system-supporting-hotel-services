@@ -783,7 +783,10 @@
     "special_requests": "Specjalne życzenia",
     "without_reservation": "Bez rezerwacji",
     "cannot_complete_service_before_schedule": "Nie można zakończyć usługi przed jej zaplanowanym rozpoczęciem.",
-    "order_date": "Data zamówienia"
+    "order_date": "Data zamówienia",
+    "service": "Usługa",
+    "reservation": "Rezerwacja",
+    "bill_additional_details_fetch_error": "Nie można pobrać dodatkowych szczegółów rachunku"
   },
   "ui": {
     "show_more": "Pokaż więcej ↓",

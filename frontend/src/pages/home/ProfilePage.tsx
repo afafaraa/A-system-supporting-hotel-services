@@ -1,4 +1,4 @@
-import {Button, Card, Chip, Divider, Grid, Stack, Switch} from "@mui/material";
+import {Alert, Button, Card, Chip, Divider, Grid, Stack, Switch} from "@mui/material";
 import {Typography} from "@mui/material";
 import Box from "@mui/system/Box"
 import {useSelector} from "react-redux";
@@ -30,6 +30,7 @@ function ProfilePage() {
   const [balanceItemsExtended, setBalanceItemsExtended] = React.useState(false);
   const [fetchedSchedules, setFetchedSchedules] = React.useState<Record<string, SimpleSchedule> | null>(null);
   const [fetchedReservations, setFetchedReservations] = React.useState<Record<string, SimpleReservation> | null>(null);
+  const [fetchError, setFetchError] = React.useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,7 +39,8 @@ function ProfilePage() {
       .then(({schedulesRecord, reservationsRecord}) => {
         setFetchedSchedules(schedulesRecord);
         setFetchedReservations(reservationsRecord);
-      });
+      })
+      .catch(res => setFetchError(res.message));
   }, [userDetails?.guestData?.billElements]);
 
   if (!user) return null;
@@ -172,17 +174,21 @@ function ProfilePage() {
               <Typography>{tc("no_transactions")}</Typography>
             </SectionCard>
           ) : (
-            userDetails?.guestData?.billElements.map(item =>
-              <BillElementCard key={item.id} item={item} data={
-                (fetchedSchedules && fetchedSchedules[item.id]) ??
-                (fetchedReservations && fetchedReservations[item.id]) ??
-                undefined
-              } />
-            )
+            <>
+              {fetchError &&
+                  <Alert severity="error" sx={{mb: 1}}>{t("common.bill_additional_details_fetch_error")}: {fetchError}</Alert>}
+              {userDetails?.guestData?.billElements.map(item =>
+                <BillElementCard key={item.id} item={item} data={
+                  (fetchedSchedules && fetchedSchedules[item.id]) ??
+                  (fetchedReservations && fetchedReservations[item.id]) ??
+                  undefined
+                } />
+              )}
+            </>
           )
         )}
       </Box>
-      <Button variant="outlined" disabled={userDetails?.guestData?.billElements.length === 0} sx={{display: "block", marginX: "auto", mt: 1, px: 5}} onClick={() => setBalanceItemsExtended(p => !p)}>
+      <Button variant="outlined" disabled={(userDetails?.guestData?.billElements?.length ?? 0) === 0} sx={{display: "block", marginX: "auto", mt: 1, px: 5}} onClick={() => setBalanceItemsExtended(p => !p)}>
         {balanceItemsExtended ? tc("collapse") : tc("extend")}
       </Button>
 

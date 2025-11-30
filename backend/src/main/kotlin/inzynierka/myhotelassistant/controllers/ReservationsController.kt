@@ -78,7 +78,7 @@ class ReservationsController(
         "hasAnyRole(T(inzynierka.myhotelassistant.models.user.Role).GUEST.name," +
             "T(inzynierka.myhotelassistant.models.user.Role).RECEPTIONIST.name)",
     )
-    fun getAllReservationsForByIds(
+    fun getAllReservationsByIds(
         @RequestParam(name = "ids") reservationIds: List<String>,
     ): List<ReservationWithRoomStandardDTO> = reservationsService.getAllReservationsByIds(reservationIds)
 

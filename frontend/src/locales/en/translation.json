@@ -783,7 +783,10 @@
     "special_requests": "Special requests",
     "without_reservation": "Without reservation",
     "cannot_complete_service_before_schedule": "You cannot complete a schedule before its scheduled time.",
-    "order_date": "Order date"
+    "order_date": "Order date",
+    "service": "Service",
+    "reservation": "Reservation",
+    "bill_additional_details_fetch_error": "Unable to fetch additional bill details"
   },
   "ui": {
     "show_more": "Show more ↓",

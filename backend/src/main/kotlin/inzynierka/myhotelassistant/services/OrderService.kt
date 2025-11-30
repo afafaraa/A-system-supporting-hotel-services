@@ -49,7 +49,7 @@ class OrderService(
         schedule.status = OrderStatus.REQUESTED
         schedule.price = currentPrice
         schedule.specialRequests = specialRequests
-        guest.guestData?.addServiceToBill(schedule.id!!, schedule.price!!)
+        guest.guestData?.addServiceToBill(schedule.id!!, schedule.price!!, schedule.orderTime!!)
         scheduleService.save(schedule)
         userService.save(guest)
         return schedule

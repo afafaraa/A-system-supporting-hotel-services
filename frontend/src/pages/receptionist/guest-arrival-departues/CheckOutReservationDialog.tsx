@@ -11,12 +11,13 @@ import HowToRegOutlinedIcon from '@mui/icons-material/HowToRegOutlined';
 import Reservation from "../../../types/reservation.ts";
 import {ReservationDetails, ReservationTitle} from "./CommonReservationDialogComponents.tsx";
 import {axiosAuthApi} from "../../../middleware/axiosApi.ts";
-import React, {ChangeEvent, useEffect, useState} from "react";
+import {ChangeEvent, useEffect, useState} from "react";
 import useTranslationWithPrefix from "../../../locales/useTranslationWithPrefix.tsx";
 import {SectionCard} from "../../../theme/styled-components/SectionCard.ts";
 import {BillElement} from "../../../types/userDetails.ts";
 import BillElementCard, {SimpleReservation, SimpleSchedule} from "../../../components/ui/BillElementCard.tsx";
 import fetchBillElementsData from "../../../utils/fetchBillElementsData.ts";
+import {useTranslation} from "react-i18next";
 
 interface UserBill {
   bill: number;
@@ -24,14 +25,16 @@ interface UserBill {
 }
 
 function CheckOutReservationDialog({reservation, onSuccess, onClose}: {reservation: Reservation | null, onSuccess: (reservation: Reservation) => void, onClose: () => void}) {
+  const {t} = useTranslation();
   const {t: tc} = useTranslationWithPrefix("pages.receptionist.reservation-dialog.check-out");
   const [error, setError] = useState<string | null>(null);
   const [userBill, setUserBill] = useState<UserBill | null>(null);
   const [paymentChecked, setPaymentChecked] = useState(false);
 
-  const [billElementsLoading, setBillElementsLoading] = React.useState(true);
-  const [fetchedSchedules, setFetchedSchedules] = React.useState<Record<string, SimpleSchedule> | null>(null);
-  const [fetchedReservations, setFetchedReservations] = React.useState<Record<string, SimpleReservation> | null>(null);
+  const [billElementsLoading, setBillElementsLoading] = useState(true);
+  const [fetchedSchedules, setFetchedSchedules] = useState<Record<string, SimpleSchedule> | null>(null);
+  const [fetchedReservations, setFetchedReservations] = useState<Record<string, SimpleReservation> | null>(null);
+  const [billDetailsFetchError, setBillDetailsFetchError] = useState<string | null>(null);
 
   useEffect(() => {
     if (reservation === null) return;
@@ -48,6 +51,7 @@ function CheckOutReservationDialog({reservation, onSuccess, onClose}: {reservati
         setFetchedSchedules(schedulesRecord);
         setFetchedReservations(reservationsRecord);
       })
+      .catch(res => setBillDetailsFetchError(res.message))
       .finally(() => setBillElementsLoading(false));
   }, [userBill?.billElements]);
 
@@ -133,13 +137,17 @@ function CheckOutReservationDialog({reservation, onSuccess, onClose}: {reservati
                   {tc("empty-bill")}
                 </SectionCard>
               ) : (
-                userBill.billElements.map(item => (
-                  <BillElementCard key={item.id} item={item} data={
-                    (fetchedSchedules && fetchedSchedules[item.id]) ??
-                    (fetchedReservations && fetchedReservations[item.id]) ??
-                    undefined
-                  } />
-                ))
+                <>
+                  {billDetailsFetchError &&
+                      <Alert severity="error" sx={{mb: 1}}>{t("common.bill_additional_details_fetch_error")}: {billDetailsFetchError}</Alert>}
+                  {userBill.billElements.map(item => (
+                    <BillElementCard key={item.id} item={item} data={
+                      (fetchedSchedules && fetchedSchedules[item.id]) ??
+                      (fetchedReservations && fetchedReservations[item.id]) ??
+                      undefined
+                    } />
+                  ))}
+                </>
               )
             )
           )}

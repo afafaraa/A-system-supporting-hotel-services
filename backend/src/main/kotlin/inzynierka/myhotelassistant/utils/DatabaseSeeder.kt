@@ -690,7 +690,11 @@ class DatabaseSeeder(
                             listOf(ReservationStatus.REQUESTED, ReservationStatus.CONFIRMED, ReservationStatus.CHECKED_IN).random()
                         }
                     val savedReservation = reservationsService.save(reservation)
-                    guest.guestData?.addReservationToBill(savedReservation.id!!, savedReservation.reservationPrice)
+                    guest.guestData?.addReservationToBill(
+                        savedReservation.id!!,
+                        savedReservation.reservationPrice,
+                        savedReservation.createdAt,
+                    )
                     logger.info("Placed reservation for guest '${guest.username}' in room '${room.number}'")
                 } else {
                     logger.warn(

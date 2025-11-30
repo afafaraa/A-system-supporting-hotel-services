@@ -1,6 +1,7 @@
 package inzynierka.myhotelassistant.models.service
 
 import inzynierka.myhotelassistant.controllers.ReservationsController
+import inzynierka.myhotelassistant.exceptions.HttpException
 import inzynierka.myhotelassistant.models.reservation.ReservationEntity
 import inzynierka.myhotelassistant.models.reservation.ReservationStatus
 import inzynierka.myhotelassistant.models.user.GuestData
@@ -359,7 +360,7 @@ class ReservationsService(
         } else {
             savedGuest.guestData?.currentReservation = savedReservation
         }
-        savedGuest.guestData?.addReservationToBill(savedReservation.id!!, savedReservation.reservationPrice)
+        savedGuest.guestData?.addReservationToBill(savedReservation.id!!, savedReservation.reservationPrice, savedReservation.createdAt)
 
         userService.save(savedGuest)
     }
@@ -375,10 +376,10 @@ class ReservationsService(
         reservationsRepository.findAllById(reservationIds).map { reservation ->
             val room =
                 roomRepository.findByNumber(reservation.roomNumber)
-                    ?: throw IllegalArgumentException("Room with number ${reservation.roomNumber} not found")
+                    ?: throw HttpException.EntityNotFoundException("Room with number ${reservation.roomNumber} not found")
             val roomStandard =
                 roomStandardRepository.findById(room.standardId).getOrNull()
-                    ?: throw IllegalArgumentException("Room standard for room ${reservation.roomNumber} not found")
+                    ?: throw HttpException.EntityNotFoundException("Room standard for room ${reservation.roomNumber} not found")
             ReservationsController.ReservationWithRoomStandardDTO(reservation, roomStandard.name)
         }
 }

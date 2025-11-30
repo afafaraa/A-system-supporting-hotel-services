@@ -66,8 +66,8 @@ const BillElementCard = ({item, data}: {item: BillElement, data?: SimpleSchedule
 const DefaultBillElementCard = ({type, item}: {type: BillElement["type"], item: BillElement}) => (
   <Stack direction="row" alignItems="center" gap={2}>
     <ServiceIcon icon={type === "RESERVATION" ? MeetingRoomOutlinedIcon : undefined}>
-      <Typography fontWeight="bold">{type === "SERVICE" ? "Usługa" : "Rezerwacja"} {item.id}</Typography>
-      <Typography fontSize="11px" color="text.secondary">Data zamówienia: {new Date(item.addedDate).toLocaleString(t('date.locale'))}</Typography>
+      <Typography fontWeight="bold">{type === "SERVICE" ? t("common.service") : t("common.reservation")} {item.id}</Typography>
+      <Typography fontSize="11px" color="text.secondary">{t("common.order_date")}: {new Date(item.addedDate).toLocaleString(t('date.locale'))}</Typography>
     </ServiceIcon>
     <Box flexGrow={1} display="flex" justifyContent="flex-end">
       <Typography fontWeight="bold">{item.price.toFixed(2)}$</Typography>
