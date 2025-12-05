@@ -1,6 +1,5 @@
 package inzynierka.myhotelassistant.controllers
 
-import com.fasterxml.jackson.core.JsonToken
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.stripe.Stripe
 import com.stripe.exception.SignatureVerificationException
@@ -143,26 +142,10 @@ class PaymentController(
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Webhook error")
             }
 
-        fun parseIdFromRawJson(rawJson: String): String? {
-            val parser = ObjectMapper().factory.createParser(rawJson)
-            try {
-                while (parser.nextToken() != null) {
-                    if (parser.currentToken == JsonToken.FIELD_NAME && parser.currentName() == "id") {
-                        parser.nextToken()
-                        return parser.text
-                    }
-                }
-            } catch (_: Exception) {
-                return null
-            } finally {
-                parser.close()
-            }
-            return null
-        }
-
         fun getSessionIdFromEvent(event: Event): String? {
             val rawJson = event.dataObjectDeserializer.rawJson
-            val sessionId: String? = parseIdFromRawJson(rawJson)
+            val node = ObjectMapper().readTree(rawJson)
+            val sessionId: String? = node.get("id").asText(null)
             if (sessionId == null || sessionId.isBlank()) {
                 logger.error("No session id in event data for event id: ${event.id}")
                 return null

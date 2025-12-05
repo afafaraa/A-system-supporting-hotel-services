@@ -786,7 +786,8 @@
     "order_date": "Order date",
     "service": "Service",
     "reservation": "Reservation",
-    "bill_additional_details_fetch_error": "Unable to fetch additional bill details"
+    "bill_additional_details_fetch_error": "Unable to fetch additional bill details",
+    "priceFrom": "from"
   },
   "ui": {
     "show_more": "Show more ↓",

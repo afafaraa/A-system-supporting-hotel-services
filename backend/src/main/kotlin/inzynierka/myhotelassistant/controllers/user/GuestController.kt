@@ -103,7 +103,7 @@ class GuestController(
                     scheduleItem.employeeId,
                     employeeFullName,
                     service.image,
-                    service.price,
+                    scheduleItem.price ?: service.price,
                     scheduleItem.serviceDate,
                     scheduleItem.status,
                     scheduleItem.specialRequests,

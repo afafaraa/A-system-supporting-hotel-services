@@ -786,7 +786,8 @@
     "order_date": "Data zamówienia",
     "service": "Usługa",
     "reservation": "Rezerwacja",
-    "bill_additional_details_fetch_error": "Nie można pobrać dodatkowych szczegółów rachunku"
+    "bill_additional_details_fetch_error": "Nie można pobrać dodatkowych szczegółów rachunku",
+    "priceFrom": "od"
   },
   "ui": {
     "show_more": "Pokaż więcej ↓",
