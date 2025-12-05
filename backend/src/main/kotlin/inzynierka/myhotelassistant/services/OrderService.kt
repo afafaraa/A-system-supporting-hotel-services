@@ -1,9 +1,15 @@
 package inzynierka.myhotelassistant.services
 
+import inzynierka.myhotelassistant.controllers.ReservationsController
+import inzynierka.myhotelassistant.dto.OrderRequest
 import inzynierka.myhotelassistant.exceptions.HttpException
+import inzynierka.myhotelassistant.models.PaymentSessionIdWithOrderEntity
+import inzynierka.myhotelassistant.models.reservation.ReservationEntity
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
+import inzynierka.myhotelassistant.models.service.ReservationsService
 import inzynierka.myhotelassistant.models.user.UserEntity
+import inzynierka.myhotelassistant.services.notifications.NotificationScheduler
 import org.springframework.stereotype.Component
 import java.time.Duration
 import java.time.LocalDateTime
@@ -13,6 +19,8 @@ class OrderService(
     private val scheduleService: ScheduleService,
     private val userService: UserService,
     private val serviceService: ServiceService,
+    private val reservationsService: ReservationsService,
+    private val notificationScheduler: NotificationScheduler,
 ) {
     fun cancel(
         guest: UserEntity,
@@ -50,8 +58,56 @@ class OrderService(
         schedule.price = currentPrice
         schedule.specialRequests = specialRequests
         guest.guestData?.addServiceToBill(schedule.id!!, schedule.price!!, schedule.orderTime!!)
-        scheduleService.save(schedule)
+        val savedSchedule = scheduleService.save(schedule)
         userService.save(guest)
-        return schedule
+        return savedSchedule
+    }
+
+    data class OrderResult(
+        val schedules: List<ScheduleEntity>,
+        val reservations: List<ReservationEntity>,
+    )
+
+    fun makeOrderFromItems(
+        guest: UserEntity,
+        items: OrderRequest,
+    ): OrderResult {
+        val schedules =
+            items.schedules.map { (scheduleId, specialRequests, customPrice) ->
+                val schedule = order(guest, scheduleId, specialRequests, customPrice)
+                notificationScheduler.notifyGuestOnSuccessfulOrder(schedule)
+                schedule
+            }
+
+        val reservations =
+            items.reservations.map { reservation ->
+                val reservation =
+                    reservationsService.createReservation(
+                        ReservationsController.ReservationCreateDTO(
+                            roomNumber = reservation.roomNumber,
+                            guestsCount = reservation.guestsCount,
+                            checkIn = reservation.checkIn,
+                            checkOut = reservation.checkOut,
+                            specialRequests = reservation.specialRequests,
+                            guestUsername = guest.username,
+                        ),
+                    )
+                reservationsService.bindReservationToGuest(guest, reservation)
+                reservation
+            }
+
+        return OrderResult(schedules, reservations)
+    }
+
+    fun setItemsAsPaid(
+        guestId: String,
+        itemIds: PaymentSessionIdWithOrderEntity.ItemIds,
+    ) {
+        val guest = userService.findByIdOrThrow(guestId)
+        guest.guestData?.let { data ->
+            itemIds.scheduleIds.forEach { id -> data.removeElementFromBill(id) }
+            itemIds.reservationIds.forEach { id -> data.removeElementFromBill(id) }
+            userService.save(guest)
+        }
     }
 }

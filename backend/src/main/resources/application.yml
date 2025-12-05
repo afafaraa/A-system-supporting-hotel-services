@@ -32,6 +32,8 @@ logging:
 stripe:
   api:
     key: ${STRIPE_SECRET_KEY:paste_api_key_here}
+  webhook:
+    secret: ${STRIPE_WEBHOOK_SECRET:paste_webhook_secret_here}
 app:
   security:
     password-length: 10

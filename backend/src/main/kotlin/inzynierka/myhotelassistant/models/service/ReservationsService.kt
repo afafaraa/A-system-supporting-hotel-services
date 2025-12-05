@@ -164,6 +164,8 @@ class ReservationsService(
         notificationScheduler.notifyGuestOnReservationStatusChange(savedReservation, oldStatus, ReservationStatus.CANCELED)
     }
 
+    fun deleteReservation(reservationId: String) = reservationsRepository.deleteById(reservationId)
+
     fun rejectGuestReservation(
         reservationId: String,
         reason: String,
@@ -357,8 +359,6 @@ class ReservationsService(
     ) {
         if (savedGuest.guestData == null) {
             savedGuest.guestData = GuestData(savedReservation)
-        } else {
-            savedGuest.guestData?.currentReservation = savedReservation
         }
         savedGuest.guestData?.addReservationToBill(savedReservation.id!!, savedReservation.reservationPrice, savedReservation.createdAt)
 

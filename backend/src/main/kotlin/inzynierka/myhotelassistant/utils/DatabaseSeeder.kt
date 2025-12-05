@@ -106,7 +106,6 @@ class DatabaseSeeder(
             addRatings()
             addTestNotifications()
             createReservations()
-            // addTestRoomStandards()
         } catch (e: Exception) {
             logger.error(e.message, e)
             throw e
