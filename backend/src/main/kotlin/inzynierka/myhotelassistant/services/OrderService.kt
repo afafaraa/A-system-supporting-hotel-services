@@ -12,6 +12,7 @@ import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.notifications.NotificationScheduler
 import org.springframework.stereotype.Component
 import java.time.Duration
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Component
@@ -60,6 +61,9 @@ class OrderService(
         guest.guestData?.addServiceToBill(schedule.id!!, schedule.price!!, schedule.orderTime!!)
         val savedSchedule = scheduleService.save(schedule)
         userService.save(guest)
+        if (schedule.serviceDate.toLocalDate().isEqual(LocalDate.now())) {
+            notificationScheduler.notifyEmployeeOfNewScheduleForToday(savedSchedule, service)
+        }
         return savedSchedule
     }
 

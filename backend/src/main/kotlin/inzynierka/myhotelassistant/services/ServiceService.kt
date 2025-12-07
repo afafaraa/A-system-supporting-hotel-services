@@ -26,6 +26,8 @@ class ServiceService(
 
     fun getServiceDetailsById(id: String): ServiceRepository.ServiceDetails? = serviceRepository.findServiceDetailsById(id)
 
+    fun getServiceDetailsForNotificationById(id: String) = serviceRepository.getServiceDetailsForNotificationById(id)
+
     fun findByIdOrThrow(id: String): ServiceEntity =
         serviceRepository
             .findById(id)

@@ -298,11 +298,27 @@ class ReservationsService(
         return reservations.map { transformToDTO(it) }
     }
 
+    fun countTodayCheckIns(): Long {
+        val today = LocalDate.now()
+        return reservationsRepository.countAllByCheckInIsAndStatusIs(
+            checkInDate = today,
+            status = ReservationStatus.CONFIRMED,
+        )
+    }
+
     fun countOverdueCheckIns(): Long {
         val today = LocalDate.now()
         return reservationsRepository.countAllByCheckInIsBeforeAndStatusIsIn(
             checkInDate = today,
             statuses = listOf(ReservationStatus.CONFIRMED, ReservationStatus.REQUESTED),
+        )
+    }
+
+    fun countTodayCheckOuts(): Long {
+        val today = LocalDate.now()
+        return reservationsRepository.countAllByCheckOutIsAndStatusIs(
+            checkOutDate = today,
+            status = ReservationStatus.CHECKED_IN,
         )
     }
 
@@ -382,4 +398,13 @@ class ReservationsService(
                     ?: throw HttpException.EntityNotFoundException("Room standard for room ${reservation.roomNumber} not found")
             ReservationsController.ReservationWithRoomStandardDTO(reservation, roomStandard.name)
         }
+
+    fun countPendingReservationsWithin7Days(): Long {
+        val today = LocalDate.now()
+        return reservationsRepository.countAllByCheckInIsBetweenAndStatusIs(
+            checkInAfter = today,
+            checkInBefore = today.plusDays(7),
+            status = ReservationStatus.REQUESTED,
+        )
+    }
 }

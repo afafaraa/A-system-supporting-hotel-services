@@ -117,13 +117,6 @@ class GuestController(
         @RequestParam(defaultValue = "10") size: Int,
     ): List<GuestDetailsResponse> {
         val pageable = PageRequest.of(page, size)
-        return try {
-            val result = userService.getAllGuestsWithDetails(pageable)
-            println("Successfully fetched ${result.size} guests with details")
-            result
-        } catch (e: Exception) {
-            println("Error fetching guests details: $e")
-            throw e
-        }
+        return userService.getAllGuestsWithDetails(pageable)
     }
 }

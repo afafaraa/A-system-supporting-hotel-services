@@ -18,6 +18,12 @@ interface UserRepository : MongoRepository<UserEntity, String> {
 
     fun findByRole(role: Role): List<UserEntity>
 
+    data class OnlyId(
+        val id: String,
+    )
+
+    fun findOnlyIdByRole(role: Role): List<OnlyId>
+
     fun findByRoleIn(
         roles: List<Role>,
         pageable: Pageable,

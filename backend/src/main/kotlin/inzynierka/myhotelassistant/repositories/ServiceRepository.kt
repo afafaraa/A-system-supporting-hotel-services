@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
+import kotlin.time.Duration
 
 @Repository
 interface ServiceRepository : MongoRepository<ServiceEntity, String> {
@@ -26,4 +27,11 @@ interface ServiceRepository : MongoRepository<ServiceEntity, String> {
     )
 
     fun findServiceAttributesById(id: String): ServiceAttributes?
+
+    data class ServiceDetailsForNotification(
+        val name: String,
+        val duration: Duration,
+    )
+
+    fun getServiceDetailsForNotificationById(id: String): ServiceDetailsForNotification?
 }

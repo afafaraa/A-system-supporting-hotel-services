@@ -113,4 +113,20 @@ interface ReservationsRepository : MongoRepository<ReservationEntity, String> {
         date: LocalDate,
         datePlusOne: LocalDate,
     ): Long
+
+    fun countAllByCheckInIsAndStatusIs(
+        checkInDate: LocalDate,
+        status: ReservationStatus,
+    ): Long
+
+    fun countAllByCheckOutIsAndStatusIs(
+        checkOutDate: LocalDate,
+        status: ReservationStatus,
+    ): Long
+
+    fun countAllByCheckInIsBetweenAndStatusIs(
+        checkInAfter: LocalDate,
+        checkInBefore: LocalDate,
+        status: ReservationStatus,
+    ): Long
 }

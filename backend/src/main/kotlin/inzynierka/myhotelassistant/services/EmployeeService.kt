@@ -42,6 +42,10 @@ class EmployeeService(
 
     fun getAllEmployeesWithEmployeeRole(): List<UserEntity> = userRepository.findByRole(Role.EMPLOYEE)
 
+    fun getAllEmployeeIds(): List<String> = userRepository.findOnlyIdByRole(Role.EMPLOYEE).map { it.id }
+
+    fun getAllReceptionistIds(): List<String> = userRepository.findOnlyIdByRole(Role.RECEPTIONIST).map { it.id }
+
     @Throws(InvalidRoleNameException::class)
     fun createEmployee(employeeDTO: EmployeeManagementController.EmployeeDTO): UserEntity =
         UserEntity(

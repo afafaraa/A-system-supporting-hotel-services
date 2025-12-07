@@ -9,6 +9,7 @@ import inzynierka.myhotelassistant.repositories.RatingRepository
 import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
 import inzynierka.myhotelassistant.services.UserService
+import inzynierka.myhotelassistant.utils.NotificationGenerator
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -30,6 +31,7 @@ class ServiceController(
     private val userService: UserService,
     private val scheduleService: ScheduleService,
     private val ratingRepository: RatingRepository,
+    private val notifsGenerator: NotificationGenerator,
 ) {
     data class RateServiceRequestBody(
         val scheduleId: String,
@@ -72,6 +74,11 @@ class ServiceController(
                 rating = req.rating,
                 comment = req.comment,
             )
+        notifsGenerator.pushNotificationToUser(
+            userId = schedule.employeeId,
+            content = NotificationGenerator.Content.EMPLOYEE_NEW_REVIEW_RECEIVED,
+            args = arrayOf(rating.fullName, rating.rating),
+        )
         ratingRepository.save(rating)
     }
 

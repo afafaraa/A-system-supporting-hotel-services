@@ -13,6 +13,7 @@ import inzynierka.myhotelassistant.utils.SchedulesToDTOConverter
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeParseException
 import java.time.temporal.TemporalAdjusters
@@ -72,6 +73,33 @@ class ScheduleService(
             )
         return scheduleDateConverter.convertList(foundSchedules)
     }
+
+    fun countActiveSchedulesForTheDay(
+        employeeId: String,
+        day: LocalDate,
+    ): Long =
+        scheduleRepository.countByEmployeeIdAndStatusAndServiceDateBetween(
+            employeeId,
+            status = OrderStatus.ACTIVE,
+            startDate = day.atStartOfDay(),
+            endDate = day.atTime(LocalTime.MAX),
+        )
+
+    fun countRequestedSchedules(employeeId: String): Long =
+        scheduleRepository.countByEmployeeIdAndStatus(
+            employeeId,
+            status = OrderStatus.REQUESTED,
+        )
+
+    fun findAllActiveForOverdueNotification(now: LocalDateTime): List<ScheduleEntity> =
+        scheduleRepository.findAllByStatusAndCompletionOverdueNotificationSentFalseAndServiceDateBefore(OrderStatus.ACTIVE, now)
+
+    fun findAllRequestedForOverdueNotification(now: LocalDateTime): List<ScheduleEntity> =
+        scheduleRepository.findAllByStatusAndAcceptanceOverdueNotificationSentFalseAndServiceDateBetween(
+            OrderStatus.REQUESTED,
+            now.minusMinutes(15),
+            now.plusMinutes(15),
+        )
 
     fun getMyPendingSchedules(username: String): List<ScheduleDTO> {
         val employeeId = employeeService.findByUsernameOrThrow(username).id!!
