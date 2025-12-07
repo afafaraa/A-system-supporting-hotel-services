@@ -76,28 +76,43 @@ class OrderService(
         guest: UserEntity,
         items: OrderRequest,
     ): OrderResult {
+        val reservations =
+            if (items.reservations.isEmpty()) {
+                emptyList()
+            } else {
+                items.reservations.map { reservation ->
+                    val reservation =
+                        reservationsService.createReservation(
+                            ReservationsController.ReservationCreateDTO(
+                                roomNumber = reservation.roomNumber,
+                                guestsCount = reservation.guestsCount,
+                                checkIn = reservation.checkIn,
+                                checkOut = reservation.checkOut,
+                                specialRequests = reservation.specialRequests,
+                                guestUsername = guest.username,
+                            ),
+                        )
+                    reservation
+                }
+            }
+        if (reservations.isNotEmpty()) {
+            val bestReservation = reservationsService.getBestReservationForCurrentReservation(reservations)
+            reservationsService.bindReservationToGuest(guest, bestReservation)
+            reservations.filter { it.id != bestReservation.id }.forEach { reservation ->
+                guest.guestData?.addReservationToBill(
+                    reservationId = reservation.id!!,
+                    price = reservation.reservationPrice,
+                    addedDate = reservation.createdAt,
+                )
+            }
+            userService.save(guest)
+        }
+
         val schedules =
             items.schedules.map { (scheduleId, specialRequests, customPrice) ->
                 val schedule = order(guest, scheduleId, specialRequests, customPrice)
                 notificationScheduler.notifyGuestOnSuccessfulOrder(schedule)
                 schedule
-            }
-
-        val reservations =
-            items.reservations.map { reservation ->
-                val reservation =
-                    reservationsService.createReservation(
-                        ReservationsController.ReservationCreateDTO(
-                            roomNumber = reservation.roomNumber,
-                            guestsCount = reservation.guestsCount,
-                            checkIn = reservation.checkIn,
-                            checkOut = reservation.checkOut,
-                            specialRequests = reservation.specialRequests,
-                            guestUsername = guest.username,
-                        ),
-                    )
-                reservationsService.bindReservationToGuest(guest, reservation)
-                reservation
             }
 
         return OrderResult(schedules, reservations)

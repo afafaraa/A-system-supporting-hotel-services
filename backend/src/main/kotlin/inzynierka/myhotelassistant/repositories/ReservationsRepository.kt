@@ -19,6 +19,8 @@ interface ReservationsRepository : MongoRepository<ReservationEntity, String> {
 
     fun findAllByGuestIdOrderByCreatedAtDesc(guestId: String): List<ReservationEntity>
 
+    fun findAllByGuestId(guestId: String): List<ReservationEntity>
+
     fun findAllByCheckInIsAndStatusIs(
         checkIn: LocalDate,
         status: ReservationStatus,

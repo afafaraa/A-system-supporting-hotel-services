@@ -13,6 +13,7 @@ import inzynierka.myhotelassistant.services.UserService
 import inzynierka.myhotelassistant.services.notifications.NotificationScheduler
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import kotlin.jvm.optionals.getOrNull
@@ -163,8 +164,6 @@ class ReservationsService(
         val savedReservation = reservationsRepository.save(reservation)
         notificationScheduler.notifyGuestOnReservationStatusChange(savedReservation, oldStatus, ReservationStatus.CANCELED)
     }
-
-    fun deleteReservation(reservationId: String) = reservationsRepository.deleteById(reservationId)
 
     fun rejectGuestReservation(
         reservationId: String,
@@ -379,6 +378,56 @@ class ReservationsService(
         savedGuest.guestData?.addReservationToBill(savedReservation.id!!, savedReservation.reservationPrice, savedReservation.createdAt)
 
         userService.save(savedGuest)
+    }
+
+    /**
+     * Unbinds reservations from guest and deletes them.
+     *
+     * Only use it when there are no other bill elements to be removed because it clears guestData when all reservations are deleted.
+     */
+    @Transactional
+    fun unbindAndDeleteReservationsFromGuest(
+        guest: UserEntity,
+        reservationIds: List<String>,
+    ) {
+        val guestData = guest.guestData ?: return
+        if (guestData.currentReservation.id in reservationIds) {
+            val guestReservations = reservationsRepository.findAllByGuestId(guest.id!!)
+            val remainingReservations = guestReservations.filter { it.id !in reservationIds }
+            if (remainingReservations.isEmpty()) {
+                if (guestData.getBillElements().size == reservationIds.size) { // empty bill after deletion
+                    guest.guestData = null
+                    userService.save(guest)
+                    reservationsRepository.deleteAllById(reservationIds)
+                    return
+                }
+                throw IllegalArgumentException(
+                    "Cannot delete all reservations while there are still bill elements associated with the guest",
+                )
+            }
+            val bestReservation = getBestReservationForCurrentReservation(remainingReservations)
+            guestData.currentReservation = bestReservation
+        }
+        reservationIds.forEach { reservationId ->
+            guestData.removeElementFromBill(reservationId)
+        }
+        userService.save(guest)
+        reservationsRepository.deleteAllById(reservationIds)
+    }
+
+    fun getBestReservationForCurrentReservation(reservations: List<ReservationEntity>): ReservationEntity {
+        fun statusPriority(status: ReservationStatus): Int =
+            when (status) {
+                ReservationStatus.CHECKED_IN -> 4
+                ReservationStatus.CONFIRMED -> 3
+                ReservationStatus.REQUESTED -> 2
+                ReservationStatus.COMPLETED -> 1
+                else -> 0
+            }
+        return reservations.minWith(
+            compareByDescending<ReservationEntity> { statusPriority(it.status) }
+                .thenBy { it.checkIn },
+        )
     }
 
     fun getAllOngoingReservations(): List<ReservationsController.ReservationDTO> {

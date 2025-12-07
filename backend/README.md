@@ -18,5 +18,5 @@ To effectively test and develop your application with Stripe integration, you ca
    ```
 - **Trigger Events**: You can trigger specific events to test your webhook handling. For example, to trigger a `checkout.session.completed` event, run:
    ```
-   stripe trigger checkout.session.completed --override data.object.id=<session_id, f.e.g., cs_test_a1kfuixTdMx5jqoH9BIBkmndTASKaUopbp9A3XEL9TVcXEWap4XPFzdTnW>
+   stripe trigger checkout.session.completed --override data.object.id=<session_id>
    ```

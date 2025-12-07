@@ -42,6 +42,8 @@ class UserService(
         userRepository.findById(id).getOrNull()
             ?: throw EntityNotFoundException("User with given id was not found")
 
+    fun findById(id: String): UserEntity? = userRepository.findById(id).getOrNull()
+
     override fun loadUserByUsername(username: String): UserDetails {
         val user =
             userRepository.findByUsername(username)

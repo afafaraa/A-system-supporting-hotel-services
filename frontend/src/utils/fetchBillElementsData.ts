@@ -3,7 +3,7 @@ import {SimpleReservation, SimpleSchedule} from "../components/ui/BillElementCar
 import {BillElement} from "../types/userDetails.ts";
 
 async function fetchBillElementsData(billElements: BillElement[]): Promise<{schedulesRecord: Record<string, SimpleSchedule> | null, reservationsRecord: Record<string, SimpleReservation> | null}> {
-  if (!billElements || billElements.length === 0) {
+  if (billElements.length === 0) {
     return { schedulesRecord: null, reservationsRecord: null };
   }
 

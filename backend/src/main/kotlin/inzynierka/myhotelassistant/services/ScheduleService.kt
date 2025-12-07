@@ -23,6 +23,7 @@ class ScheduleService(
     private val scheduleRepository: ScheduleRepository,
     private val scheduleDateConverter: SchedulesToDTOConverter,
     private val employeeService: EmployeeService,
+    private val userService: UserService,
     private val notificationScheduler: NotificationScheduler,
 ) {
     fun findByIdOrThrow(id: String): ScheduleEntity =
@@ -145,6 +146,10 @@ class ScheduleService(
         save(schedule)
 
         notificationScheduler.notifyGuestOnStatusChange(schedule, oldStatus, newScheduleStatus)
+        if (newScheduleStatus == OrderStatus.CANCELED || newScheduleStatus == OrderStatus.COMPLETED) {
+            val guest = userService.findByIdOrThrow(schedule.guestId!!)
+            guest.guestData?.removeElementFromBill(scheduleId)
+        }
 
         return scheduleDateConverter.convert(schedule)
     }

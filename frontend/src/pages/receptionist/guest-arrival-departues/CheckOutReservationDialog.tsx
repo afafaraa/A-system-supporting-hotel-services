@@ -57,6 +57,7 @@ function CheckOutReservationDialog({reservation, onSuccess, onClose}: {reservati
 
   const handleClose = () => {
     setError(null);
+    setBillDetailsFetchError(null);
     onClose();
   }
 

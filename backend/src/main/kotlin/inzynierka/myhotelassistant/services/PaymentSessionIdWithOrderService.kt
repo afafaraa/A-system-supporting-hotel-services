@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 class PaymentSessionIdWithOrderService(
     private val paymentSessionRepository: PaymentSessionIdWithOrderRepository,
 ) {
-    fun getByPaymentSessionId(paymentSessionId: String): PaymentSessionIdWithOrderEntity? =
+    fun deletePaymentSessionById(paymentSessionId: String): PaymentSessionIdWithOrderEntity? =
         paymentSessionRepository.deleteByPaymentSessionId(paymentSessionId)
 
     fun saveFromOrderResult(

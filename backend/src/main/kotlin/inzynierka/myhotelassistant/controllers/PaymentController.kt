@@ -158,8 +158,10 @@ class PaymentController(
             paymentSessionWithOrder.itemIds.scheduleIds.forEach { id ->
                 orderService.cancel(guest, id)
             }
-            paymentSessionWithOrder.itemIds.reservationIds.forEach { id ->
-                reservationsService.deleteReservation(id)
+            try {
+                reservationsService.unbindAndDeleteReservationsFromGuest(guest, paymentSessionWithOrder.itemIds.reservationIds)
+            } catch (e: Exception) {
+                logger.error("Failed to unbind reservations from guest [${paymentSessionWithOrder.guestId}]: ${e.message}")
             }
         }
 
@@ -168,10 +170,10 @@ class PaymentController(
                 val sessionId =
                     getSessionIdFromEvent(event)
                         ?: return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid session data")
-                val paymentSessionWithOrder = paymentSessionService.getByPaymentSessionId(sessionId)
+                val paymentSessionWithOrder = paymentSessionService.deletePaymentSessionById(sessionId)
                 if (paymentSessionWithOrder == null) {
                     logger.error("No payment session found for session id: $sessionId")
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment session not found")
+                    return ResponseEntity.ok().body("Payment session not found (already processed or not found)")
                 }
                 orderService.setItemsAsPaid(
                     guestId = paymentSessionWithOrder.guestId,
@@ -184,7 +186,7 @@ class PaymentController(
                 val sessionId =
                     getSessionIdFromEvent(event)
                         ?: return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid session data")
-                val paymentSessionWithOrder = paymentSessionService.getByPaymentSessionId(sessionId)
+                val paymentSessionWithOrder = paymentSessionService.deletePaymentSessionById(sessionId)
                 paymentSessionWithOrder?.let { deleteOrder(it) }
                 logger.debug("Payment session expired for session id: $sessionId")
             }
@@ -193,7 +195,7 @@ class PaymentController(
                 val sessionId =
                     getSessionIdFromEvent(event)
                         ?: return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid session data")
-                val paymentSessionWithOrder = paymentSessionService.getByPaymentSessionId(sessionId)
+                val paymentSessionWithOrder = paymentSessionService.deletePaymentSessionById(sessionId)
                 paymentSessionWithOrder?.let { deleteOrder(it) }
                 logger.debug("Async payment failed for session id: $sessionId")
             }
