@@ -616,6 +616,9 @@
       "account_balance_subtitle": "Overview of your current account balance and recent transactions",
       "current_bill": "Current Bill",
       "recent_transactions": "Recent Transactions",
+      "no_transactions": "No recent transactions",
+      "extend": "↓ Extend list",
+      "collapse": "↑ Collapse list",
 
       "page_settings": "Page Settings",
       "page_language": "Page Language",
@@ -710,7 +713,10 @@
           "only-checked-in-error": "Only checked-in reservations can be checked-out",
           "error-during-check-out": "Error during check-out",
           "check-out-bill": "Check-out bill",
-          "bill-payment-confirmation": "I confirm that the invoice amount has been settled"
+          "bill-payment-confirmation": "I confirm that the invoice amount has been settled",
+          "elems-included-in-bill": "Elements included in the bill",
+          "unable-to-load-bill": "Unable to load bill details",
+          "empty-bill": "No items in the bill"
         }
       },
       "guest-arrival-departures": {
@@ -776,7 +782,12 @@
     },
     "special_requests": "Special requests",
     "without_reservation": "Without reservation",
-    "cannot_complete_service_before_schedule": "You cannot complete a schedule before its scheduled time."
+    "cannot_complete_service_before_schedule": "You cannot complete a schedule before its scheduled time.",
+    "order_date": "Order date",
+    "service": "Service",
+    "reservation": "Reservation",
+    "bill_additional_details_fetch_error": "Unable to fetch additional bill details",
+    "priceFrom": "from"
   },
   "ui": {
     "show_more": "Show more ↓",

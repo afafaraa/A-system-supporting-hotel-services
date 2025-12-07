@@ -18,4 +18,6 @@ data class ScheduleEntity(
     var status: OrderStatus = OrderStatus.AVAILABLE,
     var cancellationReason: CancellationReason? = null,
     var specialRequests: String? = null,
+    var completionOverdueNotificationSent: Boolean = false,
+    var acceptanceOverdueNotificationSent: Boolean = false,
 )

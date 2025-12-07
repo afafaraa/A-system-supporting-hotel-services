@@ -616,6 +616,9 @@
       "account_balance_subtitle": "Przegląd aktualnego salda konta i ostatnich transakcji",
       "current_bill": "Bieżący rachunek",
       "recent_transactions": "Ostatnie transakcje",
+      "no_transactions": "Brak ostatnich transakcji",
+      "extend": "↓ Pokaż więcej",
+      "collapse": "↑ Zwiń listę",
 
       "page_settings": "Ustawienia strony",
       "page_language": "Język strony",
@@ -710,7 +713,10 @@
           "only-checked-in-error": "Tylko zameldowane rezerwacje mogą zostać wymeldowane",
           "error-during-check-out": "Błąd podczas wymeldowania",
           "check-out-bill": "Rachunek",
-          "bill-payment-confirmation": "Potwierdzam, że kwota rachunku została uregulowana"
+          "bill-payment-confirmation": "Potwierdzam, że kwota rachunku została uregulowana",
+          "elems-included-in-bill": "Elementy wliczone w rachunek",
+          "unable-to-load-bill": "Nie można załadować elementów rachunku",
+          "empty-bill": "Brak elementów do zapłaty w rachunku"
         }
       },
       "guest-arrival-departures": {
@@ -776,7 +782,12 @@
     },
     "special_requests": "Specjalne życzenia",
     "without_reservation": "Bez rezerwacji",
-    "cannot_complete_service_before_schedule": "Nie można zakończyć usługi przed jej zaplanowanym rozpoczęciem."
+    "cannot_complete_service_before_schedule": "Nie można zakończyć usługi przed jej zaplanowanym rozpoczęciem.",
+    "order_date": "Data zamówienia",
+    "service": "Usługa",
+    "reservation": "Rezerwacja",
+    "bill_additional_details_fetch_error": "Nie można pobrać dodatkowych szczegółów rachunku",
+    "priceFrom": "od"
   },
   "ui": {
     "show_more": "Pokaż więcej ↓",

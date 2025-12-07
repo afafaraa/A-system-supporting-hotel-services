@@ -1,5 +1,6 @@
 package inzynierka.myhotelassistant.services
 
+import inzynierka.myhotelassistant.controllers.schedule.ScheduleController
 import inzynierka.myhotelassistant.dto.ScheduleDTO
 import inzynierka.myhotelassistant.exceptions.HttpException.EntityNotFoundException
 import inzynierka.myhotelassistant.exceptions.HttpException.InvalidArgumentException
@@ -12,6 +13,7 @@ import inzynierka.myhotelassistant.utils.SchedulesToDTOConverter
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeParseException
 import java.time.temporal.TemporalAdjusters
@@ -21,6 +23,7 @@ class ScheduleService(
     private val scheduleRepository: ScheduleRepository,
     private val scheduleDateConverter: SchedulesToDTOConverter,
     private val employeeService: EmployeeService,
+    private val userService: UserService,
     private val notificationScheduler: NotificationScheduler,
 ) {
     fun findByIdOrThrow(id: String): ScheduleEntity =
@@ -72,6 +75,33 @@ class ScheduleService(
         return scheduleDateConverter.convertList(foundSchedules)
     }
 
+    fun countActiveSchedulesForTheDay(
+        employeeId: String,
+        day: LocalDate,
+    ): Long =
+        scheduleRepository.countByEmployeeIdAndStatusAndServiceDateBetween(
+            employeeId,
+            status = OrderStatus.ACTIVE,
+            startDate = day.atStartOfDay(),
+            endDate = day.atTime(LocalTime.MAX),
+        )
+
+    fun countRequestedSchedules(employeeId: String): Long =
+        scheduleRepository.countByEmployeeIdAndStatus(
+            employeeId,
+            status = OrderStatus.REQUESTED,
+        )
+
+    fun findAllActiveForOverdueNotification(now: LocalDateTime): List<ScheduleEntity> =
+        scheduleRepository.findAllByStatusAndCompletionOverdueNotificationSentFalseAndServiceDateBefore(OrderStatus.ACTIVE, now)
+
+    fun findAllRequestedForOverdueNotification(now: LocalDateTime): List<ScheduleEntity> =
+        scheduleRepository.findAllByStatusAndAcceptanceOverdueNotificationSentFalseAndServiceDateBetween(
+            OrderStatus.REQUESTED,
+            now.minusMinutes(15),
+            now.plusMinutes(15),
+        )
+
     fun getMyPendingSchedules(username: String): List<ScheduleDTO> {
         val employeeId = employeeService.findByUsernameOrThrow(username).id!!
         val foundSchedules =
@@ -116,9 +146,18 @@ class ScheduleService(
         save(schedule)
 
         notificationScheduler.notifyGuestOnStatusChange(schedule, oldStatus, newScheduleStatus)
+        if (newScheduleStatus == OrderStatus.CANCELED || newScheduleStatus == OrderStatus.COMPLETED) {
+            val guest = userService.findByIdOrThrow(schedule.guestId!!)
+            guest.guestData?.removeElementFromBill(scheduleId)
+        }
 
         return scheduleDateConverter.convert(schedule)
     }
 
     fun findByGuestId(guestId: String): List<ScheduleEntity> = scheduleRepository.findByGuestId(guestId)
+
+    fun getSchedulesForTransactionsHistory(scheduleIds: List<String>): List<ScheduleController.ScheduleForTransactionsHistory> {
+        val schedules = scheduleRepository.findAllById(scheduleIds)
+        return schedules.map { scheduleDateConverter.convertForTransactionsHistory(it) }
+    }
 }

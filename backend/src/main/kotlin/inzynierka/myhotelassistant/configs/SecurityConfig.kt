@@ -87,6 +87,7 @@ class SecurityConfig(
                         "/v3/api-docs.yaml",
                         "/swagger-resources/**",
                         "/webjars/**",
+                        "/payment/webhook",
                     ).permitAll()
                     .requestMatchers("/secured/**")
                     .hasAnyRole(Role.ADMIN.name)

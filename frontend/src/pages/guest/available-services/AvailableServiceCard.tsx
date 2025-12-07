@@ -16,6 +16,7 @@ import { Rating } from '../../../types';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectUserDetails } from '../../../redux/slices/userDetailsSlice.ts';
+import formatServicePrice from "../../../utils/formatServicePrice.ts";
 
 export type ServiceProps = {
   id: string;
@@ -23,6 +24,7 @@ export type ServiceProps = {
   description: string;
   image: string;
   price: number;
+  minPrice?: number;
   rating: Rating[];
   duration: number;
   disabled: boolean;
@@ -131,7 +133,7 @@ function AvailableServiceCard({ service }: { service: ServiceProps }) {
             }}
           >
             <Box sx={{ fontWeight: 'bold', color: theme.palette.primary.main }}>
-              {service.price < 0.01 ? '— ' : service.price.toFixed(2)}$
+              {formatServicePrice(service)}
             </Box>
 
             <Box

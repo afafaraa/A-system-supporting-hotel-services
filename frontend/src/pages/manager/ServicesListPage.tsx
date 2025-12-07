@@ -29,6 +29,7 @@ import { SectionCard } from "../../theme/styled-components/SectionCard";
 import { ServiceCard } from "../../theme/styled-components/ServiceCard";
 import SectionTitle from "../../components/ui/SectionTitle.tsx";
 import ServiceIcon from "../../components/ui/ServiceIcon.tsx";
+import formatServicePrice from "../../utils/formatServicePrice.ts";
 
 function ServicesListPage() {
   const { t } = useTranslation();
@@ -202,7 +203,7 @@ function ServicesListPage() {
               </Typography>
               <Box display="flex" alignItems="center" gap={2} mt={0.5}>
                 <Typography variant="body2" fontWeight="bold">
-                  {s.price < 0.01 ? '— ' : s.price.toFixed(2)}$
+                  {formatServicePrice(s)}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {s.duration} min

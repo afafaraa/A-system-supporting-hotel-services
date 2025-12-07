@@ -1,16 +1,13 @@
 package inzynierka.myhotelassistant.controllers.user
 
-import inzynierka.myhotelassistant.controllers.ReservationsController
 import inzynierka.myhotelassistant.dto.OrderRequest
 import inzynierka.myhotelassistant.models.schedule.OrderStatus
-import inzynierka.myhotelassistant.models.service.ReservationsService
 import inzynierka.myhotelassistant.models.service.ServiceEntity
 import inzynierka.myhotelassistant.models.user.UserEntity
 import inzynierka.myhotelassistant.services.OrderService
 import inzynierka.myhotelassistant.services.ScheduleService
 import inzynierka.myhotelassistant.services.ServiceService
 import inzynierka.myhotelassistant.services.UserService
-import inzynierka.myhotelassistant.services.notifications.NotificationScheduler
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
@@ -30,8 +27,6 @@ class GuestController(
     private val scheduleService: ScheduleService,
     private val serviceService: ServiceService,
     private val orderService: OrderService,
-    private val reservationsService: ReservationsService,
-    private val notificationScheduler: NotificationScheduler,
 ) {
     data class CancelOrderRequest(
         val orderId: String,
@@ -60,26 +55,7 @@ class GuestController(
         @RequestBody req: OrderRequest,
     ) {
         val guest = userService.findByUsernameOrThrow(principal.name)
-
-        req.schedules.forEach { (scheduleId, specialRequests, customPrice) ->
-            val schedule = orderService.order(guest, scheduleId, specialRequests, customPrice)
-            notificationScheduler.notifyGuestOnSuccessfulOrder(schedule)
-        }
-
-        req.reservations.forEach { reservation ->
-            val reservation =
-                reservationsService.createReservation(
-                    ReservationsController.ReservationCreateDTO(
-                        roomNumber = reservation.roomNumber,
-                        guestsCount = reservation.guestsCount,
-                        checkIn = reservation.checkIn,
-                        checkOut = reservation.checkOut,
-                        specialRequests = reservation.specialRequests,
-                        guestUsername = guest.username,
-                    ),
-                )
-            reservationsService.bindReservationToGuest(guest, reservation)
-        }
+        orderService.makeOrderFromItems(guest, items = req)
     }
 
     data class ScheduleForPastAndRequestedServicesResponse(
@@ -127,7 +103,7 @@ class GuestController(
                     scheduleItem.employeeId,
                     employeeFullName,
                     service.image,
-                    service.price,
+                    scheduleItem.price ?: service.price,
                     scheduleItem.serviceDate,
                     scheduleItem.status,
                     scheduleItem.specialRequests,
@@ -141,13 +117,6 @@ class GuestController(
         @RequestParam(defaultValue = "10") size: Int,
     ): List<GuestDetailsResponse> {
         val pageable = PageRequest.of(page, size)
-        return try {
-            val result = userService.getAllGuestsWithDetails(pageable)
-            println("Successfully fetched ${result.size} guests with details")
-            result
-        } catch (e: Exception) {
-            println("Error fetching guestsdetails$e")
-            throw e
-        }
+        return userService.getAllGuestsWithDetails(pageable)
     }
 }

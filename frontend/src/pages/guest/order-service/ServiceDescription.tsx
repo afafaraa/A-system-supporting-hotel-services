@@ -9,6 +9,7 @@ import { ServiceProps } from '../available-services/AvailableServiceCard.tsx';
 import TimelapseIcon from '@mui/icons-material/Timelapse';
 import Chip from "@mui/material/Chip";
 import {SectionCard} from "../../../theme/styled-components/SectionCard.ts";
+import formatServicePrice from "../../../utils/formatServicePrice.ts";
 
 function ServiceDescription({
   service,
@@ -88,7 +89,7 @@ function ServiceDescription({
             >
               {t('pages.order_service.price')}
             </p>
-            <p style={{ fontWeight: 600 }}>{service.price < 0.01 ? '—' : service.price.toFixed(2)}</p>
+            <p style={{ fontWeight: 600 }}>{formatServicePrice(service)}</p>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center' }}>

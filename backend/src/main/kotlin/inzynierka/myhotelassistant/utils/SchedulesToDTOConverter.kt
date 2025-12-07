@@ -1,5 +1,6 @@
 package inzynierka.myhotelassistant.utils
 
+import inzynierka.myhotelassistant.controllers.schedule.ScheduleController
 import inzynierka.myhotelassistant.dto.ScheduleDTO
 import inzynierka.myhotelassistant.models.schedule.ScheduleEntity
 import inzynierka.myhotelassistant.repositories.UserRepository
@@ -33,4 +34,16 @@ class SchedulesToDTOConverter(
             guest = userRepository.findById(schedule.guestId ?: "").orElse(null),
             service = serviceService.findByIdOrThrow(schedule.serviceId),
         )
+
+    fun convertForTransactionsHistory(schedule: ScheduleEntity): ScheduleController.ScheduleForTransactionsHistory {
+        val service = serviceService.findByIdOrThrow(schedule.serviceId)
+        return ScheduleController.ScheduleForTransactionsHistory(
+            id = schedule.id!!,
+            title = service.name,
+            date = schedule.serviceDate,
+            duration = service.duration.inWholeMinutes,
+            specialRequests = schedule.specialRequests,
+            thumbnailUrl = service.image,
+        )
+    }
 }

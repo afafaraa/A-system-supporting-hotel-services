@@ -16,6 +16,7 @@ export type Service = {
     name: string;
     description?: string;
     price: number;
+    minPrice?: number;
     type: "GENERAL_SERVICE" | "PLACE_RESERVATION";
     disabled: boolean;
     rating?: Rating[];

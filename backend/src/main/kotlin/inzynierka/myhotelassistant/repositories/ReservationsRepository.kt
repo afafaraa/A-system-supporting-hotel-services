@@ -19,6 +19,8 @@ interface ReservationsRepository : MongoRepository<ReservationEntity, String> {
 
     fun findAllByGuestIdOrderByCreatedAtDesc(guestId: String): List<ReservationEntity>
 
+    fun findAllByGuestId(guestId: String): List<ReservationEntity>
+
     fun findAllByCheckInIsAndStatusIs(
         checkIn: LocalDate,
         status: ReservationStatus,
@@ -112,5 +114,21 @@ interface ReservationsRepository : MongoRepository<ReservationEntity, String> {
     fun countByCheckInLessThanEqualAndCheckOutGreaterThan(
         date: LocalDate,
         datePlusOne: LocalDate,
+    ): Long
+
+    fun countAllByCheckInIsAndStatusIs(
+        checkInDate: LocalDate,
+        status: ReservationStatus,
+    ): Long
+
+    fun countAllByCheckOutIsAndStatusIs(
+        checkOutDate: LocalDate,
+        status: ReservationStatus,
+    ): Long
+
+    fun countAllByCheckInIsBetweenAndStatusIs(
+        checkInAfter: LocalDate,
+        checkInBefore: LocalDate,
+        status: ReservationStatus,
     ): Long
 }

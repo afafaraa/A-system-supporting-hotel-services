@@ -84,6 +84,7 @@ class NotificationService(
         title: String,
         variant: NotificationVariant,
         message: String,
+        withEmail: Boolean = true,
     ) {
         val notification =
             NotificationEntity(
@@ -94,6 +95,7 @@ class NotificationService(
             )
         notificationRepository.save(notification)
 
+        if (!withEmail) return
         // Send email notification
         try {
             val userEmail = userService.getUserEmailById(userId) ?: throw IllegalArgumentException("User with id $userId not found")

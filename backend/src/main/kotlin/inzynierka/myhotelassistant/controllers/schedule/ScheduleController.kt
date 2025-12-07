@@ -97,6 +97,20 @@ class ScheduleController(
     @ResponseStatus(HttpStatus.OK)
     fun getPendingSchedules(principal: Principal): List<ScheduleDTO> = scheduleService.getMyPendingSchedules(principal.name)
 
+    data class ScheduleForTransactionsHistory(
+        val id: String,
+        val title: String,
+        val date: LocalDateTime,
+        val duration: Long,
+        val specialRequests: String? = null,
+        val thumbnailUrl: String? = null,
+    )
+
+    @GetMapping("/for-transactions-history")
+    fun getSchedulesForTransactionsHistory(
+        @RequestParam(name = "ids") scheduleIds: List<String>,
+    ): List<ScheduleForTransactionsHistory> = scheduleService.getSchedulesForTransactionsHistory(scheduleIds)
+
     @PatchMapping("/{scheduleId}/confirm")
     @ResponseStatus(HttpStatus.OK)
     fun confirmRequestedSchedule(

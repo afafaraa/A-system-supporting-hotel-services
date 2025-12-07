@@ -112,4 +112,27 @@ interface ScheduleRepository : MongoRepository<ScheduleEntity, String> {
         startDate: LocalDateTime,
         endDate: LocalDateTime,
     ): Long?
+
+    fun countByEmployeeIdAndStatus(
+        employeeId: String,
+        status: OrderStatus,
+    ): Long
+
+    fun countByEmployeeIdAndStatusAndServiceDateBetween(
+        employeeId: String,
+        status: OrderStatus,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime,
+    ): Long
+
+    fun findAllByStatusAndCompletionOverdueNotificationSentFalseAndServiceDateBefore(
+        status: OrderStatus,
+        beforeDate: LocalDateTime,
+    ): List<ScheduleEntity>
+
+    fun findAllByStatusAndAcceptanceOverdueNotificationSentFalseAndServiceDateBetween(
+        status: OrderStatus,
+        beforeDate: LocalDateTime,
+        afterDate: LocalDateTime,
+    ): List<ScheduleEntity>
 }
