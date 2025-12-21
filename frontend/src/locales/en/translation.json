@@ -253,6 +253,8 @@
         "checked-out": "Checked-out",
         "checked-in": "Checked-in",
         "upcoming": "Upcoming",
+        "requested": "Requested",
+        "confirmed": "Confirmed",
         "room": "Room",
         "check_in": "Check-in",
         "check_out": "Check-out",

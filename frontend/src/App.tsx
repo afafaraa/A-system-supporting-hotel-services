@@ -42,6 +42,7 @@ import RegisterWithCode from './pages/user/register/RegisterWithCode.tsx';
 import VerifyAccount from './pages/user/verify/VerifyAccount.tsx';
 import PaymentSuccessPage from './pages/guest/payment/PaymentSuccessPage.tsx';
 import PaymentCancelPage from './pages/guest/payment/PaymentCancelPage.tsx';
+import IconsTest from "./IconsTest.tsx";
 
 function App(){
   return (
@@ -107,6 +108,7 @@ function App(){
             <Route path="/verify/account" element={<VerifyAccount />} />
             <Route path="*" element={<Navigate to="/home" replace />} />
             <Route path="/fallback" element={<FallbackPage />} />
+            <Route path="/icons" element={<IconsTest />} />
           </Route>
 
         </Routes>
@@ -123,6 +125,7 @@ const publicPaths = [
   '/reset-password',
   '/verify',
   '/fallback',
+  '/icons',
 ];
 
 const isPublicPath = (path: string) =>

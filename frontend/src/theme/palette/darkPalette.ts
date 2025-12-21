@@ -42,6 +42,8 @@ export const darkPalette: PaletteOptions = {
     CHECKED_IN: '#39D943',
     CHECKED_OUT: '#AAAAAA',
     UPCOMING: '#7545FB',
+    REQUESTED: "#2991bf",
+    CONFIRMED: '#d3b72a',
   },
   custom: {
     sidebarButtonBg: '#2b2a2e',

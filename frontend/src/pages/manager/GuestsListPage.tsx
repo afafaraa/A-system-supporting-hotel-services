@@ -62,8 +62,8 @@ function GuestsListPage() {
     return guests.filter((guest) => {
       const nameMatch =
         filterName.trim() === "" ||
-        guest.name.toLowerCase().includes(filterName.toLowerCase()) ||
-        guest.surname.toLowerCase().includes(filterName.toLowerCase());
+        guest.guest.name.toLowerCase().includes(filterName.toLowerCase()) ||
+        guest.guest.surname.toLowerCase().includes(filterName.toLowerCase());
       const statusMatch =
         filterStatus === "ALL" ||
         guest.guest.guestData?.currentReservation.status.replace("-", "_").toUpperCase() === filterStatus;

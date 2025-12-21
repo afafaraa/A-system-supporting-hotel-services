@@ -51,8 +51,9 @@ const SelectionCard = ({details, setOrder}: {details: SelectionAttributes, setOr
                       <OptionCardSingleButton group={key} option={option} setOrder={setOrder}/>
                     }
                   </Box>
-                  <Box width="120px" height="120px" overflow="hidden" flexShrink={0} borderRadius="inherit">
+                  <Box width="120px" height="120px" overflow="hidden" flexShrink={0} borderRadius="inherit" position="relative">
                     <img src={option.image} alt={option.label + " image"} style={{objectFit: 'cover', width: "100%", height: "100%"}} />
+                    <Typography lineHeight={1} fontSize="110%" fontWeight="600" color="primary" position="absolute" bottom={0} right={0} sx={{bgcolor: "background.paper", px: 0.7, py: 0.5, borderStartStartRadius: "inherit"}}>{option.price}$</Typography>
                   </Box>
                 </SectionCard>
               </Grid>

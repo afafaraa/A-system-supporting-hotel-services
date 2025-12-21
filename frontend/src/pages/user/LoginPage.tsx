@@ -107,7 +107,7 @@ function LoginPage({selectedRoom}: {selectedRoom?: Room}){
         </Box>
       </ShadowCard>
 
-      <Box position="fixed" my="auto" left={4} display={{xs: "none", sm: "flex"}} flexDirection="column" gap={0.8}>
+      <Box position="fixed" my="auto" left={4} display={{xs: "none", sm: "flex"}} flexDirection="column" gap={0.8} sx={{opacity: 0, "&:hover": {opacity: 1}}}>
         <p>Quick log-in:</p>
         <button onClick={() => {
           setUsername("user"); setPassword("password"); login();

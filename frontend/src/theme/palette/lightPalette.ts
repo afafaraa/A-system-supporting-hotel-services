@@ -41,6 +41,8 @@ export const lightPalette: PaletteOptions = {
     CHECKED_IN: '#39D943',
     CHECKED_OUT: '#AAAAAA',
     UPCOMING: '#7545FB',
+    REQUESTED: "#2991bf",
+    CONFIRMED: '#d3b72a',
   },
   custom: {
     sidebarButtonBg: '#e7e6eb',

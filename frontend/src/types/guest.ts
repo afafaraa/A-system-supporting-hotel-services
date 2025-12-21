@@ -11,6 +11,6 @@ export type GuestDetails = UserDetails & {
     cancelledServices: Service[];
 }
 
-export type GuestStatus = "CHECKED_IN" | "CHECKED_OUT" | "UPCOMING";
+export type GuestStatus = "CHECKED_IN" | "CHECKED_OUT" | "UPCOMING" | "REQUESTED" | "CONFIRMED";
 
 export type GuestStatusFilter = "ALL" | GuestStatus;

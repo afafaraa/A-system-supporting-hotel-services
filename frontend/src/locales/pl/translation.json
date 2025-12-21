@@ -253,6 +253,8 @@
         "checked-out": "Wymeldowany",
         "checked-in": "Zameldowany",
         "upcoming": "Nadchodzące",
+        "requested": "Oczekujące",
+        "confirmed": "Potwierdzone",
         "room": "Pokój",
         "check_in": "Od",
         "check_out": "Do",

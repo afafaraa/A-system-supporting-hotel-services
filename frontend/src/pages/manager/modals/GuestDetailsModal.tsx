@@ -140,7 +140,7 @@ function GuestDetailsModal({ open, guest, onClose }: GuestDetailsProps) {
                     </Typography>
                     <Box display="flex" alignItems="center" gap={1} mb={1}>
                       <EmailOutlined fontSize="small" color="action" />
-                      <Typography variant="body2">{guest.email}</Typography>
+                      <Typography variant="body2">{guest.guest.email}</Typography>
                     </Box>
                     <Box display="flex" alignItems="center" gap={1} mb={1}>
                       <RoomOutlined fontSize="small" color="action" />
