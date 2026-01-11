@@ -100,7 +100,7 @@ function LoginPage({selectedRoom}: {selectedRoom?: Room}){
 
         <AppLink to="/reset-password-email" color="text.secondary" mt={3}>{tc("resetPassword")}</AppLink>
         <AppLink to="/register/no-code" color="text.primary" mt={0.8}>{tc("registerWithCode")}</AppLink>
-        <Button disabled={disabled} fullWidth variant="contained" type="submit" loading={loading} sx={{mt: 3}}>
+        <Button disabled={disabled} fullWidth variant="contained" type="submit" loading={loading} sx={{mt: 3}} data-cy="login-button">
           {tc("loginButton")}
         </Button>
         {error && <Typography component="p" variant="caption" color="error" sx={{mt: 2}}>{t(error)}</Typography>}

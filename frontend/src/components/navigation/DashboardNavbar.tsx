@@ -100,6 +100,7 @@ function DashboardNavbar({ tabs, arrowButtons=false }: DashboardNavbarProps) {
                fontWeight={600} fontSize="14px" color={activeLink === tab.link ? "primary.contrastText" : "text.primary"}
                sx={{cursor: "pointer", userSelect: "none", textWrap: "nowrap"}}
                onClick={() => navigate(tab.link)}
+               data-cy={tab.name}
           >
             {tab.name}
           </Box>

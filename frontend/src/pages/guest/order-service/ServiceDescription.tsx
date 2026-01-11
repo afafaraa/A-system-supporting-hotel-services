@@ -118,6 +118,7 @@ function ServiceDescription({
           py: 1.2,
           fontWeight: '600',
         }}
+        data-cy="addToCart"
       >
         {t('pages.order_service.addToCart')}
       </Button>

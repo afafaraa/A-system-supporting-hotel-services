@@ -1,4 +1,4 @@
-name: Frontend build
+name: Frontend build and E2E tests
 
 on:
   push:
@@ -18,9 +18,13 @@ defaults:
     working-directory: frontend
 
 jobs:
-  frontend:
-    name: Frontend
+  e2e-tests:
+    name: Frontend E2E Tests
     runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:24-dind
+        options: --privileged
 
     steps:
       - name: Checkout repository
@@ -42,11 +46,30 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run type checking
-        run: npm run check
-
-      - name: Build project
+      - name: Build frontend
         run: npm run build
 
-  #      - name: Run tests
-  #        run: npm run test -- --ci
+      - name: Set up Docker Compose
+        run: |
+          docker compose -f ../docker-compose.yml up -d --build
+
+      - name: Wait for backend to be ready
+        run: |
+          echo "Waiting for backend to be ready..."
+          for i in {1..30}; do
+            if curl -s http://localhost:8080/actuator/health | grep -q '"status":"UP"'; then
+              echo "Backend is ready!"
+              break
+            fi
+            echo "Waiting..."
+            sleep 5
+          done
+
+      - name: Run Cypress E2E tests
+        run: npm run cypress:run:chrome -- --ci
+        env:
+          BACKEND_URL: http://localhost:8080
+
+      - name: Tear down Docker Compose
+        if: always()
+        run: docker compose -f ../docker-compose.yml down -v
