@@ -1,11 +1,11 @@
 spring:
+  mvc:
+    servlet:
+      path: /api
   application:
     name: MyHotelAssistant
   profiles:
     active: dev
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/mongo-hotel
   task:
     scheduling:
       pool:
@@ -56,3 +56,5 @@ app:
       - image/jpg
       - image/png
       - image/webp
+server:
+  address: 0.0.0.0

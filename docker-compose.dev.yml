@@ -1,7 +1,7 @@
 services:
 
   mongo:
-    image: mongo:8
+    image: mongo:6
     container_name: mongo
     ports:
       - "27017:27017"
@@ -9,20 +9,21 @@ services:
       - mongo_data:/data/db
 
   backend:
-    container_name: backend
     build:
       context: ./backend
       dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
+    container_name: backend
     environment:
-      - SPRING_APPLICATION_NAME=MyHotelAssistant
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=admin123
+      - ADMIN_EMAIL=admin@hotel.com
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/mongo-hotel
-      - SPRING_MAIL_USERNAME=${GMAIL_USERNAME}
-      - SPRING_MAIL_PASSWORD=${GMAIL_APP_PASSWORD}
+      - APP_FRONTEND_URL=http://localhost:5173
+    ports:
+      - "8080:8080"
     depends_on:
       - mongo
 
 volumes:
-    mongo_data: {}
+  mongo_data:

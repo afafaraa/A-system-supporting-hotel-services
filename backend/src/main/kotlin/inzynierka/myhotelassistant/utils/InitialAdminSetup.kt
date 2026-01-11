@@ -25,17 +25,50 @@ class InitialAdminSetup(
     fun adminSetupRunner() =
         CommandLineRunner {
             if (env.activeProfiles.contains("dev")) {
-                logger.info("Skipping interactive admin setup in dev environment.")
+                logger.info("Skipping interactive  admin setup in dev environment.")
                 return@CommandLineRunner
             }
+
             val admins = userRepo.findByRole(Role.ADMIN)
             if (admins.isNotEmpty()) {
                 logger.info("Admin account(s) already exist. Skipping interactive setup.")
                 logger.info(admins.toString())
                 return@CommandLineRunner
             }
-            logger.info("No admin account found. Starting interactive admin setup...")
-            setupAdminInteractively()
+
+            // Try creating admin from environment variables
+            val envUsername = System.getenv("ADMIN_USERNAME")
+            val envPassword = System.getenv("ADMIN_PASSWORD")
+            val envEmail = System.getenv("ADMIN_EMAIL")
+            val envFirstName = System.getenv("ADMIN_FIRSTNAME") ?: "Admin"
+            val envLastName = System.getenv("ADMIN_LASTNAME") ?: "User"
+
+            if (envUsername != null && envPassword != null && envEmail != null) {
+                logger.info("Creating admin from environment variables...")
+                val admin =
+                    UserEntity(
+                        username = envUsername,
+                        password = passwordEncoder.encode(envPassword),
+                        email = envEmail,
+                        name = envFirstName,
+                        surname = envLastName,
+                        role = Role.ADMIN,
+                    )
+                userRepo.save(admin)
+                logger.info("Admin '${admin.username}' created from environment variables.")
+                return@CommandLineRunner
+            }
+
+            // Fall back to interactive setup if environment variables are missing
+            if (System.console() != null) {
+                logger.info("No admin found. Starting interactive setup...")
+                setupAdminInteractively()
+            } else {
+                logger.error("No admin found and no environment variables provided. Startup aborted!")
+                throw IllegalStateException(
+                    "Cannot create admin: provide ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_EMAIL",
+                )
+            }
         }
 
     private fun setupAdminInteractively() {

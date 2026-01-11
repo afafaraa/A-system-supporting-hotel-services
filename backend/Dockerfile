@@ -15,8 +15,14 @@ FROM azul/zulu-openjdk-alpine:21.0.6
 ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom"
 WORKDIR /app
 
+RUN apk add --no-cache curl netcat-openbsd dos2unix
+
+COPY wait-for-mongo.sh /usr/local/bin/wait-for-mongo.sh
+RUN dos2unix /usr/local/bin/wait-for-mongo.sh && chmod +x /usr/local/bin/wait-for-mongo.sh
+
 COPY --from=builder /build/build/libs/*.jar app.jar
 
 EXPOSE 8080
 
-CMD java $JAVA_OPTS -jar app.jar
+ENTRYPOINT ["sh", "/usr/local/bin/wait-for-mongo.sh"]
+CMD ["sh", "-c", "java $JAVA_OPTS -jar app.jar --server.port=${PORT:-8080}"]
